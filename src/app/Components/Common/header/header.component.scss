@@ -1,0 +1,94 @@
+* {
+  color: white;
+}
+.header {
+  width: 100%;
+  background-color: #121212;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  border-radius: 25px;
+  padding: 10px 20px;
+  width: 500px;
+}
+@media (max-width: 1000px) {
+  .search-container {
+    width: 348px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    display: none;
+  }
+}
+.search-container input {
+  background-color: #333;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  flex-grow: 1;
+}
+.search-container input::placeholder {
+  color: #ccc;
+}
+.search-container .icon {
+  color: #ccc;
+  font-size: 20px;
+}
+.menu-container {
+  position: relative;
+}
+
+.login-button {
+  background-color: rgb(255, 59, 92);
+  color: #fff;
+  border: none;
+  padding: 5px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.login-button:hover {
+  background-color: rgb(221, 54, 82);
+}
+
+.menu-icon {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: block;
+  background-color: #333;
+  border-radius: 5px;
+  padding: 10px 0;
+  position: absolute;
+  top: 35px;
+  left: -161px;
+  width: 200px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.dropdown-menu a:hover {
+  background-color: #444;
+}
+
+.dropdown-menu a i {
+  margin-right: 10px;
+}
+
+/* Hiển thị menu khi hover vào menu-icon */

@@ -1,0 +1,35 @@
+<div class="row p-3">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-6"><h4>VIRTUAL MEET</h4></div>
+  <div class="col-lg-4 col-md-5 col-sm-1 col-1">
+    <div class="search-container">
+      <input type="text" placeholder="Search" />
+      <i class="fas fa-search icon"></i>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3 col-sm-5 col-5">
+    <div
+      class="menu-container d-flex align-items-center"
+      style="flex-direction: row-reverse"
+    >
+      <div class="menu-icon">
+        <i
+          class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
+          style="color: white; cursor: pointer; margin-left: 15px"
+          (click)="onClickDropdown()"
+        ></i>
+
+        <div class="dropdown-menu" *ngIf="isShowDropdown">
+          <a href="#"><i class="fas fa-home"></i>Creator tools</a>
+          <a href="#"><i class="fas fa-language"></i>English</a>
+          <a href="#"
+            ><i class="fas fa-question-circle"></i>Feedback and help</a
+          >
+          <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
+        </div>
+      </div>
+      <button class="login-button">
+        <h5 style="line-height: 20px">Login</h5>
+      </button>
+    </div>
+  </div>
+</div>

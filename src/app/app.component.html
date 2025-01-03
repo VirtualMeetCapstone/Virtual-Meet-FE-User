@@ -1,0 +1,29 @@
+<div class="header">
+  <app-header></app-header>
+</div>
+<div class="container-fluid">
+  <div
+    *ngIf="isHiddenSidebar"
+    class="barfixed"
+    (click)="onClickSideBar()"
+    style="cursor: pointer"
+  >
+    <div class="bar d-flex justify-content-center align-items-center">
+      <i class="fas fa-bars icon" style="font-size: 16px"></i>
+    </div>
+  </div>
+  <div class="row" [ngClass]="{ 'full-width': isHiddenSidebar }">
+    <div
+      [ngClass]="{
+        'col-lg-custom-9': !isHiddenSidebar,
+        'col-lg-12': isHiddenSidebar
+      }"
+      class="router"
+    >
+      <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="!isHiddenSidebar" class="col-lg-custom-3 siderbar-wrap">
+      <app-side-bar (hiddenSidebar)="onClickSideBar()"></app-side-bar>
+    </div>
+  </div>
+</div>
