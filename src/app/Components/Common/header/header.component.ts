@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
-
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -7,7 +15,11 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
   isShowDropdown: boolean = false;
+  isShowLoginDialog: boolean = false;
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
+  }
+  onClickLoginDialog() {
+    this.isShowLoginDialog = !this.isShowLoginDialog;
   }
 }

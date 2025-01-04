@@ -43,7 +43,7 @@
   position: relative;
 }
 
-.login-button {
+.login-bt {
   background-color: rgb(255, 59, 92);
   color: #fff;
   border: none;
@@ -52,7 +52,7 @@
   cursor: pointer;
   border-radius: 5px;
 }
-.login-button:hover {
+.login-bt:hover {
   background-color: rgb(221, 54, 82);
 }
 
@@ -90,5 +90,3 @@
 .dropdown-menu a i {
   margin-right: 10px;
 }
-
-/* Hiển thị menu khi hover vào menu-icon */

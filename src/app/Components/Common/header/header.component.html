@@ -27,9 +27,11 @@
           <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
         </div>
       </div>
-      <button class="login-button">
+      <button class="login-bt" (click)="onClickLoginDialog()">
         <h5 style="line-height: 20px">Login</h5>
       </button>
     </div>
   </div>
 </div>
+<app-login-modal [isShowLoginDialog]="isShowLoginDialog"></app-login-modal>
+<!-- -->

@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './Components/Common/header/header.component';
 import { HomeComponent } from './Components/home/home.component';
 import { SideBarComponent } from './Components/Common/side-bar/side-bar.component';
+import { LoginModalComponent } from './Components/Common/login-modal/login-modal.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { SideBarComponent } from './Components/Common/side-bar/side-bar.componen
     HeaderComponent,
     HomeComponent,
     SideBarComponent,
+    LoginModalComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideClientHydration()],
