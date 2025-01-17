@@ -30,6 +30,65 @@
       <button class="login-bt" (click)="onClickLoginDialog()">
         <h5 style="line-height: 20px">Login</h5>
       </button>
+      <div class="notification-icon">
+        <div
+          class="notification-bellicon mr-2"
+          style="border-radius: 2px"
+          [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'"
+        >
+          <i
+            class="fa-solid fa-bell fa-xl"
+            id="notification-bell"
+            (click)="onClickNotification()"
+          ></i>
+        </div>
+        <div
+          class="notification-wrapper"
+          *ngIf="isShowNotification"
+          id="notification-dropdown"
+        >
+          <h4 id="notification-title">Thông báo</h4>
+          <div class="notification-item">
+            <img
+              class="notification-avatar"
+              alt="User avatar"
+              src="https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg"
+            />
+            <div class="notification-content">
+              <p>
+                <span class="notification-thread">thảo luận</span>
+                <strong>oshp1512</strong> đã trả lời trong chủ đề VirtualMeet.
+              </p>
+              <p class="notification-time">
+                Hôm nay lúc 1:18 PM · Đã đọc: Vừa xong
+              </p>
+              <p class="notification-action">Đánh dấu chưa đọc</p>
+            </div>
+          </div>
+          <div class="notification-item">
+            <img
+              class="notification-avatar"
+              alt="User avatar"
+              src="https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg"
+            />
+            <div class="notification-content">
+              <p>
+                <span class="notification-thread">thảo luận</span>
+                <strong>oshp1512</strong> đã trả lời trong chủ đề VirtualMeet.
+              </p>
+              <p class="notification-time">
+                Hôm nay lúc 1:18 PM · Đã đọc: Vừa xong
+              </p>
+              <p class="notification-action">Đánh dấu chưa đọc</p>
+            </div>
+          </div>
+          <div class="notification-footer" style="color: black">
+            <a href="#">Xem tất cả</a>
+            <a href="#">Đánh dấu đã đọc</a>
+            <a href="#">Cài đặt</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

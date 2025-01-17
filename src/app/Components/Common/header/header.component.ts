@@ -16,10 +16,14 @@ import {
 export class HeaderComponent {
   isShowDropdown: boolean = false;
   isShowLoginDialog: boolean = false;
+  isShowNotification: boolean = false;
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
   }
   onClickLoginDialog() {
     this.isShowLoginDialog = !this.isShowLoginDialog;
+  }
+  onClickNotification() {
+    this.isShowNotification = !this.isShowNotification;
   }
 }

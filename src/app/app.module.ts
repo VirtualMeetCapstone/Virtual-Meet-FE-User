@@ -10,6 +10,7 @@ import { HeaderComponent } from './Components/Common/header/header.component';
 import { HomeComponent } from './Components/home/home.component';
 import { SideBarComponent } from './Components/Common/side-bar/side-bar.component';
 import { LoginModalComponent } from './Components/Common/login-modal/login-modal.component';
+import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { LoginModalComponent } from './Components/Common/login-modal/login-modal
     HomeComponent,
     SideBarComponent,
     LoginModalComponent,
+    HomePageRoomComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideClientHydration()],
