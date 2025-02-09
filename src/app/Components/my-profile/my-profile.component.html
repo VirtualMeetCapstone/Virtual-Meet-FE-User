@@ -1,0 +1,83 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">VIRTUAL MEET</div>
+    <ul class="menu">
+      <li class="menu-item active">Dành cho bạn</li>
+      <li class="menu-item">Khám phá <span class="new">Mới</span></li>
+      <li class="menu-item">Đang Follow</li>
+      <li class="menu-item">LIVE</li>
+      <li class="menu-item">Bạn bè</li>
+      <li class="menu-item">Hồ sơ</li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-area">
+        <input type="text" placeholder="Search" class="search-input" />
+      </div>
+      <!-- Add the Tải lên button -->
+      <button class="upload-button">Tải lên</button>
+      <div class="action-item" onclick="togglePopup()">
+        <img
+          src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
+          class="profile-pic"
+          alt="User Profile"
+        />
+      </div>
+    </div>
+
+    <!-- Pop-up menu -->
+    <div id="profile-popup" class="profile-popup">
+      <ul>
+        <li><i class="fa fa-user"></i> Trang chủ</li>
+        <li><i class="fa fa-sign-out-alt"></i> Đăng xuất</li>
+      </ul>
+    </div>
+
+    <div class="video-side">
+      <!-- Profile Section -->
+      <div class="profile-container">
+        <div class="profile-header">
+          <img
+            src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
+            class="profile-pic-large"
+            alt="User Profile"
+          />
+        </div>
+        <div class="profile-title">
+          <div class="profile-info">
+            <h2 class="profile-username">cmnho1</h2>
+            <p class="profile-username-id">cmnho1</p>
+          </div>
+          <div class="profile-actions">
+            <button class="edit-profile-button">Sửa hồ sơ</button>
+            <button class="promote-post-button">Quảng bá bài đăng</button>
+            <button class="settings-button">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <button class="share-button">
+              <i class="fa-solid fa-share"></i>
+            </button>
+          </div>
+
+          <div class="follow-info">
+            <span>1 Đang Follow</span>
+            <span>0 Follower</span>
+            <span>0 Thích</span>
+          </div>
+          <p class="profile-bio">Chưa có tiểu sử.</p>
+        </div>
+
+        <div class="profile-tabs">
+          <div class="tab active"><i class="fa-solid fa-bars"></i> Video</div>
+          <div class="tab"><i class="fa-solid fa-bookmark"></i> Yêu thích</div>
+          <div class="tab"><i class="fa-solid fa-heart"></i> Đã thích</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
