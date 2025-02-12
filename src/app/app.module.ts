@@ -11,6 +11,9 @@ import { HomeComponent } from './Components/home/home.component';
 import { SideBarComponent } from './Components/Common/side-bar/side-bar.component';
 import { LoginModalComponent } from './Components/Common/login-modal/login-modal.component';
 import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
+import { ChatListComponent } from './Components/chat-list/chat-list.component';
+import { ChatBoxComponent } from './Components/chat-box/chat-box.component';
+import { ChatContainerComponent } from './Components/chat-container/chat-container.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,9 @@ import { HomePageRoomComponent } from './Components/home-page-room/home-page-roo
     SideBarComponent,
     LoginModalComponent,
     HomePageRoomComponent,
+    ChatListComponent,
+    ChatBoxComponent,
+    ChatContainerComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideClientHydration()],
