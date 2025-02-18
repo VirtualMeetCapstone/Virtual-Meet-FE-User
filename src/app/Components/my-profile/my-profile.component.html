@@ -1,11 +1,13 @@
 <div class="app-container">
   <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo">VIRTUAL MEET</div>
+    <div class="logo">
+      <a style="text-decoration: none; color: white" href="/">VIRTUAL MEET</a>
+    </div>
     <ul class="menu">
       <li class="menu-item active">Dành cho bạn</li>
       <li class="menu-item">Khám phá <span class="new">Mới</span></li>
-      <li class="menu-item">Đang Follow</li>
+      <li class="menu-item">Đang Follow</li>  
       <li class="menu-item">LIVE</li>
       <li class="menu-item">Bạn bè</li>
       <li class="menu-item">Hồ sơ</li>
@@ -21,7 +23,7 @@
       </div>
       <!-- Add the Tải lên button -->
       <button class="upload-button">Tải lên</button>
-      <div class="action-item" onclick="togglePopup()">
+      <div class="action-item">
         <img
           src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
           class="profile-pic"
@@ -50,11 +52,13 @@
         </div>
         <div class="profile-title">
           <div class="profile-info">
-            <h2 class="profile-username">cmnho1</h2>
-            <p class="profile-username-id">cmnho1</p>
+            <h2 class="profile-username">{{ user.username }}</h2>
+            <p class="profile-username-id">{{ user.username }}</p>
           </div>
           <div class="profile-actions">
-            <button class="edit-profile-button">Sửa hồ sơ</button>
+            <button class="edit-profile-button" (click)="openEditProfile()">
+              Sửa hồ sơ
+            </button>
             <button class="promote-post-button">Quảng bá bài đăng</button>
             <button class="settings-button">
               <i class="fa-solid fa-gear"></i>
@@ -63,13 +67,20 @@
               <i class="fa-solid fa-share"></i>
             </button>
           </div>
+          <app-edit-profile-dialog
+            *ngIf="isEditing"
+            [username]="user.username"
+            [bio]="user.bio"
+            [avatar]="user.avatar"
+            (closeDialog)="closeEditProfile()"
+          ></app-edit-profile-dialog>
 
           <div class="follow-info">
             <span>1 Đang Follow</span>
             <span>0 Follower</span>
             <span>0 Thích</span>
           </div>
-          <p class="profile-bio">Chưa có tiểu sử.</p>
+          <p class="profile-bio">{{ user.bio }}</p>
         </div>
 
         <div class="profile-tabs">

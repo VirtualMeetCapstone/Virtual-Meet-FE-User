@@ -8,20 +8,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './Components/Common/header/header.component';
 import { HomeComponent } from './Components/home/home.component';
-import { SideBarComponent } from './Components/Common/side-bar/side-bar.component';
 import { LoginModalComponent } from './Components/Common/login-modal/login-modal.component';
 import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
+import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
+import { MyProfileComponent } from './Components/my-profile/my-profile.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    SideBarComponent,
     LoginModalComponent,
     HomePageRoomComponent,
+    EditProfileDialogComponent,
+    MyProfileComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, CommonModule],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
 })

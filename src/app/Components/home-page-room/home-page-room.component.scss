@@ -1,18 +1,124 @@
-body {
-  font-family: Arial, sans-serif;
+/* Reset mặc định */
+* {
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1a1a1a; /* Nền tối */
+  color: #fff; /* Mặc định chữ trắng */
+}
+
+/* Giữ thanh header ở trên, nếu app-header có nền đen */
+app-header {
+  display: block; /* Chỉ để trình duyệt hiểu là 1 block */
+}
+
+/* Bố cục tổng thể */
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 60px);
+  /* Giả sử <app-header> chiếm ~60px,
+     có thể điều chỉnh tùy chiều cao header thực tế */
+}
+
+/* Sidebar bên trái */
+.sidebar {
+  width: 250px;
+  padding: 20px;
+}
+
+/* Logo sidebar */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+// Sidebar
+/* Sidebar */
+.sidebar {
+  width: 20%;
+  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+/* Logo hoặc tên ứng dụng trong sidebar */
+.logo {
+  font-size: 30px;
+  color: #fff;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+/* Danh sách menu */
+.menu {
+  list-style: none;
+  padding: 0; /* Xóa margin/padding mặc định nếu có */
+  margin: 0;
+}
+
+/* Mỗi item trong menu */
+.menu-item {
+  padding: 15px 0;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #fff; /* Mặc định chữ trắng */
+}
+
+/* Hover hoặc active sẽ chuyển sang màu đỏ */
+.menu-item:hover,
+.menu-item.active {
+  color: #ff3b3b;
+}
+
+/* Nhãn 'Mới' */
+.new {
+  background-color: #ff3b3b;
+  color: #fff;
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+// EndSidebar
+/* Khu vực nội dung ROOM */
+.home-page-room {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  font-weight: bold;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #fff; /* Chữ trắng */
+}
+
+/* Container chứa các room-card */
 .container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
   padding: 20px;
 }
+
+/* Card hiển thị phòng */
 .room-card {
-  background-color: white;
+  background-color: #fff; /* Card màu trắng nổi bật trên nền đen */
+  color: #000; /* Text trong card là màu đen */
   border: 1px solid #ccc;
   border-radius: 10px;
   width: 300px;
@@ -20,29 +126,42 @@ body {
   padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Header của card: gồm avatar, topic, description, settings */
 .room-card .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
+
+/* Avatar người tạo room */
 .room-card .header img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  margin-right: 10px;
 }
-.room-card .header .topic {
-  font-size: 18px;
+
+/* Chủ đề & mô tả phòng */
+.room-card .topic {
+  font-size: 16px;
   font-weight: bold;
 }
-.room-card .header .description {
+
+.room-card .description {
   font-size: 14px;
   color: #666;
+  margin-left: 10px;
 }
-.room-card .header .settings {
+
+/* Icon cài đặt */
+.room-card .settings {
   font-size: 18px;
   color: #666;
 }
+
+/* Khu vực video (demo) */
 .room-card .video {
   background-color: #e0e0e0;
   height: 150px;
@@ -51,45 +170,51 @@ body {
   align-items: center;
   margin-bottom: 10px;
 }
-.room-card .video i {
-  font-size: 50px;
-  color: #666;
-}
-.room-card .video span {
-  font-size: 18px;
-  color: #666;
-}
+
+/* Danh sách participants */
 .room-card .participants {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
+
 .room-card .participants img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
   margin-right: 5px;
 }
+
+/* Chữ hiển thị số lượng người thêm */
 .room-card .participants .more {
   font-size: 14px;
   color: #666;
 }
+
+/* Phần hành động: Join, Like, Comment,... */
 .room-card .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
+/* Nút join now */
 .room-card .actions .join-now {
   display: flex;
   align-items: center;
   font-size: 14px;
   color: #666;
+  cursor: pointer;
 }
+
 .room-card .actions .join-now i {
   margin-right: 5px;
 }
+
+/* Icon cuối card (heart, comment, share...) */
 .room-card .actions .icons i {
   font-size: 18px;
   color: #666;
   margin-right: 10px;
+  cursor: pointer;
 }
