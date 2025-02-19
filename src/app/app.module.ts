@@ -13,10 +13,12 @@ import { HomePageRoomComponent } from './Components/home-page-room/home-page-roo
 import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './Components/nav-bar/nav-bar.component';
 import { LoadingComponent } from './Components/loading/loading.component';
 import { PopupComponent } from './popup/popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,14 @@ import { MatDialogModule } from '@angular/material/dialog';
     LoadingComponent,
     PopupComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, CommonModule, MatDialogModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    CommonModule,
+    MatDialogModule,
+    InfiniteScrollModule,
+    HttpClientModule,
+  ],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
 })

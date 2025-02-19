@@ -1,89 +1,41 @@
-<div class="app-container" style="display: flex">
-  <div class="logo">
-    <h3
-      style="
-        font-size: 30px;
-        font-weight: 700;
-        margin-top: 26px;
-        margin-left: 20px;
-      "
-    >
-      <a href="/" style="text-decoration: none; color: white" href="/"
-        >VIRTUAL MEET</a
-      >
-    </h3>
-    <div class="mt-4 font-weight-light">
-      <app-nav-bar />
+<!-- Pop-up menu -->
+
+<div class="video-side">
+  <!-- Profile Section -->
+  <div class="profile-container">
+    <div class="profile-header">
+      <img [src]="user.avatar" class="profile-pic-large" alt="User Profile" />
     </div>
-  </div>
-  <!-- Sidebar -->
-  <div *ngIf="isLoading" class="loading-container">
-    <app-loading-component />
-  </div>
-  <!-- Main Content -->
-  <div class="main-content" *ngIf="!isLoading">
-    <!-- Header -->
-    <div class="header">
-      <div class="search-area">
-        <input type="text" placeholder="Search" class="search-input" />
+    <div class="profile-title">
+      <div class="profile-info">
+        <h2 class="profile-username">{{ user.name }}</h2>
+        <p class="profile-username-id">{{ user.name }}</p>
       </div>
-      <!-- Add the Tải lên button -->
-      <button class="upload-button">Tải lên</button>
-      <div class="action-item">
-        <img [src]="user.avatar" class="profile-pic" alt="User Profile" />
+      <div class="profile-actions">
+        <button class="edit-profile-button" (click)="openEditProfile()">
+          Sửa hồ sơ
+        </button>
+        <button class="promote-post-button">Quảng bá bài đăng</button>
+        <button class="settings-button">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button class="share-button">
+          <i class="fa-solid fa-share"></i>
+        </button>
       </div>
+
+      <div class="follow-info">
+        <span>{{ user.followingsCount }} Đang Follow</span>
+        <span>{{ user.followersCount }} Follower</span>
+        <span>{{ user.friendsCount }} Bạn Bè</span>
+      </div>
+      <p class="profile-bio">{{ user.bio }}</p>
     </div>
 
-    <!-- Pop-up menu -->
-    <div id="profile-popup" class="profile-popup">
-      <ul>
-        <li><i class="fa fa-user"></i> Trang chủ</li>
-        <li><i class="fa fa-sign-out-alt"></i> Đăng xuất</li>
-      </ul>
-    </div>
-
-    <div class="video-side">
-      <!-- Profile Section -->
-      <div class="profile-container">
-        <div class="profile-header">
-          <img
-            [src]="user.avatar"
-            class="profile-pic-large"
-            alt="User Profile"
-          />
-        </div>
-        <div class="profile-title">
-          <div class="profile-info">
-            <h2 class="profile-username">{{ user.name }}</h2>
-            <p class="profile-username-id">{{ user.name }}</p>
-          </div>
-          <div class="profile-actions">
-            <button class="edit-profile-button" (click)="openEditProfile()">
-              Sửa hồ sơ
-            </button>
-            <button class="promote-post-button">Quảng bá bài đăng</button>
-            <button class="settings-button">
-              <i class="fa-solid fa-gear"></i>
-            </button>
-            <button class="share-button">
-              <i class="fa-solid fa-share"></i>
-            </button>
-          </div>
-
-          <div class="follow-info">
-            <span>{{ user.followingsCount }} Đang Follow</span>
-            <span>{{ user.followersCount }} Follower</span>
-            <span>{{ user.friendsCount }} Bạn Bè</span>
-          </div>
-          <p class="profile-bio">{{ user.bio }}</p>
-        </div>
-
-        <div class="profile-tabs">
-          <div class="tab active"><i class="fa-solid fa-bars"></i> Video</div>
-          <div class="tab"><i class="fa-solid fa-bookmark"></i> Yêu thích</div>
-          <div class="tab"><i class="fa-solid fa-heart"></i> Bạn bè</div>
-        </div>
-      </div>
+    <div class="profile-tabs">
+      <div class="tab active"><i class="fa-solid fa-bars"></i> Video</div>
+      <div class="tab"><i class="fa-solid fa-bookmark"></i> Yêu thích</div>
+      <div class="tab"><i class="fa-solid fa-heart"></i> Bạn bè</div>
     </div>
   </div>
 </div>
