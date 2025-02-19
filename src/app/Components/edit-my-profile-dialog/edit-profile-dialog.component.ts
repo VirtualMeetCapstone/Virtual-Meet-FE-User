@@ -1,43 +1,40 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface EditProfileData {
+  username: string;
+  bio: string;
+  avatar: string;
+}
 
 @Component({
   selector: 'app-edit-profile-dialog',
   templateUrl: './edit-profile-dialog.component.html',
   styleUrls: ['./edit-profile-dialog.component.css'],
 })
-export class EditProfileDialogComponent implements OnChanges {
-  @Input() username: string = '';
-  @Input() bio: string = '';
-  @Input() avatar: string = '';
-  @Output() closeDialog = new EventEmitter<void>();
+export class EditProfileDialogComponent {
+  newUsername: string;
+  newBio: string;
+  newAvatar: string;
 
-  newUsername: string = '';
-  newBio: string = '';
-  newAvatar: string = '';
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['username']) this.newUsername = this.username;
-    if (changes['bio']) this.newBio = this.bio;
-    if (changes['avatar']) this.newAvatar = this.avatar;
+  constructor(
+    public dialogRef: MatDialogRef<EditProfileDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: EditProfileData
+  ) {
+    this.newUsername = data.username;
+    this.newBio = data.bio;
+    this.newAvatar = data.avatar;
   }
 
   onSave() {
-    console.log('Profile Updated:', {
+    this.dialogRef.close({
       username: this.newUsername,
       bio: this.newBio,
       avatar: this.newAvatar,
     });
-    this.closeDialog.emit(); // Đóng hộp thoại sau khi lưu
   }
 
   onCancel() {
-    this.closeDialog.emit(); // Đóng hộp thoại khi nhấn "Hủy"
+    this.dialogRef.close();
   }
 }

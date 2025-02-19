@@ -14,6 +14,9 @@ import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './Components/nav-bar/nav-bar.component';
+import { LoadingComponent } from './Components/loading/loading.component';
+import { PopupComponent } from './popup/popup.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -25,8 +28,10 @@ import { NavbarComponent } from './Components/nav-bar/nav-bar.component';
     EditProfileDialogComponent,
     MyProfileComponent,
     NavbarComponent,
+    LoadingComponent,
+    PopupComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, CommonModule],
+  imports: [BrowserModule, AppRoutingModule, CommonModule, MatDialogModule],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
 })

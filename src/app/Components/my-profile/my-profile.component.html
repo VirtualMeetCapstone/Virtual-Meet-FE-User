@@ -17,9 +17,11 @@
     </div>
   </div>
   <!-- Sidebar -->
-
+  <div *ngIf="isLoading" class="loading-container">
+    <app-loading-component />
+  </div>
   <!-- Main Content -->
-  <div class="main-content">
+  <div class="main-content" *ngIf="!isLoading">
     <!-- Header -->
     <div class="header">
       <div class="search-area">
@@ -28,11 +30,7 @@
       <!-- Add the Tải lên button -->
       <button class="upload-button">Tải lên</button>
       <div class="action-item">
-        <img
-          src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
-          class="profile-pic"
-          alt="User Profile"
-        />
+        <img [src]="user.avatar" class="profile-pic" alt="User Profile" />
       </div>
     </div>
 
@@ -49,15 +47,15 @@
       <div class="profile-container">
         <div class="profile-header">
           <img
-            src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
+            [src]="user.avatar"
             class="profile-pic-large"
             alt="User Profile"
           />
         </div>
         <div class="profile-title">
           <div class="profile-info">
-            <h2 class="profile-username">{{ user.username }}</h2>
-            <p class="profile-username-id">{{ user.username }}</p>
+            <h2 class="profile-username">{{ user.name }}</h2>
+            <p class="profile-username-id">{{ user.name }}</p>
           </div>
           <div class="profile-actions">
             <button class="edit-profile-button" (click)="openEditProfile()">
@@ -71,18 +69,11 @@
               <i class="fa-solid fa-share"></i>
             </button>
           </div>
-          <app-edit-profile-dialog
-            *ngIf="isEditing"
-            [username]="user.username"
-            [bio]="user.bio"
-            [avatar]="user.avatar"
-            (closeDialog)="closeEditProfile()"
-          ></app-edit-profile-dialog>
 
           <div class="follow-info">
-            <span>1 Đang Follow</span>
-            <span>0 Follower</span>
-            <span>0 Thích</span>
+            <span>{{ user.followingsCount }} Đang Follow</span>
+            <span>{{ user.followersCount }} Follower</span>
+            <span>{{ user.friendsCount }} Bạn Bè</span>
           </div>
           <p class="profile-bio">{{ user.bio }}</p>
         </div>
@@ -90,7 +81,7 @@
         <div class="profile-tabs">
           <div class="tab active"><i class="fa-solid fa-bars"></i> Video</div>
           <div class="tab"><i class="fa-solid fa-bookmark"></i> Yêu thích</div>
-          <div class="tab"><i class="fa-solid fa-heart"></i> Đã thích</div>
+          <div class="tab"><i class="fa-solid fa-heart"></i> Bạn bè</div>
         </div>
       </div>
     </div>
