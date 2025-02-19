@@ -13,6 +13,7 @@ import { HomePageRoomComponent } from './Components/home-page-room/home-page-roo
 import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './Components/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { CommonModule } from '@angular/common';
     HomePageRoomComponent,
     EditProfileDialogComponent,
     MyProfileComponent,
+    NavbarComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, CommonModule],
   providers: [provideClientHydration()],
