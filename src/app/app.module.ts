@@ -14,11 +14,11 @@ import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from './Components/loading/loading.component';
-import { PopupComponent } from './popup/popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,6 @@ import { HttpClientModule } from '@angular/common/http';
     MyProfileComponent,
     NavbarComponent,
     LoadingComponent,
-    PopupComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatDialogModule,
     InfiniteScrollModule,
     HttpClientModule,
+    FormsModule,
   ],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
