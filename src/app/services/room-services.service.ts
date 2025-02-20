@@ -6,8 +6,13 @@ import { Injectable } from '@angular/core';
 })
 export class RoomServicesService {
   url = 'http://dev-vmeet.runasp.net/rooms';
-  constructor(private Httpservice: HttpClient) {}
-  getRooms(): any {
-    return this.Httpservice.get<any>(this.url);
+
+  constructor(private http: HttpClient) {}
+
+  getRooms(top: number, skip: number): any {
+    return this.http.get<any>(this.url + '?Top=' + top + '&Skip=' + skip);
+  }
+  deleteRoom(id: string): any {
+    return this.http.delete<any>(this.url + '/' + id);
   }
 }

@@ -34,6 +34,7 @@ body {
 .room-card .header .topic {
   font-size: 18px;
   font-weight: bold;
+  color: black;
 }
 .room-card .header .description {
   font-size: 14px;
@@ -96,4 +97,23 @@ body {
 .scroll-container {
   height: 50vh; /* hoặc phù hợp */
   overflow: auto;
+}
+.dropdown-menu {
+  top: 100% !important; /* Đặt menu ở giữa */
+  transform: translateX(-60%) !important; /* Dịch chuyển để căn giữa */
+  text-align: center;
+  min-width: 120px; /* Điều chỉnh độ rộng */
+}
+.owner-avatar {
+  width: 50px; /* Điều chỉnh kích thước */
+  height: 50px;
+  border-radius: 50%; /* Làm tròn */
+  display: block;
+  margin: 5px auto; /* Canh giữa */
+}
+
+.group-owner {
+  text-align: center;
+  padding: 10px;
+  color: black;
 }

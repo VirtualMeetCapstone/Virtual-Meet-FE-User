@@ -7,30 +7,50 @@ import { RoomServicesService } from '../../services/room-services.service';
   styleUrl: './home-page-room.component.scss',
 })
 export class HomePageRoomComponent implements OnInit {
+  roomToDelete: any = null;
   rooms: any[] = [];
-  allRooms: any[] = []; // Dữ liệu gốc
   pageSize = 9;
-  currentPage = 0;
+  loading = true;
+  totalRooms = 0;
+  skip = 0;
+  showModalDeleteRoom = false;
+
   constructor(private roomService: RoomServicesService) {}
 
   ngOnInit(): void {
-    this.loadAllRooms(); // Tải toàn bộ dữ liệu từ API
-    console.log('room', this.rooms);
+    this.getRoom();
   }
-
-  loadAllRooms() {
-    this.roomService.getRooms().subscribe((data: any) => {
-      this.allRooms = [...data.data, ...data.data, ...data.data];
-      this.loadMoreRooms(); // Hiển thị 10 phòng đầu tiên
+  getRoom() {
+    this.roomService.getRooms(9, 0).subscribe((room: any) => {
+      this.rooms = room.data;
+      this.totalRooms = room.totalCount;
     });
+  }
+  openModalDeleteRoom(room: any) {
+    this.roomToDelete = room;
+    this.showModalDeleteRoom = true;
+  }
+  closeModalDeleteRoom(event: any) {
+    if (!event) {
+      this.showModalDeleteRoom = false;
+    } else {
+      this.showModalDeleteRoom = false;
+      this.skip = 0;
+      this.rooms = [];
+      this.getRoom();
+    }
   }
 
   loadMoreRooms() {
-    const nextRooms = this.allRooms.slice(
-      this.currentPage * this.pageSize,
-      (this.currentPage + 1) * this.pageSize
-    );
-    this.rooms.push(...nextRooms);
-    this.currentPage++;
+    if (this.totalRooms == this.rooms.length) {
+      this.loading = false;
+      return;
+    }
+    this.roomService
+      .getRooms(this.pageSize, this.skip)
+      .subscribe((room: any) => {
+        this.skip = this.skip + this.pageSize;
+        this.rooms.push(...room.data);
+      });
   }
 }
