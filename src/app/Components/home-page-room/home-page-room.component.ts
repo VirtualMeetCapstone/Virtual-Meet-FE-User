@@ -42,15 +42,21 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   loadMoreRooms() {
-    if (this.totalRooms == this.rooms.length) {
+    if (this.rooms.length >= this.totalRooms) {
       this.loading = false;
       return;
     }
+
+    this.skip += this.pageSize;
+
     this.roomService
       .getRooms(this.pageSize, this.skip)
       .subscribe((room: any) => {
-        this.skip = this.skip + this.pageSize;
-        this.rooms.push(...room.data);
+        this.rooms = [...this.rooms, ...room.data];
+
+        if (this.rooms.length >= this.totalRooms) {
+          this.loading = false;
+        }
       });
   }
 }
