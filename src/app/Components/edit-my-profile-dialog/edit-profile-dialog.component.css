@@ -146,8 +146,18 @@ textarea {
   color: white;
 }
 
+.cancel-button:hover {
+  background-color: rgb(50, 47, 47);
+  color: white;
+}
+
 .save-button {
   background-color: #ef2950;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #f6123f;
   color: white;
 }
 

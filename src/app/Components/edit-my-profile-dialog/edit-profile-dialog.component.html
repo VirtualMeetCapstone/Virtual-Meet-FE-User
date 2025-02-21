@@ -42,7 +42,12 @@
                 d="M7 41C7 40.4477 7.44772 40 8 40H41C41.5523 40 42 40.4477 42 41V43C42 43.5523 41.5523 44 41 44H8C7.44772 44 7 43.5523 7 43V41Z"
               ></path>
             </svg>
-            <input type="file" accept=".jpg,.jpeg,.png" class="file-input" />
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              class="file-input"
+            />
           </div>
         </div>
       </div>
@@ -50,16 +55,14 @@
       <!-- Tên -->
       <div class="profile-section">
         <div class="profile-label">Tên</div>
-        <input type="text" placeholder="Tên" [(ngModel)]="data.username" />
-        <p class="profile-tip">
-          Bạn chỉ có thể thay đổi biệt danh 7 ngày một lần.
-        </p>
+        <input type="text" placeholder="Tên" [(ngModel)]="newUsername" />
+        <p class="profile-tip">Bạn chỉ có thể thay đổi tên 7 ngày một lần.</p>
       </div>
 
       <!-- Tiểu sử -->
       <div class="profile-section">
         <div class="profile-label">Tiểu sử</div>
-        <textarea placeholder="Tiểu sử" [(ngModel)]="data.bio"></textarea>
+        <textarea placeholder="Tiểu sử" [(ngModel)]="newBio"></textarea>
         <div class="text-count"><span>0/</span>80</div>
       </div>
     </div>

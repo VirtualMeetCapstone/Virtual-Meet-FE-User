@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 export interface EditProfileData {
-  id: string;
   username: string;
   bio: string;
-  avatar: string;
+  avatar: File | null; // Chấp nhận File thay vì string
 }
 
 @Component({
@@ -16,7 +17,7 @@ export interface EditProfileData {
 })
 export class EditProfileDialogComponent {
   newUsername: string;
-  newAvatar: string;
+  newAvatar: File | null = null;
   newBio: string;
 
   constructor(
@@ -24,41 +25,53 @@ export class EditProfileDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: EditProfileData,
     private http: HttpClient
   ) {
-    if (!data.id) {
-      data.id = 'db04dba2-5640-4cd8-a5a9-119b429f2b3d';
-    }
     this.newUsername = data.username;
-    this.newAvatar = data.avatar;
     this.newBio = data.bio;
   }
 
+  onFileSelected(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      this.newAvatar = fileInput.files[0]; // Lưu file vào biến
+    }
+  }
+
   onSave() {
-    // Nếu backend mong đợi "name" thay vì "username", thay đổi key ở đây
-    const payload = {
-      username: this.newUsername, // hoặc username nếu API yêu cầu
-      avatar: this.newAvatar,
-      bio: this.newBio,
-    };
+    const formData = new FormData();
+    if (!this.newUsername || !this.newBio) {
+      alert('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+    formData.append('name', this.newUsername);
+    formData.append('bio', this.newBio);
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-    const url = `http://dev-vmeet.runasp.net/users/db04dba2-5640-4cd8-a5a9-119b429f2b3d`;
+    if (this.newAvatar instanceof File) {
+      formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
+    }
 
-    this.http.patch(url, payload, { headers }).subscribe({
-      next: (response) => {
-        console.log('Profile updated successfully:', response);
-        this.dialogRef.close(payload);
-      },
-      error: (error) => {
-        console.error('Error updating profile:', error);
-        // Hiển thị thông báo lỗi cho người dùng nếu cần
-        console.log(this.data.id);
-        console.log(this.data.username);
-        console.log(this.data.avatar);
-        console.log(this.data.bio);
-      },
-    });
+    const url = `http://dev-vmeet.runasp.net/users/db04dba2-5640-4cd8-a5a9-119b429f2b32`;
+
+    this.http
+      .patch(url, formData)
+      .pipe(
+        catchError((error) => {
+          console.error('Error updating profile:', error);
+          return throwError(() => error);
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          console.log('Profile updated successfully:', data);
+          console.log(formData);
+          this.dialogRef.close(data);
+          console.log(this.newUsername, this.newBio);
+
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+      });
   }
 
   onCancel() {
