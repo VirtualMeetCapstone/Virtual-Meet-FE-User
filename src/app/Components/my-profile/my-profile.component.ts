@@ -66,6 +66,7 @@ export class MyProfileComponent implements OnInit {
     const dialogRef = this.dialog.open(EditProfileDialogComponent, {
       width: '500px',
       data: {
+        id: this.route.snapshot.params['id'], // Truyền id vào dialog
         username: this.user.name,
         bio: this.user.bio,
         avatar: this.user.avatar,

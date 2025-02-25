@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 export interface EditProfileData {
+  id: string;
   username: string;
   bio: string;
   avatar: File | null; // Chấp nhận File thay vì string
@@ -19,6 +20,7 @@ export class EditProfileDialogComponent {
   newUsername: string;
   newAvatar: File | null = null;
   newBio: string;
+  userId: string;
 
   constructor(
     public dialogRef: MatDialogRef<EditProfileDialogComponent>,
@@ -27,6 +29,7 @@ export class EditProfileDialogComponent {
   ) {
     this.newUsername = data.username;
     this.newBio = data.bio;
+    this.userId = data.id;
   }
 
   onFileSelected(event: Event) {
@@ -48,8 +51,8 @@ export class EditProfileDialogComponent {
     if (this.newAvatar instanceof File) {
       formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
     }
-
-    const url = `http://dev-vmeet.runasp.net/users/db04dba2-5640-4cd8-a5a9-119b429f2b32`;
+    console.log(this.userId);
+    const url = `http://dev-vmeet.runasp.net/users/${this.userId}`;
 
     this.http
       .patch(url, formData)
