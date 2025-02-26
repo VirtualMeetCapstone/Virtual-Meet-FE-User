@@ -20,6 +20,12 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
+import { StoryListComponent } from './Components/story-list/story-list.component';
+import { CarouselModule } from 'primeng/carousel';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
+import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
 
 import { SocialLoginModule, SocialAuthServiceConfig,  GoogleSigninButtonModule  } from '@abacritt/angularx-social-login';
@@ -39,6 +45,10 @@ import {
     NavbarComponent,
     LoadingComponent,
     ModalDeleteRoomComponent,
+    StoryListComponent,
+    StoryModalComponent,
+
+
     LoginModalComponent
   ],
   imports: [
@@ -49,6 +59,10 @@ import {
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    CarouselModule,
+    ButtonModule,
+    TagModule,
+    DialogModule,
     SocialLoginModule,
     GoogleSigninButtonModule
   ],

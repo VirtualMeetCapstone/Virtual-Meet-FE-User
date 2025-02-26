@@ -76,6 +76,19 @@ app-header {
 }
 .content-wrapper {
   display: flex;
+  
   justify-content: center;
   width: 100%;
+ 
 }
+// .header-row {
+//   flex: 0; /* Chỉ chiếm đúng chiều cao nội dung của nó */
+//   text-align: center;
+//   padding: 10px 0;
+//   background: #f8f9fa;
+// }
+
+// .content-row {
+//   flex-grow: 1; /* Chiếm toàn bộ phần còn lại */
+//   overflow-y: auto; /* Nếu nội dung quá dài, có thể scroll */
+// }
