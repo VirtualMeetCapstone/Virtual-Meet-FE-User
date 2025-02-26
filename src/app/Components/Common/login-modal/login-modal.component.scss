@@ -13,6 +13,14 @@
   display: block; /* Hiển thị modal khi mở */
 }
 
+.custom-google-button {
+  background-color: #202124 !important; /* Đặt màu nền */
+  color: white !important; /* Màu chữ trắng */
+  font-size: 16px !important; /* Cỡ chữ 16px */
+  font-family: inherit !important; /* Kế thừa font từ trang web */
+}
+
+
 .modal-content {
   background-color: #121212;
   margin: 8% auto;
