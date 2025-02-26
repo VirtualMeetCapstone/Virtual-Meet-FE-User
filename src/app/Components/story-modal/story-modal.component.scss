@@ -1,0 +1,80 @@
+.story-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(142, 142, 142);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  z-index: 1001; 
+}
+
+
+
+.story-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-image {
+  max-width: 100%;
+  height: 250px;
+  border-radius: 10px;
+}
+
+.story-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.nav-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.prev-button {
+  left: 10px;
+}
+
+.next-button {
+  right: 10px;
+}
+
+.close-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.heart-icon {
+  position: absolute;
+  bottom: 25px; 
+  right: 25px; 
+  font-size: 30px; 
+  color: red; 
+  cursor: pointer; 
+}
+
+.heart-icon:hover {
+  color: darkred; 
+}

@@ -25,6 +25,7 @@ import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
+import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { DialogModule } from 'primeng/dialog';
     LoadingComponent,
     ModalDeleteRoomComponent,
     StoryListComponent,
+    StoryModalComponent,
 
     
   ],
