@@ -21,18 +21,25 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 
+
+import { SocialLoginModule, SocialAuthServiceConfig,  GoogleSigninButtonModule  } from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider
+} from '@abacritt/angularx-social-login';
+
+
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    LoginModalComponent,
     HomePageRoomComponent,
     EditProfileDialogComponent,
     MyProfileComponent,
     NavbarComponent,
     LoadingComponent,
     ModalDeleteRoomComponent,
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,
@@ -42,8 +49,34 @@ import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-dele
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
   ],
-  providers: [provideClientHydration()],
+  providers: [provideClientHydration(),
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '656676369191-dqpe6vbl3tdv29hedg1klbe2v1d75qqo.apps.googleusercontent.com',
+              {
+                oneTapEnabled: true,
+                prompt : 'consent'
+              }
+            )
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
+
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
