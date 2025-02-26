@@ -1,23 +1,16 @@
+<div class="overlay" (click)="close()"></div> 
 <div class="story-modal">
   <div class="story-content">
-  
     <button (click)="previous()" class="nav-button prev-button">‹</button>
 
     <div class="story-wrapper">
-     
       <div class="story-title">{{ currentStory?.name }}</div>
-
-    
       <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{ currentStory?.image }}" 
            alt="Story Image" class="story-image" />
     </div>
 
-    
     <button (click)="next()" class="nav-button next-button">›</button>
   </div>
-
- 
-  <button (click)="close()" class="close-button">Close</button>
 
   
   <i (click)="toggleLike()" [ngClass]="{'fas': isLiked, 'far': !isLiked}" class="fa-heart heart-icon"></i>
