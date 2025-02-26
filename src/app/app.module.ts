@@ -27,12 +27,18 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
+
+import { SocialLoginModule, SocialAuthServiceConfig,  GoogleSigninButtonModule  } from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider
+} from '@abacritt/angularx-social-login';
+
+
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    LoginModalComponent,
     HomePageRoomComponent,
     EditProfileDialogComponent,
     MyProfileComponent,
@@ -42,7 +48,8 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
     StoryListComponent,
     StoryModalComponent,
 
-    
+
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,
@@ -55,9 +62,35 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
     CarouselModule,
     ButtonModule,
     TagModule,
-    DialogModule
+    DialogModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
   ],
-  providers: [provideClientHydration()],
+  providers: [provideClientHydration(),
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '656676369191-dqpe6vbl3tdv29hedg1klbe2v1d75qqo.apps.googleusercontent.com',
+              {
+                oneTapEnabled: true,
+                prompt : 'consent'
+              }
+            )
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
+
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

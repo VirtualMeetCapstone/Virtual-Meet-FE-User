@@ -10,24 +10,16 @@
     <button class="login-button">
       <i class="fas fa-qrcode"></i> Use QR code
     </button>
-    <button class="login-button">
-      <i class="fas fa-user"></i> Use phone / email / username
-    </button>
-    <button class="login-button">
-      <i class="fab fa-facebook"></i> Continue with Facebook
-    </button>
-    <button class="login-button">
-      <i class="fab fa-google"></i> Continue with Google
-    </button>
-    <button class="login-button">
-      <i class="fab fa-line"></i> Continue with LINE
-    </button>
-    <button class="login-button">
-      <i class="fas fa-comment"></i> Continue with KakaoTalk
-    </button>
-    <button class="login-button">
-      <i class="fab fa-apple"></i> Continue with Apple
-    </button>
+
+    <asl-google-signin-button
+      type="standard"
+      size="medium"
+      shape="rectangular"
+      text="continue_with"
+      theme="filled_black"
+      logo_alignment="center"
+      class="custom-google-button">
+    </asl-google-signin-button>
 
     <div class="login-footer">
       Don’t have an account? <a href="#">Sign up</a>
