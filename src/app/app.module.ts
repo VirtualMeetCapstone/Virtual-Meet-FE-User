@@ -23,16 +23,31 @@ import {
   withFetch,
 } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+
 import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
 import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
+
+import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
+import { StoryListComponent } from './Components/story-list/story-list.component';
+import { CarouselModule } from 'primeng/carousel';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
+import { StoryModalComponent } from './Components/story-modal/story-modal.component';
+
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+  GoogleSigninButtonModule,
+} from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    LoginModalComponent,
     HomePageRoomComponent,
     EditProfileDialogComponent,
     MyProfileComponent,
@@ -41,6 +56,10 @@ import { MyPostComponent } from './Components/my-profile/my-post/my-post.compone
     RoomListComponent,
     PostsFeedComponent,
     MyPostComponent,
+    ModalDeleteRoomComponent,
+    StoryListComponent,
+    StoryModalComponent,
+    LoginModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,8 +69,39 @@ import { MyPostComponent } from './Components/my-profile/my-post/my-post.compone
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    CarouselModule,
+    ButtonModule,
+    TagModule,
+    DialogModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
   ],
-  providers: [provideClientHydration(), provideHttpClient(withFetch())],
+  providers: [
+    provideClientHydration(),
+    provideHttpClient(withFetch()), // Đảm bảo `provideHttpClient` cũng được import đúng
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '656676369191-dqpe6vbl3tdv29hedg1klbe2v1d75qqo.apps.googleusercontent.com',
+              {
+                oneTapEnabled: true,
+                prompt: 'consent',
+              }
+            ),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
