@@ -12,6 +12,28 @@ interface Profile {
   avatar: string;
 }
 
+//Rooms
+interface Media {
+  url: string;
+  type: number;
+  thumbnailUrl?: string;
+}
+
+interface Room {
+  id?: string;
+  topic?: string;
+  medias?: Media[];
+  owner?: {
+    name: string;
+    picture?: {
+      url: string;
+      type: number;
+      thumbnailUrl?: string;
+    };
+  };
+  ownerId?: string;
+}
+
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
@@ -27,6 +49,12 @@ export class MyProfileComponent implements OnInit {
     friendsCount: 0,
     avatar: '',
   };
+  // ----------  ROOMS ----------
+  rooms: Room[] = [];
+  isRoomsLoading = false; 
+
+  //Select Tabs
+  selectedTab = 0;
 
   constructor(private route: ActivatedRoute, private dialog: MatDialog) {}
 
@@ -34,11 +62,12 @@ export class MyProfileComponent implements OnInit {
     this.route.params.subscribe(async (params) => {
       const id = params['id'];
       if (id) {
-        this.fetchProfile(id);
+        await this.fetchProfile(id);
+        this.fetchRooms(id);
       }
     });
   }
-
+  // Fetch Profile
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
@@ -62,6 +91,61 @@ export class MyProfileComponent implements OnInit {
     }
   }
 
+  // ------------------------------
+  // Fetch Rooms List
+  // ------------------------------
+  async fetchRooms(id: string) {
+    this.isRoomsLoading = true;
+    try {
+      const response = await fetch(
+        `http://dev-vmeet.runasp.net/rooms/${id}/favourite`
+      );
+      if (!response.ok) throw new Error('Failed to fetch rooms');
+      const data = await response.json();
+      this.rooms = data.data;
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    } finally {
+      console.log(this.rooms);
+      this.isRoomsLoading = false;
+    }
+  }
+
+  // ------------------------------
+  // Fetch Posts Feed
+  // ------------------------------
+  async fetchPostsFeed(id: string) {
+    this.isRoomsLoading = true;
+    try {
+      const response = await fetch(
+        `http://dev-vmeet.runasp.net/rooms/${id}/favourite`
+      );
+      if (!response.ok) throw new Error('Failed to fetch rooms');
+      const data = await response.json();
+      this.rooms = data.data;
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    } finally {
+      console.log(this.rooms);
+      this.isRoomsLoading = false;
+    }
+  }
+
+  // ------------------------------
+  // Tabs
+  // ------------------------------
+  setTab(index: number) {
+    this.selectedTab = index;
+    // Khi người dùng click Tab 0 => fetch rooms
+    if (this.selectedTab === 0) {
+      const userId = this.route.snapshot.params['id'];
+      if (userId) {
+        this.fetchRooms(userId);
+      }
+    }
+  }
+
+  // Open Edit Profile
   openEditProfile() {
     const dialogRef = this.dialog.open(EditProfileDialogComponent, {
       width: '500px',
