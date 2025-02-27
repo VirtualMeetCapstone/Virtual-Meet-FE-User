@@ -24,10 +24,6 @@ import {
 } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
-import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
-import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
-import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
-
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 import { StoryListComponent } from './Components/story-list/story-list.component';
 import { CarouselModule } from 'primeng/carousel';
@@ -42,7 +38,11 @@ import {
   GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
-//Resolve Conflict
+
+import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
+import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
+import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,7 +78,7 @@ import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch()), // Đảm bảo `provideHttpClient` cũng được import đúng
+    provideHttpClient(withFetch()), // Đảm bảo HTTP client hoạt động chính xác
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

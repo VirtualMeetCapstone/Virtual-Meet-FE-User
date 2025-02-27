@@ -4,8 +4,44 @@
     <div class="header">
       <img alt="User icon" height="30" src="{{ room.medias.url }}" width="30" />
       <div class="topic">{{ room.topic }}</div>
-      <div class="description">{{ room.description }}</div>
-      <i class="fas fa-cog settings"> </i>
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="fas fa-cog settings"> </i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div class="group-owner">
+            <div style="color: black">Group Owner</div>
+
+            <img
+              src="https://cdn.24h.com.vn/upload/1-2021/images/2021-02-26/image50-1614333620-651-width500height800.jpg"
+              alt="Owner Avatar"
+              class="owner-avatar"
+              style="height: 50px; width: 50px"
+            />
+            <p style="color: #666">{{ room.owner.name }}</p>
+            <p style="color: #666; line-height: 2px; font-size: 14px">
+              Create At
+            </p>
+            <p style="color: #666; line-height: 2px; font-size: 14px">
+              {{ room.createTime }}
+            </p>
+            <i
+              class="fa-solid fa-trash"
+              style="color: #ec1313; cursor: pointer"
+              (click)="openModalDeleteRoom(room)"
+            ></i>
+          </div>
+          <!-- <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a> -->
+        </div>
+      </div>
     </div>
     <div class="video"></div>
     <div class="participants" *ngFor="let member of room.members">
@@ -49,15 +85,22 @@
     </div>
   </div>
 </div>
+
 <div
-  class="scroll-container"
   infiniteScroll
-  [infiniteScrollDistance]="2"
-  [infiniteScrollUpDistance]="2"
-  [infiniteScrollThrottle]="300"
   (scrolled)="loadMoreRooms()"
+  [infiniteScrollDistance]="1"
+  [infiniteScrollThrottle]="300"
 >
-  <p style="text-align: center; font-weight: bold">
-    Scroll to load moremore...
-  </p>
+  <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
+    Load More...
+  </h3>
+  <h3 style="font-weight: bold; text-align: center" *ngIf="loading == false">
+    No more data to load
+  </h3>
 </div>
+<app-modal-delete-room
+  *ngIf="showModalDeleteRoom == true"
+  [room]="roomToDelete"
+  (closeModal)="closeModalDeleteRoom($event)"
+></app-modal-delete-room>

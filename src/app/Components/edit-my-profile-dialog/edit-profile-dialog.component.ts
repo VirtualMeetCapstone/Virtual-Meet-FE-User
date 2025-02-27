@@ -48,8 +48,8 @@ export class EditProfileDialogComponent {
       alert('Vui lòng điền đầy đủ thông tin');
       return;
     }
-    formData.append('name', this.newUsername);
-    formData.append('bio', this.newBio);
+    formData.append('Name', this.newUsername);
+    formData.append('Bio', this.newBio);//new
 
     if (this.newAvatar instanceof File) {
       formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
