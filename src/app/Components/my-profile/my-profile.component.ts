@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profile-dialog.component';
+import { RoomListComponent } from './room-list/room-list.component';
 
 interface Profile {
   name: string;
@@ -12,27 +13,7 @@ interface Profile {
   avatar: string;
 }
 
-//Rooms
-interface Media {
-  url: string;
-  type: number;
-  thumbnailUrl?: string;
-}
-
-interface Room {
-  id?: string;
-  topic?: string;
-  medias?: Media[];
-  owner?: {
-    name: string;
-    picture?: {
-      url: string;
-      type: number;
-      thumbnailUrl?: string;
-    };
-  };
-  ownerId?: string;
-}
+interface PostsFeed {}
 
 @Component({
   selector: 'app-my-profile',
@@ -41,6 +22,7 @@ interface Room {
 })
 export class MyProfileComponent implements OnInit {
   isLoading = true;
+  userId: string = '';
   user: Profile = {
     name: '',
     bio: '',
@@ -49,9 +31,6 @@ export class MyProfileComponent implements OnInit {
     friendsCount: 0,
     avatar: '',
   };
-  // ----------  ROOMS ----------
-  rooms: Room[] = [];
-  isRoomsLoading = false; 
 
   //Select Tabs
   selectedTab = 0;
@@ -60,10 +39,9 @@ export class MyProfileComponent implements OnInit {
 
   async ngOnInit() {
     this.route.params.subscribe(async (params) => {
-      const id = params['id'];
-      if (id) {
-        await this.fetchProfile(id);
-        this.fetchRooms(id);
+      this.userId = params['id']; // Gán userId từ route
+      if (this.userId) {
+        await this.fetchProfile(this.userId);
       }
     });
   }
@@ -82,7 +60,7 @@ export class MyProfileComponent implements OnInit {
         followersCount: data.followersCount,
         followingsCount: data.followingsCount,
         friendsCount: data.friendsCount,
-        avatar: data.picture?.url || '', // Kiểm tra tránh lỗi nếu `picture` là null
+        avatar: data.picture?.url || '',
       };
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -92,57 +70,10 @@ export class MyProfileComponent implements OnInit {
   }
 
   // ------------------------------
-  // Fetch Rooms List
-  // ------------------------------
-  async fetchRooms(id: string) {
-    this.isRoomsLoading = true;
-    try {
-      const response = await fetch(
-        `http://dev-vmeet.runasp.net/rooms/${id}/favourite`
-      );
-      if (!response.ok) throw new Error('Failed to fetch rooms');
-      const data = await response.json();
-      this.rooms = data.data;
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-    } finally {
-      console.log(this.rooms);
-      this.isRoomsLoading = false;
-    }
-  }
-
-  // ------------------------------
-  // Fetch Posts Feed
-  // ------------------------------
-  async fetchPostsFeed(id: string) {
-    this.isRoomsLoading = true;
-    try {
-      const response = await fetch(
-        `http://dev-vmeet.runasp.net/rooms/${id}/favourite`
-      );
-      if (!response.ok) throw new Error('Failed to fetch rooms');
-      const data = await response.json();
-      this.rooms = data.data;
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-    } finally {
-      console.log(this.rooms);
-      this.isRoomsLoading = false;
-    }
-  }
-
-  // ------------------------------
   // Tabs
   // ------------------------------
   setTab(index: number) {
     this.selectedTab = index;
-    // Khi người dùng click Tab 0 => fetch rooms
-    if (this.selectedTab === 0) {
-      const userId = this.route.snapshot.params['id'];
-      if (userId) {
-        this.fetchRooms(userId);
-      }
-    }
   }
 
   // Open Edit Profile
