@@ -32,11 +32,14 @@ export class EditProfileDialogComponent {
     this.userId = data.id;
   }
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      this.newAvatar = fileInput.files[0]; // Lưu file vào biến
+    // Nếu không có file nào được chọn, không làm gì
+    if (!fileInput.files || fileInput.files.length === 0) {
+      return;
     }
+    // Nếu có file, lưu file đầu tiên vào biến newAvatar
+    this.newAvatar = fileInput.files[0];
   }
 
   onSave() {
