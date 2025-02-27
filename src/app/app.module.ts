@@ -42,7 +42,7 @@ import {
   GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
-
+//Resolve Conflict
 @NgModule({
   declarations: [
     AppComponent,
