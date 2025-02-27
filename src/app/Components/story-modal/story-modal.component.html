@@ -4,14 +4,42 @@
     <button (click)="previous()" class="nav-button prev-button">‹</button>
 
     <div class="story-wrapper">
-      <div class="story-title">{{ currentStory?.name }}</div>
-      <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{ currentStory?.image }}" 
-           alt="Story Image" class="story-image" />
+     
+      <div class="row">
+        <img class="user-avatar" src="https://primefaces.org/cdn/primeng/images/demo/product/{{ currentStory?.image }}" 
+             alt="User Avatar" />
+        <div class="story-title">{{ currentStory?.name }}</div>
+        <div><p class="story-time">1h</p></div>
+      </div>
+       
+      <div class="story-media">
+        <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{ currentStory?.image }}" 
+             alt="Story Image" class="story-image" />
+             <!-- <iframe src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" class="story-video" allowfullscreen></iframe> -->
+
+      </div>
     </div>
 
     <button (click)="next()" class="nav-button next-button">›</button>
   </div>
 
   
-  <i (click)="toggleLike()" [ngClass]="{'fas': isLiked, 'far': !isLiked}" class="fa-heart heart-icon"></i>
-</div>
+  <div class="viewers-heart-container">
+    <div class="row">
+      <div class="viewers-list">
+        <ng-container *ngFor="let viewer of viewers.slice(0, 5); let last = last">
+          <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + viewer.image"
+               alt="Viewer Avatar"
+               class="viewer-avatar" />
+               
+        </ng-container>
+  
+        <div *ngIf="viewers.length > 5" class="more-viewers">
+          +{{ viewers.length - 5 }}
+        </div>
+      </div>
+  
+      <i (click)="toggleLike()" [ngClass]="{'fas': isLiked, 'far': !isLiked}" class="fa-heart heart-icon"></i>
+    </div>
+  </div>
+  

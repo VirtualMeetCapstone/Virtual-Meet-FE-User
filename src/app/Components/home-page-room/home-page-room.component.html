@@ -1,5 +1,12 @@
-<h3 style="font-weight: bold; text-align: center">ROOM</h3>
+
 <div class="container">
+  <div class="row" style="width: 100%;">
+    <div class="col-12 text-center p-3" >
+     <app-story-list></app-story-list>
+    </div>
+  </div>
+  
+  
   <div class="room-card" *ngFor="let room of rooms">
     <div class="header">
       <img alt="User icon" height="30" src="{{ room.medias.url }}" width="30" />

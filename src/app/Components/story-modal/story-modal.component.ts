@@ -7,6 +7,16 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./story-modal.component.scss']
 })
 export class StoryModalComponent {
+  viewers = [
+    { image: 'bamboo-watch.jpg' },
+    { image: 'black-watch.jpg' },
+    { image: 'blue-band.jpg' },
+    { image: 'blue-t-shirt.jpg' },
+    { image: 'bracelet.jpg' },
+    { image: 'brown-purse.jpg' },
+    { image: 'charm.jpg' }
+  ];
+  
   stories: any[]; 
   currentIndex: number; 
   currentStory: any; 
@@ -48,7 +58,6 @@ export class StoryModalComponent {
   toggleLike() {
     this.isLiked = !this.isLiked;
   }
-  // Đóng modal
   close(): void {
     this.dialogRef.close();
   }
