@@ -66,35 +66,17 @@
         ></div>
       </div>
 
-      <!-- Thay thế phần hiển thị Room List (tab=0) bằng đoạn code này -->
+      <!-- Room List  -->
       <ng-container *ngIf="selectedTab === 0">
-        <!-- <div *ngIf="isRoomsLoading">Đang load room...</div> -->
-        <div class="room-list-container" *ngIf="!isRoomsLoading">
-          <div *ngFor="let room of rooms" class="room-item">
-            <img
-              [src]="
-                room.medias && room.medias.length > 0
-                  ? room.medias[0].url
-                  : './img/virtualMeetImageForNoImage.png'
-              "
-              alt="{{ room.topic }}"
-            />
-            <div class="room-topic-overlay">
-              <h3>{{ room.topic }}</h3>
-            </div>
-          </div>
-        </div>
+        <app-room-list [userId]="userId"></app-room-list>
       </ng-container>
-      <!-- Nội dung tab 1: Posts Feed -->
+      <!-- Posts Feed  -->
       <ng-container *ngIf="selectedTab === 1">
-        <h2>Posts Feed</h2>
-        <!-- ... tuỳ bạn hiển thị gì -->
+        <app-posts-feed [userId]="userId"></app-posts-feed>
       </ng-container>
-
-      <!-- Nội dung tab 2: My Posts -->
+      <!-- My Post  -->
       <ng-container *ngIf="selectedTab === 2">
-        <h2>My Posts</h2>
-        <!-- ... tuỳ bạn hiển thị gì -->
+        <app-my-post [userId]="userId"></app-my-post>
       </ng-container>
     </div>
   </div>

@@ -17,8 +17,15 @@ import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
+import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
+import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +38,9 @@ import { FormsModule } from '@angular/forms';
     MyProfileComponent,
     NavbarComponent,
     LoadingComponent,
+    RoomListComponent,
+    PostsFeedComponent,
+    MyPostComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,7 +51,7 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     FormsModule,
   ],
-  providers: [provideClientHydration()],
+  providers: [provideClientHydration(), provideHttpClient(withFetch())],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
