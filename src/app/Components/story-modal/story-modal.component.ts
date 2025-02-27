@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { StoryServiceService } from '../../services/story-service/story-service.service';
 
 @Component({
   selector: 'app-story-modal',
@@ -23,7 +24,8 @@ export class StoryModalComponent {
   isLiked = false;
   constructor(
     public dialogRef: MatDialogRef<StoryModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private storyService: StoryServiceService
   ) {
     
     this.stories = data.stories; //get data from Story Modal
@@ -37,6 +39,7 @@ export class StoryModalComponent {
   next(): void {
     this.currentIndex = (this.currentIndex + 1) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
+    this.storyService.markAsViewed(this.currentIndex);
     this.isLiked = !this.isLiked;
     if (this.currentIndex === 0) {
       this.close();
