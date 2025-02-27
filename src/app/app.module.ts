@@ -18,8 +18,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
+import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-dele
     NavbarComponent,
     LoadingComponent,
     ModalDeleteRoomComponent,
+    ModalAddEditRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +44,7 @@ import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-dele
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
