@@ -22,7 +22,7 @@ import {
   provideHttpClient,
   withFetch,
 } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 import { StoryListComponent } from './Components/story-list/story-list.component';
@@ -42,6 +42,7 @@ import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
 import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
+import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { MyPostComponent } from './Components/my-profile/my-post/my-post.compone
     StoryListComponent,
     StoryModalComponent,
     LoginModalComponent,
+    ModalAddEditRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +71,7 @@ import { MyPostComponent } from './Components/my-profile/my-post/my-post.compone
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     CarouselModule,
     ButtonModule,
     TagModule,
