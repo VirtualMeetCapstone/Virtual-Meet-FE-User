@@ -18,7 +18,7 @@ export class LoginModalComponent implements OnInit {
   private http = inject(HttpClient);
 
   onClickLoginDialog() {
-    this.openLoginDialog.emit(false); // ✅ Gửi event đóng modal lên Header
+    this.openLoginDialog.emit(false);
   }
 
   ngOnInit() {
@@ -26,28 +26,29 @@ export class LoginModalComponent implements OnInit {
       this.user = user;
       this.loggedIn = user != null;
       if (user) {
-        console.log(user);
-       // this.sendTokenToBackend(user.idToken);
+        // console.log(user);
+        this.sendTokenToBackend(user.idToken);
        this.openLoginDialog.emit(false);
       }
     });
   }
 
   sendTokenToBackend(idToken: string) {
-    this.http.post(`${AppConstants.API_BASE_URL}/signin/google`, { token: idToken })
-      .subscribe(response => {
-        console.log('Server Response:', response);
-        this.openLoginDialog.emit(false); // ✅ Đóng modal sau khi đăng nhập thành công
-      }, error => {
-        console.error('Error sending token:', error);
-      });
+    const url = `${AppConstants.API_BASE_URL}/signin/google?idToken=${encodeURIComponent(idToken)}`;
+
+    this.http.get(url).subscribe(response => {
+      // console.log('Server Response:', response);
+      this.openLoginDialog.emit(false);
+    }, error => {
+      console.error('Error sending token:', error);
+    });
   }
 
   signOut(): void {
     this.authService.signOut().then(() => {
       this.user = null;
       this.loggedIn = false;
-      this.openLoginDialog.emit(false); // ✅ Đóng modal khi đăng xuất
+      this.openLoginDialog.emit(false); 
     });
   }
 }
