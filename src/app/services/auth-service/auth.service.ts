@@ -13,12 +13,10 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Kiểm tra đang chạy trên trình duyệt hay không
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 
-  // ✅ Lấy token từ localStorage
   getToken(): string {
     return this.isBrowser() ? localStorage.getItem('accessToken') || '' : '';
   }
@@ -77,7 +75,7 @@ export class AuthService {
     });
 
     try {
-      return await this.http.get(`${AppConstants.API_LOCAL_BASE_URL}/users/${userId}`, { headers }).toPromise();
+      return await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
     } catch (error) {
       return null;
     }

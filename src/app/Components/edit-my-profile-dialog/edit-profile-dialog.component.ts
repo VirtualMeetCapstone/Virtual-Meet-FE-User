@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-
+import { AppConstants } from '../../constant/AppConstants';
 export interface EditProfileData {
   id: string;
   username: string;
@@ -55,7 +55,7 @@ export class EditProfileDialogComponent {
       formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
     }
     console.log(this.userId);
-    const url = `http://dev-vmeet.runasp.net/users/${this.userId}`;
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${this.userId}`;
 
     this.http
       .patch(url, formData)
