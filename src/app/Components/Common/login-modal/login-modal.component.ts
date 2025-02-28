@@ -2,8 +2,7 @@ import { Component, OnInit, EventEmitter, Input, Output, inject } from '@angular
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { HttpClient } from '@angular/common/http';
 import { AppConstants } from '../../../constant/AppConstants';
-import { AuthService } from '../../../services/auth-service/auth.service'; // Import AuthService để cập nhật trạng thái
-
+import { AuthService } from '../../../services/auth-service/auth.service'; 
 @Component({
   selector: 'app-login-modal',
   templateUrl: './login-modal.component.html',
@@ -37,7 +36,7 @@ export class LoginModalComponent implements OnInit {
   }
 
   sendTokenToBackend(idToken: string) {
-    const url = `${AppConstants.API_LOCAL_BASE_URL}/signin/google?idToken=${encodeURIComponent(idToken)}`;
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/signin/google?idToken=${encodeURIComponent(idToken)}`;
 
     this.http.get<{ accessToken: string; refreshToken: string }>(url).subscribe(
       (response) => {
