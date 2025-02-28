@@ -1,7 +1,14 @@
 <div class="row p-3">
   <!-- Logo Virtual Meet -->
   <div class="col-lg-4 col-md-4 col-sm-6 col-6">
-    <h3 style="font-size: 30px; font-weight: 700; margin-top: 10px; margin-left: 4px;">
+    <h3
+      style="
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 10px;
+        margin-left: 4px;
+      "
+    >
       <a href="/" style="text-decoration: none; color: white"> VIRTUAL MEET </a>
     </h3>
   </div>
@@ -16,39 +23,61 @@
 
   <!-- Khu vực menu + thông báo + user -->
   <div class="col-lg-4 col-md-3 col-sm-5 col-5">
-    <div class="menu-container d-flex align-items-center" style="flex-direction: row-reverse">
+    <div
+      class="menu-container d-flex align-items-center"
+      style="flex-direction: row-reverse"
+    >
       <!-- Menu dropdown -->
       <div class="menu-icon">
-        <i class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
+        <i
+          class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
           style="color: white; cursor: pointer; margin-left: 15px"
-          (click)="onClickDropdown()"></i>
+          (click)="onClickDropdown()"
+        ></i>
 
         <div class="dropdown-menu" *ngIf="isShowDropdown">
           <a href="#"><i class="fas fa-home"></i>Creator tools</a>
           <a href="#"><i class="fas fa-language"></i>English</a>
-          <a href="#"><i class="fas fa-question-circle"></i>Feedback and help</a>
+          <a href="#"
+            ><i class="fas fa-question-circle"></i>Feedback and help</a
+          >
           <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
         </div>
       </div>
 
       <!-- Thông báo -->
       <div class="notification-icon">
-        <div class="notification-bellicon mr-2"
-          [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'">
-          <i class="fa-solid fa-bell fa-xl" id="notification-bell" (click)="onClickNotification()"></i>
+        <div
+          class="notification-bellicon mr-2"
+          [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'"
+        >
+          <i
+            class="fa-solid fa-bell fa-xl"
+            id="notification-bell"
+            (click)="onClickNotification()"
+          ></i>
         </div>
 
         <div class="notification-wrapper" *ngIf="isShowNotification">
           <h4 id="notification-title">Thông báo</h4>
-          <div class="notification-item" *ngFor="let notification of notifications">
-            <img class="notification-avatar" alt="User avatar" [src]="notification.avatarUrl" />
+          <div
+            class="notification-item"
+            *ngFor="let notification of notifications"
+          >
+            <img
+              class="notification-avatar"
+              alt="User avatar"
+              [src]="notification.avatarUrl"
+            />
             <div class="notification-content">
               <p>
                 <span class="notification-thread">thảo luận</span>
-                <strong>{{ notification.username }}</strong> đã trả lời trong chủ đề VirtualMeet.
+                <strong>{{ notification.username }}</strong> đã trả lời trong
+                chủ đề VirtualMeet.
               </p>
               <p class="notification-time">
-                Hôm nay lúc {{ notification.time }} · Đã đọc: {{ notification.readTime }}
+                Hôm nay lúc {{ notification.time }} · Đã đọc:
+                {{ notification.readTime }}
               </p>
               <p class="notification-action">Đánh dấu chưa đọc</p>
             </div>
@@ -67,7 +96,10 @@
         </button>
       </div>
       <div *ngIf="loggedIn">
-        <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
+        <div
+          class="user-info d-flex align-items-center position-relative"
+          (click)="toggleUserMenu()"
+        >
           <div class="user-avatar-container">
             <!-- Hiển thị loading khi chưa có ảnh -->
             <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
@@ -80,7 +112,10 @@
               class="user-avatar" />
 
             <ng-template #defaultAvatar>
-              <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
+              <i
+                class="fa-solid fa-user-circle fa-2xl"
+                style="color: white"
+              ></i>
             </ng-template>
           </div>
 
@@ -97,13 +132,12 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <app-login-modal
   [isShowLoginDialog]="isShowLoginDialog"
-  (openLoginDialog)="isShowLoginDialog = $event">
+  (openLoginDialog)="isShowLoginDialog = $event"
+>
 </app-login-modal>
-
