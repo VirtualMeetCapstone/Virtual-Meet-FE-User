@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryModalComponent } from '../story-modal/story-modal.component';
+import { StoryServiceService } from '../../services/story-service/story-service.service';
 // import { StoryServiceService } from '../../services/story-service/story-service.service';
 // import { Story } from '../../models/story';
 
@@ -23,14 +24,14 @@ export class StoryListComponent {
     { name: 'Story 10', image: 'brown-purse.jpg' },
   ];
   // public storiesData: Story[]= [];
-
+  viewedStories: Set<number> = new Set();
   responsiveOptions = [
     { breakpoint: '1024px', numVisible: 3, numScroll: 3 },
     { breakpoint: '768px', numVisible: 2, numScroll: 2 },
     { breakpoint: '560px', numVisible: 1, numScroll: 1 },
   ];
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, public storyService: StoryServiceService) {}
   // ngOnInit(): void {
   //   // this.loadStories();
   //   throw new Error('Method not implemented.');
@@ -49,6 +50,8 @@ export class StoryListComponent {
 
   // open modal, pass data
   openStory(product: any, index: number): void {
+    this.storyService.markAsViewed(index);
+    console.log("index ne:"+index);
     const dialogRef = this.dialog.open(StoryModalComponent, {
       width: '500px',
       data: {

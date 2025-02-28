@@ -44,6 +44,7 @@ import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-fee
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
 import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
 import { HomePagePostComponent } from './Components/home-page-post/home-page-post.component';
+import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-stories/my-profile-stories.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { HomePagePostComponent } from './Components/home-page-post/home-page-pos
     LoginModalComponent,
     ModalAddEditRoomComponent,
     HomePagePostComponent,
+    MyProfileStoriesComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +85,7 @@ import { HomePagePostComponent } from './Components/home-page-post/home-page-pos
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch()), // Đảm bảo HTTP client hoạt động chính xác
+    provideHttpClient(withFetch()),
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

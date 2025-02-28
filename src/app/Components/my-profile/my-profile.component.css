@@ -178,7 +178,7 @@ body {
   align-items: center;
   padding: 20px;
   background-color: #121212;
-  width: 180vh;
+  width: 170vh;
 }
 
 .profile-header-row {
@@ -206,7 +206,7 @@ body {
 /* Phần thông tin & hành động của profile */
 .profile-title {
   width: 100%;
-  max-width: 57.5rem;
+  max-width: 52.75rem;
   text-align: center;
   justify-items: left;
   margin-bottom: 2rem;
@@ -314,7 +314,7 @@ body {
 .underline {
   position: absolute;
   bottom: -4px;
-  margin-left: 20vh;
+  margin-left: 18.5vh;
   width: 32vh;
   height: 2px;
   background-color: #fff;

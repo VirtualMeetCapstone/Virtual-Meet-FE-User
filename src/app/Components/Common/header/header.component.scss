@@ -75,6 +75,19 @@
   background-color: #fff; /* Nền trắng giống icon */
 }
 
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 18px;
+  color: white;
+}
+.fa-spinner {
+  margin-right: 10px;
+}
+
+
 .user-avatar-container img,
 .user-avatar-container i {
   width: 100%;

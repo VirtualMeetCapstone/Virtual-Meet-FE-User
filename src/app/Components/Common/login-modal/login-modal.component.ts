@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Input, Output, inject } from '@angular
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { HttpClient } from '@angular/common/http';
 import { AppConstants } from '../../../constant/AppConstants';
+import { AuthService } from '../../../services/auth-service/auth.service';
+import { take, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login-modal',
@@ -16,39 +18,48 @@ export class LoginModalComponent implements OnInit {
 
   private authService = inject(SocialAuthService);
   private http = inject(HttpClient);
+  private customAuthService: AuthService = inject(AuthService);
 
   onClickLoginDialog() {
     this.openLoginDialog.emit(false);
   }
 
   ngOnInit() {
-    this.authService.authState.subscribe((user) => {
+    this.authService.authState.pipe(take(1)).subscribe((user) => {
       this.user = user;
-      this.loggedIn = user != null;
+      this.loggedIn = !!user;
+
       if (user) {
-        // console.log(user);
         this.sendTokenToBackend(user.idToken);
-       this.openLoginDialog.emit(false);
+        this.openLoginDialog.emit(false);
+        this.customAuthService.updateLoginState(true);
       }
     });
   }
 
   sendTokenToBackend(idToken: string) {
-    const url = `${AppConstants.API_BASE_URL}/signin/google?idToken=${encodeURIComponent(idToken)}`;
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/signin/google?idToken=${encodeURIComponent(idToken)}`;
 
-    this.http.get(url).subscribe(response => {
-      // console.log('Server Response:', response);
-      this.openLoginDialog.emit(false);
-    }, error => {
-      console.error('Error sending token:', error);
-    });
+    this.http.get<{ accessToken: string; refreshToken: string }>(url).pipe(
+      switchMap(response => {
+        if (response?.accessToken) {
+          this.customAuthService.setToken(response.accessToken, response.refreshToken);
+          return this.customAuthService.loggedIn$;
+        }
+        throw new Error('No accessToken in response');
+      })
+    ).subscribe(
+      () => this.customAuthService.updateLoginState(true),
+      error => console.error('Error sending token:', error)
+    );
   }
 
   signOut(): void {
     this.authService.signOut().then(() => {
       this.user = null;
       this.loggedIn = false;
-      this.openLoginDialog.emit(false); 
+      this.customAuthService.logout();
+      this.openLoginDialog.emit(false);
     });
   }
 }

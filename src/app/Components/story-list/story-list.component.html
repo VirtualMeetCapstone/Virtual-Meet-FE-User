@@ -12,6 +12,11 @@
       <img
         (click)="openStory(product, products.indexOf(product))"
         style="width: 100px; border-radius: 50%"
+        [ngClass]="{
+          isWatch: !storyService.isViewed(products.indexOf(product)),
+          watched: storyService.isViewed(products.indexOf(product))
+        }"
+        style="width: 90px; height: 90px; border-radius: 50%"
         src="https://primefaces.org/cdn/primeng/images/demo/product/{{
           product.image
         }}"

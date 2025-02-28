@@ -1,21 +1,24 @@
-import { Component } from '@angular/core';
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
-
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../services/auth-service/auth.service';
+import { SocialUser } from '@abacritt/angularx-social-login';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
-  isShowDropdown: boolean = false;
-  isShowLoginDialog: boolean = false;
-  isShowNotification: boolean = false;
+export class HeaderComponent implements OnInit {
+  isShowDropdown = false;
+  isShowLoginDialog = false;
+  isShowNotification = false;
+  isShowUserMenu = false;
+  isLoadingUser = true;
   user: SocialUser | null = null;
-  loggedIn: boolean = false;
+  loggedIn = false;
 
-  constructor(private authService: SocialAuthService) {}
+  constructor(private authService: AuthService, private router: Router,private sanitizer: DomSanitizer) {}
 
-  //list notifications
   notifications = [
     {
       avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
@@ -31,16 +34,33 @@ export class HeaderComponent {
     }
   ];
 
-
   ngOnInit() {
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = user != null;
+    this.isLoadingUser = true; // Bắt đầu loading
+
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      this.loggedIn = status;
+
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+
+      // Chỉ dừng loading khi có dữ liệu user.name & user.photoUrl
+      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
     });
+
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
+    }
   }
+
 
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
+  }
+
+  getSafeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   onClickLoginDialog() {
@@ -55,24 +75,21 @@ export class HeaderComponent {
     this.isShowNotification = !this.isShowNotification;
   }
 
-  isShowUserMenu: boolean = false;
+  toggleUserMenu() {
+    this.isShowUserMenu = !this.isShowUserMenu;
+  }
+  editProfile() {
+    if (!this.user) {
+      return;
+    }
+    this.isShowUserMenu = false;
+    this.router.navigate([`/my-profile/${this.user.id}`]);
+  }
 
-toggleUserMenu() {
-  this.isShowUserMenu = !this.isShowUserMenu;
-}
-
-editProfile() {
-  console.log("Edit Profile clicked");
-  // Thêm logic mở trang edit profile
-}
-
-logout() {
-  this.authService.signOut().then(() => {
+  logout() {
+    this.authService.logout();
     this.user = null;
     this.loggedIn = false;
-    this.isShowUserMenu = false; // Ẩn menu khi logout
-  });
-}
-
-
+    this.isShowUserMenu = false;
+  }
 }

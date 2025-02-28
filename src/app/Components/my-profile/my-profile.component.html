@@ -8,7 +8,7 @@
   <div class="profile-container">
     <div class="profile-header-row">
       <div class="profile-header">
-        <img [src]="user.avatar" class="profile-pic-large" alt="User Profile" />
+        <app-my-profile-stories [user]="user"></app-my-profile-stories>
       </div>
       <div class="profile-info">
         <h2 class="profile-username">{{ user.name }}</h2>
@@ -44,39 +44,38 @@
           [ngClass]="{ active: selectedTab === 0 }"
           (click)="setTab(0)"
         >
-          <i class="fa-solid fa-bars"></i> Room List
+          <i class="fa-solid fa-bookmark"></i> My Posts
         </div>
         <div
           class="tab"
           [ngClass]="{ active: selectedTab === 1 }"
           (click)="setTab(1)"
         >
-          <i class="fa-solid fa-heart"></i> Posts Feed
+          <i class="fa-solid fa-bars"></i> Room List
         </div>
         <div
           class="tab"
           [ngClass]="{ active: selectedTab === 2 }"
           (click)="setTab(2)"
         >
-          <i class="fa-solid fa-bookmark"></i> My Posts
+          <i class="fa-solid fa-heart"></i> Posts Feed
         </div>
         <div
           class="underline"
-          [ngStyle]="{ left: selectedTab * 55 + 'vh' }"
+          [ngStyle]="{ left: selectedTab * 54 + 'vh' }"
         ></div>
       </div>
-
-      <!-- Room List  -->
+      <!-- My Post  -->
       <ng-container *ngIf="selectedTab === 0">
+        <app-my-post [userId]="userId"></app-my-post>
+      </ng-container>
+      <!-- Room List  -->
+      <ng-container *ngIf="selectedTab === 1">
         <app-room-list [userId]="userId"></app-room-list>
       </ng-container>
       <!-- Posts Feed  -->
-      <ng-container *ngIf="selectedTab === 1">
-        <app-posts-feed [userId]="userId"></app-posts-feed>
-      </ng-container>
-      <!-- My Post  -->
       <ng-container *ngIf="selectedTab === 2">
-        <app-my-post [userId]="userId"></app-my-post>
+        <app-posts-feed [userId]="userId"></app-posts-feed>
       </ng-container>
     </div>
   </div>

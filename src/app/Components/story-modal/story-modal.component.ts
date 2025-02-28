@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { StoryServiceService } from '../../services/story-service/story-service.service';
 
 @Component({
   selector: 'app-story-modal',
@@ -7,13 +8,24 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./story-modal.component.scss']
 })
 export class StoryModalComponent {
+  viewers = [
+    { image: 'bamboo-watch.jpg' },
+    { image: 'black-watch.jpg' },
+    { image: 'blue-band.jpg' },
+    { image: 'blue-t-shirt.jpg' },
+    { image: 'bracelet.jpg' },
+    { image: 'brown-purse.jpg' },
+    { image: 'charm.jpg' }
+  ];
+  
   stories: any[]; 
   currentIndex: number; 
   currentStory: any; 
   isLiked = false;
   constructor(
     public dialogRef: MatDialogRef<StoryModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private storyService: StoryServiceService
   ) {
     
     this.stories = data.stories; //get data from Story Modal
@@ -27,6 +39,7 @@ export class StoryModalComponent {
   next(): void {
     this.currentIndex = (this.currentIndex + 1) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
+    this.storyService.markAsViewed(this.currentIndex);
     this.isLiked = !this.isLiked;
     if (this.currentIndex === 0) {
       this.close();
@@ -48,7 +61,6 @@ export class StoryModalComponent {
   toggleLike() {
     this.isLiked = !this.isLiked;
   }
-  // Đóng modal
   close(): void {
     this.dialogRef.close();
   }
