@@ -1,21 +1,24 @@
-import { Component } from '@angular/core';
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../services/auth-service/auth.service';
+import { SocialUser } from '@abacritt/angularx-social-login';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
-  isShowDropdown: boolean = false;
-  isShowLoginDialog: boolean = false;
-  isShowNotification: boolean = false;
+export class HeaderComponent implements OnInit {
+  isShowDropdown = false;
+  isShowLoginDialog = false;
+  isShowNotification = false;
+  isShowUserMenu = false;
+
   user: SocialUser | null = null;
-  loggedIn: boolean = false;
+  loggedIn = false;
 
-  constructor(private authService: SocialAuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  //list notifications
   notifications = [
     {
       avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
@@ -31,12 +34,20 @@ export class HeaderComponent {
     }
   ];
 
-
   ngOnInit() {
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = user != null;
+    this.authService.loggedIn$.subscribe((status) => {
+      this.loggedIn = status;
+
+      setTimeout(() => {
+        this.user = this.authService.getUser();
+      }, 200);
     });
+
+    if (this.authService.isLoggedIn()) {
+      setTimeout(() => {
+        this.user = this.authService.getUser();
+      }, 200);
+    }
   }
 
   onClickDropdown() {
@@ -55,24 +66,21 @@ export class HeaderComponent {
     this.isShowNotification = !this.isShowNotification;
   }
 
-  isShowUserMenu: boolean = false;
+  toggleUserMenu() {
+    this.isShowUserMenu = !this.isShowUserMenu;
+  }
+  editProfile() {
+    if (!this.user) {
+      return;
+    }
+    this.isShowUserMenu = false;
+    this.router.navigate([`/my-profile/${this.user.id}`]);
+  }
 
-toggleUserMenu() {
-  this.isShowUserMenu = !this.isShowUserMenu;
-}
-
-editProfile() {
-  console.log("Edit Profile clicked");
-  // Thêm logic mở trang edit profile
-}
-
-logout() {
-  this.authService.signOut().then(() => {
+  logout() {
+    this.authService.logout();
     this.user = null;
     this.loggedIn = false;
-    this.isShowUserMenu = false; // Ẩn menu khi logout
-  });
-}
-
-
+    this.isShowUserMenu = false;
+  }
 }
