@@ -25,7 +25,6 @@ export class AppComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('accessToken');
       this.isLoggedIn = !!token;
-console.log('log :'+token);
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
         console.log('chua login');

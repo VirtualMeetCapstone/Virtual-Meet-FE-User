@@ -66,20 +66,29 @@
           <h5 style="line-height: 20px">Login</h5>
         </button>
       </div>
-
       <div *ngIf="loggedIn">
         <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
           <div class="user-avatar-container">
-            <img *ngIf="user?.photoUrl; else defaultAvatar"
+            <!-- Hiển thị loading khi chưa có ảnh -->
+            <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+
+            <img *ngIf="!isLoadingUser && user?.photoUrl; else defaultAvatar"
               [src]="user?.photoUrl"
               alt="User Avatar"
               class="user-avatar" />
+
             <ng-template #defaultAvatar>
               <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
             </ng-template>
           </div>
 
-          <span class="user-name">{{ user?.name }}</span>
+          <!-- Hiển thị loading khi chưa có tên -->
+          <span *ngIf="isLoadingUser; else showName">Loading...</span>
+          <ng-template #showName>
+            <span class="user-name">{{ user?.name }}</span>
+          </ng-template>
 
           <!-- Menu dropdown -->
           <div *ngIf="isShowUserMenu" class="dropdown-user">
@@ -88,7 +97,6 @@
           </div>
         </div>
       </div>
-
 
     </div>
   </div>

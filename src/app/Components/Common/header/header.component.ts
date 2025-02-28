@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { SocialUser } from '@abacritt/angularx-social-login';
 import { Router } from '@angular/router';
-
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -13,11 +13,11 @@ export class HeaderComponent implements OnInit {
   isShowLoginDialog = false;
   isShowNotification = false;
   isShowUserMenu = false;
-
+  isLoadingUser = true;
   user: SocialUser | null = null;
   loggedIn = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,private sanitizer: DomSanitizer) {}
 
   notifications = [
     {
@@ -35,23 +35,32 @@ export class HeaderComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.authService.loggedIn$.subscribe((status) => {
+    this.isLoadingUser = true; // Bắt đầu loading
+
+    this.authService.loggedIn$.subscribe((status: boolean) => {
       this.loggedIn = status;
 
-      setTimeout(() => {
+      if (status) {
         this.user = this.authService.getUser();
-      }, 200);
+      }
+
+      // Chỉ dừng loading khi có dữ liệu user.name & user.photoUrl
+      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
     });
 
     if (this.authService.isLoggedIn()) {
-      setTimeout(() => {
-        this.user = this.authService.getUser();
-      }, 200);
+      this.user = this.authService.getUser();
+      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
     }
   }
 
+
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
+  }
+
+  getSafeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   onClickLoginDialog() {
