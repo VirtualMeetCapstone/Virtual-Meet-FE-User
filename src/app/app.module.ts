@@ -17,8 +17,13 @@ import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 import { StoryListComponent } from './Components/story-list/story-list.component';
 import { CarouselModule } from 'primeng/carousel';
@@ -27,12 +32,17 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
-
-import { SocialLoginModule, SocialAuthServiceConfig,  GoogleSigninButtonModule  } from '@abacritt/angularx-social-login';
 import {
-  GoogleLoginProvider
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+  GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
+import { RoomListComponent } from './Components/my-profile/room-list/room-list.component';
+import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
+import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
+import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
 
 @NgModule({
   declarations: [
@@ -44,12 +54,14 @@ import {
     MyProfileComponent,
     NavbarComponent,
     LoadingComponent,
+    RoomListComponent,
+    PostsFeedComponent,
+    MyPostComponent,
     ModalDeleteRoomComponent,
     StoryListComponent,
     StoryModalComponent,
-
-
-    LoginModalComponent
+    LoginModalComponent,
+    ModalAddEditRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,14 +71,17 @@ import {
     InfiniteScrollModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     CarouselModule,
     ButtonModule,
     TagModule,
     DialogModule,
     SocialLoginModule,
-    GoogleSigninButtonModule
+    GoogleSigninButtonModule,
   ],
-  providers: [provideClientHydration(),
+  providers: [
+    provideClientHydration(),
+    provideHttpClient(withFetch()), // Đảm bảo HTTP client hoạt động chính xác
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -79,17 +94,16 @@ import {
               '656676369191-dqpe6vbl3tdv29hedg1klbe2v1d75qqo.apps.googleusercontent.com',
               {
                 oneTapEnabled: true,
-                prompt : 'consent'
+                prompt: 'consent',
               }
-            )
+            ),
           },
         ],
         onError: (err) => {
           console.error(err);
-        }
+        },
       } as SocialAuthServiceConfig,
-    }
-
+    },
   ],
   bootstrap: [AppComponent],
 })

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profile-dialog.component';
+import { RoomListComponent } from './room-list/room-list.component';
 
 interface Profile {
   name: string;
@@ -12,6 +13,8 @@ interface Profile {
   avatar: string;
 }
 
+interface PostsFeed {}
+
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
@@ -19,6 +22,7 @@ interface Profile {
 })
 export class MyProfileComponent implements OnInit {
   isLoading = true;
+  userId: string = '';
   user: Profile = {
     name: '',
     bio: '',
@@ -28,17 +32,20 @@ export class MyProfileComponent implements OnInit {
     avatar: '',
   };
 
+  //Select Tabs
+  selectedTab = 0;
+
   constructor(private route: ActivatedRoute, private dialog: MatDialog) {}
 
   async ngOnInit() {
     this.route.params.subscribe(async (params) => {
-      const id = params['id'];
-      if (id) {
-        this.fetchProfile(id);
+      this.userId = params['id']; // Gán userId từ route
+      if (this.userId) {
+        await this.fetchProfile(this.userId);
       }
     });
   }
-
+  // Fetch Profile
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
@@ -53,7 +60,7 @@ export class MyProfileComponent implements OnInit {
         followersCount: data.followersCount,
         followingsCount: data.followingsCount,
         friendsCount: data.friendsCount,
-        avatar: data.picture?.url || '', // Kiểm tra tránh lỗi nếu `picture` là null
+        avatar: data.picture?.url || '',
       };
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -62,6 +69,14 @@ export class MyProfileComponent implements OnInit {
     }
   }
 
+  // ------------------------------
+  // Tabs
+  // ------------------------------
+  setTab(index: number) {
+    this.selectedTab = index;
+  }
+
+  // Open Edit Profile
   openEditProfile() {
     const dialogRef = this.dialog.open(EditProfileDialogComponent, {
       width: '500px',

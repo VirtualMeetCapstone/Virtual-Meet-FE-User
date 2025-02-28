@@ -1,0 +1,110 @@
+<div *ngIf="loading" class="fullscreen-spinner text-center">
+  <app-loading-component></app-loading-component>
+</div>
+<div class="modal">
+  <div class="modal-content">
+    <div class="title">
+      <i
+        class="fa-solid fa-x iconX d-flex justify-content-end"
+        style="cursor: pointer"
+        (click)="onCloseModal()"
+      ></i>
+      <h3 class="login-title" style="text-align: center">
+        Do you want to add room ?
+      </h3>
+      <div class="content">
+        <form [formGroup]="FormAdd">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="topic">Topic</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="topic"
+                  formControlName="topic"
+                  placeholder="Enter topic"
+                />
+                <div
+                  *ngIf="
+                    FormAdd.get('topic')?.invalid &&
+                    FormAdd.get('topic')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Topic is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="description">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  formControlName="description"
+                  rows="3"
+                  placeholder="Enter description"
+                ></textarea>
+                <div
+                  *ngIf="
+                    FormAdd.get('description')?.invalid &&
+                    FormAdd.get('description')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Description is required.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="maximumMember">Maximum Member</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="maximumMember"
+                  formControlName="maximumMember"
+                  placeholder="Enter max members"
+                />
+                <div
+                  *ngIf="
+                    FormAdd.get('maximumMember')?.invalid &&
+                    FormAdd.get('maximumMember')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Maximum Member is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="mediaUpload">Media Upload</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="mediaUpload"
+                  formControlName="mediaUpload"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="d-flex" style="justify-content: space-evenly">
+        <button
+          type="button"
+          class="btn btn-primary pl-3 pr-3"
+          [disabled]="FormAdd.invalid"
+          (click)="onAddRoom()"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger pl-3 pr-3"
+          (click)="onCloseModal()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

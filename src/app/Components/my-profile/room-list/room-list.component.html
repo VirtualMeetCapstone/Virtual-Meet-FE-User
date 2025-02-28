@@ -1,0 +1,15 @@
+<div class="room-list-container" *ngIf="!isRoomsLoading">
+  <div *ngFor="let room of rooms" class="room-item">
+    <img
+      [src]="
+        room.medias && room.medias.length > 0
+          ? room.medias[0].url
+          : './img/virtualMeetImageForNoImage.png'
+      "
+      alt="{{ room.topic }}"
+    />
+    <div class="room-topic-overlay">
+      <h3>{{ room.topic }}</h3>
+    </div>
+  </div>
+</div>

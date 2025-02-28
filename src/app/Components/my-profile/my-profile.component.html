@@ -36,65 +36,48 @@
       <p class="profile-bio">{{ user.bio }}</p>
     </div>
 
-    <!-- Video -->
+    <!-- Profile Tabs -->
     <div>
       <div class="profile-tabs">
-        <div class="tab active"><i class="fa-solid fa-bars"></i> Room List</div>
-        <div class="tab"><i class="fa-solid fa-heart"></i> Posts Feed</div>
-        <div class="tab"><i class="fa-solid fa-bookmark"></i> My Posts</div>
-      </div>
-      <!-- Nếu tab bằng 0, hiển thị danh sách userCreatedPosts -->
-      <!-- <ng-container *ngIf="tab === 0; else likedPosts"> -->
-      <!-- <ng-container *ngFor="let post of userCreatedPosts"> -->
-      <!-- <app-video-item
-            [videoURL]="post.video.asset.url"
-            [likes]="post.likes?.length || 0"
-            [caption]="post.caption"
-            [videoId]="post._id"
-            (videoClick)="keepScrollBeforeNavigate()"
-          >
-          </app-video-item> -->
-      <!-- </ng-container> -->
-      <!-- </ng-container> -->
-
-      <!-- Nếu tab khác 0, hiển thị danh sách userLikedPosts -->
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-4 place-items-center"
-      >
-        <img
-          class="responsive-img"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLXvtb1t5We9YQGA0-6HIzN088KMq8JbgcTg&s"
-          alt=""
-        />
-        <img
-          class="responsive-img"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLXvtb1t5We9YQGA0-6HIzN088KMq8JbgcTg&s"
-          alt=""
-        />
-        <img
-          class="responsive-img"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLXvtb1t5We9YQGA0-6HIzN088KMq8JbgcTg&s"
-          alt=""
-        />
-
         <div
-          className="absolute bottom-0 left-0 flex w-full items-center p-2 py-3 text-sm text-white backdrop-blur-sm"
+          class="tab"
+          [ngClass]="{ active: selectedTab === 0 }"
+          (click)="setTab(0)"
         >
-          <!-- <BsHeartFill size="{18}" className="mr-1" /> {millify(likes)} -->
+          <i class="fa-solid fa-bars"></i> Room List
         </div>
+        <div
+          class="tab"
+          [ngClass]="{ active: selectedTab === 1 }"
+          (click)="setTab(1)"
+        >
+          <i class="fa-solid fa-heart"></i> Posts Feed
+        </div>
+        <div
+          class="tab"
+          [ngClass]="{ active: selectedTab === 2 }"
+          (click)="setTab(2)"
+        >
+          <i class="fa-solid fa-bookmark"></i> My Posts
+        </div>
+        <div
+          class="underline"
+          [ngStyle]="{ left: selectedTab * 55 + 'vh' }"
+        ></div>
       </div>
-      <ng-template #likedPosts>
-        <!-- <ng-container *ngFor="let post of userLikedPosts"> -->
-        <!-- <app-video-item
-            [videoURL]="post.video.asset.url"
-            [likes]="post.likes?.length || 0"
-            [caption]="post.caption"
-            [videoId]="post._id"
-            (videoClick)="keepScrollBeforeNavigate()"
-          >
-          </app-video-item> -->
-        <!-- </ng-container> -->
-      </ng-template>
+
+      <!-- Room List  -->
+      <ng-container *ngIf="selectedTab === 0">
+        <app-room-list [userId]="userId"></app-room-list>
+      </ng-container>
+      <!-- Posts Feed  -->
+      <ng-container *ngIf="selectedTab === 1">
+        <app-posts-feed [userId]="userId"></app-posts-feed>
+      </ng-container>
+      <!-- My Post  -->
+      <ng-container *ngIf="selectedTab === 2">
+        <app-my-post [userId]="userId"></app-my-post>
+      </ng-container>
     </div>
   </div>
 </div>

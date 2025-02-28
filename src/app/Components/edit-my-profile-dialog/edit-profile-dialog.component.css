@@ -68,8 +68,8 @@
 
 .avatar-img {
   border: 1px solid rgb(208, 208, 208);
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   cursor: pointer;
 }
