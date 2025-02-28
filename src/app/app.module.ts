@@ -43,6 +43,7 @@ import { RoomListComponent } from './Components/my-profile/room-list/room-list.c
 import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
 import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
+import { HomePagePostComponent } from './Components/home-page-post/home-page-post.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add
     StoryModalComponent,
     LoginModalComponent,
     ModalAddEditRoomComponent,
+    HomePagePostComponent,
   ],
   imports: [
     BrowserModule,

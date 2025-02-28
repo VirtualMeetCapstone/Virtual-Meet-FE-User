@@ -16,6 +16,7 @@ export class HomePageRoomComponent implements OnInit {
   skip = 0;
   showModalDeleteRoom = false;
   showModalAddEditRoom = false;
+  roomToEdit = null;
 
   constructor(private roomService: RoomServicesService) {}
 
@@ -36,6 +37,11 @@ export class HomePageRoomComponent implements OnInit {
   openModalAddroom() {
     this.showModalAddEditRoom = true;
   }
+  openModalEditRoom(room: any) {
+    this.roomToEdit = room;
+    console.log('room to edit', this.roomToEdit);
+    this.showModalAddEditRoom = true;
+  }
   closeModalDeleteRoom(event: any) {
     if (!event) {
       this.showModalDeleteRoom = false;
@@ -53,16 +59,30 @@ export class HomePageRoomComponent implements OnInit {
     if (!event) {
       this.showModalDeleteRoom = false;
       this.showModalAddEditRoom = false;
+      this.roomToEdit = null;
     } else {
-      this.showModalDeleteRoom = false;
-      this.showModalAddEditRoom = false;
-      this.messages.push('Add room successful !!!');
-      setTimeout(() => {
-        this.messages = []; // Ẩn sau 3 giây
-      }, 3000);
-      this.skip = 0;
-      this.rooms = [];
-      this.getRoom();
+      if (this.roomToEdit == null) {
+        this.showModalDeleteRoom = false;
+        this.showModalAddEditRoom = false;
+        this.messages.push('Add room successful !!!');
+        setTimeout(() => {
+          this.messages = []; // Ẩn sau 3 giây
+        }, 3000);
+        this.skip = 0;
+        this.rooms = [];
+        this.getRoom();
+      } else {
+        this.showModalDeleteRoom = false;
+        this.showModalAddEditRoom = false;
+        this.messages.push('Update room successful !!!');
+        setTimeout(() => {
+          this.messages = []; // Ẩn sau 3 giây
+        }, 3000);
+        this.skip = 0;
+        this.rooms = [];
+        this.getRoom();
+        this.roomToEdit = null;
+      }
     }
   }
   loadMoreRooms() {

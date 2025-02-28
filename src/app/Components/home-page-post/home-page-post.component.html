@@ -1,0 +1,248 @@
+<div class="container">
+  <div class="main-content">
+    <div class="create-post">
+      <div class="user-info">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <textarea placeholder="Write something here..."></textarea>
+      </div>
+      <div class="actions">
+        <button>
+          <i class="fas fa-photo-video"> </i>
+          Photo/Video
+        </button>
+        <button>
+          <i class="fas fa-user-tag"> </i>
+          Tag Friend
+        </button>
+        <button>
+          <i class="fas fa-smile"> </i>
+          Feeling/Activity
+        </button>
+        <button>
+          <i class="fas fa-ellipsis-h"> </i>
+        </button>
+      </div>
+    </div>
+    <div class="post" *ngFor="let post of listPost">
+      <div class="post-header">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="{{ post.user.picture.url }}"
+          width="40"
+        />
+        <div>
+          <div class="name">{{ post.user.name }}</div>
+          <div class="time">{{ post.createTime }}</div>
+        </div>
+      </div>
+      <div class="post-content">
+        <p>
+          {{ post.content }}
+        </p>
+        <div class="post-images">
+          <img
+            alt="Error"
+            *ngFor="let image of post.medias"
+            height="100"
+            src="{{ image.url }}"
+            width="100"
+          />
+        </div>
+      </div>
+      <div class="post-actions">
+        <div class="likes">
+          <i class="fas fa-thumbs-up"> </i>
+          140 Likes
+        </div>
+        <div class="comments">
+          <i class="fas fa-comment"> </i>
+          20 Comments
+        </div>
+        <div class="share">
+          <i class="fas fa-share"> </i>
+          99 Shares
+        </div>
+      </div>
+      <div class="comments">
+        <div class="comment">
+          <img
+            alt="User profile picture"
+            height="30"
+            src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+            width="30"
+          />
+          <div class="comment-content">
+            <div class="name">Monty Carlo</div>
+            <div class="time">5 min</div>
+            <div class="text">Lorem ipsum dolor sit amet</div>
+          </div>
+        </div>
+        <div class="comment">
+          <img
+            alt="User profile picture"
+            height="30"
+            src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+            width="30"
+          />
+          <div class="comment-content">
+            <div class="name">Paul Molive</div>
+            <div class="time">5 min</div>
+            <div class="text">Lorem ipsum dolor sit amet</div>
+          </div>
+        </div>
+      </div>
+      <div class="add-comment">
+        <img
+          alt="User profile picture"
+          height="30"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="30"
+        />
+        <input placeholder="Enter your comment" type="text" />
+      </div>
+    </div>
+    <div
+      infiniteScroll
+      (scrolled)="loadMorePosts()"
+      [infiniteScrollDistance]="1"
+      [infiniteScrollThrottle]="300"
+    >
+      <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
+        Load More...
+      </h3>
+      <h3
+        style="font-weight: bold; text-align: center"
+        *ngIf="loading == false"
+      >
+        No more data to load
+      </h3>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="stories">
+      <div class="story">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://png.pngtree.com/png-vector/20230228/ourmid/pngtree-plus-sign-line-icon-vector-png-image_6624089.png"
+          width="40"
+        />
+        <div>
+          <div class="name">Create Your Story</div>
+          <div class="time">time to story</div>
+        </div>
+      </div>
+      <div class="story">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Anna Mull</div>
+          <div class="time">1 hour ago</div>
+        </div>
+      </div>
+      <div class="story">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Ira Membrit</div>
+          <div class="time">4 hours ago</div>
+        </div>
+      </div>
+      <div class="story">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Bob Frapples</div>
+          <div class="time">9 hours ago</div>
+        </div>
+      </div>
+      <div class="see-all">
+        <button>See All</button>
+      </div>
+    </div>
+    <div class="events">
+      <div class="event">
+        <img
+          alt="Event icon"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/KMJ9nPi5VUTk_HwRjnpFwaw1M3QlvyHjvHclw0kRQVM.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Web Workshop</div>
+          <div class="time">1 hour ago</div>
+        </div>
+      </div>
+      <div class="event">
+        <img
+          alt="Event icon"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/KMJ9nPi5VUTk_HwRjnpFwaw1M3QlvyHjvHclw0kRQVM.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Fun Events and Festivals</div>
+          <div class="time">1 hour ago</div>
+        </div>
+      </div>
+    </div>
+    <div class="upcoming-birthday">
+      <div class="birthday">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Anna Sthesia</div>
+          <div class="time">Today</div>
+        </div>
+      </div>
+      <div class="birthday">
+        <img
+          alt="User profile picture"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Paul Molive</div>
+          <div class="time">Tomorrow</div>
+        </div>
+      </div>
+    </div>
+    <div class="suggested-pages">
+      <div class="page">
+        <img
+          alt="Page icon"
+          height="40"
+          src="https://storage.googleapis.com/a1aa/image/RWs_0NTn69m4HREaoQQjD62q5HPop2-OkgSEFh43xzY.jpg"
+          width="40"
+        />
+        <div>
+          <div class="name">Iganic Studio</div>
+          <div class="time">Lorem ipsum</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

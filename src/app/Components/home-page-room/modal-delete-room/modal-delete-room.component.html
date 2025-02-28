@@ -1,7 +1,11 @@
 <div class="modal">
   <div class="modal-content">
     <div class="title">
-      <i class="fa-solid fa-x iconX d-flex justify-content-end"></i>
+      <i
+        class="fa-solid fa-x iconX d-flex justify-content-end"
+        (click)="onCloseModal()"
+        style="cursor: pointer"
+      ></i>
 
       <h3 class="login-title" style="text-align: center">
         Do you want to delete the room with the topic
