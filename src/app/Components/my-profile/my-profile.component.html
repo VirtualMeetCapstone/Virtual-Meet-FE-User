@@ -8,7 +8,7 @@
   <div class="profile-container">
     <div class="profile-header-row">
       <div class="profile-header">
-        <img [src]="user.avatar" class="profile-pic-large" alt="User Profile" />
+        <app-my-profile-stories [user]="user"></app-my-profile-stories>
       </div>
       <div class="profile-info">
         <h2 class="profile-username">{{ user.name }}</h2>

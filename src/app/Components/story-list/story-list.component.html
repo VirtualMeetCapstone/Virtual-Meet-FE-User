@@ -1,25 +1,30 @@
-<p-carousel [value]="products" [numVisible]="9" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions">
+<p-carousel
+  [value]="products"
+  [numVisible]="9"
+  [numScroll]="1"
+  [circular]="true"
+  [responsiveOptions]="responsiveOptions"
+>
   <ng-template let-product pTemplate="item">
-    <div 
-    
-    class="flex flex-col items-center justify-center w-24 h-24 rounded-full overflow-hidden p-1 shadow-sm">
-     
-    <img 
-  (click)="openStory(product, products.indexOf(product))" 
-  [ngClass]="{
-    'isWatch': !storyService.isViewed(products.indexOf(product)),
-    'watched': storyService.isViewed(products.indexOf(product))
-  }" 
-  style="width: 90px; height: 90px; border-radius: 50%;" 
-  src="https://primefaces.org/cdn/primeng/images/demo/product/{{ product.image }}" 
-  [alt]="product.name" 
-  class="w-full h-full object-cover" 
-/>
+    <div
+      class="flex flex-col items-center justify-center w-24 h-24 rounded-full overflow-hidden p-1 shadow-sm"
+    >
+      <img
+        (click)="openStory(product, products.indexOf(product))"
+        [ngClass]="{
+          isWatch: !storyService.isViewed(products.indexOf(product)),
+          watched: storyService.isViewed(products.indexOf(product))
+        }"
+        style="width: 90px; height: 90px; border-radius: 50%"
+        src="https://primefaces.org/cdn/primeng/images/demo/product/{{
+          product.image
+        }}"
+        [alt]="product.name"
+        class="w-full h-full object-cover"
+      />
 
-  
-    <div class="mt-1 text-sm font-medium text-center truncate w-full">
+      <div class="mt-1 text-sm font-medium text-center truncate w-full">
         {{ product.name }}
-       
       </div>
     </div>
   </ng-template>

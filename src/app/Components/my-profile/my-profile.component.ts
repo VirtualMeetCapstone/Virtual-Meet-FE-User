@@ -13,8 +13,6 @@ interface Profile {
   avatar: string;
 }
 
-interface PostsFeed {}
-
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
