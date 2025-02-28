@@ -14,6 +14,7 @@ export class StoryServiceService {
     })
   };
   private readonly BASE_URL = 'http://dev-vmeet.runasp.net/stories/';
+  viewedStories: Set<number> = new Set();
   
     
   
@@ -34,4 +35,15 @@ export class StoryServiceService {
       
       return throwError('Something bad happened; please try again later.');
     }
+
+
+
+  markAsViewed(index: number) {
+    this.viewedStories.add(index);
+    console.log("Updated viewedStories:", this.viewedStories);
+  }
+
+  isViewed(index: number): boolean {
+    return this.viewedStories.has(index);
+  }
 }
