@@ -83,7 +83,7 @@
 
           <!-- Menu dropdown -->
           <div *ngIf="isShowUserMenu" class="dropdown-user">
-            <a href="#" (click)="editProfile(); $event.stopPropagation()">Edit Profile</a>
+            <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">Edit Profile</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>
