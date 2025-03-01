@@ -98,12 +98,10 @@ export class AuthService {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
     }
-    console.log(userId);
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.getToken()}` });
 
     try {
       const user = await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
-     console.log(user);
       this.backendUserCache.set(userId, user);
       return user;
     } catch (error) {
