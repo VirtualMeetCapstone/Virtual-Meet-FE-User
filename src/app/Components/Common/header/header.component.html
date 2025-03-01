@@ -1,15 +1,8 @@
 <div class="row p-3">
   <!-- Logo Virtual Meet -->
   <div class="col-lg-4 col-md-4 col-sm-6 col-6">
-    <h3
-      style="
-        font-size: 30px;
-        font-weight: 700;
-        margin-top: 10px;
-        margin-left: 4px;
-      "
-    >
-      <a href="/" style="text-decoration: none; color: white"> VIRTUAL MEET </a>
+    <h3 style="font-size: 30px; font-weight: 700; margin-top: 10px; margin-left: 4px;">
+      <a href="/" style="text-decoration: none; color: white">VIRTUAL MEET</a>
     </h3>
   </div>
 
@@ -23,10 +16,7 @@
 
   <!-- Khu vực menu + thông báo + user -->
   <div class="col-lg-4 col-md-3 col-sm-5 col-5">
-    <div
-      class="menu-container d-flex align-items-center"
-      style="flex-direction: row-reverse"
-    >
+    <div class="menu-container d-flex align-items-center" style="flex-direction: row-reverse">
       <!-- Menu dropdown -->
       <div class="menu-icon">
         <i
@@ -34,13 +24,10 @@
           style="color: white; cursor: pointer; margin-left: 15px"
           (click)="onClickDropdown()"
         ></i>
-
         <div class="dropdown-menu" *ngIf="isShowDropdown">
           <a href="#"><i class="fas fa-home"></i>Creator tools</a>
           <a href="#"><i class="fas fa-language"></i>English</a>
-          <a href="#"
-            ><i class="fas fa-question-circle"></i>Feedback and help</a
-          >
+          <a href="#"><i class="fas fa-question-circle"></i>Feedback and help</a>
           <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
         </div>
       </div>
@@ -62,22 +49,21 @@
           <h4 id="notification-title">Thông báo</h4>
           <div
             class="notification-item"
-            *ngFor="let notification of notifications"
+            *ngFor="let notification of notifications; trackBy: trackByNotification"
           >
             <img
               class="notification-avatar"
               alt="User avatar"
               [src]="notification.avatarUrl"
+              loading="lazy"
             />
             <div class="notification-content">
               <p>
                 <span class="notification-thread">thảo luận</span>
-                <strong>{{ notification.username }}</strong> đã trả lời trong
-                chủ đề VirtualMeet.
+                <strong>{{ notification.username }}</strong> đã trả lời trong chủ đề VirtualMeet.
               </p>
               <p class="notification-time">
-                Hôm nay lúc {{ notification.time }} · Đã đọc:
-                {{ notification.readTime }}
+                Hôm nay lúc {{ notification.time }} · Đã đọc: {{ notification.readTime }}
               </p>
               <p class="notification-action">Đánh dấu chưa đọc</p>
             </div>
@@ -89,52 +75,52 @@
           </div>
         </div>
       </div>
-      <!-- login  -->
+
+      <!-- Login -->
       <div *ngIf="!loggedIn">
         <button class="login-bt" (click)="onClickLoginDialog()">
           <h5 style="line-height: 20px">Login</h5>
         </button>
       </div>
+
       <div *ngIf="loggedIn">
-        <div
-          class="user-info d-flex align-items-center position-relative"
-          (click)="toggleUserMenu()"
-        >
+        <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
           <div class="user-avatar-container">
             <!-- Hiển thị loading khi chưa có ảnh -->
             <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
 
-            <img *ngIf="!isLoadingUser && user?.photoUrl; else defaultAvatar"
-              [src]="user?.photoUrl"
+            <!-- Hiển thị ảnh người dùng -->
+            <img
+              *ngIf="!isLoadingUser && user?.picture?.url; else defaultAvatar"
+              [src]="user?.picture?.url"
               alt="User Avatar"
-              class="user-avatar" />
+              class="user-avatar"
+              loading="lazy"
+            />
 
+            <!-- Ảnh mặc định -->
             <ng-template #defaultAvatar>
-              <i
-                class="fa-solid fa-user-circle fa-2xl"
-                style="color: white"
-              ></i>
+              <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
             </ng-template>
           </div>
 
-          <!-- Hiển thị loading khi chưa có tên -->
+          <!-- Hiển thị tên người dùng -->
           <span *ngIf="isLoadingUser; else showName">Loading...</span>
           <ng-template #showName>
             <span class="user-name">{{ user?.name }}</span>
           </ng-template>
 
-          <!-- Menu dropdown -->
+          <!-- User Menu -->
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">Edit Profile</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>
       </div>
+      </div>
     </div>
-  </div>
-</div>
 
 <app-login-modal
   [isShowLoginDialog]="isShowLoginDialog"

@@ -10,17 +10,18 @@ import { AppConstants } from '../../constant/AppConstants';
 export class AuthService {
   private tokenSubject: BehaviorSubject<string>;
   private loggedInSubject: BehaviorSubject<boolean>;
-  public loggedIn$: any; // ✅ Để tránh lỗi, gán sau khi khởi tạo
-
+  public loggedIn$: any;
+  private userSubject: BehaviorSubject<any>;
   private cachedUser: any = null;
   private backendUserCache = new Map<string, any>();
-
+  public user$: any;
   constructor(private http: HttpClient) {
     const initialToken = this.getStoredToken();
-
+    this.userSubject = new BehaviorSubject<any>(null);
     this.tokenSubject = new BehaviorSubject<string>(initialToken);
     this.loggedInSubject = new BehaviorSubject<boolean>(!!initialToken);
     this.loggedIn$ = this.loggedInSubject.asObservable();
+    this.user$ = this.userSubject.asObservable();
   }
 
   private isBrowser(): boolean {
@@ -88,8 +89,6 @@ export class AuthService {
     }
   }
 
-
-
   login(token: string, refreshToken: string) {
     this.setToken(token, refreshToken);
     this.updateLoginState(true);
@@ -99,10 +98,12 @@ export class AuthService {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
     }
+    console.log(userId);
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.getToken()}` });
 
     try {
       const user = await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
+     console.log(user);
       this.backendUserCache.set(userId, user);
       return user;
     } catch (error) {

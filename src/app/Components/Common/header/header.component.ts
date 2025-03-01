@@ -1,59 +1,98 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../../services/auth-service/auth.service';
-import { SocialUser } from '@abacritt/angularx-social-login';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isShowDropdown = false;
   isShowLoginDialog = false;
   isShowNotification = false;
   isShowUserMenu = false;
   isLoadingUser = true;
-  user: SocialUser | null = null;
+  user: any = null;
   loggedIn = false;
+  idNew: string = '';
 
-  constructor(private authService: AuthService, private router: Router,private sanitizer: DomSanitizer) {}
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   notifications = [
     {
       avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
       username: "oshp1512",
       time: "1:18 PM",
-      readTime: "Vừa xong"
+      readTime: "Vừa xong",
     },
     {
       avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
       username: "oshp1512",
       time: "1:18 PM",
-      readTime: "Vừa xong"
-    }
+      readTime: "Vừa xong",
+    },
   ];
 
   ngOnInit() {
-    this.isLoadingUser = true; // Bắt đầu loading
+    this.isLoadingUser = true;
+    this.authService.loggedIn$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (status: boolean) => {
+        this.loggedIn = status;
+        if (status) {
+          const userId = this.authService.getUser()?.id;
 
-    this.authService.loggedIn$.subscribe((status: boolean) => {
-      this.loggedIn = status;
+          if (userId) {
+            this.idNew = userId;
+            this.user = await this.authService.getBackendUser(userId);
 
-      if (status) {
-        this.user = this.authService.getUser();
-      }
-
-      // Chỉ dừng loading khi có dữ liệu user.name & user.photoUrl
-      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
-    });
+            if (!this.user.id) {
+              this.user.id = this.idNew;
+            }
+          }
+        } else {
+          this.user = null;
+        }
+        this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
+        this.cdr.markForCheck();
+      });
 
     if (this.authService.isLoggedIn()) {
-      this.user = this.authService.getUser();
-      this.isLoadingUser = !(this.user?.name && this.user?.photoUrl);
+      const userId = this.authService.getUser()?.id;
+      if (userId) {
+        this.authService.getBackendUser(userId).then((user) => {
+          this.user = user;
+          this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
+          this.cdr.markForCheck();
+        });
+      }
     }
   }
 
+  editProfile() {
+    if (!this.idNew) {
+      return;
+    }
+    this.isShowUserMenu = false;
+    this.router.navigate([`/my-profile/${this.idNew}`]);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
@@ -78,18 +117,16 @@ export class HeaderComponent implements OnInit {
   toggleUserMenu() {
     this.isShowUserMenu = !this.isShowUserMenu;
   }
-  editProfile() {
-    if (!this.user) {
-      return;
-    }
-    this.isShowUserMenu = false;
-    this.router.navigate([`/my-profile/${this.user.id}`]);
-  }
 
   logout() {
     this.authService.logout();
     this.user = null;
     this.loggedIn = false;
     this.isShowUserMenu = false;
+    this.cdr.markForCheck();
+  }
+
+  trackByNotification(index: number, notification: any): number {
+    return index;
   }
 }
