@@ -8,7 +8,10 @@
   <div class="profile-container">
     <div class="profile-header-row">
       <div class="profile-header">
-        <app-my-profile-stories [user]="user"></app-my-profile-stories>
+        <app-my-profile-stories
+          [user]="user"
+          [userId]="userId"
+        ></app-my-profile-stories>
       </div>
       <div class="profile-info">
         <h2 class="profile-username">{{ user.name }}</h2>

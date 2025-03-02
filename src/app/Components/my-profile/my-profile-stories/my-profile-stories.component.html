@@ -1,16 +1,13 @@
+<!-- Phần avatar của user -->
 <div class="profile-avatar-container">
   <div
     class="avatar-wrapper"
     [ngClass]="{
-      isWatch: !storyService.isViewed(userId),
-      watched: storyService.isViewed(userId)
+      isWatch: !isWatched,
+      watched: isWatched
     }"
+    (click)="openStory()"
   >
-    <img
-      (click)="openStory()"
-      [src]="user.avatar"
-      class="profile-pic-large"
-      alt="User Profile"
-    />
+    <img [src]="user.avatar" class="profile-pic-large" alt="User Profile" />
   </div>
 </div>

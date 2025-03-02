@@ -4,10 +4,10 @@ import { StoryServiceService } from '../../services/story-service/story-service.
 
 @Component({
   selector: 'app-story-modal',
-  templateUrl: './story-modal.component.html',
-  styleUrls: ['./story-modal.component.scss'],
+  templateUrl: './story-modal-my-profile.component.html',
+  styleUrls: ['./story-modal-my-profile.component.scss'],
 })
-export class StoryModalComponent {
+export class StoryModalMyProfileComponent {
   viewers = [
     { image: 'bamboo-watch.jpg' },
     { image: 'black-watch.jpg' },
@@ -21,17 +21,20 @@ export class StoryModalComponent {
   stories: any[];
   currentIndex: number;
   currentStory: any;
+  userAvatar!: any;
+
   isLiked = false;
   constructor(
-    public dialogRef: MatDialogRef<StoryModalComponent>,
+    public dialogRef: MatDialogRef<StoryModalMyProfileComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private storyService: StoryServiceService
   ) {
     this.stories = data.stories; //get data from Story Modal
     this.currentIndex = data.currentIndex;
-    console.log('current index', data.currentIndex);
     this.currentStory = this.stories[this.currentIndex];
-    console.log('image hien tai: ' + this.currentStory);
+    this.userAvatar = data.userAvatar;
+
+    console.log('Current story:', this.currentStory);
   }
 
   next(): void {

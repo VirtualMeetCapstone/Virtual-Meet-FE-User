@@ -30,7 +30,7 @@ import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
-import { StoryModalComponent } from './Components/story-modal/story-modal.component';
+import { StoryModalMyProfileComponent } from './Components/story-modal-my-profile/story-modal-my-profile.component';
 
 import {
   SocialLoginModule,
@@ -44,6 +44,7 @@ import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-fee
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
 import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
 import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-stories/my-profile-stories.component';
+import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-st
     MyPostComponent,
     ModalDeleteRoomComponent,
     StoryListComponent,
+    StoryModalMyProfileComponent,
     StoryModalComponent,
     LoginModalComponent,
     ModalAddEditRoomComponent,

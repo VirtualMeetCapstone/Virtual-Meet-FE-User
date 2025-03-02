@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StoryModalComponent } from './story-modal.component';
+import { StoryModalMyProfileComponent } from './story-modal-my-profile.component';
+
 describe('StoryModalComponent', () => {
-  let component: StoryModalComponent;
-  let fixture: ComponentFixture<StoryModalComponent>;
+  let component: StoryModalMyProfileComponent;
+  let fixture: ComponentFixture<StoryModalMyProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [StoryModalComponent],
+      declarations: [StoryModalMyProfileComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StoryModalComponent);
+    fixture = TestBed.createComponent(StoryModalMyProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
