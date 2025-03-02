@@ -1,35 +1,58 @@
 <h3 style="font-weight: bold; text-align: center">ROOM</h3>
-<div class="alert alert-secondary" role="alert" *ngFor="let message of messages">
+<div
+  class="alert alert-secondary"
+  role="alert"
+  *ngFor="let message of messages"
+>
   {{ message }}
 </div>
 <div class="container-button d-flex justify-content-center">
-  <button type="button" class="btn btn-secondary" style="font-weight: bolder" (click)="openModalAddRoom()">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    style="font-weight: bolder"
+    (click)="openModalAddRoom()"
+  >
     ADD ROOM
   </button>
 </div>
 <div class="container">
-  <div class="row" style="width: 100%;">
+  <div class="row" style="width: 100%">
     <div class="col-12 text-center p-3">
       <app-story-list></app-story-list>
     </div>
   </div>
 
-
   <div class="room-card" *ngFor="let room of rooms">
     <div class="header">
-      <img alt="User icon" height="30" src="{{ room.owner.picture }}" width="30" />
+      <img
+        alt="User icon"
+        height="30"
+        src="{{ room.owner.picture }}"
+        width="30"
+      />
       <div class="topic">{{ room.topic }} {{ room.medias.url }}</div>
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           <i class="fas fa-cog settings"> </i>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <div class="group-owner">
             <div style="color: black">Group Owner</div>
 
-            <img src="{{ room.owner.picture }}" alt="Owner Avatar" class="owner-avatar"
-              style="height: 50px; width: 50px" />
+            <img
+              src="{{ room.owner.picture }}"
+              alt="Owner Avatar"
+              class="owner-avatar"
+              style="height: 50px; width: 50px"
+            />
             <p style="color: #666">{{ room.owner.name }}</p>
             <p style="color: #666; line-height: 2px; font-size: 14px">
               Create At
@@ -37,8 +60,16 @@
             <p style="color: #666; line-height: 2px; font-size: 14px">
               {{ room.createTime }}
             </p>
-            <i class="fa-solid fa-trash" style="color: #ec1313; cursor: pointer"
-              (click)="openModalDeleteRoom(room)"></i>
+            <i
+              class="fa-solid fa-trash"
+              style="color: #ec1313; cursor: pointer"
+              (click)="openModalDeleteRoom(room)"
+            ></i>
+            <i
+              class="fas fa-pen text-primary ml-3"
+              (click)="openModalEditRoom(room)"
+              style="cursor: pointer"
+            ></i>
           </div>
           <!-- <a class="dropdown-item" href="#">Action</a>
           <a class="dropdown-item" href="#">Another action</a> -->
@@ -47,17 +78,37 @@
     </div>
 
     <div class="video">
-      <img style="width: 100%; height: 100%" *ngIf="room.medias.length > 0" src="{{ room.medias[0].url }}" />
+      <img
+        style="width: 100%; height: 100%"
+        *ngIf="room.medias.length > 0"
+        src="{{ room.medias[0].url }}"
+      />
     </div>
     <div class="participants" *ngFor="let member of room.members">
-      <img alt="Participant 1" height="30"
-        src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg" width="30" />
-      <img alt="Participant 2" height="30"
-        src="https://storage.googleapis.com/a1aa/image/cBtIbrIhfoPYImSU5p0JwwUwNVmrkL0eugKe_HHHb3o.jpg" width="30" />
-      <img alt="Participant 3" height="30"
-        src="https://storage.googleapis.com/a1aa/image/kjv73eey9UN13V615f3I55MYnr7GWuolWbkBBOtaNyA.jpg" width="30" />
-      <img alt="Participant 4" height="30"
-        src="https://storage.googleapis.com/a1aa/image/EFl8mweyV1pUw-c7n6sUDlVJOQD-fgSVr4BnicJ3QyM.jpg" width="30" />
+      <img
+        alt="Participant 1"
+        height="30"
+        src="https://storage.googleapis.com/a1aa/image/TfNmA7Vgw-zJGccK-UWYT8GHYlOYJ2yaNRjCJvYY2eM.jpg"
+        width="30"
+      />
+      <img
+        alt="Participant 2"
+        height="30"
+        src="https://storage.googleapis.com/a1aa/image/cBtIbrIhfoPYImSU5p0JwwUwNVmrkL0eugKe_HHHb3o.jpg"
+        width="30"
+      />
+      <img
+        alt="Participant 3"
+        height="30"
+        src="https://storage.googleapis.com/a1aa/image/kjv73eey9UN13V615f3I55MYnr7GWuolWbkBBOtaNyA.jpg"
+        width="30"
+      />
+      <img
+        alt="Participant 4"
+        height="30"
+        src="https://storage.googleapis.com/a1aa/image/EFl8mweyV1pUw-c7n6sUDlVJOQD-fgSVr4BnicJ3QyM.jpg"
+        width="30"
+      />
       <span class="more"> ...+5 </span>
     </div>
     <div class="actions">
@@ -75,7 +126,12 @@
   </div>
 </div>
 
-<div infiniteScroll (scrolled)="loadMoreRooms()" [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300">
+<div
+  infiniteScroll
+  (scrolled)="loadMoreRooms()"
+  [infiniteScrollDistance]="1"
+  [infiniteScrollThrottle]="300"
+>
   <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
     Load More...
   </h3>
@@ -83,18 +139,13 @@
     No more data to load
   </h3>
 </div>
-<app-modal-delete-room *ngIf="showModalDeleteRoom == true" [room]="roomToDelete"
-  (closeModal)="closeModalDeleteRoom($event)"></app-modal-delete-room>
-<app-modal-add-edit-room *ngIf="showModalAddEditRoom == true"
-  (closeModal)="closeModalAddRoom($event)"></app-modal-add-edit-room>
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <img src="..." class="rounded me-2" alt="..." />
-      <strong class="me-auto">Bootstrap</strong>
-      <small>11 mins ago</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">Hello, world! This is a toast message.</div>
-  </div>
-</div>
+<app-modal-delete-room
+  *ngIf="showModalDeleteRoom == true"
+  [room]="roomToDelete"
+  (closeModal)="closeModalDeleteRoom($event)"
+></app-modal-delete-room>
+<app-modal-add-edit-room
+  *ngIf="showModalAddEditRoom == true"
+  (closeModal)="closeModalAddRoom($event)"
+  [roomToEdit]="roomToEdit"
+></app-modal-add-edit-room>

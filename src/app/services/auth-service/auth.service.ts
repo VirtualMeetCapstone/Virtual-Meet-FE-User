@@ -10,17 +10,18 @@ import { AppConstants } from '../../constant/AppConstants';
 export class AuthService {
   private tokenSubject: BehaviorSubject<string>;
   private loggedInSubject: BehaviorSubject<boolean>;
-  public loggedIn$: any; // ✅ Để tránh lỗi, gán sau khi khởi tạo
-
+  public loggedIn$: any;
+  private userSubject: BehaviorSubject<any>;
   private cachedUser: any = null;
   private backendUserCache = new Map<string, any>();
-
+  public user$: any;
   constructor(private http: HttpClient) {
     const initialToken = this.getStoredToken();
-
+    this.userSubject = new BehaviorSubject<any>(null);
     this.tokenSubject = new BehaviorSubject<string>(initialToken);
     this.loggedInSubject = new BehaviorSubject<boolean>(!!initialToken);
     this.loggedIn$ = this.loggedInSubject.asObservable();
+    this.user$ = this.userSubject.asObservable();
   }
 
   private isBrowser(): boolean {
@@ -87,8 +88,6 @@ export class AuthService {
       return null;
     }
   }
-
-
 
   login(token: string, refreshToken: string) {
     this.setToken(token, refreshToken);

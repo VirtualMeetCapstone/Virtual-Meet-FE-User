@@ -43,6 +43,7 @@ import { RoomListComponent } from './Components/my-profile/room-list/room-list.c
 import { PostsFeedComponent } from './Components/my-profile/posts-feed/posts-feed.component';
 import { MyPostComponent } from './Components/my-profile/my-post/my-post.component';
 import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add-edit-room/modal-add-edit-room.component';
+import { HomePagePostComponent } from './Components/home-page-post/home-page-post.component';
 import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-stories/my-profile-stories.component';
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 
@@ -65,6 +66,7 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
     StoryModalComponent,
     LoginModalComponent,
     ModalAddEditRoomComponent,
+    HomePagePostComponent,
     MyProfileStoriesComponent,
   ],
   imports: [

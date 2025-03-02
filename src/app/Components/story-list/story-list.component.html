@@ -11,6 +11,7 @@
     >
       <img
         (click)="openStory(product, products.indexOf(product))"
+        style="width: 100px; border-radius: 50%"
         [ngClass]="{
           isWatch: !storyService.isViewed(products.indexOf(product)),
           watched: storyService.isViewed(products.indexOf(product))
@@ -22,7 +23,6 @@
         [alt]="product.name"
         class="w-full h-full object-cover"
       />
-
       <div class="mt-1 text-sm font-medium text-center truncate w-full">
         {{ product.name }}
       </div>
