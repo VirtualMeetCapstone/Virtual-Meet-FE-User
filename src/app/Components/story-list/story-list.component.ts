@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryServiceService } from '../../services/story-service/story-service.service';
 import {Story} from "../../models/story";
+import {AuthService} from "../../services/auth-service/auth.service";
+import {Viewer} from "../../models/viewer";
 // import { StoryServiceService } from '../../services/story-service/story-service.service';
 // import { Story } from '../../models/story';
 
@@ -12,18 +14,7 @@ import {Story} from "../../models/story";
   styleUrls: ['./story-list.component.scss'],
 })
 export class StoryListComponent {
-  products = [
-    { name: 'Story 1', image: 'bamboo-watch.jpg' },
-    { name: 'Story 2', image: 'black-watch.jpg' },
-    { name: 'Story 3', image: 'blue-band.jpg' },
-    { name: 'Story 4', image: 'blue-t-shirt.jpg' },
-    { name: 'Story 5', image: 'bracelet.jpg' },
-    { name: 'Story 6', image: 'brown-purse.jpg' },
-    { name: 'Story 7', image: 'brown-purse.jpg' },
-    { name: 'Story 8', image: 'brown-purse.jpg' },
-    { name: 'Story 9', image: 'brown-purse.jpg' },
-    { name: 'Story 10', image: 'brown-purse.jpg' },
-  ];
+  userId: string = "";
   public storiesData: Story[]= [];
   viewedStories: Set<number> = new Set();
   responsiveOptions = [
@@ -35,13 +26,16 @@ export class StoryListComponent {
 
   constructor(
     public dialog: MatDialog,
-    public storyService: StoryServiceService
-  ) {}
+    public storyService: StoryServiceService,
+    private authService: AuthService,
+  ) {
+    this.userId = authService.getUser()?.id;
+  }
   ngOnInit(): void {
     this.loadStories();
   }
   loadStories() {
-    this.storyService.getStories('9508ff30-6a84-4c1d-aa86-bc0813cd05fc').subscribe((response: any) => {
+    this.storyService.getStories(this.userId).subscribe((response: any) => {
       if (Array.isArray(response)) {
         this.storiesData = response;
         console.log("story data"+ this.storiesData);
@@ -57,7 +51,6 @@ export class StoryListComponent {
 
   // open modal, pass data
   openStory(story : Story, index: number): void {
-    this.storyService.markAsViewed(index);
     console.log('index ne:' + index);
     const dialogRef = this.dialog.open(StoryModalComponent, {
       width: '500px',

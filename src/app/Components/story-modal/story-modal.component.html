@@ -34,10 +34,7 @@
           *ngFor="let viewer of viewers.slice(0, 5); let last = last"
         >
           <img
-            [src]="
-              'https://primefaces.org/cdn/primeng/images/demo/product/' +
-              viewer.image
-            "
+            [src]="viewer.picture.url"
             alt="Viewer Avatar"
             class="viewer-avatar"
           />
