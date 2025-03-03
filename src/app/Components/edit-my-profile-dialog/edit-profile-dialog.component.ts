@@ -21,6 +21,7 @@ export class EditProfileDialogComponent {
   newAvatar: File | null = null;
   newBio: string;
   userId: string;
+  isLoading: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<EditProfileDialogComponent>,
@@ -43,13 +44,16 @@ export class EditProfileDialogComponent {
   }
 
   onSave() {
+    this.isLoading = true;
+
     const formData = new FormData();
     if (!this.newUsername || !this.newBio) {
       alert('Vui lòng điền đầy đủ thông tin');
+      this.isLoading = false;
       return;
     }
     formData.append('Name', this.newUsername);
-    formData.append('Bio', this.newBio);//new
+    formData.append('Bio', this.newBio); //new
 
     if (this.newAvatar instanceof File) {
       formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
@@ -76,6 +80,7 @@ export class EditProfileDialogComponent {
         },
         error: (error) => {
           console.error('Error:', error);
+          this.isLoading = false;
         },
       });
   }

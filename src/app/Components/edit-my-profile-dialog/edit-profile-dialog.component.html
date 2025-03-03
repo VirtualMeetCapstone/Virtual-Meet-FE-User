@@ -69,7 +69,10 @@
 
     <div class="footer-container">
       <button class="cancel-button" (click)="onCancel()">Hủy</button>
-      <button class="save-button" (click)="onSave()">Lưu</button>
+      <button class="save-button" (click)="onSave()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Lưu</span>
+        <div *ngIf="isLoading" class="spinner"></div>
+      </button>
     </div>
   </div>
 </div>

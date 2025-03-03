@@ -9,8 +9,8 @@
 .room-list-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 cột mỗi hàng */
-  gap: 20px; /* Khoảng cách giữa các item */
-  width: 180vh;
+  gap: 10px; /* Khoảng cách giữa các item */
+  width: 100%;
   margin-top: 20px;
 }
 
@@ -59,4 +59,26 @@
   .room-list-container {
     grid-template-columns: 1fr; /* 1 cột trên màn hình nhỏ */
   }
+}
+
+.no-room {
+  width: 85vw;
+  margin: 0 auto; /* Căn giữa khối theo chiều ngang */
+  text-align: center;
+  display: flex; /* Dùng flexbox để sắp xếp nội dung */
+  flex-direction: column; /* Sắp xếp theo cột */
+  align-items: center; /* Căn giữa theo chiều ngang */
+  justify-content: center; /* Căn giữa theo chiều dọc */
+  padding: 20px;
+}
+
+.no-room img {
+  width: 30%; /* 30% của khối .no-room */
+  max-width: 150px; /* Giới hạn kích thước tối đa */
+  margin-bottom: 15px; /* Khoảng cách bên dưới */
+}
+
+.no-room p {
+  font-size: 20px;
+  margin: 0; /* Loại bỏ margin mặc định */
 }

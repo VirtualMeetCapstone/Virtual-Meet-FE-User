@@ -46,6 +46,8 @@ import { ModalAddEditRoomComponent } from './Components/home-page-room/modal-add
 import { HomePagePostComponent } from './Components/home-page-post/home-page-post.component';
 import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-stories/my-profile-stories.component';
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
+import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
+import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,8 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
     ModalAddEditRoomComponent,
     HomePagePostComponent,
     MyProfileStoriesComponent,
+    SafeUrlPipe,
+    TimeAgoPipe,
   ],
   imports: [
     BrowserModule,

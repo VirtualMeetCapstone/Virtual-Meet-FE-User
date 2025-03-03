@@ -21,7 +21,7 @@ export class MyProfileStoriesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('UserId:', this.userId);
+    // console.log('UserId:', this.userId);
     if (this.userId) {
       this.fetchStories();
     }
@@ -30,17 +30,35 @@ export class MyProfileStoriesComponent implements OnInit {
   fetchStories(): void {
     this.myProfileStoryService.getMyProfileStories(this.userId).subscribe(
       (data: any) => {
-        // data đã là mảng story từ response.data
-        this.stories = (data || []).map((story: any) => ({
-          ...story,
-          image: story.media?.url,
-          name: story.content,
-          textContent: story.textContent,
-        }));
-        this.isWatched =
-          this.stories.length === 0 ||
-          this.myProfileStoryService.isViewed(this.userId);
-        console.log('Fetched stories:', this.stories);
+        const epochTicks = 621355968000000000;
+        const ticksPerMillisecond = 10000;
+        const nowMs = new Date().getTime(); // thời gian hiện tại (ms)
+
+        this.stories = (data || [])
+          .filter((story: any) => {
+            const createTimeMs =
+              (story.createTime - epochTicks) / ticksPerMillisecond;
+
+            const timeSinceCreated = nowMs - createTimeMs;
+
+            if (timeSinceCreated < 0) {
+              console.log(timeSinceCreated);
+              console.log(
+                `LOẠI BỎ tin ID ${story.id} , timeSinceCreated=${timeSinceCreated}ms`
+              );
+              return false; // loại bỏ tin
+            }
+
+            return true; // tin hợp lệ
+          })
+          .map((story: any) => ({
+            ...story,
+            image: story.media?.url,
+            name: story.content,
+            textContent: story.textContent,
+          }));
+
+        console.log('Stories sau khi lọc:', this.stories);
       },
       (error: any) => {
         console.error('Error fetching stories:', error);
@@ -63,12 +81,5 @@ export class MyProfileStoriesComponent implements OnInit {
       },
       hasBackdrop: true,
     });
-  }
-
-  convertTicksToDate(ticks: number): Date {
-    const epochTicks = 621355968000000000;
-    const ticksPerMillisecond = 10000;
-    const msSinceEpoch = (ticks - epochTicks) / ticksPerMillisecond;
-    return new Date(msSinceEpoch);
   }
 }

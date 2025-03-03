@@ -7,7 +7,9 @@
       <div class="row">
         <img class="user-avatar" [src]="userAvatar" alt="User Avatar" />
         <div class="story-title">{{ currentStory?.content }}</div>
-        <div><p class="story-time">1h</p></div>
+        <div>
+          <p class="story-time">{{ currentStory?.createTime | timeAgo }}</p>
+        </div>
         <p>{{ currentStory?.textContext }}</p>
       </div>
 
@@ -18,6 +20,15 @@
           alt="Story Image"
           class="story-image"
         />
+        <div *ngIf="currentStory?.musicUrl" class="music-player">
+          <iframe
+            [src]="getYouTubeEmbedUrl(currentStory.musicUrl) | safeUrl"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
       </div>
     </div>
 

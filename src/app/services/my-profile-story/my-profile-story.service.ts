@@ -19,7 +19,6 @@ export class MyProfileStoryService {
   };
 
   viewedStories: Set<string> = new Set();
-
   getMyProfileStories(userId: string): any {
     const url = `${AppConstants.API_BASE_URL_HTTPS}/stories/users/${userId}`;
 

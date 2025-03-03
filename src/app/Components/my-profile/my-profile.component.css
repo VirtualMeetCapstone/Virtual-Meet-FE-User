@@ -178,7 +178,7 @@ body {
   align-items: center;
   padding: 20px;
   background-color: #121212;
-  width: 170vh;
+  width: 100%;
 }
 
 .profile-header-row {
@@ -206,16 +206,16 @@ body {
 /* Phần thông tin & hành động của profile */
 .profile-title {
   width: 100%;
-  max-width: 52.75rem;
+  /* max-width: 60rem; */
   text-align: center;
   justify-items: left;
   margin-bottom: 2rem;
+  margin-left: 22.25rem;
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   margin-bottom: 15px;
 }
 

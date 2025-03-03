@@ -1,15 +1,23 @@
 <div class="room-list-container" *ngIf="!isRoomsLoading">
-  <div *ngFor="let room of rooms" class="room-item">
-    <img
-      [src]="
-        room.medias && room.medias.length > 0
-          ? room.medias[0].url
-          : './img/virtualMeetImageForNoImage.png'
-      "
-      alt="{{ room.topic }}"
-    />
-    <div class="room-topic-overlay">
-      <h3>{{ room.topic }}</h3>
+  <ng-container *ngIf="rooms && rooms.length > 0; else noRoom">
+    <div *ngFor="let room of rooms" class="room-item">
+      <img
+        [src]="
+          room.medias && room.medias.length > 0
+            ? room.medias[0].url
+            : './img/virtualMeetImageForNoImage.png'
+        "
+        alt="{{ room.topic }}"
+      />
+      <div class="room-topic-overlay">
+        <h3>{{ room.topic }}</h3>
+      </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #noRoom>
+    <div class="no-room">
+      <img src="./img/empty_icon.png" alt="room-list-icon" />
+      <p>No room, please join room.</p>
+    </div>
+  </ng-template>
 </div>
