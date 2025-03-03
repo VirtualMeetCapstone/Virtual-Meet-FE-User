@@ -1,0 +1,86 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="header-container">
+      <h1 class="header-title">Tạo tin mới</h1>
+      <div
+        class="close-button"
+        aria-label="Close_button"
+        role="button"
+        tabindex="0"
+      >
+        <button class="cancel-btn" (click)="onCancel()">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 48 48"
+            fill="rgba(255, 255, 255, .75)"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M21.1718 23.9999L10.2931 13.1212C9.90261 12.7307 9.90261 12.0975 10.2931 11.707L11.7074 10.2928C12.0979 9.90228 12.731 9.90228 13.1216 10.2928L24.0002 21.1715L34.8789 10.2928C35.2694 9.90228 35.9026 9.90228 36.2931 10.2928L37.7073 11.707C38.0979 12.0975 38.0979 12.7307 37.7073 13.1212L26.8287 23.9999L37.7073 34.8786C38.0979 35.2691 38.0979 35.9023 37.7073 36.2928L36.2931 37.707C35.9026 38.0975 35.2694 38.0975 34.8789 37.707L24.0002 26.8283L13.1216 37.707C12.731 38.0975 12.0979 38.0975 11.7074 37.707L10.2931 36.2928C9.90261 35.9023 9.90261 35.2691 10.2931 34.8786L21.1718 23.9999Z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="profile-section">
+        <div class="profile-label">Ảnh đăng tin</div>
+
+        <label for="file" class="custum-file-upload">
+          <ng-container *ngIf="!imagePreview; else previewBlock">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                  fill=""
+                ></path>
+              </svg>
+            </div>
+            <div class="text">
+              <span>Click to upload image</span>
+            </div>
+          </ng-container>
+          <ng-template #previewBlock>
+            <img [src]="imagePreview" alt="Preview" />
+          </ng-template>
+          <input
+            id="file"
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
+        </label>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Nội dung đăng tin</div>
+        <input
+          type="text"
+          placeholder="Nhập nội dung..."
+          [(ngModel)]="newContent"
+        />
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Link nhạc Youtube (Nếu có)</div>
+        <textarea
+          placeholder="Nhập link nhạc..."
+          [(ngModel)]="newMusicUrl"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="footer-container">
+      <button class="cancel-button" (click)="onCancel()">Hủy</button>
+      <button class="save-button" (click)="onSave()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Lưu</span>
+        <div *ngIf="isLoading" class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>

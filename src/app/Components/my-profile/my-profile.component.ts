@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profile-dialog.component';
 import { RoomListComponent } from './room-list/room-list.component';
+import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
 
 interface Profile {
   name: string;
@@ -91,6 +92,22 @@ export class MyProfileComponent implements OnInit {
         this.user.name = result.username;
         this.user.bio = result.bio;
         this.user.avatar = result.avatar;
+      }
+    });
+  }
+
+  // Open Create Profile Story
+  openCreateProfileStory() {
+    const dialogRef = this.dialog.open(CreateStoryDialogComponent, {
+      width: '500px',
+      data: {
+        id: this.userId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('New story added:', result);
       }
     });
   }

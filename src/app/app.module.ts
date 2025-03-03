@@ -48,6 +48,7 @@ import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-st
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
+import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.p
     MyProfileStoriesComponent,
     SafeUrlPipe,
     TimeAgoPipe,
+    CreateStoryDialogComponent,
   ],
   imports: [
     BrowserModule,

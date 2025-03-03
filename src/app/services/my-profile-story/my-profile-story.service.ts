@@ -20,7 +20,7 @@ export class MyProfileStoryService {
 
   viewedStories: Set<string> = new Set();
   getMyProfileStories(userId: string): any {
-    const url = `${AppConstants.API_BASE_URL_HTTPS}/stories/users/${userId}`;
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/stories`;
 
     return this.http.get<any>(url, this.httpOptions).pipe(
       map((response) => response.data),
