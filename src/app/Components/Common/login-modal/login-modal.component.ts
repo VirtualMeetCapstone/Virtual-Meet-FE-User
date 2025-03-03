@@ -18,7 +18,7 @@ export class LoginModalComponent implements OnInit {
 
   private authService = inject(SocialAuthService);
   private http = inject(HttpClient);
-  private customAuthService: AuthService = inject(AuthService);
+  customAuthService: AuthService = inject(AuthService);
 
   onClickLoginDialog() {
     this.openLoginDialog.emit(false);
@@ -41,18 +41,20 @@ export class LoginModalComponent implements OnInit {
     const url = `${AppConstants.API_BASE_URL_HTTPS}/signin/google?idToken=${encodeURIComponent(idToken)}`;
 
     this.http.get<{ accessToken: string; refreshToken: string }>(url).pipe(
+      take(1),
       switchMap(response => {
         if (response?.accessToken) {
           this.customAuthService.setToken(response.accessToken, response.refreshToken);
-          return this.customAuthService.loggedIn$;
+          return [true];
         }
-        throw new Error('No accessToken in response');
+        return [false];
       })
     ).subscribe(
-      () => this.customAuthService.updateLoginState(true),
+      isLoggedIn => this.customAuthService.updateLoginState(isLoggedIn),
       error => console.error('Error sending token:', error)
     );
   }
+
 
   signOut(): void {
     this.authService.signOut().then(() => {

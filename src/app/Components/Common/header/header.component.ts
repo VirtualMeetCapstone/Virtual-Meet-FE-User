@@ -120,10 +120,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.user = null;
-    this.loggedIn = false;
-    this.isShowUserMenu = false;
-    this.cdr.markForCheck();
+  this.user = null;
+  this.loggedIn = false;
+  this.isShowUserMenu = false;
+
+  window.location.reload();
+  this.cdr.markForCheck();
   }
 
   trackByNotification(index: number, notification: any): number {
