@@ -256,9 +256,17 @@ body {
   color: #fff;
 }
 
+.edit-profile-button:hover {
+  background-color: #f41919;
+}
+
 .promote-post-button {
   background-color: #555;
   color: #fff;
+}
+
+.promote-post-button:hover {
+  background-color: #434343;
 }
 
 .settings-button,

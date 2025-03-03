@@ -37,9 +37,9 @@ export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
     this.currentStory = this.stories[this.currentIndex];
     this.userAvatar = data.userAvatar;
 
-    console.log('Modal received stories:', this.stories);
-    console.log('Current story:', this.currentStory);
-    console.log('Modal received user avatar:', this.userAvatar);
+    // console.log('Modal received stories:', this.stories);
+    // console.log('Current story:', this.currentStory);
+    // console.log('Modal received user avatar:', this.userAvatar);
   }
 
   ngOnInit(): void {

@@ -42,10 +42,10 @@ export class MyProfileStoriesComponent implements OnInit {
             const timeSinceCreated = nowMs - createTimeMs;
 
             if (timeSinceCreated < 0) {
-              console.log(timeSinceCreated);
-              console.log(
-                `LOẠI BỎ tin ID ${story.id} , timeSinceCreated=${timeSinceCreated}ms`
-              );
+              // console.log(timeSinceCreated);
+              // console.log(
+              //   `LOẠI BỎ tin ID ${story.id} , timeSinceCreated=${timeSinceCreated}ms`
+              // );
               return false; // loại bỏ tin
             }
 
@@ -58,7 +58,7 @@ export class MyProfileStoriesComponent implements OnInit {
             textContent: story.textContent,
           }));
 
-        console.log('Stories sau khi lọc:', this.stories);
+        // console.log('Stories sau khi lọc:', this.stories);
       },
       (error: any) => {
         console.error('Error fetching stories:', error);
