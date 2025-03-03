@@ -53,9 +53,17 @@ export class StoryModalComponent {
     }
   }
 
-  toggleLike() {
-    this.isLiked = !this.isLiked;
+  toggleLike(storyId: string): void {
+    this.storyService.likeStory(storyId).subscribe(
+        (response: any) => {
+        console.log('Liked story successfully:', response);
+      },
+        (error: any) => {
+        console.error('Error liking story:', error);
+      }
+    );
   }
+
   close(): void {
     this.dialogRef.close();
   }

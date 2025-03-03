@@ -18,7 +18,7 @@ export class StoryServiceService {
   viewedStories: Set<number> = new Set();
 
     getStories(userId: string): any {
-      const url = `${AppConstants.API_BASE_URL_HTTPS}/stories/${userId}/friends`;
+      const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/followings/stories`;
       return this.http.get<any>(url, this.httpOptions)
        .pipe(catchError(this.handleError));
     }
@@ -35,6 +35,10 @@ export class StoryServiceService {
       return throwError('Something bad happened; please try again later.');
     }
 
+  likeStory(storyId: string): any {
+    const reactionUrl = `${AppConstants.API_BASE_URL_HTTPS}/stories/${storyId}/reactions`;
+    return this.http.post<any>(reactionUrl,{},this.httpOptions);
+  }
 
 
   markAsViewed(index: number) {

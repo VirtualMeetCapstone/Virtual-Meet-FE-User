@@ -2,6 +2,7 @@ import { StoryModalComponent } from './../story-modal/story-modal.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryServiceService } from '../../services/story-service/story-service.service';
+import {Story} from "../../models/story";
 // import { StoryServiceService } from '../../services/story-service/story-service.service';
 // import { Story } from '../../models/story';
 
@@ -23,7 +24,7 @@ export class StoryListComponent {
     { name: 'Story 9', image: 'brown-purse.jpg' },
     { name: 'Story 10', image: 'brown-purse.jpg' },
   ];
-  // public storiesData: Story[]= [];
+  public storiesData: Story[]= [];
   viewedStories: Set<number> = new Set();
   responsiveOptions = [
     { breakpoint: '1024px', numVisible: 3, numScroll: 3 },
@@ -31,34 +32,37 @@ export class StoryListComponent {
     { breakpoint: '560px', numVisible: 1, numScroll: 1 },
   ];
 
+
   constructor(
     public dialog: MatDialog,
     public storyService: StoryServiceService
   ) {}
-  // ngOnInit(): void {
-  //   // this.loadStories();
-  //   throw new Error('Method not implemented.');
-  // }
-  // loadStories() {
-  //   this.storyService.getStories('ABC').subscribe((response: any) => {
-  //     if (Array.isArray(response)) {
-  //       this.storiesData = response; // Gán dữ liệu vào stories
-  //     } else if (response && Array.isArray(response.data)) {
-  //       this.storiesData = response.data;
-  //     } else {
-  //       console.error("Unexpected response format:", response);
-  //     }
-  //   });
-  // }
+  ngOnInit(): void {
+    this.loadStories();
+  }
+  loadStories() {
+    this.storyService.getStories('9508ff30-6a84-4c1d-aa86-bc0813cd05fc').subscribe((response: any) => {
+      if (Array.isArray(response)) {
+        this.storiesData = response;
+        console.log("story data"+ this.storiesData);
+      } else if (response && Array.isArray(response.data)) {
+        this.storiesData = response.data;
+        console.log("story data"+ this.storiesData);
+
+      } else {
+        console.error("Unexpected response format:", response);
+      }
+    });
+  }
 
   // open modal, pass data
-  openStory(product: any, index: number): void {
+  openStory(story : Story, index: number): void {
     this.storyService.markAsViewed(index);
     console.log('index ne:' + index);
     const dialogRef = this.dialog.open(StoryModalComponent, {
       width: '500px',
       data: {
-        stories: this.products,
+        stories: this.storiesData,
         currentIndex: index,
       },
       hasBackdrop: true,
