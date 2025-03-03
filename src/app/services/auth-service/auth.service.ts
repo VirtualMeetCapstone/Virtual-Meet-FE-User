@@ -9,8 +9,9 @@ import { AppConstants } from '../../constant/AppConstants';
 })
 export class AuthService {
   private tokenSubject: BehaviorSubject<string>;
-  private loggedInSubject: BehaviorSubject<boolean>;
-  public loggedIn$: any;
+  private loggedInSubject = new BehaviorSubject<boolean>(false);
+  public loggedIn$ = this.loggedInSubject.asObservable();
+
   private userSubject: BehaviorSubject<any>;
   private cachedUser: any = null;
   private backendUserCache = new Map<string, any>();
@@ -119,7 +120,10 @@ export class AuthService {
       localStorage.removeItem('refreshToken');
       this.tokenSubject.next('');
     }
+
     this.cachedUser = null;
-    this.updateLoginState(false);
+    this.loggedInSubject.next(false);
+    document.cookie = 'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
+
 }
