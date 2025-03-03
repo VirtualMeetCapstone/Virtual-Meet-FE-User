@@ -46,7 +46,7 @@
 img.story-image {
   margin-top: 20px;
   height: 70vh;
-  width: 80%;
+
   border-radius: 10px;
 }
 iframe.story-video {
@@ -63,7 +63,7 @@ img.user-avatar {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  margin-left: 10px;
+  margin-left: -50px;
 }
 .story-title {
   font-size: 16px;
@@ -87,14 +87,14 @@ img.user-avatar {
 }
 
 .prev-button {
-  left: -15px;
+  left: -50px;
   right: 93%;
   top: 45vh;
 }
 
 .next-button {
   right: 0px;
-  left: 93%;
+  left: 103%;
   top: 45vh;
 }
 

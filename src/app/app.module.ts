@@ -12,7 +12,7 @@ import { LoginModalComponent } from './Components/Common/login-modal/login-modal
 import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
 import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
@@ -90,6 +90,7 @@ import { CreateStoryDialogComponent } from './Components/create-story-dialog/cre
     DialogModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    NgOptimizedImage,
   ],
   providers: [
     provideClientHydration(),
