@@ -74,3 +74,4 @@ export class StoryServiceService {
       return this.viewedStories.has(index);
     }
 }
+
