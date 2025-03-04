@@ -22,4 +22,5 @@ export interface Story {
   createTime: number;
   lastModifyTime: number;
   isViewed: boolean;
+  isLiked: boolean;
 }
