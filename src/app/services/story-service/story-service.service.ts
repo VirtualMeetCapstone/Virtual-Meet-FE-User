@@ -64,13 +64,14 @@ export class StoryServiceService {
     const url = `${AppConstants.API_BASE_URL_HTTPS}/stories/${storyId}/views`;
     return this.http.get<Viewer[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
-
+  }
   markAsViewed(index: number) {
     this.viewedStories.add(index);
-    // console.log("Updated viewedStories:", this.viewedStories);
+  //   // console.log("Updated viewedStories:", this.viewedStories);
   }
 
   isViewed(index: number): boolean {
     return this.viewedStories.has(index);
   }
 }
+
