@@ -23,7 +23,7 @@ export class StoryServiceService {
 
 
     getStories(userId: string): any {
-      const url = `${AppConstants.API_BASE_URL_HTTPS}/users/9508ff30-6a84-4c1d-aa86-bc0813cd05fc/followings/stories`;
+      const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/followings/stories`;
       return this.http.get<any>(url, this.httpOptions)
        .pipe(catchError(this.handleError));
     }

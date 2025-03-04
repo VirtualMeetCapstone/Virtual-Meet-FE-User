@@ -21,4 +21,5 @@ export interface Story {
   isActive: boolean;
   createTime: number;
   lastModifyTime: number;
+  isViewed: boolean;
 }

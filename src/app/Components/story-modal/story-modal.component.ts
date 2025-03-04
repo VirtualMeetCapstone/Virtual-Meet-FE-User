@@ -1,6 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { StoryServiceService } from '../../services/story-service/story-service.service';
+import {AfterViewInit, Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {StoryServiceService} from '../../services/story-service/story-service.service';
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Viewer} from "../../models/viewer";
 
@@ -9,13 +9,15 @@ import {Viewer} from "../../models/viewer";
   templateUrl: './story-modal.component.html',
   styleUrls: ['./story-modal.component.scss'],
 })
-export class StoryModalComponent implements OnInit {
+export class StoryModalComponent implements OnInit, AfterViewInit {
   viewers: Viewer[] = [];
   userId: string = "";
   stories: any[];
   currentIndex: number;
   currentStory: any;
   isLiked = false;
+  isViewed = false;
+
   constructor(
     public dialogRef: MatDialogRef<StoryModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -25,37 +27,46 @@ export class StoryModalComponent implements OnInit {
     this.stories = data.stories; //get data from Story Modal
     this.currentIndex = data.currentIndex;
     this.currentStory = this.stories[this.currentIndex];
-  this.userId = this.authService.getUser()?.id
-    this.storyService.viewStory(this.userId,this.currentStory.id).subscribe();
-this.loadViewer();
+    this.userId = this.authService.getUser()?.id
+    this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
+    this.loadViewer();
+
+  }
+
+  ngAfterViewInit(): void {
+    this.adjustStoryImageSize();
   }
 
   next(): void {
     this.currentIndex = (this.currentIndex + 1) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
-
-
     this.isLiked = !this.isLiked;
+    this.adjustStoryImageSize();
+
     if (this.currentIndex === 0) {
       this.close();
     }
+
   }
+
 
   previous(): void {
     this.currentIndex =
       (this.currentIndex - 1 + this.stories.length) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
+    this.adjustStoryImageSize();
+
     if (this.currentIndex === this.stories.length - 1) {
       this.close();
     }
+
   }
 
   toggleLike(storyId: string): void {
-    this.storyService.likeStory(this.userId,storyId).subscribe(
-        (response: any) => {
-        console.log('Liked story successfully:', response);
+    this.storyService.likeStory(this.userId, storyId).subscribe(
+      (response: any) => {
       },
-        (error: any) => {
+      (error: any) => {
         console.error('Error liking story:', error);
       }
     );
@@ -66,8 +77,9 @@ this.loadViewer();
   }
 
   ngOnInit(): void {
-  this.loadViewer();
+    this.loadViewer();
   }
+
   loadViewer() {
     this.storyService.getStoryViewers(this.currentStory.id).subscribe((response: any) => {
       if (response && Array.isArray(response.data)) {
@@ -80,11 +92,54 @@ this.loadViewer();
         });
 
         this.viewers = Array.from(uniqueViewers.values());
-        console.log("Filtered story data:", this.viewers);
       } else {
         console.error("Unexpected response format:", response);
       }
     });
+  }
+
+  adjustStoryImageSize() {
+    const storyImage: HTMLImageElement | null = document.querySelector('.story-image');
+    const preButton: HTMLImageElement | null = document.querySelector('.prev-button');
+    const nextButton: HTMLImageElement | null = document.querySelector('.next-button');
+    const userAvatar: HTMLImageElement | null = document.querySelector('.story-user-avatar');
+
+    if (storyImage) {
+      storyImage.onload = () => {
+        const aspectRatio = storyImage.naturalHeight / storyImage.naturalWidth;
+        if (aspectRatio > 1.5) {
+          // Ảnh chụp bằng điện thoại
+          storyImage.style.width = '110%';
+          storyImage.style.marginLeft = "-10px";
+          if (userAvatar) {
+            userAvatar.style.marginLeft = "-40px";
+          }
+          if (preButton) {
+            preButton.style.marginLeft = "-40px";
+            preButton.style.right = "107%";
+          }
+          if (nextButton) {
+            nextButton.style.left = "110%";
+
+          }
+        } else {
+          // Ảnh chụp màn hình máy tính
+          storyImage.style.width = '85%';
+          storyImage.style.marginLeft = '-5px';
+          if (userAvatar) {
+            userAvatar.style.marginLeft = "10px";
+          }
+          if (preButton) {
+            preButton.style.right = "94%";
+
+          }
+          if (nextButton) {
+            nextButton.style.left = "93%";
+
+          }
+        }
+      };
+    }
   }
 
 
