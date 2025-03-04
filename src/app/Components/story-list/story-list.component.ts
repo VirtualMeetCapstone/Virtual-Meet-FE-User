@@ -1,14 +1,11 @@
 import {StoryModalComponent} from './../story-modal/story-modal.component';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {StoryServiceService} from '../../services/story-service/story-service.service';
 import {Story} from "../../models/story";
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Viewer} from "../../models/viewer";
-// import { StoryServiceService } from '../../services/story-service/story-service.service';
-// import { Story } from '../../models/story';
-import {map} from 'rxjs/operators';
-import {forkJoin} from "rxjs";
+
 
 @Component({
   selector: 'app-story-list',
@@ -70,7 +67,7 @@ export class StoryListComponent implements OnInit {
   }
 
   // open modal, pass data
-  openStory(story: Story, index: number): void {
+  openStory( index: number): void {
     const dialogRef = this.dialog.open(StoryModalComponent, {
       width: '500px',
       data: {
@@ -79,7 +76,7 @@ export class StoryListComponent implements OnInit {
       },
       hasBackdrop: true,
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
     });
   }
