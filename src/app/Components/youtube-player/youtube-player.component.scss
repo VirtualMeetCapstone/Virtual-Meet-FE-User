@@ -1,0 +1,258 @@
+/* 🌑 Popup Video */
+.video-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 1000px;
+  height: 85vh;
+  background: #121212;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  padding: 20px;
+  color: #ffffff;
+  position: relative;
+}
+
+/* ☰ MENU */
+.menu {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.menu-button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.menu-button:hover {
+  background: #666;
+}
+
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #222;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.menu:hover .menu-dropdown {
+  display: block;
+}
+
+.menu-item {
+  display: block;
+  width: 150px;
+  padding: 10px;
+  text-align: left;
+  background: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #555;
+}
+
+/* 🔍 Ô tìm kiếm */
+.search-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.search-box {
+  flex-grow: 1;
+  padding: 12px;
+  font-size: 16px;
+  background: #333;
+  color: white;
+  border: 1px solid #777;
+  border-radius: 6px;
+}
+
+.search-button {
+  padding: 12px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #ff0000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-left: 10px;
+  transition: background 0.2s;
+}
+
+.search-button:hover {
+  background: #cc0000;
+}
+
+/* 📺 Trạng thái Video */
+.video-status {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00ffcc;
+  margin-bottom: 10px;
+}
+
+/* ▶️ Nút điều khiển */
+.video-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.video-controls button {
+  padding: 10px 14px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.video-controls button:hover {
+  background: #666;
+}
+
+/* 📜 Danh sách video */
+.video-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  overflow-y: auto;
+  max-height: 250px;
+  width: 100%;
+  padding: 10px;
+  background: #1e1e1e;
+  border-radius: 8px;
+}
+
+.video-item {
+  width: 30%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  text-align: center;
+}
+
+.video-item:hover {
+  transform: scale(1.05);
+}
+
+.video-item img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.video-item p {
+  color: white;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* 🎨 Whiteboard Popup */
+.whiteboard-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 1000px;
+  height: 85vh;
+  background: #121212;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  padding: 20px;
+  color: #ffffff;
+  position: relative;
+}
+
+.whiteboard-popup h2 {
+  margin-bottom: 20px;
+  color: #00ffcc;
+}
+
+#whiteboardCanvas {
+  border: 1px solid #777;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 6px;
+  cursor: crosshair;
+}
+
+/* 🌟 Chỉnh sửa menu hoạt động */
+.activity-menu {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.activity-item {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.activity-item:hover {
+  background: #666;
+}
+
+
+.activity-button {
+  background-color: #4CAF50; /* Green background */
+  color: white;              /* White text */
+  font-size: 16px;           /* Text size */
+  border: none;              /* Remove border */
+  border-radius: 5px;        /* Rounded corners */
+  padding: 10px 20px;        /* Top/Bottom and Left/Right padding */
+  cursor: pointer;          /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+
+  &:hover {
+    background-color: #45a049; /* Darker green on hover */
+    transform: scale(1.05);     /* Slightly enlarge button */
+  }
+
+  &:active {
+    background-color: #3e8e41; /* Even darker green when clicked */
+    transform: scale(1);        /* Reset scale when clicked */
+  }
+
+  &.active {
+    background-color: #d32f2f;  /* Red background when active */
+  }
+}
