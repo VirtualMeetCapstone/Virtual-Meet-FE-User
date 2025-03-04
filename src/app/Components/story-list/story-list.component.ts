@@ -1,4 +1,4 @@
-import {StoryModalComponent} from './../story-modal/story-modal.component';
+import {StoryModalComponent} from '../story-modal/story-modal.component';
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {StoryServiceService} from '../../services/story-service/story-service.service';
@@ -62,6 +62,8 @@ export class StoryListComponent implements OnInit {
             return viewerWrapper.viewer.id === this.authService.getUser()?.id;
           });
         });
+
+
       });
     });
   }

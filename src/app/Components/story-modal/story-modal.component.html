@@ -47,7 +47,7 @@
       </div>
       <i
         (click)="toggleLike(currentStory.id)"
-        [ngClass]="{ fas: isLiked, far: !isLiked }"
+        [ngClass]="{ fas: currentStory.isLiked, far: !currentStory.isLiked }"
         class="fa-heart heart-icon"
       ></i>
     </div>

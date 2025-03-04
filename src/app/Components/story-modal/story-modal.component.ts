@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StoryServiceService} from '../../services/story-service/story-service.service';
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Viewer} from "../../models/viewer";
+import {Reaction} from "../../models/reaction";
 
 @Component({
   selector: 'app-story-modal',
@@ -16,7 +17,6 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
   currentIndex: number;
   currentStory: any;
   isLiked = false;
-  isViewed = false;
 
   constructor(
     public dialogRef: MatDialogRef<StoryModalComponent>,
@@ -30,31 +30,48 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
     this.userId = this.authService.getUser()?.id
     this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
     this.loadViewer();
-
+   this.checkIsLiked();
   }
 
   ngAfterViewInit(): void {
     this.adjustStoryImageSize();
   }
 
+checkIsLiked() {
+  this.storyService.getStoryReaction(this.currentStory.id).subscribe((reactionResponse: any) => {
+    //check data response
+    //if Reaction[] => Reaction[]
+    //if array[] => Reaction[]
+    const reactions: Reaction[] = Array.isArray(reactionResponse)
+      ? reactionResponse as Reaction[]
+      : Array.isArray(reactionResponse.data)
+        ? reactionResponse.data as Reaction[]
+        : []
+    //check is viewed
+    this.currentStory.isLiked = reactions.some((reaction: any) => {
+      return reaction.userId === this.authService.getUser()?.id;
+    });
+  })
+}
+
   next(): void {
     this.currentIndex = (this.currentIndex + 1) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
     this.isLiked = !this.isLiked;
     this.adjustStoryImageSize();
+    this.checkIsLiked();
 
     if (this.currentIndex === 0) {
       this.close();
     }
 
   }
-
-
   previous(): void {
     this.currentIndex =
       (this.currentIndex - 1 + this.stories.length) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
     this.adjustStoryImageSize();
+    this.checkIsLiked();
 
     if (this.currentIndex === this.stories.length - 1) {
       this.close();
@@ -64,13 +81,15 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
 
   toggleLike(storyId: string): void {
     this.storyService.likeStory(this.userId, storyId).subscribe(
-      (response: any) => {
+      () => {
+        this.checkIsLiked();
       },
       (error: any) => {
         console.error('Error liking story:', error);
       }
     );
   }
+
 
   close(): void {
     this.dialogRef.close();
