@@ -49,6 +49,7 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
 import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
+import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { CreateStoryDialogComponent } from './Components/create-story-dialog/cre
     SafeUrlPipe,
     TimeAgoPipe,
     CreateStoryDialogComponent,
+    YoutubePlayerComponent,
   ],
   imports: [
     BrowserModule,
