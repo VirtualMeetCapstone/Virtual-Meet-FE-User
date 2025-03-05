@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import { AppConstants } from '../../../constant/AppConstants';
 interface Media {
   url: string;
   type: number;
@@ -41,7 +41,7 @@ export class RoomListComponent implements OnChanges {
     this.isRoomsLoading = true;
     try {
       const response = await fetch(
-        `http://dev-vmeet.runasp.net/rooms/${id}/favourite`
+        `${AppConstants.API_BASE_URL_HTTPS}/rooms/${id}/favourite`
       );
       if (!response.ok) throw new Error('Failed to fetch rooms');
       const data = await response.json();
