@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Build Angular
-        run: npm run build --prod
+        run: npm run build -- --configuration=production
 
       - name: Deploy to Vercel
         run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
