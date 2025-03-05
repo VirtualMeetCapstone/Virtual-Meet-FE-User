@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import { AppConstants } from '../../../constant/AppConstants';
 interface Media {
   url: string;
   type: number;
@@ -50,7 +50,7 @@ export class MyPostComponent implements OnChanges {
     this.isMyPostLoading = true;
     try {
       const response = await fetch(
-        `http://dev-vmeet.runasp.net/posts/user/${id}`
+        `${AppConstants.API_BASE_URL_HTTPS}/posts/user/${id}`
       );
       if (!response.ok) throw new Error('Failed to fetch my post');
       const data = await response.json();

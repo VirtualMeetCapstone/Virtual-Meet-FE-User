@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root',
 })
 export class PostserviceService {
-  url = 'http://dev-vmeet.runasp.net/posts';
+  url = `${AppConstants.API_BASE_URL_HTTPS}/users/posts`;
 
   constructor(private http: HttpClient) {}
 
