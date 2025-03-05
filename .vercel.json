@@ -1,5 +1,5 @@
 {
-  "name": "virtual-meet-fe-user",
+  "name": "vmeet",
   "build": {
     "env": {
       "NODE_ENV": "production"
