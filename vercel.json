@@ -3,8 +3,7 @@
   "build": {
     "env": {
       "NODE_ENV": "production"
-    },
-    "outputDirectory": "dist/virtual-meet-fe"
+    }
   },
   "routes": [
     {
