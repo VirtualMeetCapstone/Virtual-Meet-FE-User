@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import { AppConstants } from '../../../constant/AppConstants';
 interface Media {
   url: string;
   type: number;
@@ -46,7 +46,7 @@ export class PostsFeedComponent implements OnChanges {
     this.isPostsFeedLoading = true;
     try {
       const response = await fetch(
-        `http://dev-vmeet.runasp.net/posts/user/reacted/${id}`
+        `${AppConstants.API_BASE_URL_HTTPS}/posts/user/reacted/${id}`
       );
       if (!response.ok) throw new Error('Failed to fetch posts feed');
       const data = await response.json();

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
-
+import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root'
 })
@@ -24,7 +24,7 @@ export class HubService {
     console.log('[HubService] startConnection: Creating hub connection...');
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7035/videoHub', { withCredentials: true })
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/videoHub`, { withCredentials: true })
       .withAutomaticReconnect()
       .build();
 
