@@ -1,4 +1,5 @@
 <p-carousel
+  *ngIf="storiesData && storiesData.length > 0"
   [value]="storiesData"
   [numVisible]="9"
   [numScroll]="1"
