@@ -71,7 +71,13 @@ export class StoryServiceService {
       this.viewedStories.add(index);
       // console.log("Updated viewedStories:", this.viewedStories);
     }
-
+  isViewed(index: number): boolean {
+      if(this.viewedStories)
+      {
+        return this.viewedStories.has(index);
+      }
+      return false;
+  }
 
 }
 

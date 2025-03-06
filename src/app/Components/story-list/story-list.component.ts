@@ -1,10 +1,11 @@
 import {StoryModalComponent} from '../story-modal/story-modal.component';
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {StoryServiceService} from '../../services/story-service/story-service.service';
 import {Story} from "../../models/story";
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Viewer} from "../../models/viewer";
+import {response} from "express";
 
 
 @Component({
@@ -12,7 +13,7 @@ import {Viewer} from "../../models/viewer";
   templateUrl: './story-list.component.html',
   styleUrls: ['./story-list.component.scss'],
 })
-export class StoryListComponent implements OnInit {
+export class StoryListComponent implements OnInit, AfterViewInit {
   userId: string = "";
   public storiesData: Story[] = [];
   responsiveOptions = [
@@ -65,22 +66,30 @@ export class StoryListComponent implements OnInit {
 
 
       });
+
     });
   }
 
   // open modal, pass data
-  openStory( index: number): void {
+  openStory(index: number): void {
     const dialogRef = this.dialog.open(StoryModalComponent, {
       width: '500px',
       data: {
         stories: this.storiesData,
         currentIndex: index,
+
       },
       hasBackdrop: true,
     });
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
+
+    dialogRef.afterClosed().subscribe((updatedStories: Story[]) => {
+      if (updatedStories) {
+        this.storiesData = updatedStories;
+      }
     });
+  }
+
+  ngAfterViewInit(): void {
   }
 
 
