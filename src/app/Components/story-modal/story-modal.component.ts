@@ -4,6 +4,7 @@ import {StoryServiceService} from '../../services/story-service/story-service.se
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Viewer} from "../../models/viewer";
 import {Reaction} from "../../models/reaction";
+import {Story} from "../../models/story";
 
 @Component({
   selector: 'app-story-modal',
@@ -29,54 +30,79 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
     this.currentStory = this.stories[this.currentIndex];
     this.userId = this.authService.getUser()?.id
     this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
-    this.loadViewer();
-   this.checkIsLiked();
+    this.loadViewer(this.currentStory);
+    this.checkIsLiked();
+    this.currentStory.isViewed = true;
+    this.stories[this.currentIndex] = this.currentStory;
   }
 
   ngAfterViewInit(): void {
     this.adjustStoryImageSize();
   }
 
-checkIsLiked() {
-  this.storyService.getStoryReaction(this.currentStory.id).subscribe((reactionResponse: any) => {
-    //check data response
-    //if Reaction[] => Reaction[]
-    //if array[] => Reaction[]
-    const reactions: Reaction[] = Array.isArray(reactionResponse)
-      ? reactionResponse as Reaction[]
-      : Array.isArray(reactionResponse.data)
-        ? reactionResponse.data as Reaction[]
-        : []
-    //check is viewed
-    this.currentStory.isLiked = reactions.some((reaction: any) => {
-      return reaction.userId === this.authService.getUser()?.id;
-    });
-  })
-}
+  checkIsLiked() {
+    this.storyService.getStoryReaction(this.currentStory.id).subscribe((reactionResponse: any) => {
+      //check data response
+      //if Reaction[] => Reaction[]
+      //if array[] => Reaction[]
+      const reactions: Reaction[] = Array.isArray(reactionResponse)
+        ? reactionResponse as Reaction[]
+        : Array.isArray(reactionResponse.data)
+          ? reactionResponse.data as Reaction[]
+          : []
+      //check is viewed
+      this.currentStory.isLiked = reactions.some((reaction: any) => {
+        return reaction.userId === this.authService.getUser()?.id;
+      });
+    })
+  }
 
   next(): void {
+    // Đánh dấu story hiện tại là đã xem
+    this.currentStory.isViewed = true;
+
+    // Cập nhật currentStory vào danh sách stories
+    this.stories[this.currentIndex] = this.currentStory;
+
+    // Gọi API để cập nhật trạng thái xem story trên server
+    this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
+
+    // Chuyển sang story tiếp theo
     this.currentIndex = (this.currentIndex + 1) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
-    this.isLiked = !this.isLiked;
+this.loadViewer(this.currentStory)
+    // Cập nhật giao diện và kiểm tra trạng thái
     this.adjustStoryImageSize();
     this.checkIsLiked();
 
+    // Đóng modal nếu đã xem hết danh sách
     if (this.currentIndex === 0) {
       this.close();
     }
-
   }
+
   previous(): void {
-    this.currentIndex =
-      (this.currentIndex - 1 + this.stories.length) % this.stories.length;
+    // Đánh dấu story hiện tại là đã xem
+    this.currentStory.isViewed = true;
+
+    // Cập nhật currentStory vào danh sách stories
+    this.stories[this.currentIndex] = this.currentStory;
+
+    // Gọi API để cập nhật trạng thái xem story trên server
+    this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
+
+    // Quay lại story trước đó
+    this.currentIndex = (this.currentIndex - 1 + this.stories.length) % this.stories.length;
     this.currentStory = this.stories[this.currentIndex];
+    this.loadViewer(this.currentStory);
+    // Cập nhật giao diện và kiểm tra trạng thái
     this.adjustStoryImageSize();
     this.checkIsLiked();
 
+    // Đóng modal nếu đã xem hết danh sách
     if (this.currentIndex === this.stories.length - 1) {
       this.close();
     }
-
   }
 
   toggleLike(storyId: string): void {
@@ -92,15 +118,34 @@ checkIsLiked() {
 
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.stories);
   }
 
   ngOnInit(): void {
-    this.loadViewer();
+    this.loadViewer(this.currentStory);
+
   }
 
-  loadViewer() {
-    this.storyService.getStoryViewers(this.currentStory.id).subscribe((response: any) => {
+  checkIsViewed() {
+    this.storyService.getStoryViewers(this.currentStory).subscribe((viewersResponse: any) => {
+
+      //check data response
+      //if viewer[] => viewer[]
+      //if array[] => viewer[]
+      const viewers: Viewer[] = Array.isArray(viewersResponse)
+        ? viewersResponse as Viewer[]
+        : Array.isArray(viewersResponse.data)
+          ? viewersResponse.data as Viewer[]
+          : []
+      //check is viewed
+      this.currentStory.isViewed = viewers.some((viewerWrapper: any) => {
+        return viewerWrapper.viewer.id === this.authService.getUser()?.id;
+      });
+    });
+  }
+
+  loadViewer(story: Story) {
+    this.storyService.getStoryViewers(story.id).subscribe((response: any) => {
       if (response && Array.isArray(response.data)) {
         const uniqueViewers = new Map<string, any>();
 
