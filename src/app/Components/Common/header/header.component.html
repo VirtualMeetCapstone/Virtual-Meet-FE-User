@@ -17,73 +17,46 @@
   <!-- Khu vực menu + thông báo + user -->
   <div class="col-lg-4 col-md-3 col-sm-5 col-5">
     <div class="menu-container d-flex align-items-center" style="flex-direction: row-reverse">
-      <!-- Menu dropdown -->
-      <div class="menu-icon">
-        <i
-          class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
-          style="color: white; cursor: pointer; margin-left: 15px"
-          (click)="onClickDropdown()"
-        ></i>
-        <div class="dropdown-menu" *ngIf="isShowDropdown">
-          <a href="#"><i class="fas fa-home"></i>Creator tools</a>
-          <a href="#"><i class="fas fa-language"></i>English</a>
-          <a href="#"><i class="fas fa-question-circle"></i>Feedback and help</a>
-          <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
-        </div>
-      </div>
 
-      <!-- Thông báo -->
-      <div class="notification-icon">
-        <div
-          class="notification-bellicon mr-2"
-          [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'"
-        >
-          <i
-            class="fa-solid fa-bell fa-xl"
-            id="notification-bell"
-            (click)="onClickNotification()"
-          ></i>
-        </div>
-
-        <div class="notification-wrapper" *ngIf="isShowNotification">
-          <h4 id="notification-title">Thông báo</h4>
-          <div
-            class="notification-item"
-            *ngFor="let notification of notifications; trackBy: trackByNotification"
-          >
-            <img
-              class="notification-avatar"
-              alt="User avatar"
-              [src]="notification.avatarUrl"
-              loading="lazy"
-            />
-            <div class="notification-content">
-              <p>
-                <span class="notification-thread">thảo luận</span>
-                <strong>{{ notification.username }}</strong> đã trả lời trong chủ đề VirtualMeet.
-              </p>
-              <p class="notification-time">
-                Hôm nay lúc {{ notification.time }} · Đã đọc: {{ notification.readTime }}
-              </p>
-              <p class="notification-action">Đánh dấu chưa đọc</p>
-            </div>
-          </div>
-          <div class="notification-footer" style="color: black">
-            <a href="#">Xem tất cả</a>
-            <a href="#">Đánh dấu đã đọc</a>
-            <a href="#">Cài đặt</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Login -->
+      <!-- Nếu chưa đăng nhập: Chỉ hiển thị nút Login -->
       <div *ngIf="!loggedIn">
         <button class="login-bt" (click)="onClickLoginDialog()">
           <h5 style="line-height: 20px">Login</h5>
         </button>
       </div>
 
-      <div *ngIf="loggedIn">
+      <!-- Nếu đã đăng nhập: Hiển thị thông báo + profile -->
+      <div *ngIf="loggedIn" class="d-flex align-items-center">
+        <!-- Thông báo -->
+        <div class="notification-icon mr-3">
+          <div class="notification-bellicon" [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'">
+            <i class="fa-solid fa-bell fa-xl" id="notification-bell" (click)="onClickNotification()"></i>
+          </div>
+
+          <div class="notification-wrapper" *ngIf="isShowNotification">
+            <h4 id="notification-title">Thông báo</h4>
+            <div class="notification-item" *ngFor="let notification of notifications; trackBy: trackByNotification">
+              <img class="notification-avatar" alt="User avatar" [src]="notification.avatarUrl" loading="lazy" />
+              <div class="notification-content">
+                <p>
+                  <span class="notification-thread">thảo luận</span>
+                  <strong>{{ notification.username }}</strong> đã trả lời trong chủ đề VirtualMeet.
+                </p>
+                <p class="notification-time">
+                  Hôm nay lúc {{ notification.time }} · Đã đọc: {{ notification.readTime }}
+                </p>
+                <p class="notification-action">Đánh dấu chưa đọc</p>
+              </div>
+            </div>
+            <div class="notification-footer">
+              <a href="#">Xem tất cả</a>
+              <a href="#">Đánh dấu đã đọc</a>
+              <a href="#">Cài đặt</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile -->
         <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
           <div class="user-avatar-container">
             <!-- Hiển thị loading khi chưa có ảnh -->
@@ -92,13 +65,8 @@
             </div>
 
             <!-- Hiển thị ảnh người dùng -->
-            <img
-              *ngIf="!isLoadingUser && user?.picture?.url; else defaultAvatar"
-              [src]="user?.picture?.url"
-              alt="User Avatar"
-              class="user-avatar"
-              loading="lazy"
-            />
+            <img *ngIf="!isLoadingUser && user?.picture?.url; else defaultAvatar" [src]="user?.picture?.url"
+              alt="User Avatar" class="user-avatar" loading="lazy" />
 
             <!-- Ảnh mặc định -->
             <ng-template #defaultAvatar>
@@ -106,24 +74,37 @@
             </ng-template>
           </div>
 
+
           <!-- Hiển thị tên người dùng -->
           <span *ngIf="isLoadingUser; else showName">Loading...</span>
           <ng-template #showName>
             <span class="user-name">{{ user?.name }}</span>
           </ng-template>
 
+
           <!-- User Menu -->
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">Edit Profile</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
+
+
         </div>
       </div>
-      </div>
+          <!-- Menu dropdown -->
+          <!-- <div class="menu-icon">
+            <i class="fa-solid fa-ellipsis fa-rotate-90 fa-lg" style="color: white; cursor: pointer; margin-left: 15px"
+              (click)="onClickDropdown()"></i>
+            <div class="dropdown-menu" *ngIf="isShowDropdown">
+              <a href="#"><i class="fas fa-home"></i>Creator tools</a>
+              <a href="#"><i class="fas fa-language"></i>English</a>
+              <a href="#"><i class="fas fa-question-circle"></i>Feedback and help</a>
+              <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
+            </div>
+          </div> -->
     </div>
+  </div>
 
-<app-login-modal
-  [isShowLoginDialog]="isShowLoginDialog"
-  (openLoginDialog)="isShowLoginDialog = $event"
->
-</app-login-modal>
+
+  <app-login-modal [isShowLoginDialog]="isShowLoginDialog" (openLoginDialog)="isShowLoginDialog = $event">
+  </app-login-modal>
