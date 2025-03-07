@@ -11,16 +11,16 @@
     </button>
   </div>
 </div>
+<div class="a"></div>
 
-<div class="video-popup" *ngIf="showVideoSelection">
-  <div class="popup-content">
+
+<div class="video-popup" [hidden]="!showVideoSelection">
+
     <div class="menu">
       <button class="menu-button">☰</button>
       <div class="menu-dropdown">
         <button class="menu-item">⚙ Settings</button>
-        <button class="menu-item" (click)="toggleVideoSelection()">
-          🚪 Leave YouTube
-        </button>
+        <!-- <button class="menu-item" (click)="toggleVideoSelection()">🚪 Leave YouTube</button> -->
       </div>
     </div>
 
@@ -34,10 +34,8 @@
       />
       <button (click)="searchVideos()" class="search-button">🔍</button>
     </div>
-
     <!-- YouTube Player -->
-    <div id="youtubePlayer" #videoPlayer></div>
-
+    <div id="player"></div>
     <!-- Danh sách video tìm kiếm -->
     <h3>Danh sách video</h3>
     <div class="video-list">
@@ -50,8 +48,6 @@
         <p>{{ video.snippet.title }}</p>
       </div>
     </div>
-  </div>
-</div>
 
 <!-- Popup cho Whiteboard (nếu có) -->
 <div class="whiteboard-popup" *ngIf="showWhiteboard">
@@ -61,3 +57,5 @@
     <!-- Các tính năng Whiteboard sẽ được thêm vào đây -->
   </div>
 </div>
+
+
