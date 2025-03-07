@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
-import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profile-dialog.component';
 
 export interface CreateStoryData {
   id: string;
@@ -17,14 +16,16 @@ export interface CreateStoryData {
   styleUrls: ['./create-story-dialog.component.scss'],
 })
 export class CreateStoryDialogComponent {
-  // Thuộc tính
   id: string;
   newUsername: string;
-  newAvatar: File | null = null;
+  newAvatar: File | null = null; // Sử dụng cho cả ảnh và video
   newContent: string = '';
   newMusicUrl: string = '';
   isLoading: boolean = false;
-  imagePreview: string | ArrayBuffer | null = null;
+  // Sử dụng mediaPreview để chứa dữ liệu preview (ảnh hoặc video)
+  mediaPreview: string | ArrayBuffer | null = null;
+  // Biến mediaType xác định loại file: 'image' hoặc 'video'
+  mediaType: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<CreateStoryDialogComponent>,
@@ -40,18 +41,27 @@ export class CreateStoryDialogComponent {
     if (!fileInput.files || fileInput.files.length === 0) {
       return;
     }
-    this.newAvatar = fileInput.files[0];
+    const file = fileInput.files[0];
+    this.newAvatar = file;
+
+    // Xác định loại file dựa trên mime type
+    if (file.type.startsWith('video')) {
+      this.mediaType = 'video';
+    } else if (file.type.startsWith('image')) {
+      this.mediaType = 'image';
+    } else {
+      // Mặc định là ảnh nếu không xác định được
+      this.mediaType = 'image';
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
-      this.imagePreview = reader.result;
+      this.mediaPreview = reader.result;
     };
-    reader.readAsDataURL(this.newAvatar);
+    reader.readAsDataURL(file);
   }
 
-  // Tạo tin (story)
   onSave() {
-    // Kiểm tra nội dung
     if (!this.newContent) {
       alert('Vui lòng nhập nội dung đăng tin');
       return;
@@ -71,7 +81,6 @@ export class CreateStoryDialogComponent {
       formData.append('MediaUpload', '');
     }
 
-    // Gửi request POST
     this.http
       .post(`${AppConstants.API_BASE_URL_HTTPS}/stories`, formData)
       .pipe(
@@ -95,7 +104,6 @@ export class CreateStoryDialogComponent {
       });
   }
 
-  // Close dialog
   onCancel() {
     this.dialogRef.close();
   }

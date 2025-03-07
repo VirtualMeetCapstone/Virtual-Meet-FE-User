@@ -10,10 +10,12 @@ export class RoomServicesService {
   constructor(private http: HttpClient) {}
 
   getRooms(top: number, skip: number): any {
+    const timestamp = Date.now();
     return this.http.get<any>(
-      this.url + '?Top=' + top + '&Skip=' + skip + '&needtotalcount=true'
+      `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true&t=${timestamp}`
     );
   }
+
   deleteRoom(id: string): any {
     return this.http.delete<any>(this.url + '/' + id);
   }

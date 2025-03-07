@@ -32,24 +32,26 @@ export class MyProfileStoriesComponent implements OnInit {
       (data: any) => {
         const epochTicks = 621355968000000000;
         const ticksPerMillisecond = 10000;
-        const nowMs = new Date().getTime(); // thời gian hiện tại (ms)
+        const nowMs = new Date().getTime();
+        const maxAgeMs = 24 * 60 * 60 * 1000;
 
         this.stories = (data || [])
           .filter((story: any) => {
             const createTimeMs =
               (story.createTime - epochTicks) / ticksPerMillisecond;
-
+            const expireTimeMs =
+              (story.expireTime - epochTicks) / ticksPerMillisecond;
             const timeSinceCreated = nowMs - createTimeMs;
+            const timeLeftMs = expireTimeMs - nowMs;
 
-            if (timeSinceCreated < 0) {
-              // console.log(timeSinceCreated);
-              // console.log(
-              //   `LOẠI BỎ tin ID ${story.id} , timeSinceCreated=${timeSinceCreated}ms`
-              // );
-              return false; // loại bỏ tin
+            if (
+              timeSinceCreated < 0 ||
+              timeSinceCreated > maxAgeMs ||
+              timeLeftMs <= 0
+            ) {
+              return false;
             }
-
-            return true; // tin hợp lệ
+            return true;
           })
           .map((story: any) => ({
             ...story,

@@ -186,6 +186,7 @@ body {
   align-items: flex-start;
   gap: 20px;
   width: 100%;
+  margin-left: 25rem;
 }
 
 /* Phần header chứa ảnh đại diện */
@@ -210,7 +211,7 @@ body {
   text-align: center;
   justify-items: left;
   margin-bottom: 2rem;
-  margin-left: 22.25rem;
+  margin-left: 47.5rem;
 }
 
 .profile-info {

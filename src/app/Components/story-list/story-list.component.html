@@ -1,4 +1,5 @@
 <p-carousel
+  *ngIf="storiesData && storiesData.length > 0"
   [value]="storiesData"
   [numVisible]="9"
   [numScroll]="1"
@@ -12,16 +13,16 @@
       <img
         (click)="openStory(storiesData.indexOf(story))"
         [ngClass]="{
-          isWatch: !story.isViewed,
+          isWatch: !story.isViewed ,
           watched: story.isViewed
         }"
         style="width: 90px; height: 90px; border-radius: 50%"
-        [src]="story.media.url"
+        [src]="story.user.picture.url"
         [alt]="story.name"
         class="w-full h-full object-cover"
       />
       <div class="mt-1 text-sm font-medium text-center truncate w-full">
-        {{ story.name }}
+        {{ story.user.name }}
       </div>
     </div>
   </ng-template>

@@ -3,8 +3,12 @@
     🎬 Chọn Hoạt Động
   </button>
   <div class="activity-menu" *ngIf="showActivityMenu">
-    <button (click)="startVideoSharing()" class="activity-item">🎥 Xem Cùng Nhau</button>
-    <button (click)="startWhiteboard()" class="activity-item">📝 Whiteboard</button>
+    <button (click)="startVideoSharing()" class="activity-item">
+      🎥 Xem Cùng Nhau
+    </button>
+    <button (click)="startWhiteboard()" class="activity-item">
+      📝 Whiteboard
+    </button>
   </div>
 </div>
 <div class="a"></div>
@@ -22,7 +26,12 @@
 
     <!-- Ô tìm kiếm video -->
     <div class="search-container">
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Tìm kiếm video" class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Tìm kiếm video"
+        class="search-box"
+      />
       <button (click)="searchVideos()" class="search-button">🔍</button>
     </div>
     <!-- YouTube Player -->
@@ -30,8 +39,12 @@
     <!-- Danh sách video tìm kiếm -->
     <h3>Danh sách video</h3>
     <div class="video-list">
-      <div class="video-item" *ngFor="let video of videos" (click)="selectVideo(video.id.videoId || video.id)">
-        <img [src]="video.snippet.thumbnails.medium.url" alt="Thumbnail">
+      <div
+        class="video-item"
+        *ngFor="let video of videos"
+        (click)="selectVideo(video.id.videoId || video.id)"
+      >
+        <img [src]="video.snippet.thumbnails.medium.url" alt="Thumbnail" />
         <p>{{ video.snippet.title }}</p>
       </div>
     </div>

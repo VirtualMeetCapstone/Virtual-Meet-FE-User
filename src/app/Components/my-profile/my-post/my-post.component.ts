@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AppConstants } from '../../../constant/AppConstants';
+
 interface Media {
   url: string;
   type: number;
