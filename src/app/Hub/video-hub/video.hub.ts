@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
+import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root'
 })
 //videoHUbservice
-export class VideoService {
+export class VideoHub {
   private hubConnection!: signalR.HubConnection;
 
   private popupStateSubject = new BehaviorSubject<boolean>(false);
@@ -16,7 +17,7 @@ export class VideoService {
   startConnection(): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
       // .configureLogging(signalR.LogLevel.Debug)
-      .withUrl('https:dev-vmeet.site/videoHub', {
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/videoHub`, {
         withCredentials: true,
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets

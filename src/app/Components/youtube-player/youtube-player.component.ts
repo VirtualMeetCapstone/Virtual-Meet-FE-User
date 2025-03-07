@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PlayerService } from '../../youtubeplayer-service/player.service';
-import { VideoService } from '../../video-service/video.service';
+import { PlayerService } from '../../services/youtubeplayer-service/player.service';
+import { VideoHub } from '../../Hub/video-hub/video.hub';
 import { YoutubeService } from '../../services/youtube-service/youtube.service';
 declare var YT: any;
 
@@ -12,7 +12,7 @@ declare var YT: any;
 export class YoutubePlayerComponent implements OnInit {
   constructor(
     private _playerService: PlayerService,
-    private _videoHub: VideoService,
+    private _videoHub: VideoHub,
     private youtubeService: YoutubeService
   ) {}
 
@@ -58,7 +58,7 @@ export class YoutubePlayerComponent implements OnInit {
     console.log('Bắt đầu chia sẻ video');
     this.showVideoSelection = true;
     this.showWhiteboard = false;
-    //VideoService --> hub
+    //VideoHub --> hub
     this._videoHub.togglePopup(true);
 
     this._playerService.initializePlayer();

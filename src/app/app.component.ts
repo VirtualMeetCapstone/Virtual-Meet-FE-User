@@ -1,7 +1,6 @@
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { VideoService } from './video-service/video.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +12,7 @@ export class AppComponent implements OnInit {
   isHiddenSidebar = false;
   isLoggedIn = false;
 
-  constructor(private videoService: VideoService,
+  constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { VideoService } from '../video-service/video.service';
+import { VideoHub } from '../../Hub/video-hub/video.hub';
 declare var YT: any;
 
 @Injectable({
@@ -10,7 +10,7 @@ export class PlayerService {
   private lastStatus: number | null = null;
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
-  constructor(private videoSyncService: VideoService) {
+  constructor(private videoSyncService: VideoHub) {
     this.initializePlayer();
 
     this.videoSyncService.startConnection()
