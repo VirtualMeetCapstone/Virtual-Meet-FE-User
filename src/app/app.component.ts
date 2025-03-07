@@ -1,6 +1,7 @@
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { VideoService } from './video-service/video.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent implements OnInit {
   isHiddenSidebar = false;
   isLoggedIn = false;
 
-  constructor(
+  constructor(private videoService: VideoService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
       this.isLoggedIn = !!token;
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
-        console.log('chua login');
+        console.log('Chưa đăng nhập');
       }
     }
   }

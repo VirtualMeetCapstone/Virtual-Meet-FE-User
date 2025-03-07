@@ -256,3 +256,16 @@
     background-color: #d32f2f;  /* Red background when active */
   }
 }
+
+
+#player {
+  width: 100%;
+  height: 60vh; /* Giữ tỷ lệ 16:9 */
+  max-height: 400px;
+  background: black; /* Để dễ kiểm tra */
+  border-radius: 8px;
+}
+
+.video-popup {
+  height: 90vh; /* Cho nhiều không gian hơn */
+}
