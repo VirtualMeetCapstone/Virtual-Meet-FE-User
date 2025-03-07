@@ -5,6 +5,7 @@ import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profi
 import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
 import { ModalGearButtonComponent } from './modal-gear-button/modal-gear-button.component';
 
+import { AppConstants } from '../../constant/AppConstants';
 interface Profile {
   name: string;
   bio: string;
@@ -48,7 +49,7 @@ export class MyProfileComponent implements OnInit {
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
-      const response = await fetch(`http://dev-vmeet.runasp.net/users/${id}`);
+      const response = await fetch(`${AppConstants.API_BASE_URL_HTTPS}/users/${id}`);
       if (!response.ok) throw new Error('Failed to fetch profile');
       const data = await response.json();
 
