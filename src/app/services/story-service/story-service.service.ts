@@ -37,6 +37,11 @@ export class StoryServiceService {
     return throwError('Something bad happened; please try again later.');
   }
 
+  deleteStory(id: string): any {
+    const deleteUrl = `${AppConstants.API_BASE_URL_HTTPS}/stories/${id}`;
+    return this.http.delete<any>(deleteUrl);
+  }
+
   markAsViewed(index: number) {
     this.viewedStories.add(index);
     // console.log("Updated viewedStories:", this.viewedStories);

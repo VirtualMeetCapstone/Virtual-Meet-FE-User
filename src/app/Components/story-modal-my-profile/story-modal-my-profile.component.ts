@@ -1,6 +1,18 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { StoryServiceService } from '../../services/story-service/story-service.service';
+import { ModalDeleteStoryComponent } from './modal-delete-story/modal-delete-story.component';
 
 @Component({
   selector: 'app-story-modal-my-profile',
@@ -8,6 +20,8 @@ import { StoryServiceService } from '../../services/story-service/story-service.
   styleUrls: ['./story-modal-my-profile.component.scss'],
 })
 export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
+  @ViewChild('storyVideo') storyVideo!: ElementRef<HTMLVideoElement>;
+
   viewers = [
     { image: 'bamboo-watch.jpg' },
     { image: 'black-watch.jpg' },
@@ -23,54 +37,92 @@ export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
   currentStory: any;
   userAvatar!: string;
   isLiked = false;
-
-  // Biến lưu ID của interval để dọn dẹp khi đóng modal
+  isMenuOpen = false;
   expirationInterval: any;
 
   constructor(
     public dialogRef: MatDialogRef<StoryModalMyProfileComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private storyService: StoryServiceService
+    private storyService: StoryServiceService,
+    private dialog: MatDialog
   ) {
     this.stories = data.stories;
     this.currentIndex = data.currentIndex;
     this.currentStory = this.stories[this.currentIndex];
     this.userAvatar = data.userAvatar;
-
-    // console.log('Modal received stories:', this.stories);
-    // console.log('Current story:', this.currentStory);
-    // console.log('Modal received user avatar:', this.userAvatar);
   }
 
   ngOnInit(): void {
-    // Bắt đầu kiểm tra thời gian hết hạn của tin hiện tại mỗi giây
     this.expirationInterval = setInterval(() => {
       this.checkExpiration();
     }, 1000);
+    setTimeout(() => this.tryAutoplayVideo(), 200);
   }
 
   ngOnDestroy(): void {
-    // Dọn dẹp interval khi component bị hủy
     if (this.expirationInterval) {
       clearInterval(this.expirationInterval);
     }
   }
 
-  // Hàm kiểm tra thời gian hết hạn của tin hiện tại
   checkExpiration(): void {
-    const epochTicks = 621355968000000000; // Ticks của 1/1/1970
+    const epochTicks = 621355968000000000;
     const ticksPerMillisecond = 10000;
     const expireTimeMs =
       (this.currentStory.expireTime - epochTicks) / ticksPerMillisecond;
     const nowMs = new Date().getTime();
     const timeLeftMs = expireTimeMs - nowMs;
-
-    // Nếu thời gian còn lại < 0, tự động chuyển sang tin tiếp theo
     if (timeLeftMs < 0) {
-      console.log(
-        'Tin hiện tại đã hết hạn, tự động chuyển sang tin tiếp theo.'
-      );
-      this.next();
+      this.removeCurrentExpiredStory();
+    }
+  }
+
+  // Kiểm tra URL có chứa video (dựa vào đuôi file)
+  isVideo(url: string): boolean {
+    if (!url) return false;
+    return /\.(mp4|webm|ogg)$/i.test(url);
+  }
+
+  // Thử autoplay video: pause, load lại và play
+  tryAutoplayVideo(): void {
+    if (this.isVideo(this.currentStory?.media?.url)) {
+      // Sử dụng ViewChild nếu có
+      if (this.storyVideo && this.storyVideo.nativeElement) {
+        const videoElem = this.storyVideo.nativeElement;
+        videoElem.pause();
+        videoElem.load();
+        // Đảm bảo video bị muted nếu browser chặn autoplay có âm thanh
+        videoElem.play().catch((err) => {
+          console.error('Autoplay failed:', err);
+        });
+      } else {
+        // Fallback: query DOM nếu ViewChild chưa có
+        setTimeout(() => {
+          const videoElement = document.querySelector(
+            '.story-video'
+          ) as HTMLVideoElement;
+          if (videoElement) {
+            videoElement.pause();
+            videoElement.load();
+            videoElement.play().catch((err) => {
+              console.error('Autoplay failed:', err);
+            });
+          }
+        }, 200);
+      }
+    }
+  }
+
+  removeCurrentExpiredStory(): void {
+    this.stories.splice(this.currentIndex, 1);
+    if (this.stories.length === 0) {
+      this.close();
+    } else {
+      if (this.currentIndex >= this.stories.length) {
+        this.currentIndex = 0;
+      }
+      this.currentStory = this.stories[this.currentIndex];
+      setTimeout(() => this.tryAutoplayVideo(), 200);
     }
   }
 
@@ -78,24 +130,38 @@ export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
-    this.currentIndex = (this.currentIndex + 1) % this.stories.length;
+    if (this.stories.length <= 1) {
+      this.close();
+      return;
+    }
+    // Nếu đang ở tin cuối cùng, đóng modal thay vì chuyển sang tin đầu tiên
+    if (this.currentIndex === this.stories.length - 1) {
+      this.close();
+      return;
+    }
+    // Cập nhật tin tiếp theo (không dùng modulo để tránh quay vòng)
+    this.currentIndex = this.currentIndex + 1;
     this.currentStory = this.stories[this.currentIndex];
-    // Gọi markAsViewed nếu cần (sử dụng id của story, ví dụ: this.currentStory.id)
     this.storyService.markAsViewed(this.currentStory.id);
     this.isLiked = false;
-    // Nếu quay về tin đầu tiên, có thể đóng modal (tùy theo logic)
-    if (this.currentIndex === 0) {
-      this.close();
-    }
+    setTimeout(() => this.tryAutoplayVideo(), 200);
   }
 
   previous(event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.currentIndex =
-      (this.currentIndex - 1 + this.stories.length) % this.stories.length;
-    this.currentStory = this.stories[this.currentIndex];
+    if (this.stories.length <= 1) {
+      this.close();
+      return;
+    }
+    if (this.currentIndex === 0) {
+      this.close();
+    } else {
+      this.currentIndex = this.currentIndex - 1;
+      this.currentStory = this.stories[this.currentIndex];
+      setTimeout(() => this.tryAutoplayVideo(), 200);
+    }
   }
 
   toggleLike(): void {
@@ -116,5 +182,56 @@ export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
   getYouTubeEmbedUrl(url: string): string {
     const videoId = this.extractVideoId(url);
     return `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0`;
+  }
+
+  toggleMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  deleteStory(): void {
+    if (this.isVideo(this.currentStory?.media?.url)) {
+      if (this.storyVideo && this.storyVideo.nativeElement) {
+        this.storyVideo.nativeElement.pause();
+      } else {
+        const videoElement = document.querySelector(
+          '.story-video'
+        ) as HTMLVideoElement;
+        if (videoElement) {
+          videoElement.pause();
+        }
+      }
+    }
+
+    const dialogRef = this.dialog.open(ModalDeleteStoryComponent, {
+      width: '300px',
+      data: { storyId: this.currentStory.id },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result === true) {
+        this.storyService.deleteStory(this.currentStory.id).subscribe({
+          next: (response: any) => {
+            this.stories.splice(this.currentIndex, 1);
+            if (this.stories.length === 0) {
+              this.close();
+            } else {
+              if (this.currentIndex >= this.stories.length) {
+                this.currentIndex = 0;
+              }
+              this.currentStory = this.stories[this.currentIndex];
+              setTimeout(() => this.tryAutoplayVideo(), 200);
+            }
+            window.location.reload();
+          },
+
+          error: (error: any) => {
+            console.error('Error deleting story', error);
+          },
+        });
+      } else {
+        setTimeout(() => this.tryAutoplayVideo(), 200);
+      }
+    });
   }
 }

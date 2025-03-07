@@ -1,65 +1,94 @@
 <div class="overlay" (click)="close()"></div>
+
 <div class="story-modal">
   <div class="story-content">
-    <button (click)="previous()" class="nav-button prev-button">‹</button>
-
-    <div class="story-wrapper">
-      <div class="row">
-        <img class="user-avatar" [src]="userAvatar" alt="User Avatar" />
-        <div class="story-title">{{ currentStory?.content }}</div>
-        <div>
-          <p class="story-time">{{ currentStory?.createTime | timeAgo }}</p>
-        </div>
-        <p>{{ currentStory?.textContext }}</p>
-      </div>
-
-      <div class="story-media">
-        <!-- Ảnh story -->
+    <div class="story-media">
+      <!-- Video -->
+      <ng-container *ngIf="isVideo(currentStory?.media?.url); else imageBlock">
+        <video
+          #storyVideo
+          class="story-video"
+          controls
+          autoplay
+          (ended)="next()"
+          [attr.data-key]="currentStory?.media?.url"
+        >
+          <source [src]="currentStory?.media?.url" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </ng-container>
+      <!-- Image -->
+      <ng-template #imageBlock>
         <img
           [src]="currentStory?.media?.url"
           alt="Story Image"
           class="story-image"
         />
-        <div *ngIf="currentStory?.musicUrl" class="music-player">
-          <iframe
-            [src]="getYouTubeEmbedUrl(currentStory.musicUrl) | safeUrl"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-          >
-          </iframe>
-        </div>
+      </ng-template>
+
+      <!-- YT Music -->
+      <div *ngIf="currentStory?.musicUrl" class="music-player">
+        <iframe
+          [src]="getYouTubeEmbedUrl(currentStory.musicUrl) | safeUrl"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
 
-    <button (click)="next()" class="nav-button next-button">›</button>
-  </div>
-
-  <div class="viewers-heart-container">
-    <div class="row">
-      <div class="viewers-list">
-        <ng-container
-          *ngFor="let viewer of viewers.slice(0, 5); let last = last"
-        >
-          <img
-            [src]="
-              'https://primefaces.org/cdn/primeng/images/demo/product/' +
-              viewer.image
-            "
-            alt="Viewer Avatar"
-            class="viewer-avatar"
-          />
-        </ng-container>
-
-        <div *ngIf="viewers.length > 5" class="more-viewers">
-          +{{ viewers.length - 5 }}
+    <div class="overlay-elements">
+      <div class="row story-header">
+        <img class="user-avatar" [src]="userAvatar" alt="User Avatar" />
+        <div class="story-details">
+          <div class="story-title">{{ currentStory?.content }}</div>
+          <div class="story-time">{{ currentStory?.createTime | timeAgo }}</div>
+        </div>
+        <div class="menu-container">
+          <button class="button" (click)="toggleMenu($event)">
+            <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"
+              ></path>
+            </svg>
+          </button>
+          <div *ngIf="isMenuOpen" class="menu-options">
+            <button (click)="deleteStory(); $event.stopPropagation()">
+              Xóa tin
+            </button>
+          </div>
         </div>
       </div>
-      <i
-        (click)="toggleLike()"
-        [ngClass]="{ fas: isLiked, far: !isLiked }"
-        class="fa-heart heart-icon"
-      ></i>
+
+      <button (click)="previous()" class="nav-button prev-button">‹</button>
+      <button (click)="next()" class="nav-button next-button">›</button>
+
+      <div class="viewers-heart-container">
+        <div class="row">
+          <div class="viewers-list">
+            <ng-container
+              *ngFor="let viewer of viewers.slice(0, 5); let last = last"
+            >
+              <img
+                [src]="
+                  'https://primefaces.org/cdn/primeng/images/demo/product/' +
+                  viewer.image
+                "
+                alt="Viewer Avatar"
+                class="viewer-avatar"
+              />
+            </ng-container>
+            <div *ngIf="viewers.length > 5" class="more-viewers">
+              +{{ viewers.length - 5 }}
+            </div>
+          </div>
+          <i
+            (click)="toggleLike()"
+            [ngClass]="{ fas: isLiked, far: !isLiked }"
+            class="fa-heart heart-icon"
+          ></i>
+        </div>
+      </div>
     </div>
   </div>
 </div>
