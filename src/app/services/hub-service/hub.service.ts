@@ -3,14 +3,18 @@ import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HubService {
   public hubConnection!: signalR.HubConnection;
-  private videoSubject = new BehaviorSubject<{ videoId: string; timestamp: number; isPaused: boolean }>({
+  private videoSubject = new BehaviorSubject<{
+    videoId: string;
+    timestamp: number;
+    isPaused: boolean;
+  }>({
     videoId: '4Lq-I3xQxns',
     timestamp: 0,
-    isPaused: true
+    isPaused: true,
   });
 
   private popupStateSubject = new BehaviorSubject<boolean>(false);
@@ -24,7 +28,9 @@ export class HubService {
     console.log('[HubService] startConnection: Creating hub connection...');
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/videoHub`, { withCredentials: true })
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/videoHub`, {
+        withCredentials: true,
+      })
       .withAutomaticReconnect()
       .build();
 
@@ -32,17 +38,22 @@ export class HubService {
       .start()
       .then(() => {
         console.log('[HubService] Connection established successfully');
-        this.getCurrentVideo();  // Get current video status after connection is established
+        this.getCurrentVideo(); // Get current video status after connection is established
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.error('[HubService] Connection error:', err);
       });
 
     // Receiving video updates from server
-    this.hubConnection.on('ReceiveVideo', (videoId: string, timestamp: number, isPaused: boolean) => {
-      console.log(`[HubService] Received video update: videoId=${videoId}, timestamp=${timestamp}, isPaused=${isPaused}`);
-      this.videoSubject.next({ videoId, timestamp, isPaused });
-    });
+    this.hubConnection.on(
+      'ReceiveVideo',
+      (videoId: string, timestamp: number, isPaused: boolean) => {
+        console.log(
+          `[HubService] Received video update: videoId=${videoId}, timestamp=${timestamp}, isPaused=${isPaused}`
+        );
+        this.videoSubject.next({ videoId, timestamp, isPaused });
+      }
+    );
 
     // Receiving popup state updates from server
     this.hubConnection.on('ReceivePopupState', (isOpen: boolean) => {
@@ -53,40 +64,53 @@ export class HubService {
 
   // Get video updates as observable
   getVideoUpdates() {
-    console.log('[HubService] getVideoUpdates: Returning videoSubject as observable...');
+    console.log(
+      '[HubService] getVideoUpdates: Returning videoSubject as observable...'
+    );
     return this.videoSubject.asObservable();
   }
 
   // Invoke server method to change video
-  changeVideo(videoId: string, timestamp: number = 0, isPaused: boolean = true) {
-    console.log(`[HubService] changeVideo: Invoking server method to change video. videoId=${videoId}, timestamp=${timestamp}, isPaused=${isPaused}`);
-    this.hubConnection.invoke('ChangeVideo', videoId, timestamp, isPaused)
-      .catch(err => {
+  changeVideo(
+    videoId: string,
+    timestamp: number = 0,
+    isPaused: boolean = true
+  ) {
+    console.log(
+      `[HubService] changeVideo: Invoking server method to change video. videoId=${videoId}, timestamp=${timestamp}, isPaused=${isPaused}`
+    );
+    this.hubConnection
+      .invoke('ChangeVideo', videoId, timestamp, isPaused)
+      .catch((err: any) => {
         console.error('[HubService] ChangeVideo error:', err);
       });
   }
 
   // Request current video from server
   getCurrentVideo() {
-    console.log('[HubService] getCurrentVideo: Requesting current video from server...');
-    this.hubConnection.invoke('GetCurrentVideo')
-      .catch(err => {
-        console.error('[HubService] GetCurrentVideo error:', err);
-      });
+    console.log(
+      '[HubService] getCurrentVideo: Requesting current video from server...'
+    );
+    this.hubConnection.invoke('GetCurrentVideo').catch((err: any) => {
+      console.error('[HubService] GetCurrentVideo error:', err);
+    });
   }
 
   // Toggle popup state and notify server
   togglePopup(isOpen: boolean) {
-    console.log(`[HubService] togglePopup: Invoking server method to toggle popup state. isOpen=${isOpen}`);
-    this.hubConnection.invoke('TogglePopup', isOpen)
-      .catch(err => {
-        console.error('[HubService] TogglePopup error:', err);
-      });
+    console.log(
+      `[HubService] togglePopup: Invoking server method to toggle popup state. isOpen=${isOpen}`
+    );
+    this.hubConnection.invoke('TogglePopup', isOpen).catch((err: any) => {
+      console.error('[HubService] TogglePopup error:', err);
+    });
   }
 
   // Get popup state as observable
   getPopupState() {
-    console.log('[HubService] getPopupState: Returning popupStateSubject as observable...');
+    console.log(
+      '[HubService] getPopupState: Returning popupStateSubject as observable...'
+    );
     return this.popupStateSubject.asObservable();
   }
 }

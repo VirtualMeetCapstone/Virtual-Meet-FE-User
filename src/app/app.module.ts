@@ -12,7 +12,7 @@ import { LoginModalComponent } from './Components/Common/login-modal/login-modal
 import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
 import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
@@ -49,6 +49,7 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
 import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
+import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { CreateStoryDialogComponent } from './Components/create-story-dialog/cre
     SafeUrlPipe,
     TimeAgoPipe,
     CreateStoryDialogComponent,
+    YoutubePlayerComponent,
   ],
   imports: [
     BrowserModule,
