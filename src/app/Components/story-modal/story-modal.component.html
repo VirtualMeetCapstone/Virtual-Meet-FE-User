@@ -6,21 +6,18 @@
     <div class="story-wrapper">
       <div class="row">
         <img
-          class="user-avatar"
-          src="https://primefaces.org/cdn/primeng/images/demo/product/{{
-            currentStory?.image
-          }}"
+
+         [src]="currentStory.user.picture.url"
+         class="story-user-avatar"
           alt="User Avatar"
         />
-        <div class="story-title">{{ currentStory?.name }}</div>
+        <div class="story-title">{{ currentStory?.user.name }}</div>
         <div><p class="story-time">1h</p></div>
       </div>
 
       <div class="story-media">
         <img
-          src="https://primefaces.org/cdn/primeng/images/demo/product/{{
-            currentStory?.image
-          }}"
+         [src]="currentStory.media.url"
           alt="Story Image"
           class="story-image"
         />
@@ -38,10 +35,7 @@
           *ngFor="let viewer of viewers.slice(0, 5); let last = last"
         >
           <img
-            [src]="
-              'https://primefaces.org/cdn/primeng/images/demo/product/' +
-              viewer.image
-            "
+            [src]="viewer.picture.url"
             alt="Viewer Avatar"
             class="viewer-avatar"
           />
@@ -52,8 +46,8 @@
         </div>
       </div>
       <i
-        (click)="toggleLike()"
-        [ngClass]="{ fas: isLiked, far: !isLiked }"
+        (click)="toggleLike(currentStory.id)"
+        [ngClass]="{ fas: currentStory.isLiked, far: !currentStory.isLiked }"
         class="fa-heart heart-icon"
       ></i>
     </div>

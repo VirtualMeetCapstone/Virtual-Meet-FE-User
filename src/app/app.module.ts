@@ -12,7 +12,7 @@ import { LoginModalComponent } from './Components/Common/login-modal/login-modal
 import { HomePageRoomComponent } from './Components/home-page-room/home-page-room.component';
 import { EditProfileDialogComponent } from './Components/edit-my-profile-dialog/edit-profile-dialog.component';
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
@@ -49,7 +49,6 @@ import { StoryModalComponent } from './Components/story-modal/story-modal.compon
 import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
-import { ModalDeleteStoryComponent } from './Components/story-modal-my-profile/modal-delete-story/modal-delete-story.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +74,6 @@ import { ModalDeleteStoryComponent } from './Components/story-modal-my-profile/m
     SafeUrlPipe,
     TimeAgoPipe,
     CreateStoryDialogComponent,
-    ModalDeleteStoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -92,6 +90,7 @@ import { ModalDeleteStoryComponent } from './Components/story-modal-my-profile/m
     DialogModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    NgOptimizedImage,
   ],
   providers: [
     provideClientHydration(),

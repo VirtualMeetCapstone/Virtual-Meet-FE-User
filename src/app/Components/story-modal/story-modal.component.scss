@@ -46,25 +46,29 @@
 img.story-image {
   margin-top: 20px;
   height: 70vh;
-  width: 80%;
   border-radius: 10px;
+  transition: width 0.3s ease-in-out;
 }
+
+
 iframe.story-video {
   margin-top: 20vh;
   height: 30vh;
 }
+
 p.story-time {
   margin-left: 5px;
   font-size: 15px;
   margin-top: 15px;
   color: #cbc4c4;
 }
-img.user-avatar {
+
+img.story-user-avatar {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  margin-left: 10px;
 }
+
 .story-title {
   font-size: 16px;
   color: #fff;
@@ -87,13 +91,12 @@ img.user-avatar {
 }
 
 .prev-button {
-  left: -15px;
   right: 93%;
   top: 45vh;
 }
 
 .next-button {
-  right: 0px;
+  right: -20px;
   left: 93%;
   top: 45vh;
 }
@@ -107,6 +110,7 @@ img.user-avatar {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .heart-icon {
   position: absolute;
   bottom: 25px;
