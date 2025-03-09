@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomServicesService } from '../../services/room-services.service';
+<<<<<<< HEAD
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
+=======
+import { AuthService } from '../../services/auth-service/auth.service';
+>>>>>>> c36db8c ( fix post)
 
 @Component({
   selector: 'app-home-page-room',
@@ -20,12 +24,32 @@ export class HomePageRoomComponent implements OnInit {
   showModalDeleteRoom = false;
   showModalAddEditRoom = false;
   roomToEdit = null;
+<<<<<<< HEAD
   userList: string[] = [];
 
   constructor(private roomService: RoomServicesService
     ,private roomHub: RoomHubService
   ,private router: Router) {}
+=======
+  user: any = null;
+
+  constructor(
+    private roomService: RoomServicesService,
+    private authService: AuthService
+  ) {}
+
+>>>>>>> c36db8c ( fix post)
   ngOnInit(): void {
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+    });
+
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+    }
+    console.log(this.user);
     this.getRoom();
     this.startSignalRConnection(); // Khởi tạo kết nối SignalR
   }

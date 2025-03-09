@@ -4,13 +4,15 @@
       <div class="user-info">
         <img
           alt="User profile picture"
-          height="40"
-          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
-          width="40"
+          height="60"
+          width="60"
+          [src]="user.photoUrl"
+          style="border-radius: 50%; object-fit: cover"
         />
+
         <textarea placeholder="Write something here..."></textarea>
       </div>
-      <div class="actions">
+      <div class="actions mt-3">
         <button>
           <i class="fas fa-photo-video"> </i>
           Photo/Video
@@ -26,6 +28,9 @@
         <button>
           <i class="fas fa-ellipsis-h"> </i>
         </button>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="button" class="btn btn-primary">Post</button>
       </div>
     </div>
     <div class="post" *ngFor="let post of listPost">

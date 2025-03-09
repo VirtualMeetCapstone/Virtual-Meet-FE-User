@@ -88,27 +88,29 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label for="mediaUpload">Media Upload </label>
+
                 <img
-                  style="width: 100px; height: 100px"
-                  *ngIf="
-                    roomToEdit?.medias?.length > 0 && roomToEdit.medias[0]?.url
-                  "
-                  [src]="roomToEdit.medias[0].url"
+                  *ngIf="imagePreview"
+                  [src]="imagePreview"
+                  alt="Preview"
+                  width="150"
+                  height="150"
+                />
+
+                <img
+                  *ngIf="!imagePreview && roomToEdit?.medias?.length > 0"
+                  [src]="roomToEdit.medias[0]?.url"
+                  alt="Existing Image"
+                  width="150"
+                  height="150"
                 />
 
                 <input
                   type="file"
-                  class="form-control"
+                  class="form-control mt-2"
                   id="mediaUpload"
-                  formControlName="mediaUpload"
-                  *ngIf="roomToEdit == null"
-                />
-                <input
-                  type="file"
-                  class="form-control"
-                  id="mediaUpload"
-                  formControlName="mediaUpload"
-                  *ngIf="roomToEdit != null"
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
                 />
               </div>
             </div>
