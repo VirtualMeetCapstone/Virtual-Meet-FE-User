@@ -15,14 +15,11 @@ const routes: Routes = [
     component: NewsFeedMyProfileComponent,
   },
   { path: 'posts', component: HomePagePostComponent },
-<<<<<<< HEAD
   { path: 'video', component: YoutubePlayerComponent },
   { path: 'room', component: RoomComponentComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
 
   { path: '**', redirectTo: '', pathMatch: 'full' },
-=======
->>>>>>> c36db8c ( fix post)
 ];
 
 @NgModule({

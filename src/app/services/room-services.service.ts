@@ -5,11 +5,7 @@ import { AppConstants } from '../constant/AppConstants';
   providedIn: 'root',
 })
 export class RoomServicesService {
-<<<<<<< HEAD
-  url = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
-=======
   url = 'https://dev-vmeet.site/rooms';
->>>>>>> c36db8c ( fix post)
 
   constructor(private http: HttpClient) {}
 
