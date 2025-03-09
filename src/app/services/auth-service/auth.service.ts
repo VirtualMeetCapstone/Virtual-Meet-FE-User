@@ -88,8 +88,6 @@ export class AuthService {
     }
   }
 
-
-
   login(token: string, refreshToken: string) {
     this.setToken(token, refreshToken);
     this.updateLoginState(true);
@@ -99,10 +97,14 @@ export class AuthService {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
     }
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.getToken()}` });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+    });
 
     try {
-      const user = await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
+      const user = await this.http
+        .get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers })
+        .toPromise();
       this.backendUserCache.set(userId, user);
       return user;
     } catch (error) {

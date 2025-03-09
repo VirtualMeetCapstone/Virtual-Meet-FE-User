@@ -7,7 +7,6 @@ const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
   { path: 'my-profile/:id', component: MyProfileComponent },
   { path: 'posts', component: HomePagePostComponent },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({

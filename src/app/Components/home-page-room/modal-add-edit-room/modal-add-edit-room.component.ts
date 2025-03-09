@@ -1,13 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RoomServicesService } from '../../../services/room-services.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../../services/auth-service/auth.service';
 @Component({
   selector: 'app-modal-add-edit-room',
   templateUrl: './modal-add-edit-room.component.html',
@@ -16,12 +10,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class ModalAddEditRoomComponent {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() roomToEdit: any = null;
+  imagePreview: string | ArrayBuffer | null = null;
+  @Input() userId: any = null;
 
   constructor(private roomService: RoomServicesService) {}
   FormAdd!: FormGroup;
   loading = false;
 
   ngOnInit(): void {
+    console.log(this.userId);
     if (this.roomToEdit == null) {
       this.FormAdd = new FormGroup({
         topic: new FormControl('', Validators.required),
@@ -48,55 +45,63 @@ export class ModalAddEditRoomComponent {
   }
   onDeleteRoom() {}
   onAddRoom() {
-    const formValue = this.FormAdd.value;
-
-    // Lấy file từ input (đúng cách)
-    const fileInput = document.getElementById(
-      'mediaUpload'
-    ) as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      formValue.mediaUpload = fileInput.files[0]; // Lấy đúng file
-    }
-
-    console.log('Dữ liệu gửi:', formValue);
     this.loading = true;
-
-    this.roomService.addRoom(formValue).subscribe((res: any) => {
-      console.log('Response:', res);
-
-      if (res.id) {
-        this.closeModal.emit(true);
-      }
-      this.loading = false;
-    });
-  }
-  onUpdateRoom() {
     const formValue = this.FormAdd.value;
+    formValue.mediaUpload = this.imagePreview; // Dùng link ảnh đã upload
 
-    // Lấy file từ input
-    const fileInput = document.getElementById(
-      'mediaUpload'
-    ) as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      formValue.mediaUpload = fileInput.files[0];
-    } else {
-      formValue.mediaUpload =
-        this.roomToEdit?.medias?.length > 0
-          ? this.roomToEdit.medias[0].url
-          : null;
-    }
-
-    console.log('Dữ liệu gửi:', formValue);
-    this.loading = true;
-
-    this.roomService
-      .updateRoom(this.roomToEdit.id, formValue)
-      .subscribe((res: any) => {
+    this.roomService.addRoom(formValue, this.userId).subscribe(
+      (res: any) => {
         console.log('Response:', res);
-        if (res.success) {
+        if (res.id) {
           this.closeModal.emit(true);
         }
         this.loading = false;
-      });
+      },
+      (error: any) => {
+        console.error('Lỗi tạo phòng:', error);
+        this.loading = false;
+      }
+    );
+  }
+
+  onUpdateRoom() {
+    this.loading = true;
+    const formValue = this.FormAdd.value;
+    formValue.mediaUpload =
+      this.imagePreview || this.roomToEdit?.medias?.[0]?.url;
+
+    this.roomService
+      .updateRoom(this.roomToEdit.id, formValue, this.userId)
+      .subscribe(
+        (res: any) => {
+          console.log('Response:', res);
+          if (res.success) {
+            this.closeModal.emit(true);
+          }
+          this.loading = false;
+        },
+        (error: any) => {
+          console.error('Lỗi cập nhật phòng:', error);
+          this.loading = false;
+        }
+      );
+  }
+
+  onFileSelected(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      this.loading = true;
+      this.roomService.uploadMedia(file).subscribe(
+        (res: any) => {
+          console.log('Upload thành công:', res);
+          if (res.length > 0 && res[0].url) {
+            this.imagePreview = res[0].url;
+            this.loading = false;
+          }
+        },
+        (error) => console.error('Lỗi upload:', error)
+      );
+    }
   }
 }

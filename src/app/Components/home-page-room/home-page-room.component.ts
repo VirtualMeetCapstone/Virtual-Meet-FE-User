@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomServicesService } from '../../services/room-services.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-home-page-room',
@@ -17,10 +18,24 @@ export class HomePageRoomComponent implements OnInit {
   showModalDeleteRoom = false;
   showModalAddEditRoom = false;
   roomToEdit = null;
+  user: any = null;
 
-  constructor(private roomService: RoomServicesService) {}
+  constructor(
+    private roomService: RoomServicesService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+    });
+
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+    }
+    console.log(this.user);
     this.getRoom();
   }
   getRoom() {
