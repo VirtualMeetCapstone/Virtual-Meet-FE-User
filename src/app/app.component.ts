@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
       this.isLoggedIn = !!token;
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
-        console.log('chua login');
+        console.log('Chưa đăng nhập');
       }
     }
   }
