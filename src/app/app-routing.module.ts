@@ -4,9 +4,14 @@ import { HomePageRoomComponent } from './Components/home-page-room/home-page-roo
 import { MyProfileComponent } from './Components/my-profile/my-profile.component';
 import { HomePagePostComponent } from './Components/home-page-post/home-page-post.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
+import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
   { path: 'my-profile/:id', component: MyProfileComponent },
+  {
+    path: 'my-profile/:id/news-feed-my-profile',
+    component: NewsFeedMyProfileComponent,
+  },
   { path: 'posts', component: HomePagePostComponent },
   { path: 'video', component: YoutubePlayerComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' },

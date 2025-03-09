@@ -50,6 +50,9 @@ import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.p
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
+import { HightlightStoryMyProfileComponent } from './Components/hightlight-story-my-profile/hightlight-story-my-profile.component';
+import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-button/modal-gear-button.component';
+import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +79,9 @@ import { YoutubePlayerComponent } from './Components/youtube-player/youtube-play
     TimeAgoPipe,
     CreateStoryDialogComponent,
     YoutubePlayerComponent,
+    HightlightStoryMyProfileComponent,
+    ModalGearButtonComponent,
+    NewsFeedMyProfileComponent,
   ],
   imports: [
     BrowserModule,

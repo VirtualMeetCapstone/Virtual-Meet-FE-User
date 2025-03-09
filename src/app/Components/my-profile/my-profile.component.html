@@ -26,7 +26,10 @@
           >
             Tạo tin mới
           </button>
-          <button class="settings-button">
+          <button
+            class="settings-button"
+            (click)="openGearButton(); $event.stopPropagation()"
+          >
             <i class="fa-solid fa-gear"></i>
           </button>
           <button class="share-button">

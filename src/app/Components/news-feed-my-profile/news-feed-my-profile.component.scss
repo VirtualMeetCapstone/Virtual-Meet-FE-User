@@ -1,0 +1,147 @@
+/* Container chính hiển thị dạng grid với 5 cột */
+.story-feed {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Mỗi card story */
+.story-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #8e8e8e; /* nền mặc định, có thể thay đổi */
+  cursor: pointer;
+}
+
+/* Kích thước và tỉ lệ của thumbnail */
+.story-thumbnail {
+  position: relative;
+  width: 100%;
+  padding-top: 150%; /* điều chỉnh tỉ lệ khung hình, ví dụ: 3:2 */
+}
+
+/* Ảnh hiển thị story */
+.story-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay chứa header (avatar, tiêu đề, thời gian và menu) */
+.story-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(41, 41, 41, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+/* Header chứa avatar, chi tiết story và nút menu */
+.story-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Avatar người dùng */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+/* Chi tiết story (tiêu đề và thời gian) */
+.story-details {
+  flex: 1;
+  margin-left: 8px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.story-title {
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-time {
+  font-size: 12px;
+}
+
+/* Menu (nút ba chấm) */
+.menu-container {
+  position: relative;
+}
+
+.menu-container .button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.menu-container .button > svg {
+  width: 30px;
+  height: 30px;
+  fill: #fff;
+}
+
+.menu-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 100px;
+  z-index: 4;
+}
+
+.menu-options button {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.menu-options button:hover {
+  background-color: #cbc4c4;
+}
+
+/* Responsive: giảm số cột khi màn hình nhỏ */
+@media (max-width: 1024px) {
+  .story-feed {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .story-feed {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .story-feed {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

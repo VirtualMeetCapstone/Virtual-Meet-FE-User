@@ -11,7 +11,7 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { StoryServiceService } from '../../services/story-service/story-service.service';
+import { StoryService } from '../../services/story-service/story-service.service';
 import { ModalDeleteStoryComponent } from './modal-delete-story/modal-delete-story.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class StoryModalMyProfileComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<StoryModalMyProfileComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private storyService: StoryServiceService,
+    private storyService: StoryService,
     private dialog: MatDialog
   ) {
     this.stories = data.stories;
