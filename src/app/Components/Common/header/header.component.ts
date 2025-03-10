@@ -57,7 +57,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           if (userId) {
             this.idNew = userId;
             this.user = await this.authService.getBackendUser(userId);
-
             if (!this.user.id) {
               this.user.id = this.idNew;
             }
@@ -65,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         } else {
           this.user = null;
         }
-        this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
+        this.isLoadingUser = !(this.user?.Name && this.user?.Picture?.Url);
         this.cdr.markForCheck();
       });
 
@@ -74,10 +73,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
           this.user = user;
-          this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
+          this.isLoadingUser = !(this.user?.Name && this.user?.Picture?.Url);
           this.cdr.markForCheck();
         });
       }
+    }
+  }
+
+  getSafeUrl(url: any): SafeUrl {
+    if (!url) return 'assets/images/default-avatar.png';
+
+    try {
+      const parsed = typeof url === 'string' ? JSON.parse(url) : url;
+      return this.sanitizer.bypassSecurityTrustUrl(parsed.Url || 'assets/images/default-avatar.png');
+    } catch (error) {
+      console.error('Lỗi parse URL:', error);
+      return 'assets/images/default-avatar.png';
     }
   }
 
@@ -96,10 +107,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
-  }
-
-  getSafeUrl(url: string): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   onClickLoginDialog() {
