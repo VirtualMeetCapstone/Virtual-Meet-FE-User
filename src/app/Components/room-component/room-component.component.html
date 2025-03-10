@@ -1,4 +1,4 @@
-<div class="video-call-container" [ngClass]="{'chat-open': isChatOpen}">
+<div class="video-call-container" [ngClass]="{'modal-open': isChatOpen ||isParticipantsOpen}">
   <div class="video-grid">
     <div class="video-box activity">
       <div class="activity-content">
@@ -88,7 +88,10 @@
     </div>
 
   </div>
-  <app-room-chat *ngIf="isChatOpen" class="chat-sidebar"></app-room-chat>
+  <div class="chat-sidebar" [ngClass]="{'open': isChatOpen || isParticipantsOpen}">
+    <app-room-chat *ngIf="isChatOpen"></app-room-chat>
+    <app-participant-list *ngIf="isParticipantsOpen"></app-participant-list>
+  </div>
   <div class="action-btn-group">
     <div class="controls">
       <button class="control-btn"><i class="fa-solid fa-display"></i></button>
@@ -98,14 +101,14 @@
       <button class="control-btn end-call"><i class="fa-solid fa-phone"></i></button>
 
     </div>
-    <div *ngIf="!isChatOpen" class="chat-sidebar">
-      <button class="attendee"><i class="fa-solid fa-users-line"></i></button>
+    <div *ngIf="isChatOpen == false && isParticipantsOpen == false" class="chat-sidebar">
+      <button class="attendee"  (click)="toggleParticipants()"><i class="fa-solid fa-users-line"></i></button>
 
       <button class="chat-box" (click)="toggleChat()"><i class="fa-brands fa-rocketchat"></i></button>
     </div>
-    <div *ngIf="isChatOpen" class="chat-sidebar">
+    <div *ngIf="isChatOpen || isParticipantsOpen" class="chat-sidebar">
 
-      <button class="chat-box" (click)="toggleChat()"><i class="fa-solid fa-x"></i></button>
+      <button class="chat-box" (click)="toggleClose()"><i class="fa-solid fa-x"></i></button>
     </div>
   </div>
 

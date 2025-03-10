@@ -1,4 +1,8 @@
 <div class="chat-sidebar">
+  <div class="chat-header">
+    <h3>Chat</h3>
+
+  </div>
   <div class="chat-messages">
     <div *ngFor="let message of messages" class="message" [ngClass]="{ 'self': message.sender === 'me' }">
       <p class="sender">{{ message.sender }}</p>

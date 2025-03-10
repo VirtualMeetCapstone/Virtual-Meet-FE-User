@@ -55,7 +55,7 @@ import { RoomChatComponent } from './Components/room-chat/room-chat.component';
 import {RoomComponentComponent} from "./Components/room-component/room-component.component";
 import {Toast} from "primeng/toast";
 import {MessageService} from "primeng/api";
-import { AttendeeListComponent } from './Components/attendee-list/attendee-list.component';
+import { ParticipantListComponent } from './Components/participant-list/participant-list.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +84,7 @@ import { AttendeeListComponent } from './Components/attendee-list/attendee-list.
     YoutubePlayerComponent,
     RoomComponentComponent,
     RoomChatComponent,
-    AttendeeListComponent,
+    ParticipantListComponent,
   ],
   imports: [
     BrowserModule,
