@@ -17,6 +17,7 @@ import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { SpeedDialModule } from 'primeng/speeddial';
 import {
   HttpClientModule,
   provideHttpClient,
@@ -50,6 +51,11 @@ import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.p
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
+import { RoomChatComponent } from './Components/room-chat/room-chat.component';
+import {RoomComponentComponent} from "./Components/room-component/room-component.component";
+import {Toast} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import { AttendeeListComponent } from './Components/attendee-list/attendee-list.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +82,9 @@ import { YoutubePlayerComponent } from './Components/youtube-player/youtube-play
     TimeAgoPipe,
     CreateStoryDialogComponent,
     YoutubePlayerComponent,
+    RoomComponentComponent,
+    RoomChatComponent,
+    AttendeeListComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,10 +102,13 @@ import { YoutubePlayerComponent } from './Components/youtube-player/youtube-play
     SocialLoginModule,
     GoogleSigninButtonModule,
     NgOptimizedImage,
+    SpeedDialModule,
+    Toast
   ],
   providers: [
     provideClientHydration(),
     provideHttpClient(withFetch()),
+
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -119,6 +131,7 @@ import { YoutubePlayerComponent } from './Components/youtube-player/youtube-play
         },
       } as SocialAuthServiceConfig,
     },
+
   ],
   bootstrap: [AppComponent],
 })

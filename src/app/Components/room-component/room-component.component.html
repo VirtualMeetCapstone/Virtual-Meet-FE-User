@@ -1,4 +1,4 @@
-<div class="video-call-container">
+<div class="video-call-container" [ngClass]="{'chat-open': isChatOpen}">
   <div class="video-grid">
     <div class="video-box activity">
       <div class="activity-content">
@@ -9,44 +9,104 @@
 
     <div class="video-box red">
       <div class="user-icon">
-        <img src="" alt="User Icon" />
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
       </div>
       <p class="user-name">Gấu</p>
-      <div class="mute-icon">🔇</div>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
 
     <div class="video-box blue">
       <div class="profile">
-        <img src="" alt="User Avatar" />
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
       </div>
       <p class="user-name">Mạnh Tường</p>
-      <div class="mute-icon">🔇</div>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
 
     <div class="video-box gray">
       <div class="user-icon">
-        <img src="" alt="User Icon" />
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
       </div>
       <p class="user-name">Trần Ngọc Chí</p>
-      <div class="mute-icon">🔇</div>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
     <div class="video-box brown">
       <div class="profile">
-        <img src="" alt="User Avatar" />
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
       </div>
       <p class="user-name">Đức</p>
-      <div class="mute-icon">🔇</div>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+    <div class="video-box brown">
+      <div class="profile">
+        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
+      </div>
+      <p class="user-name">Đức</p>
+      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
 
   </div>
+  <app-room-chat *ngIf="isChatOpen" class="chat-sidebar"></app-room-chat>
+  <div class="action-btn-group">
+    <div class="controls">
+      <button class="control-btn"><i class="fa-solid fa-display"></i></button>
 
-  <div class="controls">
-    <button class="control-btn"><i class="fa-solid fa-display"></i></button>
+      <button class="control-btn"><i class="fa-solid fa-microphone"></i></button>
+      <button class="control-btn"><i class="fa-solid fa-camera"></i></button>
+      <button class="control-btn end-call"><i class="fa-solid fa-phone"></i></button>
 
-    <button class="control-btn"><i class="fa-solid fa-microphone"></i></button>
-    <button class="control-btn"><i class="fa-solid fa-camera"></i></button>
-    <button class="control-btn end-call"><i class="fa-solid fa-phone"></i></button>
+    </div>
+    <div *ngIf="!isChatOpen" class="chat-sidebar">
+      <button class="attendee"><i class="fa-solid fa-users-line"></i></button>
 
+      <button class="chat-box" (click)="toggleChat()"><i class="fa-brands fa-rocketchat"></i></button>
+    </div>
+    <div *ngIf="isChatOpen" class="chat-sidebar">
 
+      <button class="chat-box" (click)="toggleChat()"><i class="fa-solid fa-x"></i></button>
+    </div>
   </div>
+
 </div>
