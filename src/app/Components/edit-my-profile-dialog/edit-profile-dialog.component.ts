@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
+import { ExternalServiceService } from '../../services/external-service/external-service.service';
 export interface EditProfileData {
   id: string;
   username: string;
@@ -28,7 +29,8 @@ export class EditProfileDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<EditProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditProfileData,
-    private http: HttpClient
+    private http: HttpClient,
+    private externalService: ExternalServiceService,
   ) {
     this.newUsername = data.username;
     this.newBio = data.bio;
@@ -49,7 +51,9 @@ export class EditProfileDialogComponent {
     };
     reader.readAsDataURL(this.newAvatar);
   }
-
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
+  }
   onSave() {
     this.isLoading = true;
 

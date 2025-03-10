@@ -65,14 +65,8 @@
             </div>
 
             <!-- Hiển thị ảnh người dùng -->
-<img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.Picture?.Url)"
+<img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)"
 alt="User Avatar" class="user-avatar" loading="lazy" />
-
-<!-- Ảnh mặc định nếu không có ảnh người dùng -->
-<ng-template #defaultAvatar>
-<img src="assets/images/default-avatar.png" alt="Default Avatar" class="user-avatar" loading="lazy" />
-</ng-template>
-
             <!-- Ảnh mặc định -->
             <ng-template #defaultAvatar>
               <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
@@ -83,7 +77,7 @@ alt="User Avatar" class="user-avatar" loading="lazy" />
           <!-- Hiển thị tên người dùng -->
           <span *ngIf="isLoadingUser; else showName">Loading...</span>
           <ng-template #showName>
-            <span class="user-name">{{ user?.Name }}</span>
+            <span class="user-name">{{ user?.name }}</span>
           </ng-template>
 
 

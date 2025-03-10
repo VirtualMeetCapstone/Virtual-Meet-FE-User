@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialogComponent } from '../edit-my-profile-dialog/edit-profile-dialog.component';
 import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
 import { ModalGearButtonComponent } from './modal-gear-button/modal-gear-button.component';
-
 import { AppConstants } from '../../constant/AppConstants';
 interface Profile {
   name: string;

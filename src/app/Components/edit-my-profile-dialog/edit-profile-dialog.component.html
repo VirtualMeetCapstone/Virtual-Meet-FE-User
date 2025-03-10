@@ -32,7 +32,7 @@
         <div class="profile-avatar">
           <img
             class="avatar-img"
-            [src]="mediaPreview ? mediaPreview : data.avatar"
+            [src]="getSafeUrl(mediaPreview ? mediaPreview : data.avatar)"
             alt="Avatar"
           />
           <div class="avatar-edit" role="button" tabindex="0">

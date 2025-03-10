@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private sanitizer: DomSanitizer,
+    private externalService: ExternalServiceService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -53,7 +55,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.loggedIn = status;
         if (status) {
           const userId = this.authService.getUser()?.id;
-
           if (userId) {
             this.idNew = userId;
             this.user = await this.authService.getBackendUser(userId);
@@ -64,7 +65,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         } else {
           this.user = null;
         }
-        this.isLoadingUser = !(this.user?.Name && this.user?.Picture?.Url);
+        this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
         this.cdr.markForCheck();
       });
 
@@ -73,23 +74,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
           this.user = user;
-          this.isLoadingUser = !(this.user?.Name && this.user?.Picture?.Url);
+          this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
           this.cdr.markForCheck();
         });
       }
     }
   }
 
-  getSafeUrl(url: any): SafeUrl {
-    if (!url) return 'assets/images/default-avatar.png';
-
-    try {
-      const parsed = typeof url === 'string' ? JSON.parse(url) : url;
-      return this.sanitizer.bypassSecurityTrustUrl(parsed.Url || 'assets/images/default-avatar.png');
-    } catch (error) {
-      console.error('Lỗi parse URL:', error);
-      return 'assets/images/default-avatar.png';
-    }
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
   }
 
   editProfile() {
