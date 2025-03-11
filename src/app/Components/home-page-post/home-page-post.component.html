@@ -8,23 +8,24 @@
           src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
           width="40"
         />
-        <textarea placeholder="Write something here..."></textarea>
+        <textarea (click)="openCreatePost()" name="content" placeholder="Write something here..."></textarea>
       </div>
       <div class="actions">
-        <button>
+        <button (click)="openCreatePost()">
           <i class="fas fa-photo-video"> </i>
           Photo/Video
         </button>
-        <button>
+        <button (click)="tagFriend()">
           <i class="fas fa-user-tag"> </i>
           Tag Friend
         </button>
-        <button>
+        <button (click)="createFeeling()">
           <i class="fas fa-smile"> </i>
           Feeling/Activity
         </button>
-        <button>
-          <i class="fas fa-ellipsis-h"> </i>
+        <button (click)="openCreatePost()" class="button-create-post">
+          <i class="fa-solid fa-plus"></i>
+          Create
         </button>
       </div>
     </div>
