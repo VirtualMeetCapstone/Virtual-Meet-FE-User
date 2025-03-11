@@ -1,0 +1,73 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="header-container">
+      <div>
+        <h1 class="header-title">Create Post</h1>
+        <div>
+          <p>Do you want to share with your friends?</p>
+          <select
+            class="form-select"
+            style="background-color: black; margin-bottom: 20px; border-radius: 5px; height: 30px"
+            [(ngModel)]="privacy"
+            aria-label="Default select example">
+
+            <option value="0">🌍 Public</option>
+            <option value="1">🔒 Private</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <button class="cancel-btn" (click)="onCancel()">
+        ✖
+      </button>
+    </div>
+
+    <div class="content-container">
+      <div class="profile-section">
+        <div class="profile-label">Photo/Video</div>
+
+        <label for="file" class="custum-file-upload">
+          <div class="upload-icon">
+            <span>Click to upload image & video</span>
+          </div>
+          <input
+            id="file"
+            type="file"
+            accept="image/*,video/*"
+            (change)="onPostMediaSelected($event)"
+            multiple
+          >
+        </label>
+      </div>
+
+      <!-- Hiển thị danh sách ảnh/video đã chọn -->
+      <div class="preview-container">
+        <div *ngFor="let media of mediaPreviews; let i = index" class="preview-item">
+          <img *ngIf="media.type === 'image'" [src]="media.url" alt="Preview" width="100">
+          <video *ngIf="media.type === 'video'" [src]="media.url" controls width="200"></video>
+          <button (click)="removeMedia(i)"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-label">Content</div>
+        <textarea
+          class="content-input"
+          placeholder="What's on your mind?"
+          [(ngModel)]="newContent">
+        </textarea>
+      </div>
+    </div>
+
+    <div class="footer-container">
+      <button class="cancel-button" (click)="onCancel()">Cancel</button>
+      <button class="save-button" (click)="submitPost()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Create</span>
+        <div *ngIf="isLoading" class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
