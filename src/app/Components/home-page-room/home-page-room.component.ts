@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { RoomServicesService } from '../../services/room-services.service';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
-import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({

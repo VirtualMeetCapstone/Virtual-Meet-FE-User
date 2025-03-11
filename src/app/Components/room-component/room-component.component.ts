@@ -22,18 +22,10 @@ export class RoomComponentComponent implements OnInit{
   isChatOpen = false;
 
   ngOnInit() {
-    this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
-    console.log(`🏠 Đang ở phòng ${this.roomId}`);
     this.roomHubService.receiveShare((username: string) => {
       this.isYouTubeActive = true;
       console.log(`🔹 ${username} đang chia sẻ với bạn!`);
     });
-
-    if (!this.roomId) {
-      console.error("❌ Không có roomId!");
-      return;
-    }
-
   }
 
   // Hàm mở/đóng modal chọn hoạt động
