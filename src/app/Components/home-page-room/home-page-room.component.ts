@@ -43,18 +43,28 @@ export class HomePageRoomComponent implements OnInit {
     }
     console.log(this.user);
     this.getRoom();
-    this.startSignalRConnection(); // Khởi tạo kết nối SignalR
   }
 
   // Khởi tạo kết nối SignalR
-  startSignalRConnection() {
-    this.roomHub
-      .startConnection()
-      .then(() => console.log('✅ SignalR connection established'))
-      .catch((err) =>
-        console.error('❌ Failed to start SignalR connection:', err)
-      );
+  startSignalRConnection(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Bắt đầu kết nối SignalR
+        this.roomHub.startSignalRConnection()
+          .then(() => {
+            console.log("✅ SignalR connection established.");
+            resolve(); // Kết nối thành công
+          })
+          .catch((err) => {
+            console.error("❌ SignalR connection failed:", err);
+            reject(err); // Lỗi kết nối
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
+
 
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
@@ -63,14 +73,15 @@ export class HomePageRoomComponent implements OnInit {
     });
   }
   joinRoom(roomId: string) {
-    this.roomHub
-      .joinRoom('manh tuong', roomId)
+    this.startSignalRConnection()
+      .then(() => this.roomHub.joinRoom('manh tuong', roomId))
       .then(() => {
         console.log(`✅ Đã tham gia phòng ${roomId}`);
         this.router.navigate(['/room', roomId]);
       })
       .catch((err) => console.error('❌ Lỗi khi tham gia room: ', err));
   }
+
   openModalDeleteRoom(room: any) {
     this.roomToDelete = room;
     this.showModalDeleteRoom = true;

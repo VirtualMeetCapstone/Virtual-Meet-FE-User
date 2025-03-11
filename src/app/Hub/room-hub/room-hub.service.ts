@@ -9,19 +9,31 @@ export class RoomHubService {
   public currentUser = { name: '', roomId: '' };
 
   constructor() {
-
     this.hubConnection = new signalR.HubConnectionBuilder()
     .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, { withCredentials: true })
     .withAutomaticReconnect()
     .build();
   }
 
-  public startConnection = () => {
-    return this.hubConnection
-      .start()
-      .then(() => console.log('✅ Connection started'))
-      .catch((err) => console.error('❌ Error while starting connection: ' + err));
-  };
+  startSignalRConnection(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Bắt đầu kết nối SignalR
+        this.hubConnection.start()
+          .then(() => {
+            console.log("✅ SignalR connection established.");
+            resolve(); // Kết nối thành công
+          })
+          .catch((err) => {
+            console.error("❌ SignalR connection failed:", err);
+            reject(err); // Lỗi kết nối
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   // Join room
   public joinRoom = (username: string, roomId: string) => {
     if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
