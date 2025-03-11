@@ -59,7 +59,6 @@ import { ParticipantListComponent } from './Components/participant-list/particip
 import { HightlightStoryMyProfileComponent } from './Components/hightlight-story-my-profile/hightlight-story-my-profile.component';
 import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-button/modal-gear-button.component';
 import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
-
 @NgModule({
   declarations: [
     AppComponent,
