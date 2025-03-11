@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -12,6 +13,10 @@ export class RoomComponentComponent implements OnInit{
     ,private roomHub: RoomHubService
   ) {}
 
+  isParticipantsOpen = false;
+
+  isChatOpen = false;
+
   ngOnInit() {
     this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
     console.log(`🏠 Đang ở phòng ${this.roomId}`);
@@ -21,5 +26,22 @@ export class RoomComponentComponent implements OnInit{
       return;
     }
 
+  }
+
+
+  toggleChat() {
+    this.isChatOpen = !this.isChatOpen;
+  }
+
+  toggleParticipants() {
+    this.isParticipantsOpen = !this.isParticipantsOpen;
+  }
+  toggleClose()
+  {
+    this.isChatOpen = false;
+    this.isParticipantsOpen = false;
+  }
+
+
 }
-}
+

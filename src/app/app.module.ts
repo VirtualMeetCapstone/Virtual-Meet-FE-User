@@ -17,6 +17,7 @@ import { LoadingComponent } from './Components/loading/loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { SpeedDialModule } from 'primeng/speeddial';
 import {
   HttpClientModule,
   provideHttpClient,
@@ -50,6 +51,11 @@ import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.p
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
+import { RoomChatComponent } from './Components/room-chat/room-chat.component';
+import {RoomComponentComponent} from "./Components/room-component/room-component.component";
+import {Toast} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import { ParticipantListComponent } from './Components/participant-list/participant-list.component';
 import { HightlightStoryMyProfileComponent } from './Components/hightlight-story-my-profile/hightlight-story-my-profile.component';
 import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-button/modal-gear-button.component';
 import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
@@ -80,6 +86,9 @@ import { RoomComponentComponent } from './Components/room-component/room-compone
     TimeAgoPipe,
     CreateStoryDialogComponent,
     YoutubePlayerComponent,
+    RoomComponentComponent,
+    RoomChatComponent,
+    ParticipantListComponent,
     HightlightStoryMyProfileComponent,
     ModalGearButtonComponent,
     NewsFeedMyProfileComponent,
@@ -101,10 +110,13 @@ import { RoomComponentComponent } from './Components/room-component/room-compone
     SocialLoginModule,
     GoogleSigninButtonModule,
     NgOptimizedImage,
+    SpeedDialModule,
+    Toast
   ],
   providers: [
     provideClientHydration(),
     provideHttpClient(withFetch()),
+
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -127,6 +139,7 @@ import { RoomComponentComponent } from './Components/room-component/room-compone
         },
       } as SocialAuthServiceConfig,
     },
+
   ],
   bootstrap: [AppComponent],
 })
