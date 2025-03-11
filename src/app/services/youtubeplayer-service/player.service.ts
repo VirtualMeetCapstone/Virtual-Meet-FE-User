@@ -11,6 +11,7 @@ export class PlayerService {
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
   constructor(private videoHub: VideoHubService) {
+    this.initializePlayer();
     this.videoHub
       .startConnection()
       .then(() => {

@@ -4,5 +4,15 @@
     "env": {
       "NODE_ENV": "production"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/video",
+      "headers": { "x-prerender-bypass": "true" }
+    },
+    {
+      "src": "/room",
+      "headers": { "x-prerender-bypass": "true" }
+    }
+  ]
 }
