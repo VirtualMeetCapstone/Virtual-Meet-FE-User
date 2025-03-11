@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomServicesService } from '../../services/room-services.service';
+import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { Router } from '@angular/router';
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-home-page-room',
@@ -17,18 +20,36 @@ export class HomePageRoomComponent implements OnInit {
   showModalDeleteRoom = false;
   showModalAddEditRoom = false;
   roomToEdit = null;
+  userList: string[] = [];
 
-  constructor(private roomService: RoomServicesService) {}
-
+  constructor(private roomService: RoomServicesService
+    ,private roomHub: RoomHubService
+  ,private router: Router) {}
   ngOnInit(): void {
     this.getRoom();
+    this.startSignalRConnection(); // Khởi tạo kết nối SignalR
   }
+
+    // Khởi tạo kết nối SignalR
+    startSignalRConnection() {
+      this.roomHub.startConnection()
+        .then(() => console.log('✅ SignalR connection established'))
+        .catch(err => console.error('❌ Failed to start SignalR connection:', err));
+    }
+
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
-      console.log();
     });
+  }
+  joinRoom(roomId: string) {
+    this.roomHub.joinRoom("manh tuong", roomId)
+      .then(() => {
+        console.log(`✅ Đã tham gia phòng ${roomId}`);
+        this.router.navigate(['/room', roomId]);
+      })
+      .catch(err => console.error("❌ Lỗi khi tham gia room: ", err));
   }
   openModalDeleteRoom(room: any) {
     this.roomToDelete = room;

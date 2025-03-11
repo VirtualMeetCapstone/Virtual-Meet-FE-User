@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { VideoHub } from '../../Hub/video-hub/video.hub';
 declare var YT: any;
 
 @Injectable({
@@ -10,18 +9,8 @@ export class PlayerService {
   private lastStatus: number | null = null;
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
-  constructor(private videoSyncService: VideoHub) {
+  constructor() {
     this.initializePlayer();
-
-    this.videoSyncService.startConnection()
-      .then(() => {
-        console.log("🔥 SignalR sẵn sàng");
-        this.videoSyncService.onPlayerStatusReceived((status, time) => {
-          console.log(`📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`);
-          this.updatePlayerFromSignalR(status, time);
-        });
-      })
-      .catch(err => console.error("❌ Lỗi khi kết nối SignalR: ", err));
   }
 
   initializePlayer() {
@@ -54,7 +43,7 @@ export class PlayerService {
         event.data === YT.PlayerState.PAUSED ||
         event.data === YT.PlayerState.BUFFERING) {
       console.log(`📤 Gửi trạng thái lên server: ${event.data}`);
-      this.videoSyncService.sendPlayerStatus(event.data, this.player.getCurrentTime());
+      // this.videoSyncService.sendPlayerStatus(event.data, this.player.getCurrentTime());
     }
 
     this.lastStatus = event.data;

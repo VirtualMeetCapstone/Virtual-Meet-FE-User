@@ -47,6 +47,14 @@
     <button class="control-btn"><i class="fa-solid fa-camera"></i></button>
     <button class="control-btn end-call"><i class="fa-solid fa-phone"></i></button>
 
+    <h2>Welcome to Room: {{ roomId }}</h2>
+    <p>👥 Số người tham gia: {{ userList.length }}</p>
+
+    <ul>
+      <li *ngFor="let user of userList">🔹 {{ user }}</li>
+    </ul>
+
+    <app-youtube-player [roomId]="roomId"></app-youtube-player>
 
   </div>
 </div>
