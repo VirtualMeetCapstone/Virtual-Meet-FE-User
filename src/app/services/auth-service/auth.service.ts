@@ -64,7 +64,7 @@ export class AuthService {
 
     try {
       const decoded: any = jwtDecode(token);
-      console.log("Decoded Token:", decoded);
+      console.log('Decoded Token:', decoded);
 
       let photoUrl: string = '';
 
@@ -76,9 +76,10 @@ export class AuthService {
       // Nếu `decoded.Picture` là một object chứa chuỗi JSON
       if (!photoUrl && decoded.Picture?.Url) {
         try {
-          const pictureData = typeof decoded.Picture.Url === 'string'
-            ? JSON.parse(decoded.Picture.Url)
-            : decoded.Picture;
+          const pictureData =
+            typeof decoded.Picture.Url === 'string'
+              ? JSON.parse(decoded.Picture.Url)
+              : decoded.Picture;
           photoUrl = pictureData?.Url || '';
         } catch (e) {
           console.error('Lỗi parse Picture.Url:', e);
@@ -99,7 +100,7 @@ export class AuthService {
       console.error('Lỗi giải mã token:', error);
       return null;
     }
-}
+  }
 
   login(token: string, refreshToken: string) {
     this.setToken(token, refreshToken);
@@ -110,10 +111,14 @@ export class AuthService {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
     }
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.getToken()}` });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+    });
 
     try {
-      const user = await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
+      const user = await this.http
+        .get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers })
+        .toPromise();
       this.backendUserCache.set(userId, user);
       return user;
     } catch (error) {
@@ -134,7 +139,7 @@ export class AuthService {
 
     this.cachedUser = null;
     this.loggedInSubject.next(false);
-    document.cookie = 'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie =
+      'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
-
 }

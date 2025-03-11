@@ -3,6 +3,7 @@ import { RoomServicesService } from '../../services/room-services.service';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-home-page-room',
@@ -22,20 +23,38 @@ export class HomePageRoomComponent implements OnInit {
   roomToEdit = null;
   userList: string[] = [];
 
-  constructor(private roomService: RoomServicesService
-    ,private roomHub: RoomHubService
-  ,private router: Router) {}
+  constructor(
+    private roomService: RoomServicesService,
+    private roomHub: RoomHubService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
+  user: any = null;
+
   ngOnInit(): void {
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+    });
+
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+    }
+    console.log(this.user);
     this.getRoom();
     this.startSignalRConnection(); // Khởi tạo kết nối SignalR
   }
 
-    // Khởi tạo kết nối SignalR
-    startSignalRConnection() {
-      this.roomHub.startConnection()
-        .then(() => console.log('✅ SignalR connection established'))
-        .catch(err => console.error('❌ Failed to start SignalR connection:', err));
-    }
+  // Khởi tạo kết nối SignalR
+  startSignalRConnection() {
+    this.roomHub
+      .startConnection()
+      .then(() => console.log('✅ SignalR connection established'))
+      .catch((err) =>
+        console.error('❌ Failed to start SignalR connection:', err)
+      );
+  }
 
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
@@ -44,12 +63,13 @@ export class HomePageRoomComponent implements OnInit {
     });
   }
   joinRoom(roomId: string) {
-    this.roomHub.joinRoom("manh tuong", roomId)
+    this.roomHub
+      .joinRoom('manh tuong', roomId)
       .then(() => {
         console.log(`✅ Đã tham gia phòng ${roomId}`);
         this.router.navigate(['/room', roomId]);
       })
-      .catch(err => console.error("❌ Lỗi khi tham gia room: ", err));
+      .catch((err) => console.error('❌ Lỗi khi tham gia room: ', err));
   }
   openModalDeleteRoom(room: any) {
     this.roomToDelete = room;

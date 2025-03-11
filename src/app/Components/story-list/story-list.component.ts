@@ -1,11 +1,11 @@
 import { StoryModalComponent } from '../story-modal/story-modal.component';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { StoryService } from '../../services/story-service/story-service.service';
 import { Story } from '../../models/story';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Viewer } from '../../models/viewer';
 import { response } from 'express';
+import { StoryService } from '../../services/story-service/story-service.service';
 
 @Component({
   selector: 'app-story-list',

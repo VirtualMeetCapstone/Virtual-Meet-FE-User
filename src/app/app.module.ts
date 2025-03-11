@@ -52,9 +52,9 @@ import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.p
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
 import { RoomChatComponent } from './Components/room-chat/room-chat.component';
-import {RoomComponentComponent} from "./Components/room-component/room-component.component";
-import {Toast} from "primeng/toast";
-import {MessageService} from "primeng/api";
+import { RoomComponentComponent } from './Components/room-component/room-component.component';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { ParticipantListComponent } from './Components/participant-list/participant-list.component';
 import { HightlightStoryMyProfileComponent } from './Components/hightlight-story-my-profile/hightlight-story-my-profile.component';
 import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-button/modal-gear-button.component';
@@ -110,7 +110,7 @@ import { CreatePostModalComponent } from './Components/create-post-modal/create-
     GoogleSigninButtonModule,
     NgOptimizedImage,
     SpeedDialModule,
-    Toast
+    Toast,
   ],
   providers: [
     provideClientHydration(),
@@ -138,7 +138,6 @@ import { CreatePostModalComponent } from './Components/create-post-modal/create-
         },
       } as SocialAuthServiceConfig,
     },
-
   ],
   bootstrap: [AppComponent],
 })

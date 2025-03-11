@@ -3,6 +3,7 @@ import {PostserviceService} from '../../services/post-service/postservice.servic
 import {CreateStoryDialogComponent} from "../create-story-dialog/create-story-dialog.component";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-home-page-post',
@@ -15,12 +16,27 @@ export class HomePagePostComponent implements OnInit {
   pageSize: number = 9;
   skip: number = 0;
   loading: boolean = false;
-  userId: string = '';
 
-  constructor(private postService: PostserviceService, private dialog: MatDialog) {
-  }
+  userId: string = '';
+  user: any = null;
+  isLoadingUser: boolean = false;
+
+  constructor(
+    private postService: PostserviceService,
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+    });
+    console.log(this.user);
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+    }
     this.loadMorePosts();
   }
 
