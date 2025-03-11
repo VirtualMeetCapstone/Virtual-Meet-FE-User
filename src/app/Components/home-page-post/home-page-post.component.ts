@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PostserviceService } from '../../services/post-service/postservice.service';
+import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CreatePostModalComponent } from '../create-post-modal/create-post-modal.component';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
@@ -13,6 +16,8 @@ export class HomePagePostComponent implements OnInit {
   pageSize: number = 9;
   skip: number = 0;
   loading: boolean = false;
+
+  userId: string = '';
   user: any = null;
   isLoadingUser: boolean = false;
   isShowModalDetailPost = false;
@@ -21,7 +26,8 @@ export class HomePagePostComponent implements OnInit {
 
   constructor(
     private postService: PostserviceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -65,5 +71,26 @@ export class HomePagePostComponent implements OnInit {
   }
   closeModalDetailPost() {
     this.isShowModalDetailPost = false;
+  }
+
+  createPost() {}
+
+  createFeeling() {}
+
+  tagFriend() {}
+
+  openCreatePost() {
+    const dialogRef = this.dialog.open(CreatePostModalComponent, {
+      width: '500px',
+      data: {
+        id: this.userId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('New story added:', result);
+      }
+    });
   }
 }

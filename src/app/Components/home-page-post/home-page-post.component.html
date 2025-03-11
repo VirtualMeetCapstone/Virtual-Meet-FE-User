@@ -9,24 +9,25 @@
           [src]="user.photoUrl"
           style="border-radius: 50%; object-fit: cover"
         />
-
-        <textarea placeholder="Write something here..."></textarea>
+        <textarea (click)="openCreatePost()" name="content" placeholder="Write something here..."></textarea>
       </div>
-      <div class="actions mt-3">
-        <button>
+      <div class="actions">
+        <button (click)="openCreatePost()">
+
           <i class="fas fa-photo-video"> </i>
           Photo/Video
         </button>
-        <button>
+        <button (click)="tagFriend()">
           <i class="fas fa-user-tag"> </i>
           Tag Friend
         </button>
-        <button>
+        <button (click)="createFeeling()">
           <i class="fas fa-smile"> </i>
           Feeling/Activity
         </button>
-        <button>
-          <i class="fas fa-ellipsis-h"> </i>
+        <button (click)="openCreatePost()" class="button-create-post">
+          <i class="fa-solid fa-plus"></i>
+          Create
         </button>
       </div>
       <div class="d-flex justify-content-center mt-3">
