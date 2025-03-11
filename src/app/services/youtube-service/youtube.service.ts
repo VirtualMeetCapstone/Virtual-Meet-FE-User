@@ -12,23 +12,6 @@ export class YoutubeService {
   constructor(private http: HttpClient) {}
   private isApiLoaded = false;
 
-  loadYoutubeApi(): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.isApiLoaded) {
-        resolve();
-        return;
-      }
-
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      tag.onload = () => {
-        this.isApiLoaded = true;
-        resolve();
-      };
-
-      document.body.appendChild(tag);
-    });
-  }
   getTrendingVideos(): Observable<any> {
     return this.http.get(this.API_URL, {
       params: {
