@@ -12,7 +12,7 @@ export class RoomComponentComponent implements OnInit{
   constructor(private route: ActivatedRoute
     ,private roomHub: RoomHubService
   ) {}
-
+  isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
 
   isChatOpen = false;
@@ -28,7 +28,10 @@ export class RoomComponentComponent implements OnInit{
 
   }
 
-
+ // Toggle trạng thái hoạt động YouTube
+ toggleYouTubeActivity() {
+  this.isYouTubeActive = !this.isYouTubeActive;
+}
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
