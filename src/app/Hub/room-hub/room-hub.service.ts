@@ -1,6 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 import { Injectable } from '@angular/core';
-
+import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +11,7 @@ export class RoomHubService {
   constructor() {
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(`https://localhost:7035/roomHub`, { withCredentials: true })
+    .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, { withCredentials: true })
     .withAutomaticReconnect()
     .build();
   }
