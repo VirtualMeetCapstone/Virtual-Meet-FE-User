@@ -1,0 +1,209 @@
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 5;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  width: 90%; /* Thay đổi từ 100% thành 90% để có khoảng cách bên */
+  background-color: #121212;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column; /* Đặt thành cột để dễ dàng điều chỉnh */
+}
+
+.title .iconX {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.post {
+  display: flex;
+  flex-direction: column; /* Đặt thành cột cho thiết bị nhỏ */
+}
+
+.image-container {
+  position: relative;
+  width: 100%; /* Đặt lại thành 100% */
+}
+
+.post-image {
+  width: 100%;
+  height: 80vh; /* Đặt lại chiều cao thành tự động */
+  max-height: 80vh; /* Giới hạn chiều cao tối đa */
+  display: block;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.prev-button {
+  left: 0;
+}
+
+.next-button {
+  right: 0;
+}
+
+.post-content {
+  padding: 20px;
+  width: 100%; /* Đặt lại thành 100% */
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-header img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.username span {
+  color: #1e90ff;
+}
+
+.post-text {
+  margin-bottom: 20px;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icons i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.time {
+  font-size: 12px;
+  color: #888;
+}
+
+.post-comment {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+
+.post-comment input {
+  flex: 1;
+  border: none;
+  background: none;
+  color: #fff;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.post-comment input::placeholder {
+  color: #888;
+}
+
+.post-comment button {
+  background: none;
+  border: none;
+  color: #1e90ff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+  .post {
+    flex-direction: row; /* Đặt lại thành hàng cho thiết bị lớn */
+  }
+
+  .image-container {
+    width: 50%; /* Đặt lại chiều rộng cho thiết bị lớn */
+  }
+
+  .post-content {
+    width: 50%; /* Đặt lại chiều rộng cho thiết bị lớn */
+  }
+}
+.comments-section {
+  margin-top: 20px;
+}
+
+.comment {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.comment-header img {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-content {
+  margin-left: 40px;
+}
+
+.replies {
+  margin-left: 20px;
+  border-left: 2px solid #444;
+  padding-left: 10px;
+}
+
+.reply {
+  padding: 10px 0;
+}
+.replies {
+  margin-left: 40px;
+  border-left: 2px solid #ccc;
+  padding-left: 10px;
+}
+.reply {
+  margin-top: 5px;
+}
+.comment-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}

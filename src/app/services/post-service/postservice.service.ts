@@ -5,7 +5,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class PostserviceService {
-  url = `${AppConstants.API_BASE_URL_HTTPS}/users/posts`;
+  url = `${AppConstants.API_BASE_URL_HTTPS}/posts`;
 
   constructor(private http: HttpClient) {}
 
@@ -13,5 +13,11 @@ export class PostserviceService {
     return this.http.get<any>(
       this.url + '?Top=' + top + '&Skip=' + skip + '&needtotalcount=true'
     );
+  }
+  getPostById(id: string): any {
+    return this.http.get<any>(this.url + '/' + id);
+  }
+  getComment(idPost: string): any {
+    return this.http.get<any>(this.url + '/' + idPost + '/comments');
   }
 }

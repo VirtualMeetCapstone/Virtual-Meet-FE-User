@@ -72,6 +72,7 @@ export class HomePageRoomComponent implements OnInit {
       .catch((err) => console.error('❌ Lỗi khi tham gia room: ', err));
   }
   openModalDeleteRoom(room: any) {
+    console.log('open modal');
     this.roomToDelete = room;
     this.showModalDeleteRoom = true;
   }

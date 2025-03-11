@@ -100,7 +100,10 @@ export class ModalAddEditRoomComponent {
             this.loading = false;
           }
         },
-        (error) => console.error('Lỗi upload:', error)
+        (error) => {
+          console.error('Lỗi upload:', error);
+          this.loading = false;
+        }
       );
     }
   }

@@ -15,6 +15,9 @@ export class HomePagePostComponent implements OnInit {
   loading: boolean = false;
   user: any = null;
   isLoadingUser: boolean = false;
+  isShowModalDetailPost = false;
+  post: any = null;
+  isLoading: boolean = false;
 
   constructor(
     private postService: PostserviceService,
@@ -51,5 +54,16 @@ export class HomePagePostComponent implements OnInit {
         this.skip += this.pageSize;
         this.loading = false;
       });
+  }
+  openModalDetailPost(postId: string) {
+    this.isLoading = true;
+    this.postService.getPostById(postId).subscribe((data: any) => {
+      this.post = data;
+      this.isShowModalDetailPost = true;
+      this.isLoading = false;
+    });
+  }
+  closeModalDetailPost() {
+    this.isShowModalDetailPost = false;
   }
 }
