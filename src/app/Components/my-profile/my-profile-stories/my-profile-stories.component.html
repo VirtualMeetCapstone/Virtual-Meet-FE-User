@@ -8,6 +8,6 @@
     }"
     (click)="openStory()"
   >
-    <img [src]="user.avatar" class="profile-pic-large" alt="User Profile" />
+    <img [src]="getSafeUrl(user.avatar)" class="profile-pic-large" alt="User Profile" />
   </div>
 </div>

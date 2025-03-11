@@ -19,8 +19,8 @@ export class VideoHub {
       // .configureLogging(signalR.LogLevel.Debug)
       .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/videoHub`, {
         withCredentials: true,
-        skipNegotiation: true,
-        transport: signalR.HttpTransportType.WebSockets
+        // skipNegotiation: true,
+        // transport: signalR.HttpTransportType.WebSockets
       })
       .withAutomaticReconnect()
       .build();

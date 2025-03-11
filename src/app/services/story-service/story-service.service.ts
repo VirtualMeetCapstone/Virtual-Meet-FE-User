@@ -12,7 +12,7 @@ import { Reaction } from '../../models/reaction';
 @Injectable({
   providedIn: 'root',
 })
-export class StoryServiceService {
+export class StoryService {
   constructor(private http: HttpClient) {}
   private httpOptions = {
     headers: new HttpHeaders({

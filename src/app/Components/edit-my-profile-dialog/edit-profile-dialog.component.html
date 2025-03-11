@@ -30,7 +30,11 @@
       <div class="profile-section">
         <div class="profile-label">Ảnh đại diện hồ sơ</div>
         <div class="profile-avatar">
-          <img class="avatar-img" [src]="data.avatar" alt="Avatar" />
+          <img
+            class="avatar-img"
+            [src]="getSafeUrl(mediaPreview ? mediaPreview : data.avatar)"
+            alt="Avatar"
+          />
           <div class="avatar-edit" role="button" tabindex="0">
             <svg width="20" height="20" viewBox="0 0 48 48" fill="currentColor">
               <path

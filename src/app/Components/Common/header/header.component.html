@@ -65,9 +65,8 @@
             </div>
 
             <!-- Hiển thị ảnh người dùng -->
-            <img *ngIf="!isLoadingUser && user?.picture?.url; else defaultAvatar" [src]="user?.picture?.url"
-              alt="User Avatar" class="user-avatar" loading="lazy" />
-
+<img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)"
+alt="User Avatar" class="user-avatar" loading="lazy" />
             <!-- Ảnh mặc định -->
             <ng-template #defaultAvatar>
               <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>

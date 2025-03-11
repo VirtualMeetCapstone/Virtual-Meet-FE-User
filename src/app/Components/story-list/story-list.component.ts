@@ -1,12 +1,11 @@
-import {StoryModalComponent} from '../story-modal/story-modal.component';
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {StoryServiceService} from '../../services/story-service/story-service.service';
-import {Story} from "../../models/story";
-import {AuthService} from "../../services/auth-service/auth.service";
-import {Viewer} from "../../models/viewer";
-import {response} from "express";
-
+import { StoryModalComponent } from '../story-modal/story-modal.component';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { StoryService } from '../../services/story-service/story-service.service';
+import { Story } from '../../models/story';
+import { AuthService } from '../../services/auth-service/auth.service';
+import { Viewer } from '../../models/viewer';
+import { response } from 'express';
 
 @Component({
   selector: 'app-story-list',
@@ -14,25 +13,24 @@ import {response} from "express";
   styleUrls: ['./story-list.component.scss'],
 })
 export class StoryListComponent implements OnInit, AfterViewInit {
-  userId: string = "";
+  userId: string = '';
   public storiesData: Story[] = [];
   responsiveOptions = [
-    {breakpoint: '1024px', numVisible: 3, numScroll: 3},
-    {breakpoint: '768px', numVisible: 2, numScroll: 2},
-    {breakpoint: '560px', numVisible: 1, numScroll: 1},
+    { breakpoint: '1024px', numVisible: 3, numScroll: 3 },
+    { breakpoint: '768px', numVisible: 2, numScroll: 2 },
+    { breakpoint: '560px', numVisible: 1, numScroll: 1 },
   ];
 
   constructor(
     public dialog: MatDialog,
-    public storyService: StoryServiceService,
-    private authService: AuthService,
+    public storyService: StoryService,
+    private authService: AuthService
   ) {
     this.userId = authService.getUser()?.id;
   }
 
   ngOnInit(): void {
     this.loadStories();
-
   }
 
   loadStories() {
@@ -42,31 +40,28 @@ export class StoryListComponent implements OnInit, AfterViewInit {
       } else if (response && Array.isArray(response.data)) {
         this.storiesData = response.data;
       } else {
-        console.error("Unexpected response format:", response);
+        console.error('Unexpected response format:', response);
         return;
       }
 
-      this.storiesData.forEach(story => {
-
-        this.storyService.getStoryViewers(story.id).subscribe((viewersResponse: any) => {
-
-          //check data response
-          //if viewer[] => viewer[]
-          //if array[] => viewer[]
-          const viewers: Viewer[] = Array.isArray(viewersResponse)
-            ? viewersResponse as Viewer[]
-            : Array.isArray(viewersResponse.data)
-              ? viewersResponse.data as Viewer[]
-              : []
-          //check is viewed
-          story.isViewed = viewers.some((viewerWrapper: any) => {
-            return viewerWrapper.viewer.id === this.authService.getUser()?.id;
+      this.storiesData.forEach((story) => {
+        this.storyService
+          .getStoryViewers(story.id)
+          .subscribe((viewersResponse: any) => {
+            //check data response
+            //if viewer[] => viewer[]
+            //if array[] => viewer[]
+            const viewers: Viewer[] = Array.isArray(viewersResponse)
+              ? (viewersResponse as Viewer[])
+              : Array.isArray(viewersResponse.data)
+              ? (viewersResponse.data as Viewer[])
+              : [];
+            //check is viewed
+            story.isViewed = viewers.some((viewerWrapper: any) => {
+              return viewerWrapper.viewer.id === this.authService.getUser()?.id;
+            });
           });
-        });
-
-
       });
-
     });
   }
 
@@ -77,7 +72,6 @@ export class StoryListComponent implements OnInit, AfterViewInit {
       data: {
         stories: this.storiesData,
         currentIndex: index,
-
       },
       hasBackdrop: true,
     });
@@ -89,8 +83,5 @@ export class StoryListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-  }
-
-
+  ngAfterViewInit(): void {}
 }

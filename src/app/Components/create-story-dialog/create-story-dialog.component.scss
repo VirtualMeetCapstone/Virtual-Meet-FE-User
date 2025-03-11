@@ -6,6 +6,7 @@
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+  backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
   justify-content: center;

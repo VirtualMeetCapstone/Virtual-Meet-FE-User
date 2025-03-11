@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
+import { ExternalServiceService } from '../../services/external-service/external-service.service';
 export interface EditProfileData {
   id: string;
   username: string;
@@ -23,10 +24,13 @@ export class EditProfileDialogComponent {
   userId: string;
   isLoading: boolean = false;
 
+  mediaPreview: string | null = null;
+
   constructor(
     public dialogRef: MatDialogRef<EditProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditProfileData,
-    private http: HttpClient
+    private http: HttpClient,
+    private externalService: ExternalServiceService,
   ) {
     this.newUsername = data.username;
     this.newBio = data.bio;
@@ -35,14 +39,21 @@ export class EditProfileDialogComponent {
 
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
-    // Nếu không có file nào được chọn, không làm gì
     if (!fileInput.files || fileInput.files.length === 0) {
       return;
     }
-    // Nếu có file, lưu file đầu tiên vào biến newAvatar
     this.newAvatar = fileInput.files[0];
-  }
 
+    // Reader
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.mediaPreview = reader.result as string;
+    };
+    reader.readAsDataURL(this.newAvatar);
+  }
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
+  }
   onSave() {
     this.isLoading = true;
 
@@ -53,10 +64,10 @@ export class EditProfileDialogComponent {
       return;
     }
     formData.append('Name', this.newUsername);
-    formData.append('Bio', this.newBio); //new
+    formData.append('Bio', this.newBio);
 
     if (this.newAvatar instanceof File) {
-      formData.append('PictureUpload', this.newAvatar); // Avatar là file upload
+      formData.append('PictureUpload', this.newAvatar);
     }
     console.log(this.userId);
     const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${this.userId}`;

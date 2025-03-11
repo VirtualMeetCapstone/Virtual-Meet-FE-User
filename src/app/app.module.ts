@@ -56,6 +56,9 @@ import {RoomComponentComponent} from "./Components/room-component/room-component
 import {Toast} from "primeng/toast";
 import {MessageService} from "primeng/api";
 import { ParticipantListComponent } from './Components/participant-list/participant-list.component';
+import { HightlightStoryMyProfileComponent } from './Components/hightlight-story-my-profile/hightlight-story-my-profile.component';
+import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-button/modal-gear-button.component';
+import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +88,9 @@ import { ParticipantListComponent } from './Components/participant-list/particip
     RoomComponentComponent,
     RoomChatComponent,
     ParticipantListComponent,
+    HightlightStoryMyProfileComponent,
+    ModalGearButtonComponent,
+    NewsFeedMyProfileComponent,
   ],
   imports: [
     BrowserModule,

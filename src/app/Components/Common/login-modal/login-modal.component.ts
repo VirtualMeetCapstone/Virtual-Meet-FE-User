@@ -38,7 +38,7 @@ export class LoginModalComponent implements OnInit {
   }
 
   sendTokenToBackend(idToken: string) {
-    const url = `${AppConstants.API_BASE_URL_HTTPS}/signin/google?idToken=${encodeURIComponent(idToken)}`;
+    const url = `${AppConstants.API_LOCAL_BASE_URL}/signin/google?idToken=${encodeURIComponent(idToken)}`;
 
     this.http.get<{ accessToken: string; refreshToken: string }>(url).pipe(
       take(1),

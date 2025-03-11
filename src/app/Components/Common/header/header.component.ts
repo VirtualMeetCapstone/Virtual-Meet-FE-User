@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private sanitizer: DomSanitizer,
+    private externalService: ExternalServiceService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -53,11 +55,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.loggedIn = status;
         if (status) {
           const userId = this.authService.getUser()?.id;
-
           if (userId) {
             this.idNew = userId;
             this.user = await this.authService.getBackendUser(userId);
-
             if (!this.user.id) {
               this.user.id = this.idNew;
             }
@@ -81,6 +81,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
+  }
+
   editProfile() {
     if (!this.idNew) {
       return;
@@ -96,10 +100,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onClickDropdown() {
     this.isShowDropdown = !this.isShowDropdown;
-  }
-
-  getSafeUrl(url: string): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   onClickLoginDialog() {
