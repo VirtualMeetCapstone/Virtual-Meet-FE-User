@@ -14,7 +14,7 @@ export class RoomComponentComponent implements OnInit{
   ) {}
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
-
+  isActivityModalOpen: boolean = false;
   isChatOpen = false;
 
   ngOnInit() {
@@ -28,10 +28,29 @@ export class RoomComponentComponent implements OnInit{
 
   }
 
- // Toggle trạng thái hoạt động YouTube
- toggleYouTubeActivity() {
-  this.isYouTubeActive = !this.isYouTubeActive;
-}
+  // Hàm mở/đóng modal chọn hoạt động
+  toggleActivityModal() {
+    this.isActivityModalOpen = !this.isActivityModalOpen;
+  }
+
+  // Hàm đóng modal
+  closeActivityModal() {
+    this.isActivityModalOpen = false;
+  }
+
+  // Hàm chọn YouTube Together
+  startYouTubeTogether() {
+    this.isYouTubeActive = true;
+    this.closeActivityModal();
+    // Thực hiện thêm logic khi chọn YouTube Together (ví dụ: phát video YouTube)
+  }
+
+  // Hàm chọn Whiteboard
+  startWhiteboard() {
+    this.isYouTubeActive = false;
+    this.closeActivityModal();
+    // Thực hiện thêm logic khi chọn Whiteboard (ví dụ: mở bảng vẽ)
+  }
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
