@@ -8,9 +8,6 @@ import * as signalR from '@microsoft/signalr';
 export class VideoHubService {
 
   public hubConnection!: signalR.HubConnection;
-
-  private popupStateSubject = new BehaviorSubject<boolean>(false);
-
   constructor() {}
 
   //start
@@ -101,9 +98,4 @@ export class VideoHubService {
       callback(status, time);
     });
   }
-
-
-
-
-
 }
