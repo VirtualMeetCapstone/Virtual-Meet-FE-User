@@ -50,8 +50,27 @@
         <div class="comments-section">
           <h5>Bình luận</h5>
           <div class="post-comment">
-            <input placeholder="Add a comment..." type="text" />
-            <button>Post</button>
+            <div class="post-header">
+              <img
+                [src]="user.photoUrl.url"
+                alt="Profile picture"
+                height="40"
+                width="40"
+              />
+            </div>
+            <input #commentInput type="text" placeholder="Add a comment..." />
+            <button
+              (click)="addComment(commentInput.value); commentInput.value = ''"
+            >
+              Post
+            </button>
+          </div>
+          <p style="color: red" *ngFor="let message of messages">
+            {{ message }}
+          </p>
+
+          <div class="d-flex justify-content-center" *ngIf="isLoadingComment">
+            <app-loading-component></app-loading-component>
           </div>
           <div *ngFor="let comment of groupedComments" class="comment">
             <div class="d-flex">
@@ -67,9 +86,28 @@
               <div class="comment-text">{{ comment.content }}</div>
               <div class="comment-time"></div>
             </div>
+            <div class="replies" *ngIf="comment.replies.length == 0">
+              <div class="post-comment">
+                <div class="post-header">
+                  <img
+                    [src]="user.photoUrl.url"
+                    alt="Profile picture"
+                    height="40"
+                    width="40"
+                  />
+                </div>
+                <input #replyInput type="text" placeholder="Add a reply..." />
+                <button
+                  (click)="
+                    replyComment(comment.id, replyInput.value);
+                    replyInput.value = ''
+                  "
+                >
+                  Post
+                </button>
+              </div>
+            </div>
 
-            <!-- Hiển thị reply -->
-            <!-- Hiển thị reply -->
             <div class="replies" *ngIf="comment.replies.length > 0">
               <div *ngFor="let reply of comment.replies" class="reply">
                 <div class="d-flex">
@@ -106,8 +144,27 @@
                 </div>
                 <div>
                   <div class="post-comment">
-                    <input placeholder="Add a comment..." type="text" />
-                    <button>Post</button>
+                    <div class="post-header">
+                      <img
+                        [src]="user.photoUrl.url"
+                        alt="Profile picture"
+                        height="40"
+                        width="40"
+                      />
+                    </div>
+                    <input
+                      #replyInput
+                      type="text"
+                      placeholder="Add a reply..."
+                    />
+                    <button
+                      (click)="
+                        replyComment(reply.id, replyInput.value);
+                        replyInput.value = ''
+                      "
+                    >
+                      Post
+                    </button>
                   </div>
                 </div>
               </div>

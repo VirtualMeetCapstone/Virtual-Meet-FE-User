@@ -9,17 +9,24 @@ import { PostserviceService } from '../../../services/post-service/postservice.s
 export class ModalDetailpostComponent {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() post: any = null;
+  @Input() user: any = '';
   currentImageIndex: number = 0;
   comments: any = [];
   groupedComments: any = {};
-
+  isLoadingComment: boolean = false;
+  messages: any = [];
   constructor(private postService: PostserviceService) {}
 
   ngOnInit(): void {
+    console.log(this.user);
+    this.getComment();
+  }
+  getComment() {
+    this.isLoadingComment = true;
     this.postService.getComment(this.post.id).subscribe((data: any) => {
       this.comments = data;
-      console.log(this.comments);
       this.groupedComments = this.groupComments(this.comments);
+      this.isLoadingComment = false;
       console.log('grouo', this.groupedComments);
     });
   }
@@ -45,6 +52,49 @@ export class ModalDetailpostComponent {
     });
 
     return result;
+  }
+  addComment(content: string) {
+    const trimmedContent = content.trim();
+    if (!trimmedContent) {
+      this.notifyError('The content of comment is required !!!');
+      return;
+    }
+
+    this.postService
+      .commentPost(this.user.id, this.post.id, trimmedContent)
+      .subscribe(
+        (newComment: any) => {
+          this.getComment();
+        },
+        (error: any) => {
+          this.notifyError('Error To Comment !!!');
+        }
+      );
+  }
+  replyComment(parentId: string, content: string) {
+    const trimmedContent = content.trim();
+    if (!trimmedContent) {
+      this.notifyError('The content of comment is required !!!');
+      return;
+    }
+
+    this.postService
+      .replyComment(this.user.id, this.post.id, parentId, trimmedContent)
+      .subscribe(
+        (newComment: any) => {
+          this.getComment();
+        },
+        (error: any) => {
+          this.notifyError('Error To Comment !!!');
+        }
+      );
+  }
+  notifyError(messsage: string) {
+    this.messages.push(messsage);
+    setTimeout(() => {
+      this.messages = [];
+    }, 3000);
+    return;
   }
 
   onCloseModal() {

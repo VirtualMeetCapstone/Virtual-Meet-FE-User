@@ -52,4 +52,25 @@ export class PostserviceService {
 
     return this.http.post<any>(url, formData);
   }
+  commentPost(idUser: any, idPost: string, content: string) {
+    const body = {
+      authorId: idUser,
+      content: content,
+    };
+
+    return this.http.post<any>(this.url + '/' + idPost + '/comments', body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  replyComment(idUser: any, idPost: string, parentId: string, content: string) {
+    const body = {
+      authorId: idUser,
+      parentId: parentId,
+      content: content,
+    };
+
+    return this.http.post<any>(this.url + '/' + idPost + '/comments', body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
