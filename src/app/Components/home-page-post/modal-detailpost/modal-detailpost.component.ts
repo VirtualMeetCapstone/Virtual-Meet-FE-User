@@ -24,24 +24,27 @@ export class ModalDetailpostComponent {
     });
   }
   groupComments(comments: any) {
-    let grouped: any = {};
+    let grouped: Record<string, any> = {};
 
-    // Lấy danh sách comments từ `comments.data`, đảm bảo nó là mảng
     const commentArray = comments?.data || [];
 
     commentArray.forEach((comment: any) => {
-      if (!comment.parentId) {
-        grouped[comment.id] = { ...comment, replies: [] };
-      }
+      grouped[comment.id] = { ...comment, replies: [] };
     });
+
+    let result: any = [];
 
     commentArray.forEach((comment: any) => {
-      if (comment.parentId && grouped[comment.parentId]) {
-        grouped[comment.parentId].replies.push(comment);
+      if (comment.parentId) {
+        if (grouped[comment.parentId]) {
+          grouped[comment.parentId].replies.push(grouped[comment.id]);
+        }
+      } else {
+        result.push(grouped[comment.id]); // Nếu không có parentId, là comment gốc
       }
     });
 
-    return Object.values(grouped);
+    return result;
   }
 
   onCloseModal() {
