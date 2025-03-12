@@ -49,17 +49,14 @@
         </div>
         <div class="comments-section">
           <h5>Bình luận</h5>
+          <div class="post-comment">
+            <input placeholder="Add a comment..." type="text" />
+            <button>Post</button>
+          </div>
           <div *ngFor="let comment of groupedComments" class="comment">
-            <!-- <img
-              [src]="comment.author.picture.Url"
-              alt="Ảnh đại diện"
-              class="comment-avatar"
-            /> -->
             <div class="d-flex">
               <img
-                src="
-        https://www.researchgate.net/publication/360118941/figure/fig4/AS:11431281275465195@1725399754973/Meteorological-YSI-EXO2-sonde-and-miniDOT-data-recorded-in-URRL-during-the-winter-of.tif
-      "
+                [src]="comment.author.picture.url"
                 alt="Ảnh đại diện"
                 class="comment-avatar"
               />
@@ -72,34 +69,50 @@
             </div>
 
             <!-- Hiển thị reply -->
+            <!-- Hiển thị reply -->
             <div class="replies" *ngIf="comment.replies.length > 0">
               <div *ngFor="let reply of comment.replies" class="reply">
-                <!-- <img
-                  [src]="reply.author.picture.Url"
-                  alt="Ảnh đại diện"
-                  class="comment-avatar"
-                /> -->
                 <div class="d-flex">
                   <img
-                    src="
-              https://www.researchgate.net/publication/360118941/figure/fig4/AS:11431281275465195@1725399754973/Meteorological-YSI-EXO2-sonde-and-miniDOT-data-recorded-in-URRL-during-the-winter-of.tif
-            "
+                    [src]="reply.author.picture.url"
                     alt="Ảnh đại diện"
                     class="comment-avatar"
                   />
-                  <div class="comment-author">{{ comment.author.name }}</div>
+                  <div class="comment-author">{{ reply.author.name }}</div>
                 </div>
                 <div class="comment-content">
                   <div class="comment-text">{{ reply.content }}</div>
                   <div class="comment-time"></div>
                 </div>
+
+                <!-- Nếu reply có thêm replies con -->
+                <div *ngIf="reply.replies?.length > 0">
+                  <div *ngFor="let subReply of reply.replies" class="reply">
+                    <div class="d-flex">
+                      <img
+                        [src]="subReply.author.picture.url"
+                        alt="Ảnh đại diện"
+                        class="comment-avatar"
+                      />
+                      <div class="comment-author">
+                        {{ subReply.author.name }}
+                      </div>
+                    </div>
+                    <div class="comment-content">
+                      <div class="comment-text">{{ subReply.content }}</div>
+                      <div class="comment-time"></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="post-comment">
+                    <input placeholder="Add a comment..." type="text" />
+                    <button>Post</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="post-comment">
-          <input placeholder="Add a comment..." type="text" />
-          <button>Post</button>
         </div>
       </div>
     </div>
