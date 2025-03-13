@@ -5,11 +5,14 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 import { ExternalServiceService } from '../../services/external-service/external-service.service';
+
+
 export interface EditProfileData {
   id: string;
   username: string;
   bio: string;
-  avatar: File | null; // Chấp nhận File thay vì string
+  // avatar ở đây là URL của ảnh hiện tại
+  avatar: string;
 }
 
 @Component({
@@ -44,7 +47,6 @@ export class EditProfileDialogComponent {
     }
     this.newAvatar = fileInput.files[0];
 
-    // Reader
     const reader = new FileReader();
     reader.onload = () => {
       this.mediaPreview = reader.result as string;
@@ -57,19 +59,21 @@ export class EditProfileDialogComponent {
   onSave() {
     this.isLoading = true;
 
-    const formData = new FormData();
     if (!this.newUsername || !this.newBio) {
       alert('Vui lòng điền đầy đủ thông tin');
       this.isLoading = false;
       return;
     }
+
+    const formData = new FormData();
     formData.append('Name', this.newUsername);
     formData.append('Bio', this.newBio);
 
-    if (this.newAvatar instanceof File) {
+    // Chỉ gửi trường PictureUpload nếu người dùng đã chọn ảnh mới
+    if (this.newAvatar) {
       formData.append('PictureUpload', this.newAvatar);
     }
-    console.log(this.userId);
+
     const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${this.userId}`;
 
     this.http
@@ -81,12 +85,17 @@ export class EditProfileDialogComponent {
         })
       )
       .subscribe({
-        next: (data) => {
+        next: (data: any) => {
           console.log('Profile updated successfully:', data);
-          console.log(formData);
+          // Nếu API response không có thông tin ảnh (hoặc trả về null), gán lại ảnh cũ từ data đã truyền vào dialog.
+          if (!data.picture || !data.picture.url) {
+            data.picture = {
+              url: this.data.avatar,
+              type: 1,
+              thumbnailUrl: null,
+            };
+          }
           this.dialogRef.close(data);
-          console.log(this.newUsername, this.newBio);
-
           window.location.reload();
         },
         error: (error) => {
