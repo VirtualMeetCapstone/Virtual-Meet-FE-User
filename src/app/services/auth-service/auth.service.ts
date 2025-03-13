@@ -64,22 +64,34 @@ export class AuthService {
 
     try {
       const decoded: any = jwtDecode(token);
-      let photoUrl: string = decoded.picture || '';
+      console.log('Decoded Token:', decoded);
 
-      if (!photoUrl && typeof decoded.Picture === 'string') {
+      let photoUrl: string = '';
+
+      // Nếu có `decoded.picture`, sử dụng luôn
+      if (typeof decoded.picture === 'string') {
+        photoUrl = decoded.picture;
+      }
+
+      // Nếu `decoded.Picture` là một object chứa chuỗi JSON
+      if (!photoUrl && decoded.Picture?.Url) {
         try {
-          const pictureData = JSON.parse(decoded.Picture);
-          photoUrl = pictureData.Url || '';
+          const pictureData =
+            typeof decoded.Picture.Url === 'string'
+              ? JSON.parse(decoded.Picture.Url)
+              : decoded.Picture;
+          photoUrl = pictureData?.Url || '';
         } catch (e) {
-          console.error('Lỗi parse Picture:', e);
+          console.error('Lỗi parse Picture.Url:', e);
         }
       }
+
       photoUrl = photoUrl || 'assets/images/default-avatar.png';
 
       this.cachedUser = {
-        id: decoded.Id || decoded.sub,
+        id: decoded.id || decoded.sub,
         email: decoded.email,
-        name: decoded.unique_name || decoded.name,
+        name: decoded.unique_name || decoded.name || 'Người dùng',
         photoUrl,
       };
 
@@ -99,10 +111,14 @@ export class AuthService {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
     }
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.getToken()}` });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+    });
 
     try {
-      const user = await this.http.get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers }).toPromise();
+      const user = await this.http
+        .get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers })
+        .toPromise();
       this.backendUserCache.set(userId, user);
       return user;
     } catch (error) {
@@ -123,7 +139,7 @@ export class AuthService {
 
     this.cachedUser = null;
     this.loggedInSubject.next(false);
-    document.cookie = 'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie =
+      'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
-
 }

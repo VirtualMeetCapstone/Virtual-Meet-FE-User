@@ -91,9 +91,16 @@
                 <img
                   style="width: 100px; height: 100px"
                   *ngIf="
-                    roomToEdit?.medias?.length > 0 && roomToEdit.medias[0]?.url
+                    roomToEdit?.medias?.length > 0 &&
+                    roomToEdit.medias[0]?.url &&
+                    !imagePreview
                   "
                   [src]="roomToEdit.medias[0].url"
+                />
+                <img
+                  style="width: 100px; height: 100px"
+                  *ngIf="imagePreview"
+                  [src]="imagePreview"
                 />
 
                 <input
@@ -102,6 +109,7 @@
                   id="mediaUpload"
                   formControlName="mediaUpload"
                   *ngIf="roomToEdit == null"
+                  (change)="onFileSelected($event)"
                 />
                 <input
                   type="file"
@@ -109,6 +117,7 @@
                   id="mediaUpload"
                   formControlName="mediaUpload"
                   *ngIf="roomToEdit != null"
+                  (change)="onFileSelected($event)"
                 />
               </div>
             </div>

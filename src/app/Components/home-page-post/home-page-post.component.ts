@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PostserviceService } from '../../services/post-service/postservice.service';
+import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CreatePostModalComponent } from '../create-post-modal/create-post-modal.component';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-home-page-post',
@@ -13,9 +17,29 @@ export class HomePagePostComponent implements OnInit {
   skip: number = 0;
   loading: boolean = false;
 
-  constructor(private postService: PostserviceService) {}
+  userId: string = '';
+  user: any = null;
+  isLoadingUser: boolean = false;
+  isShowModalDetailPost = false;
+  post: any = null;
+  isLoading: boolean = false;
+
+  constructor(
+    private postService: PostserviceService,
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
+    this.authService.loggedIn$.subscribe((status: boolean) => {
+      if (status) {
+        this.user = this.authService.getUser();
+      }
+    });
+    console.log(this.user);
+    if (this.authService.isLoggedIn()) {
+      this.user = this.authService.getUser();
+    }
     this.loadMorePosts();
   }
 
@@ -36,5 +60,37 @@ export class HomePagePostComponent implements OnInit {
         this.skip += this.pageSize;
         this.loading = false;
       });
+  }
+  openModalDetailPost(postId: string) {
+    this.isLoading = true;
+    this.postService.getPostById(postId).subscribe((data: any) => {
+      this.post = data;
+      this.isShowModalDetailPost = true;
+      this.isLoading = false;
+    });
+  }
+  closeModalDetailPost() {
+    this.isShowModalDetailPost = false;
+  }
+
+  createPost() {}
+
+  createFeeling() {}
+
+  tagFriend() {}
+
+  openCreatePost() {
+    const dialogRef = this.dialog.open(CreatePostModalComponent, {
+      width: '500px',
+      data: {
+        id: this.userId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('New story added:', result);
+      }
+    });
   }
 }

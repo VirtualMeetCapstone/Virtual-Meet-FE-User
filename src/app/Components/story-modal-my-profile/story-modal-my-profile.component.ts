@@ -11,8 +11,8 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { StoryService } from '../../services/story-service/story-service.service';
 import { ModalDeleteStoryComponent } from './modal-delete-story/modal-delete-story.component';
+import { StoryService } from '../../services/story-service/story-service.service';
 
 @Component({
   selector: 'app-story-modal-my-profile',

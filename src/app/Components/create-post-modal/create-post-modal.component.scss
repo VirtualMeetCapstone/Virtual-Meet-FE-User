@@ -1,0 +1,252 @@
+/* Modal Overlay: phủ toàn bộ màn hình và làm mờ nền */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content: chứa nội dung popup */
+.modal-content {
+  background-color: #000;
+  width: 60%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid #333;
+  position: relative;
+  border-radius: 5px;
+}
+
+/* Các style còn lại giữ nguyên của bạn... */
+
+.header-container {
+  background-color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 20px;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.close-button {
+  cursor: pointer;
+  color: white;
+}
+
+.content-container {
+  background-color: #000;
+  border: 1px solid #333;
+  padding: 20px;
+}
+
+.profile-section {
+  margin-bottom: 16px;
+}
+
+.profile-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.profile-tip {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.text-count {
+  font-size: 12px;
+  text-align: right;
+  color: #bdbdbd;
+}
+
+.footer-container {
+  background-color: #000;
+  display: flex;
+  justify-content: flex-end;
+  color: white;
+  padding: 10px;
+  gap: 10px;
+}
+
+.cancel-button,
+.save-button {
+  padding: 8px 50px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #444;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: rgb(50, 47, 47);
+  color: white;
+}
+
+.save-button {
+  background-color: #ef2950;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #f6123f;
+  color: white;
+}
+
+.save-button:disabled {
+  background-color: #555;
+}
+
+.cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* spinner  */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Disabled button styling */
+.save-button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+//img upload
+.custum-file-upload {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  padding: 1.5rem;
+  border: 2px dashed #e8e8e8;
+  background-color: #212121;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.custum-file-upload .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .icon svg {
+  height: 80px;
+  fill: #e8e8e8;
+}
+
+.custum-file-upload .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .text span {
+  font-weight: 400;
+  color: #e8e8e8;
+}
+
+.custum-file-upload input {
+  display: none;
+}
+
+.custum-file-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+.content-input
+{
+  height: 200px;
+}
+.preview-container {
+  display: flex;
+  gap: 10px; // Khoảng cách giữa các ảnh/video
+  overflow-x: auto; // Cho phép cuộn ngang nếu quá nhiều ảnh
+  padding: 10px;
+  max-width: 100%;
+  flex-wrap: nowrap; // Không cho xuống hàng
+
+  .preview-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    img, video {
+      border-radius: 5px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    button {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ef2950;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { PlayerService } from '../../services/youtubeplayer-service/player.service';
-import { VideoHub } from '../../Hub/video-hub/video.hub';
 import { YoutubeService } from '../../services/youtube-service/youtube.service';
+import { VideoHubService } from '../../Hub/video-hub/video-hub.service';
 declare var YT: any;
 
 @Component({
@@ -10,26 +10,26 @@ declare var YT: any;
   styleUrls: ['./youtube-player.component.scss'],
 })
 export class YoutubePlayerComponent implements OnInit {
+  @Input() roomId: string = '';
   constructor(
     private _playerService: PlayerService,
-    private _videoHub: VideoHub,
-    private youtubeService: YoutubeService
+    private youtubeService: YoutubeService,
+    private _videoHub: VideoHubService
   ) {}
 
   //init
-  showActivityMenu = false;
+
   showWhiteboard = false;
   showVideoSelection = false;
   videos: any[] = [];
   searchQuery = '';
+
 
   ngOnInit() {
     this._videoHub.startConnection();
     this._videoHub.onPlayerStatusReceived((status, time) => {
       this._playerService.changePlayerStatus(status, time);
     });
-    // Nhận sự kiện popup state từ server
-    this.listenToPopupState();
     // Nhận video đã chọn từ Hub
     this._videoHub.onVideoSelected((videoId) => {
       console.log(`🎬 Nhận video từ Hub: ${videoId}`);
@@ -39,42 +39,12 @@ export class YoutubePlayerComponent implements OnInit {
     this.loadTrendingVideos();
   }
 
-  playVideo(videoId: string) {
-    this._playerService.cueVideoById(videoId);
-    this._videoHub.sendPlayerStatus(YT.PlayerState.PLAYING, 0);
-  }
 
-  toggleActivityMenu(): void {
-    this.showActivityMenu = !this.showActivityMenu;
-  }
 
-  // Bắt đầu sử dụng Whiteboard
-  startWhiteboard(): void {
-    this.showWhiteboard = true;
-    this.showVideoSelection = false;
-  }
-
-  startVideoSharing(): void {
-    console.log('Bắt đầu chia sẻ video');
-    this.showVideoSelection = true;
-    this.showWhiteboard = false;
-    //VideoHub --> hub
-    this._videoHub.togglePopup(true);
-
-    this._playerService.initializePlayer();
-
-    if (this.showVideoSelection) {
-      setTimeout(() => {
-        this._playerService.initializePlayer();
-      }, 100); // Delay 100ms để đảm bảo DOM đã cập nhật
-    }
-    // this._videoHub.changeVideo('M7lc1UVf-VE'); // Đặt video mặc định
-  }
-
-  private listenToPopupState(): void {
-    this._videoHub.getPopupState().subscribe((isOpen) => {
-      this.showVideoSelection = isOpen; // Điều chỉnh trạng thái popup video
-    });
+  selectVideo(videoId: string): void {
+    this.playVideo(videoId);
+    console.log(this.roomId)
+    this._videoHub.selectVideo(videoId);
   }
 
   searchVideos(): void {
@@ -89,8 +59,9 @@ export class YoutubePlayerComponent implements OnInit {
     });
   }
 
-  selectVideo(videoId: string): void {
-    this.playVideo(videoId);
-    this._videoHub.selectVideo(videoId);
+
+  playVideo(videoId: string) {
+    this._playerService.cueVideoById(videoId);
+    this._videoHub.sendPlayerStatus(YT.PlayerState.PLAYING, 0);
   }
 }

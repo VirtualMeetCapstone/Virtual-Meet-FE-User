@@ -5,7 +5,7 @@ import { AppConstants } from '../constant/AppConstants';
   providedIn: 'root',
 })
 export class RoomServicesService {
-  url = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
+  url = 'https://dev-vmeet.site/rooms';
 
   constructor(private http: HttpClient) {}
 
@@ -19,35 +19,55 @@ export class RoomServicesService {
   deleteRoom(id: string): any {
     return this.http.delete<any>(this.url + '/' + id);
   }
-  addRoom(room: any): any {
-    const formData = new FormData();
-    formData.append('OwnerId', 'db04dba2-5640-4cd8-a5a9-119b429f2b32');
-    formData.append('Topic', room.topic);
-    formData.append('Description', room.description);
-    formData.append('MaximumMembers', room.maximumMember.toString());
+  addRoom(room: any, iduser: any): any {
+    const body = {
+      OwnerId: iduser,
+      Topic: room.topic,
+      Description: room.description,
+      MaximumMembers: room.maximumMember,
+      Medias: room.mediaUpload
+        ? [
+            {
+              url: room.mediaUpload,
+              type: 0,
+              thumbnailUrl: '',
+            },
+          ]
+        : [],
+    };
 
-    // Kiểm tra và thêm file đúng cách
-    if (room.mediaUpload instanceof File) {
-      formData.append('MediaUploads', room.mediaUpload, room.mediaUpload.name);
-    }
-
-    return this.http.post<any>(this.url, formData);
+    return this.http.post<any>(this.url, body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-  updateRoom(id: any, room: any): any {
+  uploadMedia(file: File) {
     const formData = new FormData();
-    formData.append('OwnerId', 'db04dba2-5640-4cd8-a5a9-119b429f2b32');
-    formData.append('Topic', room.topic);
-    formData.append('Description', room.description);
-    formData.append('MaximumMembers', room.maximumMember.toString());
+    formData.append('medias', file);
 
-    if (room.mediaUpload instanceof File) {
-      formData.append('MediaUploads', room.mediaUpload, room.mediaUpload.name);
-    } else if (typeof room.mediaUpload === 'string') {
-      formData.append('MediaUrl', room.mediaUpload); // Giữ URL ảnh cũ
-    }
+    return this.http.post<{ url: string }>(
+      'https://dev-vmeet.site/medias',
+      formData
+    );
+  }
+  updateRoom(id: any, room: any, iduser: any): any {
+    const body = {
+      OwnerId: iduser,
+      Topic: room.topic,
+      Description: room.description,
+      MaximumMembers: room.maximumMember,
+      Medias: room.mediaUpload
+        ? [
+            {
+              url: room.mediaUpload,
+              type: 0,
+              thumbnailUrl: '',
+            },
+          ]
+        : [],
+    };
 
-    console.log(formData);
-
-    return this.http.patch<any>(this.url + '/' + id, formData);
+    return this.http.patch<any>(this.url + '/' + id, body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

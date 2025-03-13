@@ -4,31 +4,44 @@
       <div class="user-info">
         <img
           alt="User profile picture"
-          height="40"
-          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
-          width="40"
+          height="60"
+          width="60"
+          [src]="user.photoUrl"
+          style="border-radius: 50%; object-fit: cover"
         />
-        <textarea placeholder="Write something here..."></textarea>
+        <textarea
+          (click)="openCreatePost()"
+          name="content"
+          placeholder="Write something here..."
+        ></textarea>
       </div>
       <div class="actions">
-        <button>
+        <button (click)="openCreatePost()">
           <i class="fas fa-photo-video"> </i>
           Photo/Video
         </button>
-        <button>
+        <button (click)="tagFriend()">
           <i class="fas fa-user-tag"> </i>
           Tag Friend
         </button>
-        <button>
+        <button (click)="createFeeling()">
           <i class="fas fa-smile"> </i>
           Feeling/Activity
         </button>
-        <button>
-          <i class="fas fa-ellipsis-h"> </i>
+        <button (click)="openCreatePost()" class="button-create-post">
+          <i class="fa-solid fa-plus"></i>
+          Create
         </button>
       </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="button" class="btn btn-primary">Post</button>
+      </div>
     </div>
-    <div class="post" *ngFor="let post of listPost">
+    <div
+      class="post"
+      *ngFor="let post of listPost"
+      (click)="openModalDetailPost(post.id)"
+    >
       <div class="post-header">
         <img
           alt="User profile picture"
@@ -46,13 +59,54 @@
           {{ post.content }}
         </p>
         <div class="post-images">
-          <img
-            alt="Error"
-            *ngFor="let image of post.medias"
-            height="100"
-            src="{{ image.url }}"
-            width="100"
-          />
+          <ng-container *ngIf="post.medias.length === 1">
+            <img class="single" [src]="post.medias[0].url" alt="Error" />
+          </ng-container>
+
+          <ng-container *ngIf="post.medias.length === 2">
+            <img
+              class="half"
+              *ngFor="let image of post.medias"
+              [src]="image.url"
+              alt="Error"
+            />
+          </ng-container>
+
+          <ng-container *ngIf="post.medias.length === 3">
+            <div class="row">
+              <img class="half" [src]="post.medias[0].url" alt="Error" />
+              <img class="half" [src]="post.medias[1].url" alt="Error" />
+            </div>
+            <img class="full" [src]="post.medias[2].url" alt="Error" />
+          </ng-container>
+
+          <ng-container *ngIf="post.medias.length === 4">
+            <div class="grid grid-2x2">
+              <img
+                *ngFor="let image of post.medias"
+                [src]="image.url"
+                alt="Error"
+              />
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="post.medias.length >= 5">
+            <div class="row">
+              <img class="half" [src]="post.medias[0].url" alt="Error" />
+              <img class="half" [src]="post.medias[1].url" alt="Error" />
+            </div>
+            <div class="grid grid-3">
+              <img
+                *ngFor="let image of post.medias.slice(2, 4)"
+                [src]="image.url"
+                alt="Error"
+              />
+              <div class="more-images" *ngIf="post.medias.length > 5">
+                <img [src]="post.medias[4].url" alt="Error" />
+                <div class="overlay">+{{ post.medias.length - 5 }}</div>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
       <div class="post-actions">
@@ -68,43 +122,6 @@
           <i class="fas fa-share"> </i>
           99 Shares
         </div>
-      </div>
-      <div class="comments">
-        <div class="comment">
-          <img
-            alt="User profile picture"
-            height="30"
-            src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
-            width="30"
-          />
-          <div class="comment-content">
-            <div class="name">Monty Carlo</div>
-            <div class="time">5 min</div>
-            <div class="text">Lorem ipsum dolor sit amet</div>
-          </div>
-        </div>
-        <div class="comment">
-          <img
-            alt="User profile picture"
-            height="30"
-            src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
-            width="30"
-          />
-          <div class="comment-content">
-            <div class="name">Paul Molive</div>
-            <div class="time">5 min</div>
-            <div class="text">Lorem ipsum dolor sit amet</div>
-          </div>
-        </div>
-      </div>
-      <div class="add-comment">
-        <img
-          alt="User profile picture"
-          height="30"
-          src="https://storage.googleapis.com/a1aa/image/7b6AqqC-OrrqQTojHHtanlQmAT6p2ZZ0FHjg1qxwhRk.jpg"
-          width="30"
-        />
-        <input placeholder="Enter your comment" type="text" />
       </div>
     </div>
     <div
@@ -245,4 +262,13 @@
       </div>
     </div>
   </div>
+</div>
+<app-modal-detailpost
+  *ngIf="isShowModalDetailPost"
+  (closeModal)="closeModalDetailPost()"
+  [post]="post"
+  [user]="user"
+></app-modal-detailpost>
+<div *ngIf="isLoading == true" class="fullscreen-spinner text-center">
+  <app-loading-component></app-loading-component>
 </div>

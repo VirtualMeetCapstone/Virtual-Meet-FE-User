@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { StoryService } from '../../services/story-service/story-service.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Viewer } from '../../models/viewer';
 import { Reaction } from '../../models/reaction';
 import { Story } from '../../models/story';
+import { StoryService } from '../../services/story-service/story-service.service';
 
 @Component({
   selector: 'app-story-modal',

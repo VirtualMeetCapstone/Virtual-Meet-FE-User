@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryModalMyProfileComponent } from '../../story-modal-my-profile/story-modal-my-profile.component';
 import { MyProfileStoryService } from '../../../services/my-profile-story/my-profile-story.service';
-
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 @Component({
   selector: 'app-my-profile-stories',
   templateUrl: './my-profile-stories.component.html',
@@ -17,7 +17,8 @@ export class MyProfileStoriesComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    public myProfileStoryService: MyProfileStoryService
+    public myProfileStoryService: MyProfileStoryService,
+    public externalService: ExternalServiceService,
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +26,10 @@ export class MyProfileStoriesComponent implements OnInit {
     if (this.userId) {
       this.fetchStories();
     }
+  }
+
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
   }
 
   fetchStories(): void {
