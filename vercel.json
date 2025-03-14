@@ -7,15 +7,15 @@
   },
   "routes": [
     {
-      "src": "/video",
+      "src": ".*",
       "headers": { "x-prerender-bypass": "true" }
     },
     {
-      "src": "/room",
+      "src": "/room/.*",
       "headers": { "x-prerender-bypass": "true" }
     },
     {
-      "src": "/",
+      "src": "/video/.*",
       "headers": { "x-prerender-bypass": "true" }
     }
   ]
