@@ -17,18 +17,23 @@ export class RoomHubService {
   }
 
   // Bắt đầu kết nối SignalR
-  public async startConnection(): Promise<void> {
-    if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
-      console.warn('⚠️ HubConnection is already connected or connecting.');
-      return;
-    }
-
-    try {
-      await this.hubConnection.start();
-      console.log('✅ Connection started');
-    } catch (err) {
-      console.error('❌ Error while starting connection:', err);
-    }
+  startSignalRConnection(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Bắt đầu kết nối SignalR
+        this.hubConnection.start()
+          .then(() => {
+            console.log("✅ SignalR connection established.");
+            resolve(); // Kết nối thành công
+          })
+          .catch((err) => {
+            console.error("❌ SignalR connection failed:", err);
+            reject(err); // Lỗi kết nối
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   // Tham gia phòng
