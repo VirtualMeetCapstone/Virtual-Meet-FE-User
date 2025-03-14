@@ -12,7 +12,7 @@ export class PlayerService {
 
   constructor(private roomHub: RoomHubService) {
     this.roomHub
-      .startConnection()
+      .startSignalRConnection()
       .then(() => {
         console.log('🔥 SignalR sẵn sàng');
 

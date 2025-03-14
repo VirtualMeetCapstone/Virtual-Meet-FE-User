@@ -26,7 +26,7 @@ export class YoutubePlayerComponent implements OnInit {
 
 
   ngOnInit() {
-    this._roomHub.startConnection();
+    this._roomHub.startSignalRConnection();
     this._roomHub.onPlayerStatusReceived((roomId,status, time) => {
       this._playerService.changePlayerStatus(status, time);
     });

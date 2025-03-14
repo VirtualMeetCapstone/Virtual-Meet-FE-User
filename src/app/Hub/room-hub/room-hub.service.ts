@@ -36,6 +36,7 @@ export class RoomHubService {
     });
   }
 
+
   // Tham gia phòng
   public async joinRoom(username: string, roomId: string): Promise<void> {
     if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
