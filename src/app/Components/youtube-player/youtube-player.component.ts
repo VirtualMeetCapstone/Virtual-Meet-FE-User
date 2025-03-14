@@ -78,9 +78,9 @@ private initializePlayer() {
     this.player = new YT.Player('player', {
         height: '400',
         width: '100%',
-        videoId: 'Ec7zLUi16JU',
+        videoId: 'rEsc9tb_Y6I',
         playerVars: {
-            autoplay: 1,
+            autoplay: 0,
             controls: 1,
             rel: 0,
             modestbranding: 1,

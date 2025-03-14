@@ -56,7 +56,7 @@ export class PlayerService {
 }
   private createPlayer(videoId: string, time: number = 0, isPaused: boolean = true) {
     // Nếu videoId rỗng hoặc null, đặt video mặc định
-    const defaultVideoId = "Ec7zLUi16JU"; // Thay bằng video mặc định của bạn
+    const defaultVideoId = "rEsc9tb_Y6I"; // Thay bằng video mặc định của bạn
     videoId = videoId?.trim() || defaultVideoId;
 
     this.player = new YT.Player('player', {
@@ -64,7 +64,7 @@ export class PlayerService {
       width: '100%',
       videoId: videoId,
       playerVars: {
-        autoplay: isPaused ? 0 : 1,
+        autoplay: 0,
         controls: 1,
         rel: 0,
         modestbranding: 1,
