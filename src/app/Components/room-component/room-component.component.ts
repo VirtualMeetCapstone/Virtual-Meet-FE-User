@@ -26,6 +26,11 @@ export class RoomComponentComponent implements OnInit{
     console.log(`🏠 Đang ở phòng ${this.roomId}`);
     this.roomHubService.receiveShare((username: string) => {
       this.isYouTubeActive = true;
+      if (this.isYouTubeActive) {
+        setTimeout(() => {
+          this._playerService.initializePlayer();
+        }, 100); // Delay 100ms để đảm bảo DOM đã cập nhật
+      }
       console.log(`🔹 ${username} đang chia sẻ với bạn!`);
     });
 
