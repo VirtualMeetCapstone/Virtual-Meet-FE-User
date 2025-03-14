@@ -25,7 +25,6 @@ export class RoomComponentComponent implements OnInit{
 
   ngOnInit() {
     this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
-    console.log(`🏠 Đang vào phòng ${this.roomId}`);
 
     if (!this.roomId) {
       console.error("❌ Không có roomId!");
