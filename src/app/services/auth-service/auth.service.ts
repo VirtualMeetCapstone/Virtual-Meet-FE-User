@@ -64,8 +64,6 @@ export class AuthService {
 
     try {
       const decoded: any = jwtDecode(token);
-      console.log('Decoded Token:', decoded);
-
       let photoUrl: string = '';
 
       // Nếu có `decoded.picture`, sử dụng luôn

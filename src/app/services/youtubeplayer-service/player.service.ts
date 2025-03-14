@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { VideoHubService } from '../../Hub/video-hub/video-hub.service';
+import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 declare var YT: any;
 
 @Injectable({
@@ -10,17 +10,17 @@ export class PlayerService {
   private lastStatus: number | null = null;
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
-  constructor(private videoHub: VideoHubService) {
+  constructor(private roomHub: RoomHubService) {
     this.initializePlayer();
-    this.videoHub
+    this.roomHub
       .startConnection()
       .then(() => {
         console.log('🔥 SignalR sẵn sàng');
-        this.videoHub.onPlayerStatusReceived((status, time) => {
+        this.roomHub.onPlayerStatusReceived((roomId,status, time) => {
           console.log(
             `📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`
           );
-          this.updatePlayerFromSignalR(status, time);
+          this.updatePlayerFromSignalR(roomId,status, time);
         });
       })
       .catch((err) => console.error('❌ Lỗi khi kết nối SignalR: ', err));
@@ -58,17 +58,23 @@ export class PlayerService {
       event.data === YT.PlayerState.PAUSED ||
       event.data === YT.PlayerState.BUFFERING
     ) {
+      const roomId = this.roomHub.currentUser.roomId; // Lấy roomId từ RoomHubService
+      if (!roomId) {
+        console.warn('⚠️ Không tìm thấy roomId, không thể gửi trạng thái.');
+        return;
+      }
+
       console.log(`📤 Gửi trạng thái lên server: ${event.data}`);
-       this.videoHub.sendPlayerStatus(event.data, this.player.getCurrentTime());
+       this.roomHub.sendPlayerStatus(roomId,event.data, this.player.getCurrentTime());
     }
 
     this.lastStatus = event.data;
   }
 
-  private updatePlayerFromSignalR(status: number, time: number) {
+  private updatePlayerFromSignalR(roomId: string ,status: number, time: number) {
     if (!this.player || typeof this.player.getPlayerState !== 'function') {
       console.warn('⏳ Player chưa sẵn sàng, thử lại sau...');
-      setTimeout(() => this.updatePlayerFromSignalR(status, time), 500);
+      setTimeout(() => this.updatePlayerFromSignalR(roomId,status, time), 500);
       return;
     }
 
