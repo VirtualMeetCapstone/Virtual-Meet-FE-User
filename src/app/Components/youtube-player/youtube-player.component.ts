@@ -27,14 +27,17 @@ export class YoutubePlayerComponent implements OnInit {
 
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this._roomHub.startConnection();
-      this.loadYouTubeAPI().then(() => {
-        this.initializePlayer();
-      }).catch(err => {
-        console.error("❌ Lỗi tải YouTube API:", err);
-      });
+    if (!isPlatformBrowser(this.platformId)) {
+      return ;
     }
+
+    this._roomHub.startConnection();
+    this.loadYouTubeAPI().then(() => {
+      this.initializePlayer();
+    }).catch(err => {
+      console.error("❌ Lỗi tải YouTube API:", err);
+    });
+
 
     this._roomHub.onPlayerStatusReceived((roomId, status, time) => {
       this._playerService.changePlayerStatus(status, time);

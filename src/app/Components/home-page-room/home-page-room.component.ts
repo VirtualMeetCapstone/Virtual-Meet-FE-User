@@ -43,7 +43,7 @@ export class HomePageRoomComponent implements OnInit {
     }
     console.log(this.user);
     this.getRoom();
-    this.startSignalRConnection(); // Khởi tạo kết nối SignalR
+
   }
 
   // Khởi tạo kết nối SignalR
@@ -63,6 +63,8 @@ export class HomePageRoomComponent implements OnInit {
     });
   }
   joinRoom(roomId: string) {
+
+    this.startSignalRConnection(); // Khởi tạo kết nối SignalR
     this.roomHub
       .joinRoom('manh tuong', roomId)
       .then(() => {

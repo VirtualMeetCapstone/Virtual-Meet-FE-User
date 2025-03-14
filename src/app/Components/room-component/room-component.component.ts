@@ -1,9 +1,9 @@
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Injector, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { PlayerService } from '../../services/youtubeplayer-service/player.service';
 import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-player.component';
-
+import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -16,7 +16,8 @@ export class RoomComponentComponent implements OnInit{
   constructor(private route: ActivatedRoute,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
-    private injector: Injector
+    private injector: Injector,
+    @Inject(PLATFORM_ID) private platformId: object
   ) {}
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
@@ -24,6 +25,11 @@ export class RoomComponentComponent implements OnInit{
   isChatOpen = false;
 
   ngOnInit() {
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
 
     if (!this.roomId) {
