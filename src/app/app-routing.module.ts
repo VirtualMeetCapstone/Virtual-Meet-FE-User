@@ -15,7 +15,6 @@ const routes: Routes = [
     component: NewsFeedMyProfileComponent,
   },
   { path: 'posts', component: HomePagePostComponent },
-  { path: 'video', component: YoutubePlayerComponent },
   { path: 'room', component: RoomComponentComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
 
