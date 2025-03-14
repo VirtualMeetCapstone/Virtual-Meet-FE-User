@@ -47,19 +47,23 @@ export class PlayerService {
   }
 
   private createPlayer(videoId: string, time: number = 0, isPaused: boolean = true) {
+    // Nếu videoId rỗng hoặc null, đặt video mặc định
+    const defaultVideoId = "dQw4w9WgXcQ"; // Thay bằng video mặc định của bạn
+    videoId = videoId?.trim() || defaultVideoId;
+
     this.player = new YT.Player('player', {
       height: '400',
       width: '100%',
       videoId: videoId,
       playerVars: {
-        autoplay: isPaused ?0 : 1,
+        autoplay: isPaused ? 0 : 1,
         controls: 1,
         rel: 0,
         modestbranding: 1,
       },
 
       events: {
-        onReady: (event:any) => {
+        onReady: (event: any) => {
           console.log("✅ Player đã sẵn sàng, nhảy tới:", time);
           event.target.seekTo(time, true);
           if (isPaused) {
@@ -71,7 +75,7 @@ export class PlayerService {
         onStateChange: this.onPlayerStateChange.bind(this),
       },
     });
-  }
+}
 
   private updateVideo(videoId: string, time: number=0, isPaused: boolean = true) {
     if (this.player && typeof this.player.loadVideoById === 'function') {
