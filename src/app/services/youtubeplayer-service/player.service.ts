@@ -44,11 +44,19 @@ export class PlayerService {
     (window as any).onYouTubeIframeAPIReady = () => {
       this.createPlayer(videoId,time,isPaused);
     };
+
+
   }
 
+
+
+
+  isPlayerInitialized(): boolean {
+    return this.player !== null;
+}
   private createPlayer(videoId: string, time: number = 0, isPaused: boolean = true) {
     // Nếu videoId rỗng hoặc null, đặt video mặc định
-    const defaultVideoId = "dQw4w9WgXcQ"; // Thay bằng video mặc định của bạn
+    const defaultVideoId = "Ec7zLUi16JU"; // Thay bằng video mặc định của bạn
     videoId = videoId?.trim() || defaultVideoId;
 
     this.player = new YT.Player('player', {
