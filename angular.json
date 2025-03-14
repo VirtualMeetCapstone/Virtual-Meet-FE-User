@@ -30,8 +30,6 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "baseHref": "/",
-            "deployUrl": "/",
             "assets": [
               {
                 "glob": "**/*",
@@ -41,6 +39,7 @@
             "styles": ["src/styles.scss"],
             "scripts": [],
             "server": "src/main.server.ts",
+            "prerender": true ,
             "ssr": {
               "entry": "server.ts"
             }
