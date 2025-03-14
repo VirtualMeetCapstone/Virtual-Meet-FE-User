@@ -27,22 +27,20 @@ export class YoutubePlayerComponent implements OnInit {
 
   ngOnInit() {
     this._roomHub.startConnection();
-    // this._roomHub.onPlayerStatusReceived((status, time) => {
-    //   this._playerService.changePlayerStatus(status, time);
-    // });
-    // Lắng nghe sự kiện nhận video từ Hub
+    this._roomHub.onPlayerStatusReceived((roomId,status, time) => {
+      this._playerService.changePlayerStatus(status, time);
+    });
     this._roomHub.onVideoSelected((roomId, videoId) => {
       console.log(`🎬 Nhận video từ Hub - Room: ${roomId}, Video: ${videoId}`);
       this.playVideo(videoId); // Phát video nhận được
   });
-
 
     this.loadTrendingVideos();
   }
 
 
 
-  selectVideo(videoId: string): void {
+ public selectVideo(videoId: string): void {
     this.playVideo(videoId);
     console.log(this.roomId)
     this._roomHub.selectVideo(this.roomId,videoId);
@@ -62,7 +60,7 @@ export class YoutubePlayerComponent implements OnInit {
 
 
   playVideo(videoId: string) {
-    this._playerService.cueVideoById(videoId);
+    this._playerService.loadVideoById(videoId);
     this._roomHub.sendPlayerStatus(this.roomId,YT.PlayerState.PLAYING, 0);
   }
 }

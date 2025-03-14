@@ -11,36 +11,84 @@ export class PlayerService {
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
   constructor(private roomHub: RoomHubService) {
-    this.initializePlayer();
     this.roomHub
       .startConnection()
       .then(() => {
         console.log('🔥 SignalR sẵn sàng');
-        this.roomHub.onPlayerStatusReceived((roomId,status, time) => {
-          console.log(
-            `📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`
-          );
-          this.updatePlayerFromSignalR(roomId,status, time);
+
+        // Đăng ký lắng nghe sự kiện từ SignalR
+        this.roomHub.onPlayerStatusReceived((roomId, status, time) => {
+          console.log(`📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`);
+          this.updatePlayerFromSignalR(roomId, status, time);
         });
       })
       .catch((err) => console.error('❌ Lỗi khi kết nối SignalR: ', err));
   }
 
-  initializePlayer() {
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    document.body.appendChild(tag);
+
+
+  initializePlayer(videoId: string = '',time: number=0, isPaused: boolean = true) {
+    console.log("🎬 Thiết lập video:", videoId);
+
+    if ((window as any).YT && (window as any).YT.Player) {
+      this.updateVideo(videoId,time,isPaused);
+      return;
+    }
+
+    if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.body.appendChild(tag);
+    }
 
     (window as any).onYouTubeIframeAPIReady = () => {
-      this.player = new YT.Player('player', {
-        height: '400',
-        width: '100%',
-        events: {
-          onStateChange: this.onPlayerStateChange.bind(this),
-        },
-      });
+      this.createPlayer(videoId,time,isPaused);
     };
   }
+
+  private createPlayer(videoId: string, time: number = 0, isPaused: boolean = true) {
+    this.player = new YT.Player('player', {
+      height: '400',
+      width: '100%',
+      videoId: videoId,
+      playerVars: {
+        autoplay: isPaused ?0 : 1,
+        controls: 1,
+        rel: 0,
+        modestbranding: 1,
+      },
+
+      events: {
+        onReady: (event:any) => {
+          console.log("✅ Player đã sẵn sàng, nhảy tới:", time);
+          event.target.seekTo(time, true);
+          if (isPaused) {
+            event.target.pauseVideo();
+          } else {
+            event.target.playVideo();
+          }
+        },
+        onStateChange: this.onPlayerStateChange.bind(this),
+      },
+    });
+  }
+
+  private updateVideo(videoId: string, time: number=0, isPaused: boolean = true) {
+    if (this.player && typeof this.player.loadVideoById === 'function') {
+      console.log("🔄 Đổi video:", videoId);
+      this.player.loadVideoById(videoId);
+      this.player.seekTo(time,true);
+      if (isPaused) {
+        this.player.pauseVideo();
+      } else {
+        this.player.playVideo();
+      }
+    } else {
+      console.warn("⚠️ Player chưa sẵn sàng, thử lại sau...");
+      setTimeout(() => this.updateVideo(videoId,time,isPaused), 500);
+    }
+  }
+
 
   private onPlayerStateChange(event: any) {
     console.log(
@@ -71,14 +119,15 @@ export class PlayerService {
     this.lastStatus = event.data;
   }
 
-  private updatePlayerFromSignalR(roomId: string ,status: number, time: number) {
+  private updatePlayerFromSignalR(roomId: string, status: number, time: number) {
     if (!this.player || typeof this.player.getPlayerState !== 'function') {
       console.warn('⏳ Player chưa sẵn sàng, thử lại sau...');
-      setTimeout(() => this.updatePlayerFromSignalR(roomId,status, time), 500);
+      setTimeout(() => this.updatePlayerFromSignalR(roomId, status, time), 500);
       return;
     }
 
     this.isUpdating = true; // 🚀 Đánh dấu đang cập nhật từ SignalR
+
     console.log(
       `▶️ Cập nhật Player từ SignalR: ${
         status === YT.PlayerState.PLAYING ? 'Play' : 'Pause'
@@ -88,10 +137,11 @@ export class PlayerService {
     this.player.seekTo(time, true);
 
     if (status === YT.PlayerState.PLAYING) {
+      this.player.mute(); // Tắt âm thanh giúp tránh bị chặn autoplay
       this.player.playVideo();
-    } else if (status === YT.PlayerState.PAUSED) {
-      this.player.pauseVideo();
+      setTimeout(() => this.player.unMute(), 500); // Bật lại âm sau 500ms
     }
+
 
     // ✅ Reset lại cờ sau khi player thực sự thay đổi trạng thái
     setTimeout(() => {
@@ -99,11 +149,16 @@ export class PlayerService {
       console.log(
         '✅ Hoàn tất cập nhật từ SignalR, có thể gửi trạng thái mới.'
       );
-    }, 1000); // Đợi 1 giây để đảm bảo player đã nhận trạng thái mới
+    }, 1000);
   }
+
 
   cueVideoById(videoId: string) {
     this.player?.cueVideoById(videoId);
+  }
+
+  loadVideoById(videoId: string) {
+    this.player?.loadVideoById(videoId);
   }
 
   changePlayerStatus(status: number, time: number) {
@@ -123,4 +178,11 @@ export class PlayerService {
       } tại ${time}s`
     );
   }
+
+  pauseVideo() {
+    if (this.player) {
+      this.player.pauseVideo();
+    }
+  }
+
 }
