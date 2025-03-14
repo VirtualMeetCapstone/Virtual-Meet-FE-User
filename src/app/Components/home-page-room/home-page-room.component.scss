@@ -10,12 +10,13 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   padding: 20px;
+  gap: 30px;
 }
 .room-card {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
-  width: 300px;
+  width: 320px;
   margin: 10px;
   padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -116,4 +117,30 @@ body {
   text-align: center;
   padding: 10px;
   color: black;
+}
+
+.join-now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Khoảng cách giữa icon và chữ */
+  width: 120px; /* Chiều rộng */
+  height: 40px; /* Chiều cao */
+  background-color: #007bff; /* Màu xanh */
+  color: white;
+  border-radius: 8px; /* Bo góc nhẹ */
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.join-now i {
+  font-size: 18px;
+}
+
+.join-now:hover {
+  background-color: #0056b3; /* Màu hover */
 }

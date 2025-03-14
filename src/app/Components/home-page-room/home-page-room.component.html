@@ -25,7 +25,7 @@
       <img
         alt="User icon"
         height="30"
-        src="{{ room.owner.picture }}"
+        src="{{ room.owner.picture.url }}"
         width="30"
       />
       <div class="topic">
@@ -46,7 +46,7 @@
           <div class="group-owner">
             <div style="color: black">Group Owner</div>
             <img
-              src="{{ room.owner.picture }}"
+              src="{{ room.owner.picture.url }}"
               alt="Owner Avatar"
               class="owner-avatar"
               style="height: 50px; width: 50px"
@@ -93,7 +93,7 @@
     <div class="actions">
       <div class="join-now" (click)="joinRoom(room.id)">
         <i class="fas fa-phone"></i>
-        <span>Join Room</span>
+        <span>Join</span>
       </div>
       <div class="icons">
         <i class="fas fa-heart"></i>
@@ -102,6 +102,8 @@
         <i class="fas fa-ellipsis-h"></i>
       </div>
     </div>
+
+
   </div>
 </div>
 
