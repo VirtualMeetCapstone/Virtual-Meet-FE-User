@@ -13,6 +13,10 @@
     {
       "src": "/room",
       "headers": { "x-prerender-bypass": "true" }
+    },
+    {
+      "src": "/",
+      "headers": { "x-prerender-bypass": "true" }
     }
   ]
 }
