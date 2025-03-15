@@ -2,13 +2,19 @@
   <div class="main-content">
     <div class="create-post">
       <div class="user-info">
-        <img
-          alt="User profile picture"
-          [src]="user.photoUrl.Url"
-          height="40"
-          width="40"
-          style="border-radius: 50%; object-fit: cover"
-        />
+        <div class="user-infor-detail">
+          <img
+            [src]="getSafeUrl(user.photoUrl)"
+            alt="User profile picture"
+            height="40"
+            width="40"
+            style="border-radius: 50%; object-fit: cover; margin-bottom: 10px;"
+          />
+          <div class="user-name">
+            {{user.name}}
+          </div>
+        </div>
+
         <textarea
           (click)="openCreatePost()"
           name="content"
@@ -33,9 +39,9 @@
           Create
         </button>
       </div>
-      <div class="d-flex justify-content-center mt-3">
-        <button type="button" class="btn btn-primary">Post</button>
-      </div>
+<!--      <div class="d-flex justify-content-center mt-3">-->
+<!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
+<!--      </div>-->
     </div>
     <div
       class="post"

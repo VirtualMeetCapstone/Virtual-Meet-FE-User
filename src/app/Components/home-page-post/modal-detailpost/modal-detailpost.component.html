@@ -52,7 +52,8 @@
           <div class="post-comment">
             <div class="post-header">
               <img
-                [src]="user.photoUrl.Url"
+                [src]="getSafeUrl(user.photoUrl)"
+
                 alt="Profile picture"
                 height="40"
                 width="40"
@@ -97,7 +98,9 @@
               <div class="post-comment">
                 <div class="post-header">
                   <img
-                    [src]="user.photoUrl.Url"
+
+                    [src]="getSafeUrl(user.photoUrl)"
+
                     alt="Profile picture"
                     height="40"
                     width="40"
@@ -127,7 +130,7 @@
               <div *ngFor="let reply of comment.replies" class="reply">
                 <div class="d-flex">
                   <img
-                    [src]="reply.author.picture.url"
+                    [src]="getSafeUrl(reply.author.picture.url)"
                     alt="Ảnh đại diện"
                     class="comment-avatar"
                   />
@@ -143,7 +146,9 @@
               <div class="post-comment" *ngIf="comment.replies.length > 0">
                 <div class="post-header">
                   <img
-                    [src]="user.photoUrl.Url"
+
+                    [src]="getSafeUrl(user.photoUrl)"
+
                     alt="Profile picture"
                     height="40"
                     width="40"
