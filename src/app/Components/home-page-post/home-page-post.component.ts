@@ -31,14 +31,11 @@ export class HomePagePostComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.loggedIn$.subscribe((status: boolean) => {
-      if (status) {
-        this.user = this.authService.getUser();
-      }
-    });
-    console.log(this.user);
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
+      const parsedPhoto = JSON.parse(this.user.photoUrl);
+      this.user.photoUrl = parsedPhoto;
+      console.log(this.user);
     }
     this.loadMorePosts();
   }
