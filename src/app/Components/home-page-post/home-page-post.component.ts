@@ -33,6 +33,7 @@ export class HomePagePostComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
@@ -43,6 +44,7 @@ export class HomePagePostComponent implements OnInit {
     console.log("ra coi",this.user.name);
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
+
 
     }
     this.loadMorePosts();
