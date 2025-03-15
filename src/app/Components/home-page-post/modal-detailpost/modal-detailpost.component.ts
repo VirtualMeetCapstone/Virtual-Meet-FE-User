@@ -25,6 +25,7 @@ export class ModalDetailpostComponent {
     this.isLoadingComment = true;
     this.postService.getComment(this.post.id).subscribe((data: any) => {
       this.comments = data;
+      console.log('commtent', this.comments);
       this.groupedComments = this.groupComments(this.comments);
       this.isLoadingComment = false;
       console.log('grouo', this.groupedComments);
@@ -36,7 +37,10 @@ export class ModalDetailpostComponent {
     const commentArray = comments?.data || [];
 
     commentArray.forEach((comment: any) => {
-      grouped[comment.id] = { ...comment, replies: [] };
+      grouped[comment.id] = {
+        ...comment,
+        replies: [],
+      };
     });
 
     let result: any = [];
@@ -47,12 +51,16 @@ export class ModalDetailpostComponent {
           grouped[comment.parentId].replies.push(grouped[comment.id]);
         }
       } else {
-        result.push(grouped[comment.id]); // Nếu không có parentId, là comment gốc
+        result.push(grouped[comment.id]);
       }
+    });
+    result.forEach((comment: any) => {
+      comment.replies.sort((a: any, b: any) => a.createTime - b.createTime);
     });
 
     return result;
   }
+
   addComment(content: string) {
     const trimmedContent = content.trim();
     if (!trimmedContent) {

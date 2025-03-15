@@ -25,7 +25,9 @@ export class PostserviceService {
     return this.http.get<any>(this.url + '/' + id);
   }
   getComment(idPost: string): any {
-    return this.http.get<any>(this.url + '/' + idPost + '/comments');
+    return this.http.get<any>(
+      this.url + '/' + idPost + '/comments?OrderType=0&OrderBy=createTime'
+    );
   }
   createPost(
     content: string,
