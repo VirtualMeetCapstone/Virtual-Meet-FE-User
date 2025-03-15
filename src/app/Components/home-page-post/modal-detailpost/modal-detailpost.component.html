@@ -58,7 +58,14 @@
                 width="40"
               />
             </div>
-            <input #commentInput type="text" placeholder="Add a comment..." />
+            <input
+              #commentInput
+              type="text"
+              placeholder="Add a comment..."
+              (keydown.enter)="
+                addComment(commentInput.value); commentInput.value = ''
+              "
+            />
             <button
               (click)="addComment(commentInput.value); commentInput.value = ''"
             >
@@ -96,7 +103,15 @@
                     width="40"
                   />
                 </div>
-                <input #replyInput type="text" placeholder="Add a reply..." />
+                <input
+                  #replyInput
+                  type="text"
+                  placeholder="Add a reply..."
+                  (keydown.enter)="
+                    replyComment(comment.id, replyInput.value);
+                    replyInput.value = ''
+                  "
+                />
                 <button
                   (click)="
                     replyComment(comment.id, replyInput.value);
@@ -156,6 +171,10 @@
                       #replyInput
                       type="text"
                       placeholder="Add a reply..."
+                      (keydown.enter)="
+                        replyComment(reply.id, replyInput.value);
+                        replyInput.value = ''
+                      "
                     />
                     <button
                       (click)="
