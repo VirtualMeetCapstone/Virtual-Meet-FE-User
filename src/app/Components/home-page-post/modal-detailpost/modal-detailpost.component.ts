@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { PostserviceService } from '../../../services/post-service/postservice.service';
-
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 @Component({
   selector: 'app-modal-detailpost',
   templateUrl: './modal-detailpost.component.html',
   styleUrls: ['./modal-detailpost.component.scss'],
 })
-export class ModalDetailpostComponent {
+export class ModalDetailpostComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() post: any = null;
   @Input() user: any = '';
@@ -15,7 +15,7 @@ export class ModalDetailpostComponent {
   groupedComments: any = {};
   isLoadingComment: boolean = false;
   messages: any = [];
-  constructor(private postService: PostserviceService) {}
+  constructor(private postService: PostserviceService,private externalService: ExternalServiceService,) {}
 
   ngOnInit(): void {
     console.log(this.user);
@@ -119,5 +119,8 @@ export class ModalDetailpostComponent {
     if (this.currentImageIndex < this.post.medias.length - 1) {
       this.currentImageIndex++;
     }
+  }
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
   }
 }
