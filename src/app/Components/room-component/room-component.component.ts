@@ -24,7 +24,16 @@ export class RoomComponentComponent implements OnInit{
   isChatOpen = false;
 
   ngOnInit() {
-    // Tham gia phòng
+    this.route.paramMap.subscribe((params) => {
+      const roomId = params.get('roomId');
+      if (roomId) {
+        this.roomId = roomId;
+        localStorage.setItem('roomId', this.roomId);
+        console.log("📌 Room ID từ router:", this.roomId);
+      }
+    });
+
+
     this.roomHubService.joinRoom("User B", this.roomId)
       .then(() => {
         console.log("✅ Đã tham gia phòng, yêu cầu trạng thái phòng...",  this.roomHubService.getRoomState());
@@ -44,10 +53,11 @@ export class RoomComponentComponent implements OnInit{
 
   restoreVideo(){
       // Nhận video khi BE gửi lại
-      this.roomHubService.onVideoSelected((roomId, videoId,time,isPaused) => {
-        console.log(`📺 Nhận lại video ${videoId}`);
-        console.log(`📺 Nhận lại time ${time}`);
-        this._playerService.initializePlayer(videoId,time,isPaused);
+      this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
+        this.isYouTubeActive = true;
+        setTimeout(() => {
+          this._playerService.initializePlayer(videoId, time, isPaused);
+        }, 300);
       });
   }
 

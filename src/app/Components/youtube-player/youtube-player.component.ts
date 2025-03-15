@@ -61,6 +61,5 @@ export class YoutubePlayerComponent implements OnInit {
 
   playVideo(videoId: string) {
     this._playerService.loadVideoById(videoId);
-    this._roomHub.sendPlayerStatus(this.roomId,YT.PlayerState.PLAYING, 0);
   }
 }
