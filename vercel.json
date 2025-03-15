@@ -7,7 +7,8 @@
       "config": {
         "includeFiles": [
           "dist/virtual-meet-fe/browser/**",
-          "dist/virtual-meet-fe/server/**"
+          "dist/virtual-meet-fe/server/**",
+           "node_modules/zone.js/**"
         ]
       }
     }
