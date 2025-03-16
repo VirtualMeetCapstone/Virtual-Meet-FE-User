@@ -4,16 +4,10 @@
 
     <div class="create-post">
       <div class="user-info">
-        <div class="user-infor-detail">
-          <img
-            [src]="getSafeUrl(user.photoUrl)"
-            alt="User profile picture"
-            height="40"
-            width="40"
-            style="border-radius: 50%; object-fit: cover; margin-bottom: 10px;"
-          />
-          <div class="user-name">
-            {{user.name}}
+        <div class="grid-container">
+          <!-- Story List -->
+          <div class="story-wrapper">
+            <app-story-list></app-story-list>
           </div>
         </div>
 
@@ -23,6 +17,7 @@
           placeholder="Write something here..."
         ></textarea>
       </div>
+
       <div class="actions">
         <button (click)="openCreatePost()">
           <i class="fas fa-photo-video"> </i>

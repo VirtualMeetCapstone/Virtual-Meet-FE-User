@@ -314,3 +314,30 @@ body {
   margin-top: 5px;
   font-weight: 500;
 }
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  width: 800px;
+  margin-bottom: 10px;
+}
+
+.story-wrapper {
+  width: 100%;
+  max-width: 800px;
+  justify-content: center;
+}
+
+app-story-list {
+  width: 100%;
+  max-width: 450px;
+}
+
+
