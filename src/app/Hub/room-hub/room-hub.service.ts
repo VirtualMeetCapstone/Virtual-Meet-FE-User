@@ -6,36 +6,61 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class RoomHubService {
-  private hubConnection: signalR.HubConnection;
+  public hubConnection: signalR.HubConnection;
   public currentUser = { name: '', roomId: '' };
 
   constructor() {
+    // Chỉ khởi tạo connection, không kết nối ngay
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, { withCredentials: true })
+      .withUrl(`${AppConstants.API_LOCAL_BASE_URL}/roomHub`, {
+        withCredentials: true
+      })
       .withAutomaticReconnect()
       .build();
   }
 
-  // Bắt đầu kết nối SignalR
-  startSignalRConnection(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        // Bắt đầu kết nối SignalR
+    // Phương thức kết nối cải tiến
+    public startConnection(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+          resolve();
+          return;
+        }
+
         this.hubConnection.start()
           .then(() => {
-            console.log("✅ SignalR connection established.");
-            resolve(); // Kết nối thành công
+            console.log("✅ SignalR connection established");
+            resolve();
           })
-          .catch((err) => {
-            console.error("❌ SignalR connection failed:", err);
-            reject(err); // Lỗi kết nối
+          .catch(err => {
+            console.error("❌ Connection failed:", err);
+            reject(err);
           });
-      } catch (error) {
-        reject(error);
+      });
+
+    }
+
+  // room-hub.service.ts
+  public async getRoomState(): Promise<any> {
+    try {
+      if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
+        await this.startConnection(); // Đảm bảo kết nối trước khi gọi
       }
-    });
+
+      // Gọi phương thức Hub mà không truyền roomId
+      return await this.hubConnection.invoke("GetRoomState");
+    } catch (err) {
+      console.error("❌ Lỗi lấy trạng thái phòng:", err);
+      throw err; // Re-throw để component xử lý
+    }
   }
 
+  public onRoomStateReceived(callback: (state: any) => void): void {
+    this.hubConnection.on("ReceiveRoomState", (state) => {
+      console.log("📦 Received room state:", state);
+      callback(state);
+    });
+  }
 
   // Tham gia phòng
   public async joinRoom(username: string, roomId: string): Promise<void> {
@@ -68,14 +93,6 @@ export class RoomHubService {
     this.hubConnection.on('ReceiveShare', callback);
   }
 
-  // Gửi yêu cầu lấy trạng thái phòng
-  public async getRoomState(): Promise<void> {
-    try {
-      await this.hubConnection.invoke('GetRoomState');
-    } catch (err) {
-      console.error('❌ Lỗi lấy trạng thái phòng: ', err);
-    }
-  }
 
   // Gửi video đã chọn
   public async selectVideo(roomId: string, videoId: string): Promise<void> {
@@ -87,6 +104,10 @@ export class RoomHubService {
     }
   }
 
+   // Thêm sự kiện nhận trạng thái
+   public onRoomStateUpdate(callback: (state: any) => void): void {
+    this.hubConnection.on('RoomStateUpdated', callback);
+   }
   // Nhận thông tin video từ server
   public onVideoSelected(callback: (roomId: string, videoId: string, timestamp: number, isPaused: boolean) => void): void {
     if (!this.hubConnection) {

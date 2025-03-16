@@ -18,22 +18,13 @@ private lastSyncedStatus: number | null = null;
 private syncThreshold = 1.5; // Ngưỡng chênh lệch thời gian (giây)
 
   constructor(private roomHub: RoomHubService) {
-    this.roomHub
-      .startSignalRConnection()
-      .then(() => {
-        console.log('🔥 SignalR sẵn sàng');
-
         // Đăng ký lắng nghe sự kiện từ SignalR
         this.roomHub.onPlayerStatusReceived((roomId, status, time) => {
           console.log(`📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`);
           this.updatePlayerFromSignalR(roomId, status, time);
-        });
-      })
-      .catch((err) => console.error('❌ Lỗi khi kết nối SignalR: ', err));
-  }
+        })
 
-
-
+      }
   initializePlayer(videoId: string = '',time: number=0, isPaused: boolean = true) {
     console.log("🎬 Thiết lập video:", videoId);
 
@@ -89,8 +80,6 @@ private updateVideo(videoId: string, time: number = 0, isPaused: boolean = true)
   if (this.player) {
     try {
       this.isExternalUpdate = true;
-
-      // Sử dụng loadVideoById với tham số startSeconds
       this.player.loadVideoById({
         videoId: videoId,
         startSeconds: time,
