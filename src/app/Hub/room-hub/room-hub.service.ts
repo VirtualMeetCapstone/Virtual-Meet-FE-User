@@ -12,7 +12,7 @@ export class RoomHubService {
   constructor() {
     // Chỉ khởi tạo connection, không kết nối ngay
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_LOCAL_BASE_URL}/roomHub`, {
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
         withCredentials: true
       })
       .withAutomaticReconnect()
