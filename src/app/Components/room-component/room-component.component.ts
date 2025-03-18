@@ -49,8 +49,6 @@ export class RoomComponentComponent implements OnInit {
     });
 
       await this.roomHubService.joinRoom('User', this.roomId);
-      await this.roomHubService.getRoomState();
-
       this.initializeEventListeners();
 
     } catch (err) {

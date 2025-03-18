@@ -40,21 +40,6 @@ export class RoomHubService {
 
     }
 
-  // room-hub.service.ts
-  public async getRoomState(): Promise<any> {
-    try {
-      if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
-        await this.startConnection(); // Đảm bảo kết nối trước khi gọi
-      }
-
-      // Gọi phương thức Hub mà không truyền roomId
-      return await this.hubConnection.invoke("GetRoomState");
-    } catch (err) {
-      console.error("❌ Lỗi lấy trạng thái phòng:", err);
-      throw err; // Re-throw để component xử lý
-    }
-  }
-
   public onRoomStateReceived(callback: (state: any) => void): void {
     this.hubConnection.on("ReceiveRoomState", (state) => {
       console.log("📦 Received room state:", state);
