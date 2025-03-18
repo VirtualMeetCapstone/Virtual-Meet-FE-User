@@ -1,27 +1,5 @@
 <div class="video-call-container" [ngClass]="{'modal-open': isChatOpen || isParticipantsOpen}">
-  <div class="video-grid" [ngClass]="{'collapsed': isYouTubeActive}">
-
-<!-- start code tuong -->
-
-    <!-- Video của bạn (Local) -->
-    <div class="video-box red">
-      <div class="user-icon">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
-      </div>
-      <p class="user-name">Gấu</p>
-      <video #localVideo autoplay muted playsinline></video>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-
-    <div class="video-box red">
-      <div class="user-icon">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
-      </div>
-      <p class="user-name">Gấu</p>
-      <video #remoteVideo autoplay playsinline  [attr.data-user-id]="userId" ></video>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-<!-- end code tuong -->
+<!--  <div class="video-grid" [ngClass]="{'collapsed': isYouTubeActive}">-->
 
     <!-- code cua duc -->
   <div class="video-grid" [ngClass]="{'collapsed': isYouTubeActive}" [ngClass]="getVideoGridClass()">
@@ -29,8 +7,27 @@
       <div class="profile">
         <img [src]="user.avatar" alt="User Avatar" />
       </div>
+      <video #remoteVideo autoplay playsinline  [attr.data-user-id]="userId" ></video>
+
       <p class="user-name">{{ user.name }}</p>
     </div>
+<!--    <div class="video-box red">-->
+<!--      <div class="profile">-->
+<!--        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />-->
+<!--      </div>-->
+<!--      <p class="user-name">Gấu</p>-->
+<!--      <video #localVideo autoplay muted playsinline></video>-->
+<!--      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>-->
+<!--    </div>-->
+
+<!--    <div class="video-box red">-->
+<!--      <div class="profile">-->
+<!--        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />-->
+<!--      </div>-->
+<!--      <p class="user-name">Gấu</p>-->
+<!--      <video #remoteVideo autoplay playsinline  [attr.data-user-id]="userId" ></video>-->
+<!--      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>-->
+<!--    </div>-->
 
     <!-- Nếu có người dư, hiển thị ô tổng số còn lại -->
     <div *ngIf="getRemainingCount() > 0" class="video-box more-users">
@@ -57,7 +54,7 @@
     <app-room-chat *ngIf="isChatOpen"></app-room-chat>
     <app-participant-list *ngIf="isParticipantsOpen"></app-participant-list>
   </div>
-</div>
+<!--</div>-->
   <div class="action-btn-group">
     <div class="controls">
       <button class="control-btn"><i class="fa-solid fa-display"></i></button>
