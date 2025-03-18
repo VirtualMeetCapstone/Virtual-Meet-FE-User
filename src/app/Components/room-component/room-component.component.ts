@@ -26,6 +26,28 @@ export class RoomComponentComponent implements OnInit {
   isChatOpen = false;
   roomState: any; // Thêm biến lưu trạng thái
   connectionStatus: string = 'Connecting...';
+  participants = [
+    { name: 'Gấu', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: false },
+    { name: 'Mạnh Tường', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    { name: 'Trần Ngọc Chí', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: false },
+    { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+
+  ];
 
  async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -58,6 +80,19 @@ export class RoomComponentComponent implements OnInit {
     }
   };
 
+  getVideoGridClass(): string {
+    const userCount = this.participants.length;
+    return `users-${Math.min(userCount, 12)}`;
+  }
+  getDisplayedParticipants() {
+    const maxDisplay = 11;
+    return this.participants.slice(0, maxDisplay);
+  }
+
+  getRemainingCount() {
+    const maxDisplay = 11;
+    return this.participants.length > maxDisplay ? this.participants.length - maxDisplay : 0;
+  }
 
   private initializeEventListeners(): void {
     this.roomHubService.receiveShare((username) => {
