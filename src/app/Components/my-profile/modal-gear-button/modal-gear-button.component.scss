@@ -14,7 +14,7 @@
 
 .modal-gear-story {
   padding: 20px;
-  background-color: #000;
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -23,61 +23,48 @@
   z-index: 20001;
 }
 
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  flex-direction: column;
+.modal-gear-story h2 {
+  margin-bottom: 16px;
 }
 
-/* Chỉnh lại nút với kích thước cố định */
+.modal-gear-story .archive-content {
+  margin-bottom: 24px;
+}
+
 .button {
-  color: #fff;
-  background-color: #222;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-
-  /* Thiết lập chiều cao cố định và căn giữa nội dung */
-  height: 3rem; /* Chiều cao cố định */
-  min-width: 8rem; /* Chiều rộng tối thiểu (có thể điều chỉnh) */
-  padding: 0 1rem; /* Chỉ padding ngang, chiều cao đã cố định */
-
-  cursor: pointer;
-  text-align: center;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 15px;
+  background-color: #007acc;
+  outline: 3px #007acc solid;
+  outline-offset: -3px;
+  border-radius: 5px;
   border: none;
-  white-space: nowrap; /* Ngăn văn bản xuống dòng */
+  cursor: pointer;
+  transition: 400ms;
+}
+
+.button .text {
+  color: white;
+  font-weight: 700;
+  font-size: 1em;
+  transition: 400ms;
+}
+
+.button svg path {
+  transition: 400ms;
 }
 
 .button:hover {
-  background-color: #333;
+  background-color: transparent;
 }
 
-.button-delete:hover {
-  background: red;
+.button:hover .text {
+  color: #007acc;
 }
 
-/* Điều chỉnh hình ảnh bên trong nút */
-.button img {
-  display: inline;
-  width: 1.3rem;
-  height: 1.3rem;
-  margin-right: 0.75rem;
-}
-
-.button:focus svg {
-  animation: spin_357 0.5s linear;
-}
-
-@keyframes spin_357 {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button:hover svg path {
+  fill: #007acc;
 }

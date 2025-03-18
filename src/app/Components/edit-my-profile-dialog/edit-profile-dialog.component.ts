@@ -5,14 +5,11 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 import { ExternalServiceService } from '../../services/external-service/external-service.service';
-
-
 export interface EditProfileData {
   id: string;
   username: string;
   bio: string;
-  // avatar ở đây là URL của ảnh hiện tại
-  avatar: string;
+  avatar: File | null; // Chấp nhận File thay vì string
 }
 
 @Component({
@@ -47,6 +44,7 @@ export class EditProfileDialogComponent {
     }
     this.newAvatar = fileInput.files[0];
 
+    // Reader
     const reader = new FileReader();
     reader.onload = () => {
       this.mediaPreview = reader.result as string;
@@ -59,21 +57,19 @@ export class EditProfileDialogComponent {
   onSave() {
     this.isLoading = true;
 
+    const formData = new FormData();
     if (!this.newUsername || !this.newBio) {
       alert('Vui lòng điền đầy đủ thông tin');
       this.isLoading = false;
       return;
     }
-
-    const formData = new FormData();
     formData.append('Name', this.newUsername);
     formData.append('Bio', this.newBio);
 
-    // Chỉ gửi trường PictureUpload nếu người dùng đã chọn ảnh mới
-    if (this.newAvatar) {
+    if (this.newAvatar instanceof File) {
       formData.append('PictureUpload', this.newAvatar);
     }
-
+    console.log(this.userId);
     const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${this.userId}`;
 
     this.http
@@ -85,17 +81,12 @@ export class EditProfileDialogComponent {
         })
       )
       .subscribe({
-        next: (data: any) => {
+        next: (data) => {
           console.log('Profile updated successfully:', data);
-          // Nếu API response không có thông tin ảnh (hoặc trả về null), gán lại ảnh cũ từ data đã truyền vào dialog.
-          if (!data.picture || !data.picture.url) {
-            data.picture = {
-              url: this.data.avatar,
-              type: 1,
-              thumbnailUrl: null,
-            };
-          }
+          console.log(formData);
           this.dialogRef.close(data);
+          console.log(this.newUsername, this.newBio);
+
           window.location.reload();
         },
         error: (error) => {

@@ -18,7 +18,6 @@ interface Story {
   styleUrls: ['./news-feed-my-profile.component.scss'],
 })
 export class NewsFeedMyProfileComponent implements OnInit {
-  isLoading = false;
   stories: Story[] = [];
   activeMenuStoryId: string | null = null;
   userId: string = 'd3245904-744e-4f67-a55c-1648ceda34c7';
@@ -41,11 +40,9 @@ export class NewsFeedMyProfileComponent implements OnInit {
   }
 
   loadStories(): void {
-    // Hiển thị loading khi bắt đầu tải dữ liệu
-    this.isLoading = true;
     this.myProfileStoryService.getMyProfileStories(this.userId).subscribe({
       next: (data: any[]) => {
-        // Map API response, dùng userAvatar được inject làm fallback
+        // Map the API response, using the injected userAvatar as fallback
         this.stories = data.map((apiStory: any) => ({
           id: apiStory.id,
           media: { url: apiStory.media.url },
@@ -53,16 +50,17 @@ export class NewsFeedMyProfileComponent implements OnInit {
           content: apiStory.content,
           createTime: new Date(apiStory.createTime),
         }));
-        this.isLoading = false;
+        this.stories.forEach((story, index) => {
+          console.log(`Story ${index} userAvatar: ${story.userAvatar}`);
+        });
       },
       error: (error: any) => {
         console.error('Error fetching stories: ', error);
-        this.isLoading = false;
       },
     });
   }
 
-  // Fallback image handler nếu ảnh không load được
+  // Fallback image handler if image fails to load
   handleImageError(event: Event, fallback: string): void {
     const img = event.target as HTMLImageElement;
     img.src = fallback;

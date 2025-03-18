@@ -42,11 +42,19 @@ private syncThreshold = 1.5; // Ngưỡng chênh lệch thời gian (giây)
     (window as any).onYouTubeIframeAPIReady = () => {
       this.createPlayer(videoId,time,isPaused);
     };
+
+
   }
 
+
+
+
+  isPlayerInitialized(): boolean {
+    return this.player !== null;
+}
   private createPlayer(videoId: string, time: number = 0, isPaused: boolean = true) {
     // Nếu videoId rỗng hoặc null, đặt video mặc định
-    const defaultVideoId = "dQw4w9WgXcQ"; // Thay bằng video mặc định của bạn
+    const defaultVideoId = "rEsc9tb_Y6I"; // Thay bằng video mặc định của bạn
     videoId = videoId?.trim() || defaultVideoId;
 
     this.player = new YT.Player('player', {
@@ -54,7 +62,7 @@ private syncThreshold = 1.5; // Ngưỡng chênh lệch thời gian (giây)
       width: '100%',
       videoId: videoId,
       playerVars: {
-        autoplay: isPaused ? 0 : 1,
+        autoplay: 0,
         controls: 1,
         rel: 0,
         modestbranding: 1,

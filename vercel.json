@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "vmeet",
   "builds": [
     {
       "src": "dist/virtual-meet-fe/server/server.mjs",
