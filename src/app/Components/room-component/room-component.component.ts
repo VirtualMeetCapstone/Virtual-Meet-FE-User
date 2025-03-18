@@ -62,7 +62,6 @@ export class RoomComponentComponent implements OnInit {
   private initializeEventListeners(): void {
     this.roomHubService.receiveShare((username) => {
       this.isYouTubeActive = true;
-      this.restoreVideo();
     });
 
     this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
@@ -70,15 +69,7 @@ export class RoomComponentComponent implements OnInit {
     });
   }
 
-  restoreVideo() {
-    // Nhận video khi BE gửi lại
-    this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
-      this.isYouTubeActive = true;
-      setTimeout(() => {
-        this._playerService.initializePlayer(videoId, time, isPaused);
-      }, 300);
-    });
-  }
+
 
   // Hàm mở/đóng modal chọn hoạt động
   toggleActivityModal() {
@@ -113,12 +104,6 @@ export class RoomComponentComponent implements OnInit {
       .sendShare()
       .then(() => console.log('✅ Đã gửi sự kiện share'))
       .catch((err) => console.error('❌ Lỗi khi gửi sự kiện share:', err));
-
-    if (this.isYouTubeActive) {
-      setTimeout(() => {
-        this.restoreVideo();
-      }, 100);
-    }
   }
 
   // Hàm chọn Whiteboard
