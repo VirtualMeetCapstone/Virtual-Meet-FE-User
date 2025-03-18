@@ -10,7 +10,6 @@ export class RoomHubService {
   public currentUser = { name: '', roomId: '' };
 
   constructor() {
-    // Chỉ khởi tạo connection, không kết nối ngay
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
         withCredentials: true
@@ -19,6 +18,10 @@ export class RoomHubService {
       .build();
   }
 
+
+  getConnection(): signalR.HubConnection {
+    return this.hubConnection;
+  }
     // Phương thức kết nối cải tiến
     public startConnection(): Promise<void> {
       return new Promise((resolve, reject) => {
@@ -141,5 +144,15 @@ export class RoomHubService {
       console.log(`📡 Nhận trạng thái mới: ${status}, thời gian: ${time}s`);
       callback(roomId, status, time);
     });
+  }
+
+  ///Web-RTC
+  public async sendRTCSignal(method: string, roomId: string, data: any): Promise<void> {
+    await this.hubConnection.invoke(method, roomId, JSON.stringify(data));
+  }
+
+  public onRTCSignal(event: string, callback: (data: any) => void): void {
+    this.hubConnection.off(event);
+    this.hubConnection.on(event, (data) => callback(JSON.parse(data)));
   }
 }

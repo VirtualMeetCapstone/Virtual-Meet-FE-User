@@ -255,3 +255,10 @@
 .close-modal:hover {
   background: #e53935;
 }
+.local-video {
+  border: 2px solid #4caf50; /* Viền màu xanh lá cho video của bạn */
+}
+
+.remote-video {
+  border: 2px solid #d84141; /* Viền màu đỏ cho video remote */
+}
