@@ -45,6 +45,62 @@ export class RoomComponentComponent implements OnInit {
   connectionStatus: string = 'Connecting...';
   peerConnection!: RTCPeerConnection;
   localStream!: MediaStream;
+  participants = [
+    {
+      name: 'Gấu',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: false,
+    },
+    {
+      name: 'Mạnh Tường',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: true,
+    },
+    {
+      name: 'Trần Ngọc Chí',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: false,
+    },
+    {
+      name: 'Đức',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: true,
+    },
+    {
+      name: 'Đức',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: true,
+    },
+    {
+      name: 'Đức',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: true,
+    },
+    {
+      name: 'Đức',
+      avatar:
+        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+      isMuted: true,
+    },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+    // { name: 'Đức', avatar: 'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg', isMuted: true },
+  ];
 
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
@@ -106,96 +162,20 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
-  toggleMic() {
-    if (!this.localStream) return;
-
-    const audioTrack = this.localStream.getAudioTracks()[0];
-    if (audioTrack) {
-        audioTrack.enabled = !audioTrack.enabled; // Bật/tắt mic
-        this.isMicOn = audioTrack.enabled;
-    }
-}
-
-toggleCamera() {
-    if (!this.localStream) return;
-
-    const videoTrack = this.localStream.getVideoTracks()[0];
-    if (videoTrack) {
-        videoTrack.enabled = !videoTrack.enabled;
-        this.isCameraOn = videoTrack.enabled;
-    }
-}
-
-  async startCall() {
-    try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      this.localVideo.nativeElement.srcObject = this.localStream;
-
-      this.peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-      });
-      this.localStream
-        .getTracks()
-        .forEach((track) =>
-          this.peerConnection.addTrack(track, this.localStream)
-        );
-
-      this.peerConnection.ontrack = (event) => {
-        this.remoteVideo.nativeElement.srcObject = event.streams[0];
-      };
-
-      this.peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          this.rtcHubService.sendCandidate(this.roomId, event.candidate);
-        }
-      };
-
-      const offer = await this.peerConnection.createOffer();
-      await this.peerConnection.setLocalDescription(offer);
-      this.rtcHubService.sendOffer(this.roomId, offer);
-    } catch (err) {
-      console.error('❌ Lỗi lấy quyền camera/mic:', err);
-      alert('Bạn chưa cấp quyền camera/mic, vui lòng kiểm tra lại!');
-    }
+  getVideoGridClass(): string {
+    const userCount = this.participants.length;
+    return `users-${Math.min(userCount, 12)}`;
+  }
+  getDisplayedParticipants() {
+    const maxDisplay = 11;
+    return this.participants.slice(0, maxDisplay);
   }
 
-  removeRemoteVideo(userId: string) {
-    if (this.remoteVideo && this.remoteVideo.nativeElement.srcObject) {
-      const remoteStream = this.remoteVideo.nativeElement
-        .srcObject as MediaStream;
-      const tracks = remoteStream.getTracks();
-
-      // Dừng tất cả track của user A
-      tracks.forEach((track) => track.stop());
-
-      // Xóa video nếu đó là của user A
-      if (this.remoteVideo.nativeElement.dataset.userId === userId) {
-        this.remoteVideo.nativeElement.srcObject = null;
-      }
-    }
-  }
-
-  async handleOffer(offer: RTCSessionDescriptionInit) {
-    this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await this.peerConnection.createAnswer();
-    await this.peerConnection.setLocalDescription(answer);
-    this.rtcHubService.sendAnswer(this.roomId, answer);
-  }
-
-  hangUp() {
-    if (this.peerConnection) {
-      this.peerConnection.close();
-    }
-    this.localStream.getTracks().forEach((track) => track.stop());
-
-    // Gửi sự kiện rời cuộc gọi với user ID của A
-    this.rtcHubService.sendHangUp(this.roomId, this.userId); // <-- Truyền ID của user A
-
-    // Xóa trạng thái của A
-    localStorage.removeItem('isInCall');
+  getRemainingCount() {
+    const maxDisplay = 11;
+    return this.participants.length > maxDisplay
+      ? this.participants.length - maxDisplay
+      : 0;
   }
 
   private initializeEventListeners(): void {
@@ -258,5 +238,94 @@ toggleCamera() {
   toggleClose() {
     this.isChatOpen = false;
     this.isParticipantsOpen = false;
+  }
+  async handleOffer(offer: RTCSessionDescriptionInit) {
+    this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await this.peerConnection.createAnswer();
+    await this.peerConnection.setLocalDescription(answer);
+    this.rtcHubService.sendAnswer(this.roomId, answer);
+  }
+
+  hangUp() {
+    if (this.peerConnection) {
+      this.peerConnection.close();
+    }
+    this.localStream.getTracks().forEach((track) => track.stop());
+    // Gửi sự kiện rời cuộc gọi với user ID của A
+    this.rtcHubService.sendHangUp(this.roomId, this.userId); // <-- Truyền ID của user A
+
+    // Xóa trạng thái của A
+    localStorage.removeItem('isInCall');
+  }
+
+  removeRemoteVideo(userId: string) {
+    if (this.remoteVideo && this.remoteVideo.nativeElement.srcObject) {
+      const remoteStream = this.remoteVideo.nativeElement
+        .srcObject as MediaStream;
+      const tracks = remoteStream.getTracks();
+
+      // Dừng tất cả track của user A
+      tracks.forEach((track) => track.stop());
+
+      // Xóa video nếu đó là của user A
+      if (this.remoteVideo.nativeElement.dataset.userId === userId) {
+        this.remoteVideo.nativeElement.srcObject = null;
+      }
+    }
+  }
+
+  async startCall() {
+    try {
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      this.localVideo.nativeElement.srcObject = this.localStream;
+
+      this.peerConnection = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+      });
+      this.localStream
+        .getTracks()
+        .forEach((track) =>
+          this.peerConnection.addTrack(track, this.localStream)
+        );
+
+      this.peerConnection.ontrack = (event) => {
+        this.remoteVideo.nativeElement.srcObject = event.streams[0];
+      };
+
+      this.peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          this.rtcHubService.sendCandidate(this.roomId, event.candidate);
+        }
+      };
+
+      const offer = await this.peerConnection.createOffer();
+      await this.peerConnection.setLocalDescription(offer);
+      this.rtcHubService.sendOffer(this.roomId, offer);
+    } catch (err) {
+      console.error('❌ Lỗi lấy quyền camera/mic:', err);
+      alert('Bạn chưa cấp quyền camera/mic, vui lòng kiểm tra lại!');
+    }
+  }
+  toggleMic() {
+    if (!this.localStream) return;
+
+    const audioTrack = this.localStream.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled; // Bật/tắt mic
+      this.isMicOn = audioTrack.enabled;
+    }
+  }
+
+  toggleCamera() {
+    if (!this.localStream) return;
+
+    const videoTrack = this.localStream.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      this.isCameraOn = videoTrack.enabled;
+    }
   }
 }
