@@ -82,7 +82,7 @@
   </div>
    <!-- Phần mô phỏng YouTube -->
    <div [hidden]="!isYouTubeActive" class="youtube-container">
-   <app-youtube-player [roomId]="roomId"></app-youtube-player>
+   <app-youtube-player ngSkipHydration [roomId]="roomId"></app-youtube-player>
   </div>
   <!-- Modal hoặc Dropdown chọn hoạt động -->
   <div *ngIf="isActivityModalOpen" class="activity-modal">

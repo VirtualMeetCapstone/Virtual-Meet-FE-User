@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { PostserviceService } from '../../../services/post-service/postservice.service';
-
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 @Component({
   selector: 'app-modal-detailpost',
   templateUrl: './modal-detailpost.component.html',
   styleUrls: ['./modal-detailpost.component.scss'],
 })
-export class ModalDetailpostComponent {
+export class ModalDetailpostComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() post: any = null;
   @Input() user: any = '';
@@ -15,7 +15,7 @@ export class ModalDetailpostComponent {
   groupedComments: any = {};
   isLoadingComment: boolean = false;
   messages: any = [];
-  constructor(private postService: PostserviceService) {}
+  constructor(private postService: PostserviceService,private externalService: ExternalServiceService,) {}
 
   ngOnInit(): void {
     console.log(this.user);
@@ -25,6 +25,7 @@ export class ModalDetailpostComponent {
     this.isLoadingComment = true;
     this.postService.getComment(this.post.id).subscribe((data: any) => {
       this.comments = data;
+      console.log('commtent', this.comments);
       this.groupedComments = this.groupComments(this.comments);
       this.isLoadingComment = false;
       console.log('grouo', this.groupedComments);
@@ -36,7 +37,10 @@ export class ModalDetailpostComponent {
     const commentArray = comments?.data || [];
 
     commentArray.forEach((comment: any) => {
-      grouped[comment.id] = { ...comment, replies: [] };
+      grouped[comment.id] = {
+        ...comment,
+        replies: [],
+      };
     });
 
     let result: any = [];
@@ -47,12 +51,16 @@ export class ModalDetailpostComponent {
           grouped[comment.parentId].replies.push(grouped[comment.id]);
         }
       } else {
-        result.push(grouped[comment.id]); // Nếu không có parentId, là comment gốc
+        result.push(grouped[comment.id]);
       }
+    });
+    result.forEach((comment: any) => {
+      comment.replies.sort((a: any, b: any) => a.createTime - b.createTime);
     });
 
     return result;
   }
+
   addComment(content: string) {
     const trimmedContent = content.trim();
     if (!trimmedContent) {
@@ -111,5 +119,8 @@ export class ModalDetailpostComponent {
     if (this.currentImageIndex < this.post.medias.length - 1) {
       this.currentImageIndex++;
     }
+  }
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
   }
 }

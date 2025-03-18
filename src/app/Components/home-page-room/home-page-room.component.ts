@@ -43,37 +43,17 @@ export class HomePageRoomComponent implements OnInit {
     }
     console.log(this.user);
     this.getRoom();
-
   }
-
-  // Khởi tạo kết nối SignalR
-  startSignalRConnection() {
-    this.roomHub
-      .startConnection()
-      .then(() => console.log('✅ SignalR connection established'))
-      .catch((err) =>
-        console.error('❌ Failed to start SignalR connection:', err)
-      );
-  }
-
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
     });
   }
-  joinRoom(roomId: string) {
-
-    this.startSignalRConnection(); // Khởi tạo kết nối SignalR
-    this.roomHub
-      .joinRoom('manh tuong', roomId)
-      .then(() => {
-        console.log(`✅ Đã tham gia phòng ${roomId}`);
-        this.router.navigate(['/room', roomId]);
-      })
-      .catch((err) => console.error('❌ Lỗi khi tham gia room: ', err));
+  async joinRoom(roomId: string) {
+      this.router.navigate(['/room', roomId]);
   }
-  openModalDeleteRoom(room: any) {
+    openModalDeleteRoom(room: any) {
     console.log('open modal');
     this.roomToDelete = room;
     this.showModalDeleteRoom = true;

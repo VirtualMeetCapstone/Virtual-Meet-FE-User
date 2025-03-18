@@ -17,15 +17,19 @@ export class PostserviceService {
   constructor(private http: HttpClient, private authService: AuthService) {}
   userId = this.authService.getUser()?.id as string;
   getPosts(top: number, skip: number): any {
+    const timestamp = Date.now();
     return this.http.get<any>(
-      this.url + '?Top=' + top + '&Skip=' + skip + '&needtotalcount=true'
+      `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true&t=${timestamp}`
     );
   }
+
   getPostById(id: string): any {
     return this.http.get<any>(this.url + '/' + id);
   }
   getComment(idPost: string): any {
-    return this.http.get<any>(this.url + '/' + idPost + '/comments');
+    return this.http.get<any>(
+      this.url + '/' + idPost + '/comments?OrderType=0&OrderBy=createTime'
+    );
   }
   createPost(
     content: string,

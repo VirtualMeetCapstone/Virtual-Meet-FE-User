@@ -7,13 +7,14 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
-  styleUrl: './room-component.component.scss'
+  styleUrl: './room-component.component.scss',
 })
-
-export class RoomComponentComponent implements OnInit{
+export class RoomComponentComponent implements OnInit {
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
-  roomId: string = '';  userList: string[] = [];
-  constructor(private route: ActivatedRoute,
+  roomId: string = '';
+  userList: string[] = [];
+  constructor(
+    private route: ActivatedRoute,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
     private injector: Injector,
@@ -23,45 +24,62 @@ export class RoomComponentComponent implements OnInit{
   isParticipantsOpen = false;
   isActivityModalOpen: boolean = false;
   isChatOpen = false;
+  roomState: any; // Thêm biến lưu trạng thái
+  connectionStatus: string = 'Connecting...';
 
-  ngOnInit() {
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
-
-    if (!this.roomId) {
-      console.error("❌ Không có roomId!");
-      return;
-    }
-
-    // Tham gia phòng
-    this.roomHubService.joinRoom("User B", this.roomId)
-      .then(() => {
-        console.log("✅ Đã tham gia phòng, yêu cầu trạng thái phòng...",  this.roomHubService.getRoomState());
-        return this.roomHubService.getRoomState(); // 🔥 GỌI API LẤY TRẠNG THÁI
-      })
-      .catch(err => console.error('❌ Lỗi khi tham gia phòng:', err));
-
-    // Nhận sự kiện share
-    this.roomHubService.receiveShare((username: string) => {
-      this.isYouTubeActive = true;
-
-      this.restoreVideo();
-
+ async ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      const roomId = params.get('roomId');
+      if (roomId) {
+        this.roomId = roomId;
+        localStorage.setItem('roomId', this.roomId);
+        console.log('📌 Room ID từ router:', this.roomId);
+      }
     });
 
+    try {
+      await this.roomHubService.startConnection();
+      this.connectionStatus = 'Connected';
+
+    this.roomHubService.onRoomStateReceived((state) => {
+      this.roomState = state;
+      if (state.sharing) {
+        this.isYouTubeActive = true;
+        this._playerService.initializePlayer(state.videoId, state.time, state.isPaused);
+      }
+    });
+
+      await this.roomHubService.joinRoom('User', this.roomId);
+      await this.roomHubService.getRoomState();
+
+      this.initializeEventListeners();
+
+    } catch (err) {
+      console.error('❌ Lỗi khởi tạo phòng:', err);
+      this.connectionStatus = 'Connection failed';
+    }
+  };
+
+
+  private initializeEventListeners(): void {
+    this.roomHubService.receiveShare((username) => {
+      this.isYouTubeActive = true;
+      this.restoreVideo();
+    });
+
+    this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
+      this._playerService.initializePlayer(videoId, time, isPaused);
+    });
   }
 
-  restoreVideo(){
-      // Nhận video khi BE gửi lại
-      this.roomHubService.onVideoSelected((roomId, videoId,time,isPaused) => {
-        console.log(`📺 Nhận lại video ${videoId}`);
-        console.log(`📺 Nhận lại time ${time}`);
-        this._playerService.initializePlayer(videoId,time,isPaused);
-      });
+  restoreVideo() {
+    // Nhận video khi BE gửi lại
+    this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
+      this.isYouTubeActive = true;
+      setTimeout(() => {
+        this._playerService.initializePlayer(videoId, time, isPaused);
+      }, 300);
+    });
   }
 
   // Hàm mở/đóng modal chọn hoạt động
@@ -79,9 +97,9 @@ export class RoomComponentComponent implements OnInit{
     if (this.isYouTubeActive) {
       this._playerService.pauseVideo(); // Dừng video cục bộ trên A
     }
-
-    this.isYouTubeActive = false; // Ẩn YouTube trên giao diện của A
+    this.isYouTubeActive = false;
   }
+
 
   // Hàm chọn YouTube Together
   startYouTubeTogether() {
@@ -94,9 +112,9 @@ export class RoomComponentComponent implements OnInit{
     this.closeActivityModal();
 
     this.roomHubService
-    .sendShare()
-    .then(() => console.log('✅ Đã gửi sự kiện share'))
-    .catch((err) => console.error('❌ Lỗi khi gửi sự kiện share:', err));
+      .sendShare()
+      .then(() => console.log('✅ Đã gửi sự kiện share'))
+      .catch((err) => console.error('❌ Lỗi khi gửi sự kiện share:', err));
 
     if (this.isYouTubeActive) {
       setTimeout(() => {
@@ -118,12 +136,8 @@ export class RoomComponentComponent implements OnInit{
   toggleParticipants() {
     this.isParticipantsOpen = !this.isParticipantsOpen;
   }
-  toggleClose()
-  {
+  toggleClose() {
     this.isChatOpen = false;
     this.isParticipantsOpen = false;
   }
-
-
 }
-

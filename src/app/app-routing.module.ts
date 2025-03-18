@@ -15,9 +15,7 @@ const routes: Routes = [
     component: NewsFeedMyProfileComponent,
   },
   { path: 'posts', component: HomePagePostComponent },
-  { path: 'room', component: RoomComponentComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
-
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 

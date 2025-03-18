@@ -1,3 +1,5 @@
+import 'zone.js';
+import 'zone.js/node';
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
 import express from 'express';
@@ -55,3 +57,4 @@ function run(): void {
 }
 
 run();
+export default app(); // Export chính cho Vercel Serverless

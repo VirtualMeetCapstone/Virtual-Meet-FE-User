@@ -10,23 +10,21 @@ export class PlayerService {
   private lastStatus: number | null = null;
   private isUpdating = false; // Cờ kiểm soát vòng lặp
 
-  constructor(private roomHub: RoomHubService) {
-    this.roomHub
-      .startConnection()
-      .then(() => {
-        console.log('🔥 SignalR sẵn sàng');
 
+// Thêm các biến mới
+private isExternalUpdate = false;
+private lastSyncedTime = 0;
+private lastSyncedStatus: number | null = null;
+private syncThreshold = 1.5; // Ngưỡng chênh lệch thời gian (giây)
+
+  constructor(private roomHub: RoomHubService) {
         // Đăng ký lắng nghe sự kiện từ SignalR
         this.roomHub.onPlayerStatusReceived((roomId, status, time) => {
           console.log(`📡 Nhận trạng thái từ tab khác: ${status}, thời gian: ${time}s`);
           this.updatePlayerFromSignalR(roomId, status, time);
-        });
-      })
-      .catch((err) => console.error('❌ Lỗi khi kết nối SignalR: ', err));
-  }
+        })
 
-
-
+      }
   initializePlayer(videoId: string = '',time: number=0, isPaused: boolean = true) {
     console.log("🎬 Thiết lập video:", videoId);
 
@@ -74,97 +72,115 @@ export class PlayerService {
         onReady: (event: any) => {
           console.log("✅ Player đã sẵn sàng, nhảy tới:", time);
           event.target.seekTo(time, true);
-          if (isPaused) {
-            event.target.pauseVideo();
-          } else {
-            event.target.playVideo();
-          }
+       // Xử lý autoplay policy
+       if (!isPaused) {
+        event.target.mute();
+        event.target.playVideo();
+        setTimeout(() => event.target.unMute(), 500);
+      }
         },
         onStateChange: this.onPlayerStateChange.bind(this),
       },
     });
 }
 
-  private updateVideo(videoId: string, time: number=0, isPaused: boolean = true) {
-    if (this.player && typeof this.player.loadVideoById === 'function') {
-      console.log("🔄 Đổi video:", videoId);
-      this.player.loadVideoById(videoId);
-      this.player.seekTo(time,true);
-      if (isPaused) {
-        this.player.pauseVideo();
-      } else {
+private updateVideo(videoId: string, time: number = 0, isPaused: boolean = true) {
+  if (this.player) {
+    try {
+      this.isExternalUpdate = true;
+      this.player.loadVideoById({
+        videoId: videoId,
+        startSeconds: time,
+        suggestedQuality: 'default'
+      });
+
+      // Bật/tắt tiếng để xử lý autoplay policy
+      this.player.mute();
+      if (!isPaused) {
         this.player.playVideo();
+        setTimeout(() => this.player.unMute(), 500);
       }
-    } else {
-      console.warn("⚠️ Player chưa sẵn sàng, thử lại sau...");
-      setTimeout(() => this.updateVideo(videoId,time,isPaused), 500);
+
+      this.lastSyncedTime = time;
+      this.lastSyncedStatus = isPaused ? YT.PlayerState.PAUSED : YT.PlayerState.PLAYING;
+
+    } finally {
+      setTimeout(() => {
+        this.isExternalUpdate = false;
+      }, 1000);
     }
   }
-
-
+}
   private onPlayerStateChange(event: any) {
-    console.log(
-      `🎬 Player State Changed: ${event.data} | isUpdating: ${this.isUpdating}`
-    );
+    console.log(`🎬 Player State Changed: ${event.data}`);
 
-    if (this.isUpdating) {
-      console.log('🔄 Đang cập nhật từ SignalR, bỏ qua gửi trạng thái...');
+    // Bỏ qua nếu là cập nhật từ hệ thống
+    if (this.isExternalUpdate) return;
+
+    const currentStatus = event.data;
+    const currentTime = this.player.getCurrentTime();
+
+    // Chỉ xử lý các trạng thái quan trọng
+    if (
+      currentStatus !== YT.PlayerState.PLAYING &&
+      currentStatus !== YT.PlayerState.PAUSED
+    ) {
       return;
     }
 
-    // Gửi tất cả trạng thái (PLAYING, PAUSED, BUFFERING)
-    if (
-      event.data === YT.PlayerState.PLAYING ||
-      event.data === YT.PlayerState.PAUSED ||
-      event.data === YT.PlayerState.BUFFERING
-    ) {
-      const roomId = this.roomHub.currentUser.roomId; // Lấy roomId từ RoomHubService
-      if (!roomId) {
-        console.warn('⚠️ Không tìm thấy roomId, không thể gửi trạng thái.');
-        return;
+    // Kiểm tra chênh lệch với lần đồng bộ cuối
+    const timeDiff = Math.abs(currentTime - this.lastSyncedTime);
+    const isDuplicate =
+      currentStatus === this.lastSyncedStatus &&
+      timeDiff < this.syncThreshold;
+
+    if (isDuplicate) {
+      console.log('🔄 Trạng thái trùng, bỏ qua gửi');
+      return;
+    }
+
+    // Gửi trạng thái mới
+    const roomId = localStorage.getItem('roomId');
+    if (roomId) {
+      console.log(`📤 Gửi trạng thái: ${currentStatus} tại ${currentTime}s`);
+      this.roomHub.sendPlayerStatus(roomId, currentStatus, currentTime);
+      this.lastSyncedStatus = currentStatus;
+      this.lastSyncedTime = currentTime;
+    }
+  }
+  private async updatePlayerFromSignalR(
+    roomId: string,
+    status: number,
+    time: number
+  ) {
+    try {
+      this.isExternalUpdate = true;
+
+      console.log(`🔄 Cập nhật từ server: ${status} tại ${time}s`);
+
+      // Thực hiện seek và thay đổi trạng thái
+      await new Promise<void>((resolve) => {
+        this.player.seekTo(time, true);
+        setTimeout(resolve, 100); // Đợi seek hoàn tất
+      });
+
+      if (status === YT.PlayerState.PLAYING) {
+        this.player.playVideo();
+      } else {
+        this.player.pauseVideo();
       }
 
-      console.log(`📤 Gửi trạng thái lên server: ${event.data}`);
-       this.roomHub.sendPlayerStatus(roomId,event.data, this.player.getCurrentTime());
+      // Cập nhật thông tin đồng bộ
+      this.lastSyncedStatus = status;
+      this.lastSyncedTime = time;
+    } catch (error) {
+      console.error('❌ Lỗi cập nhật player:', error);
+    } finally {
+      setTimeout(() => {
+        this.isExternalUpdate = false;
+      }, 1000); // Đảm bảo qua mọi state change phát sinh
     }
-
-    this.lastStatus = event.data;
   }
-
-  private updatePlayerFromSignalR(roomId: string, status: number, time: number) {
-    if (!this.player || typeof this.player.getPlayerState !== 'function') {
-      console.warn('⏳ Player chưa sẵn sàng, thử lại sau...');
-      setTimeout(() => this.updatePlayerFromSignalR(roomId, status, time), 500);
-      return;
-    }
-
-    this.isUpdating = true; // 🚀 Đánh dấu đang cập nhật từ SignalR
-
-    console.log(
-      `▶️ Cập nhật Player từ SignalR: ${
-        status === YT.PlayerState.PLAYING ? 'Play' : 'Pause'
-      } tại ${time}s`
-    );
-
-    this.player.seekTo(time, true);
-
-    if (status === YT.PlayerState.PLAYING) {
-      this.player.mute(); // Tắt âm thanh giúp tránh bị chặn autoplay
-      this.player.playVideo();
-      setTimeout(() => this.player.unMute(), 500); // Bật lại âm sau 500ms
-    }
-
-
-    // ✅ Reset lại cờ sau khi player thực sự thay đổi trạng thái
-    setTimeout(() => {
-      this.isUpdating = false;
-      console.log(
-        '✅ Hoàn tất cập nhật từ SignalR, có thể gửi trạng thái mới.'
-      );
-    }, 1000);
-  }
-
-
   cueVideoById(videoId: string) {
     this.player?.cueVideoById(videoId);
   }
