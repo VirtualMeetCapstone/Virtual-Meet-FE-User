@@ -52,24 +52,24 @@ export class RoomComponentComponent implements OnInit {
         'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
       isMuted: false,
     },
-    {
-      name: 'Mạnh Tường',
-      avatar:
-        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
-      isMuted: true,
-    },
-    {
-      name: 'Trần Ngọc Chí',
-      avatar:
-        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
-      isMuted: false,
-    },
-    {
-      name: 'Đức',
-      avatar:
-        'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
-      isMuted: true,
-    },
+    // {
+    //   name: 'Mạnh Tường',
+    //   avatar:
+    //     'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+    //   isMuted: true,
+    // },
+    // {
+    //   name: 'Trần Ngọc Chí',
+    //   avatar:
+    //     'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+    //   isMuted: false,
+    // },
+    // {
+    //   name: 'Đức',
+    //   avatar:
+    //     'https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg',
+    //   isMuted: true,
+    // },
     {
       name: 'Đức',
       avatar:
