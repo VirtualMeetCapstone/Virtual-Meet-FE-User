@@ -183,8 +183,7 @@ private updateVideo(videoId: string, time: number = 0, isPaused: boolean = true)
 
   changePlayerStatus(status: number, time: number) {
     if (!this.player || typeof this.player.getPlayerState !== 'function') {
-      console.warn('⏳ Player chưa sẵn sàng, thử lại sau...');
-      setTimeout(() => this.changePlayerStatus(status, time), 500);
+    this.changePlayerStatus(status, time);
       return;
     }
 
