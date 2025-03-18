@@ -1,86 +1,21 @@
 <div class="video-call-container" [ngClass]="{'modal-open': isChatOpen || isParticipantsOpen}">
-  <div class="video-grid" [ngClass]="{'collapsed': isYouTubeActive}">
-    <div class="video-box red">
-      <div class="user-icon">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
+  <div class="video-grid" [ngClass]="{'collapsed': isYouTubeActive}" [ngClass]="getVideoGridClass()">
+    <div *ngFor="let user of getDisplayedParticipants()" class="video-box">
+      <div class="profile">
+        <img [src]="user.avatar" alt="User Avatar" />
       </div>
-      <p class="user-name">Gấu</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+      <p class="user-name">{{ user.name }}</p>
     </div>
 
-    <div class="video-box blue">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Mạnh Tường</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-
-    <div class="video-box gray">
-      <div class="user-icon">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Icon" />
-      </div>
-      <p class="user-name">Trần Ngọc Chí</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>s
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
-    </div>
-    <div class="video-box brown">
-      <div class="profile">
-        <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" alt="User Avatar" />
-      </div>
-      <p class="user-name">Đức</p>
-      <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
+    <!-- Nếu có người dư, hiển thị ô tổng số còn lại -->
+    <div *ngIf="getRemainingCount() > 0" class="video-box more-users">
+      <span>+{{ getRemainingCount() }} người</span>
     </div>
   </div>
-   <!-- Phần mô phỏng YouTube -->
+
+
+
+  <!-- Phần mô phỏng YouTube -->
    <div [hidden]="!isYouTubeActive" class="youtube-container">
    <app-youtube-player ngSkipHydration [roomId]="roomId"></app-youtube-player>
   </div>
@@ -106,7 +41,7 @@
       <button class="control-btn"><i class="fa-solid fa-camera"></i></button>
       <button class="control-btn end-call"><i class="fa-solid fa-phone"></i></button>
       <button class="control-btn" (click)="toggleActivityModal()">
-        <i class="fa-solid fa-tv"></i> Hoạt động
+        <i class="fa-solid fa-bars"></i>
       </button>
     </div>
     <div *ngIf="isChatOpen == false && isParticipantsOpen == false" class="chat-sidebar">
