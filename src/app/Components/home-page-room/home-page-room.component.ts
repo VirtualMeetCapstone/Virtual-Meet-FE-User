@@ -51,8 +51,10 @@ export class HomePageRoomComponent implements OnInit {
     });
   }
   async joinRoom(roomId: string) {
-      this.router.navigate(['/room', roomId]);
-  }
+    const timestamp = Date.now();
+    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+}
+
     openModalDeleteRoom(room: any) {
     console.log('open modal');
     this.roomToDelete = room;
