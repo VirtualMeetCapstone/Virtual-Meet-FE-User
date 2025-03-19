@@ -41,7 +41,6 @@ export class HomePagePostComponent implements OnInit {
         this.user = this.authService.getBackendUser(this.id);
       }
     });
-    console.log("ra coi",this.user.name);
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
 
