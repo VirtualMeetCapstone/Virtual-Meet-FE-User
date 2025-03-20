@@ -1,0 +1,13 @@
+<div class="all-notifications">
+  <h1>Notifications</h1>
+  <div class="action">
+    <div class="all-button">
+      <button (click)="viewAllNotifications()" [ngClass]="{'active': isAll}">All</button>
+
+    </div>
+    <div class="unread">
+      <button  (click)="viewUnreadNotifications()" [ngClass]="{'active': isUnread}">Unread</button>
+
+    </div>
+  </div>
+</div>
