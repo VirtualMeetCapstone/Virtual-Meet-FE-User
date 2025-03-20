@@ -8,11 +8,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Peer, RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { RtcHubService } from '../../Hub/rtc-hub/rtc-hub.service';
 import { PlayerService } from '../../services/youtubeplayer-service/player.service';
 import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-player.component';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Router } from '@angular/router';
+import { Peer } from '../../models/rtc/pere';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -33,6 +35,7 @@ export class RoomComponentComponent implements OnInit {
     private router: Router,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
+    private rtcHub: RtcHubService,
     private injector: Injector,
     private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: object
@@ -88,7 +91,7 @@ this
         this.participantCount = count;
       });
 
-      this.roomHubService.peers$.subscribe(peers => {
+      this.rtcHub.peers$.subscribe(peers => {
         this.peers = peers;
       });
 
