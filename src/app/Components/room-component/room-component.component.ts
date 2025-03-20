@@ -191,21 +191,33 @@ this
 
   toggleAudio(): void {
     this.roomHubService.toggleAudio();
-    this.isMicOn = !this.isMicOn;
+    this.isMicOn = this.roomHubService.audioEnabled;
   }
 
   toggleVideo(): void {
     this.roomHubService.toggleVideo();
-    this.isCameraOn = !this.isCameraOn;
+    this.isCameraOn = this.roomHubService.videoEnabled;
   }
+
 
   private displayLocalStream(): void {
     const stream = this.roomHubService.getLocalStream();
     if (stream && this.localVideo) {
       this.localVideo.nativeElement.srcObject = stream;
+
+      // Tắt mic và camera thông qua service để đồng bộ trạng thái
+      if (this.roomHubService.audioEnabled) {
+        this.roomHubService.toggleAudio();
+      }
+      if (this.roomHubService.videoEnabled) {
+        this.roomHubService.toggleVideo();
+      }
+
+      // Cập nhật trạng thái hiển thị
+      this.isMicOn = this.roomHubService.audioEnabled;
+      this.isCameraOn = this.roomHubService.videoEnabled;
     }
   }
-
   get audioEnabled(): boolean {
     return this.roomHubService.audioEnabled;
   }
