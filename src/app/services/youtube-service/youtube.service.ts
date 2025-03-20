@@ -12,17 +12,22 @@ export class YoutubeService {
   constructor(private http: HttpClient) {}
   private isApiLoaded = false;
 
-  getTrendingVideos(): Observable<any> {
-    return this.http.get(this.API_URL, {
-      params: {
-        part: 'snippet',
-        chart: 'mostPopular',
-        regionCode: 'VN', // Thay đổi nếu muốn lấy danh sách theo quốc gia khác
-        maxResults: '10',
-        key: this.API_KEY,
-      },
-    });
+  getTrendingVideos(pageToken: string = ''): Observable<any> {
+    let params: any = {
+      part: 'snippet',
+      chart: 'mostPopular',
+      regionCode: 'VN',
+      maxResults: '10',
+      key: this.API_KEY,
+    };
+
+    if (pageToken) {
+      params.pageToken = pageToken;
+    }
+
+    return this.http.get(this.API_URL, { params });
   }
+
 
   searchVideos(query: string): Observable<any> {
     return this.http.get(this.SEARCH_URL, {

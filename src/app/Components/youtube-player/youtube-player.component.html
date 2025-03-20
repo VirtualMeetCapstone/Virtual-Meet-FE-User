@@ -1,10 +1,12 @@
- <!-- Ô tìm kiếm video -->
+<div class="youtube">
+<!-- Ô tìm kiếm video -->
     <div class="search-container">
       <input
         type="text"
         [(ngModel)]="searchQuery"
         placeholder="Tìm kiếm video"
         class="search-box"
+        (keyup.enter)="searchVideos()"
       />
       <button (click)="searchVideos()" class="search-button">🔍</button>
     </div>
@@ -12,7 +14,7 @@
     <div id="player"></div>
     <!-- Danh sách video tìm kiếm -->
     <h3>Danh sách video</h3>
-    <div class="video-list">
+    <div #videoContainer class="video-list">
       <div
         class="video-item"
         *ngFor="let video of videos"
@@ -30,4 +32,5 @@
     <canvas id="whiteboardCanvas"></canvas>
     <!-- Các tính năng Whiteboard sẽ được thêm vào đây -->
   </div>
+</div>
 </div>
