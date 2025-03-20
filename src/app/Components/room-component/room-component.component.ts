@@ -184,12 +184,14 @@ this
   async leaveRoom() {
     try {
       await this.roomHubService.leaveRoom();
-      // Navigate home after successfully leaving
-      this.router.navigate(['/home']);
+      this.router.navigate(['/home']).then(() => {
+        window.location.reload(); 
+      });
     } catch (err) {
       console.error('Error leaving room:', err);
     }
   }
+
 
 
   toggleAudio(): void {
