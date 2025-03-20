@@ -197,3 +197,11 @@
 .video-popup {
   height: 90vh; /* Cho nhiều không gian hơn */
 }
+
+
+.video-list {
+  left: 0;
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+}

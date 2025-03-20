@@ -259,13 +259,16 @@
 }
 
 .youtube-container {
-  width: 80%;
-  height: 80%;
-  background: rgba(0, 0, 0, 0.8);
+  width: 80%; /* Hoặc một kích thước cụ thể như 600px */
+  max-width: 80%; /* Giới hạn chiều rộng */
+  height: auto; /* Để chiều cao tự động theo nội dung */
+  background: none; /* Bỏ nền tối để không giống overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 1; /* Giảm z-index để không đè lên các phần tử khác */
+  position: relative; /* Đảm bảo nó nằm trong luồng bình thường */
+  margin: 20px auto; /* Thêm khoảng cách để không sát cạnh */
 }
 
 .youtube-container iframe {
@@ -355,4 +358,3 @@
   font-weight: bold;
   border-radius: 10px;
 }
-
