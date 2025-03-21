@@ -13,11 +13,15 @@ export class RtcHubService {
   // ICE server configuration
   private config = {
     iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun3.l.google.com:19302' },
-      { urls: 'stun:stun4.l.google.com:19302' }
+      { urls: 'stun:stun.cloudflare.com:3478' }, // Cloudflare STUN
+      { urls: 'stun:stun.cloudflare.com:53' }, // Cloudflare STUN alternative
+      { urls: 'turn:turn.cloudflare.com:3478?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP)
+      { urls: 'turn:turn.cloudflare.com:53?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP alternative)
+      { urls: 'turn:turn.cloudflare.com:3478?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP)
+      { urls: 'turn:turn.cloudflare.com:80?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP alternative)
+      { urls: 'turn:turn.cloudflare.com:5349?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (secure TCP)
+      { urls: 'turns:turn.cloudflare.com:443?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' } // Cloudflare TURN (secure TCP)
+
     ]
   };
 
@@ -38,8 +42,21 @@ export class RtcHubService {
       peerList.forEach((peer) => {
         console.log('Connecting to existing peer:', peer.peerId);
         this.createPeerConnection(peer.peerId, peer.userName, true);
+
+          // Gửi yêu cầu subscribe stream
+  hubConnection.invoke('RequestStream', peer.peerId).catch(err =>
+    console.error('❌ Error requesting stream:', err)
+  );
+
       });
+
     });
+  // Nhận yêu cầu gửi stream từ peer khác
+  hubConnection.on('ReceiveStreamRequest', (requesterPeerId: string) => {
+    console.log(`📩 Nhận yêu cầu stream từ: ${requesterPeerId}`);
+    this.sendStreamToPeer(requesterPeerId);
+  });
+
 
     hubConnection.on('NewPeer', (peerId: string, peerName: string, participantCount: number) => {
       console.log('New peer joined:', peerId, peerName);
@@ -87,6 +104,19 @@ export class RtcHubService {
       }
     });
   }
+
+// Gửi lại stream đến peer đã yêu cầu
+private sendStreamToPeer(peerId: string): void {
+  const peer = this.peers[peerId];
+  if (!peer) return;
+
+  const localStream = this.roomHubService.getLocalStream();
+  if (localStream) {
+    localStream.getTracks().forEach(track => {
+      peer.connection.addTrack(track, localStream);
+    });
+  }
+}
 
   // Create a new peer connection
   private createPeerConnection(peerId: string, peerName: string, initiator: boolean): Peer {

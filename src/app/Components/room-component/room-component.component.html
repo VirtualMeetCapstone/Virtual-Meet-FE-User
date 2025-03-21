@@ -6,7 +6,19 @@
       </div>
       <video [srcObject]="peer.stream" autoplay playsinline></video>
       <p class="user-name">{{ peer.userName }}</p>
+      <button class="pin-btn" (click)="pinUser(peer)">
+        <i [ngClass]="pinnedUser?.userName === peer.userName ? 'fa-solid fa-thumbtack' : 'fa-solid fa-thumbtack'"></i>
+      </button>
     </div>
+        <!-- Hiển thị toàn màn hình khi ghim -->
+        <div class="fullscreen-video" *ngIf="isPinned">
+          <video [srcObject]="pinnedUser?.stream" autoplay playsinline></video>
+          <p class="user-name">{{ pinnedUser?.userName }}</p>
+          <button class="close-fullscreen" (click)="pinUser(pinnedUser!)">
+            <i class="fa-solid fa-compress"></i>
+          </button>
+        </div>
+
     <div class="video-box red">
       <p class="user-name">You</p>
       <video #localVideo autoplay playsinline muted></video>

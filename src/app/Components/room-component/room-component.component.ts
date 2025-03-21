@@ -55,6 +55,11 @@ export class RoomComponentComponent implements OnInit {
   isScreenSharing = false;
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
+
+  pinnedUser: Peer | null = null;
+  isPinned: boolean = false;
+
+
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');
@@ -193,6 +198,7 @@ this
   }
 
 
+
   toggleAudio(): void {
     this.roomHubService.toggleAudio();
     this.isMicOn = this.roomHubService.audioEnabled;
@@ -238,5 +244,21 @@ this
     }
     this.isScreenSharing = !this.isScreenSharing;
   }
+
+  pinUser(peer: Peer | null): void {
+    if (!peer) return; // Nếu peer là null, thoát khỏi hàm
+
+    if (this.pinnedUser?.userName === peer.userName) {
+      // Nếu đã ghim user này thì bỏ ghim
+      this.pinnedUser = null;
+      this.isPinned = false;
+    } else {
+      // Ghim user mới
+      this.pinnedUser = peer;
+      this.isPinned = true;
+    }
+  }
+
+
 
 }
