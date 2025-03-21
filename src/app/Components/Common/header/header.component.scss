@@ -175,6 +175,8 @@
 /* Dropdown thông báo */
 .notification-wrapper {
   display: block;
+  overflow-y: auto;
+  max-height: 500px;
   position: absolute;
   top: 40px; /* Canh dưới chuông */
   right: 0;

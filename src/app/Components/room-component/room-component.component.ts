@@ -52,7 +52,7 @@ export class RoomComponentComponent implements OnInit {
   localStream!: MediaStream;
   participantCount = 0;
   peers: Peer[] = [];
-
+  isScreenSharing = false;
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
   async ngOnInit() {
@@ -185,7 +185,7 @@ this
     try {
       await this.roomHubService.leaveRoom();
       this.router.navigate(['/home']).then(() => {
-        window.location.reload(); 
+        window.location.reload();
       });
     } catch (err) {
       console.error('Error leaving room:', err);
@@ -230,4 +230,14 @@ this
   get videoEnabled(): boolean {
     return this.roomHubService.videoEnabled;
   }
+
+  toggleScreenShare() {
+    if (!this.isScreenSharing) {
+      this.rtcHub.startScreenShare();
+    } else {
+      this.rtcHub.stopScreenShare();
+    }
+    this.isScreenSharing = !this.isScreenSharing;
+  }
+
 }
