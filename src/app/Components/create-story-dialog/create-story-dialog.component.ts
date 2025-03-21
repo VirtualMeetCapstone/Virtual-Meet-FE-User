@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import {catchError, tap, throwError} from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
+import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 
 export interface CreateStoryData {
   id: string;
@@ -30,7 +31,8 @@ export class CreateStoryDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<CreateStoryDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CreateStoryData,
-    private http: HttpClient
+    private http: HttpClient,
+    private notificationService: NotificationServiceService
   ) {
     this.id = data.id;
     this.newUsername = data.username;
@@ -84,6 +86,9 @@ export class CreateStoryDialogComponent {
     this.http
       .post(`${AppConstants.API_BASE_URL_HTTPS}/stories`, formData)
       .pipe(
+        tap(() => {
+          this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+        }),
         catchError((error) => {
           console.error('Error creating story:', error);
           this.isLoading = false;

@@ -1,8 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AppConstants } from '../../constant/AppConstants';
-import { Observable } from 'rxjs';
-import { AuthService } from '../auth-service/auth.service';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AppConstants} from '../../constant/AppConstants';
+import {Observable, tap} from 'rxjs';
+import {AuthService} from '../auth-service/auth.service';
+import {NotificationServiceService} from "../notification-service/notification-service.service";
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,8 +16,12 @@ export class PostserviceService {
       Accept: 'application/json',
     }),
   };
-  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  constructor(private http: HttpClient, private authService: AuthService, private notificationService: NotificationServiceService) {
+  }
+
   userId = this.authService.getUser()?.id as string;
+
   getPosts(top: number, skip: number): any {
     const timestamp = Date.now();
     return this.http.get<any>(
@@ -26,11 +32,13 @@ export class PostserviceService {
   getPostById(id: string): any {
     return this.http.get<any>(this.url + '/' + id);
   }
+
   getComment(idPost: string): any {
     return this.http.get<any>(
       this.url + '/' + idPost + '/comments?OrderType=0&OrderBy=createTime'
     );
   }
+
   createPost(
     content: string,
     privacy: number,
@@ -54,8 +62,13 @@ export class PostserviceService {
       });
     }
 
-    return this.http.post<any>(url, formData);
+    return this.http.post<any>(url, formData).pipe(
+      tap(() => {
+        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
+    );;
   }
+
   commentPost(idUser: any, idPost: string, content: string) {
     const body = {
       authorId: idUser,
@@ -63,9 +76,15 @@ export class PostserviceService {
     };
 
     return this.http.post<any>(this.url + '/' + idPost + '/comments', body, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      headers: {'Content-Type': 'application/json'},
+    }).pipe(
+      tap(() => {
+        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
+    );
+    ;
   }
+
   replyComment(idUser: any, idPost: string, parentId: string, content: string) {
     const body = {
       authorId: idUser,
@@ -74,7 +93,11 @@ export class PostserviceService {
     };
 
     return this.http.post<any>(this.url + '/' + idPost + '/comments', body, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      headers: {'Content-Type': 'application/json'},
+    }).pipe(
+      tap(() => {
+        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
+    );
   }
 }

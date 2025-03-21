@@ -8,12 +8,13 @@ import { catchError, tap, throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 import { Viewer } from '../../models/viewer';
 import { Reaction } from '../../models/reaction';
+import {NotificationServiceService} from "../notification-service/notification-service.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoryService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationServiceService) {}
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -41,6 +42,10 @@ export class StoryService {
       reactionUrl,
       { userId: userId },
       this.httpOptions
+    ).pipe(
+      tap(() => {
+        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
     );
   }
 

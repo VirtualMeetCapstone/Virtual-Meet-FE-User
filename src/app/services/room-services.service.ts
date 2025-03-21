@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConstants } from '../constant/AppConstants';
+import {tap} from "rxjs";
+import {NotificationServiceService} from "./notification-service/notification-service.service";
 @Injectable({
   providedIn: 'root',
 })
 export class RoomServicesService {
   url = 'https://dev-vmeet.site/rooms';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationServiceService) {}
 
   getRooms(top: number, skip: number): any {
     const timestamp = Date.now();
@@ -38,7 +40,11 @@ export class RoomServicesService {
 
     return this.http.post<any>(this.url, body, {
       headers: { 'Content-Type': 'application/json' },
-    });
+    }).pipe(
+      tap(() => {
+        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
+    );
   }
   uploadMedia(file: File) {
     const formData = new FormData();
