@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 import {AuthService} from "../../services/auth-service/auth.service";
+import {Notification} from "../../models/notification";
 
 @Component({
   selector: 'app-all-notifications',
@@ -8,22 +9,53 @@ import {AuthService} from "../../services/auth-service/auth.service";
   styleUrl: './all-notifications.component.scss'
 })
 export class AllNotificationsComponent implements OnInit {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   notifications: Notification[] = [];
   isAll = true;
   isUnread = false;
+  totalNotification: number | null = null;
+  protected loading = false;
+  private pageSize = 15;
+  private skip: number = 0;
+  userId: string = "";
 
-  constructor(private notifyService: NotificationServiceService, private authService: AuthService) {
+  constructor(private notifyService: NotificationServiceService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
-  userId: string = this.authService.getUser().userId;
+
+
   ngOnInit(): void {
+    this.userId = this.authService.getUserFromToken().id;
 
+    this.loadMoreNotification();
   }
+
   viewAllNotifications(): void {
-    // this.notifyService.getNotificationByUserId(this.userId).subscribe(response => {
-    //   this.notifications = response.data;
-    //   this.isAll = true;
-    //   this.isUnread = false;
-    // });
+    this.isAll = true;
+    this.isUnread = false;
+    this.loadMoreNotification();
+  }
+
+  loadMoreNotification() {
+    console.log(this.userId)
+    if (
+      this.loading ||
+      (this.totalNotification !== null && this.notifications.length >= this.totalNotification)
+    ) {
+      return;
+    }
+
+    this.loading = true;
+    this.notifyService
+      .getNotificationByUserId(this.userId, this.pageSize, this.skip)
+      .subscribe((data: any) => {
+        this.notifications = [...this.notifications, ...data.data];
+        this.totalNotification = data.totalCount;
+        this.skip += this.pageSize;
+        this.loading = false;
+        this.cdr.detectChanges();
+
+      });
+    console.log(this.notifications)
   }
 
   viewUnreadNotifications(): void {

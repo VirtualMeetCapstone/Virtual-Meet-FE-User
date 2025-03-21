@@ -1,4 +1,4 @@
-<div class="all-notifications">
+<div class="all-notifications"#scrollContainer>
   <h1>Notifications</h1>
   <div class="action">
     <div class="all-button">
@@ -7,6 +7,38 @@
     </div>
     <div class="unread">
       <button  (click)="viewUnreadNotifications()" [ngClass]="{'active': isUnread}">Unread</button>
+
+    </div>
+  </div>
+  <div class="notification">
+    <div class="notification-wrapper"  >
+      <div class="notification-item" *ngFor="let notification of notifications">
+        <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
+        <div class="notification-content">
+          <p style="color: white">
+            <strong style="color: white">{{ notification.actor.name }}</strong> {{notification.content}}.
+          </p>
+          <p class="notification-time">
+          </p>
+          <p class="notification-action">Đánh dấu đã đọc</p>
+        </div>
+      </div>
+      <div
+        infiniteScroll
+        [infiniteScrollContainer]="scrollContainer"
+        (scrolled)="loadMoreNotification()"
+        [infiniteScrollThrottle]="300"
+      >
+        <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black" *ngIf="loading">
+          Load More...
+        </h3>
+        <h3
+          style="font-weight: lighter; font-size: 20px; text-align: center; color: black"
+          *ngIf="!loading"
+        >
+          No more data to load
+        </h3>
+      </div>
 
     </div>
   </div>
