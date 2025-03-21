@@ -42,8 +42,21 @@ export class RtcHubService {
       peerList.forEach((peer) => {
         console.log('Connecting to existing peer:', peer.peerId);
         this.createPeerConnection(peer.peerId, peer.userName, true);
+
+          // Gửi yêu cầu subscribe stream
+  hubConnection.invoke('RequestStream', peer.peerId).catch(err =>
+    console.error('❌ Error requesting stream:', err)
+  );
+
       });
+
     });
+  // Nhận yêu cầu gửi stream từ peer khác
+  hubConnection.on('ReceiveStreamRequest', (requesterPeerId: string) => {
+    console.log(`📩 Nhận yêu cầu stream từ: ${requesterPeerId}`);
+    this.sendStreamToPeer(requesterPeerId);
+  });
+
 
     hubConnection.on('NewPeer', (peerId: string, peerName: string, participantCount: number) => {
       console.log('New peer joined:', peerId, peerName);
@@ -91,6 +104,19 @@ export class RtcHubService {
       }
     });
   }
+
+// Gửi lại stream đến peer đã yêu cầu
+private sendStreamToPeer(peerId: string): void {
+  const peer = this.peers[peerId];
+  if (!peer) return;
+
+  const localStream = this.roomHubService.getLocalStream();
+  if (localStream) {
+    localStream.getTracks().forEach(track => {
+      peer.connection.addTrack(track, localStream);
+    });
+  }
+}
 
   // Create a new peer connection
   private createPeerConnection(peerId: string, peerName: string, initiator: boolean): Peer {
