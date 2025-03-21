@@ -7,12 +7,12 @@ import {
   AfterViewInit,
   ViewChild, ElementRef
 } from '@angular/core';
-import { AuthService } from '../../../services/auth-service/auth.service';
-import { Router } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {AuthService} from '../../../services/auth-service/auth.service';
+import {Router} from '@angular/router';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Subject, window} from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ExternalServiceService } from '../../../services/external-service/external-service.service';
+import {takeUntil} from 'rxjs/operators';
+import {ExternalServiceService} from '../../../services/external-service/external-service.service';
 import {NotificationServiceService} from "../../../services/notification-service/notification-service.service";
 import {Notification} from "../../../models/notification";
 
@@ -22,7 +22,7 @@ import {Notification} from "../../../models/notification";
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit, OnDestroy , AfterViewInit {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   isShowDropdown = false;
@@ -48,9 +48,10 @@ export class HeaderComponent implements OnInit, OnDestroy , AfterViewInit {
     private externalService: ExternalServiceService,
     private cdr: ChangeDetectorRef,
     private notifyService: NotificationServiceService
-  ) {}
+  ) {
+  }
 
-  notifications : Notification[] = [];
+  notifications: Notification[] = [];
 
   ngOnInit() {
     this.isLoadingUser = true;
@@ -85,8 +86,23 @@ export class HeaderComponent implements OnInit, OnDestroy , AfterViewInit {
       }
     }
     this.userId = this.authService.getUser()?.id;
-this.loadMoreNotification();
+    this.loadMoreNotification();
+    this.notifyService.onNotificationUpdate()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAllNotification();
+      });
+
   }
+
+  getAllNotification() {
+    this.notifyService.getNotificationByUserId(this.userId,1000, 0).subscribe((data: any) => {
+      this.totalNotification = data.totalCount;
+      this.notifications = data.data; // Cập nhật danh sách nếu cần
+      this.cdr.detectChanges();
+    });
+  }
+
   loadMoreNotification() {
     console.log("scroll")
     if (
@@ -98,13 +114,13 @@ this.loadMoreNotification();
 
     this.loading = true;
     this.notifyService
-      .getNotificationByUserId(this.userId,this.pageSize, this.skip)
+      .getNotificationByUserId(this.userId, this.pageSize, this.skip)
       .subscribe((data: any) => {
         this.notifications = [...this.notifications, ...data.data];
         this.totalNotification = data.totalCount;
         this.skip += this.pageSize;
         this.loading = false;
-          this.cdr.detectChanges();
+        this.cdr.detectChanges();
 
       });
   }
@@ -154,9 +170,9 @@ this.loadMoreNotification();
 
   logout() {
     this.authService.logout();
-  this.user = null;
-  this.loggedIn = false;
-  this.isShowUserMenu = false;
+    this.user = null;
+    this.loggedIn = false;
+    this.isShowUserMenu = false;
 
     (window as any).location.reload();
 
