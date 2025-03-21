@@ -69,9 +69,7 @@ export class RoomComponentComponent implements OnInit {
         console.log('📌 Room ID từ router:', this.roomId);
       }
     });
-
-this
-
+    
     try {
       await this.roomHubService.startConnection();
       this.connectionStatus = 'Connected';

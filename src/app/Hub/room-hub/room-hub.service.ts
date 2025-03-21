@@ -147,6 +147,9 @@ export class RoomHubService {
       this.localStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
+
+    this._audioEnabled = false;
+    this._videoEnabled = false;
   }
 
   // Media controls
@@ -160,8 +163,24 @@ export class RoomHubService {
 
   public toggleVideo(): void {
     if (this.localStream) {
-      this._videoEnabled = !this._videoEnabled;
-      this.localStream.getVideoTracks().forEach((track) => (track.enabled = this._videoEnabled));
+      if (this._videoEnabled) {
+        // 🔴 Đang bật -> Dừng TẤT CẢ video tracks (tắt đèn camera)
+        this.localStream.getVideoTracks().forEach((track) => track.stop());
+        this._videoEnabled = false;
+      } else {
+        // 🟢 Đang tắt -> Bật lại camera nhưng KHÔNG động đến audio
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then((videoStream) => {
+            // Lấy track video mới
+            const videoTrack = videoStream.getVideoTracks()[0];
+
+            // Thêm track video mới vào `localStream` mà KHÔNG động đến audio
+            this.localStream?.addTrack(videoTrack);
+            console.log('📹 Video re-enabled');
+          })
+          .catch((err) => console.error('❌ Không thể bật camera:', err));
+        this._videoEnabled = true;
+      }
       console.log(`📹 Video ${this._videoEnabled ? 'enabled' : 'disabled'}`);
     }
   }
