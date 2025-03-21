@@ -8,6 +8,7 @@
   background-color: #272727;
   margin:  auto;
   border-radius: 10px;
+  overflow-y: auto;
 }
 .action
 {
@@ -43,6 +44,7 @@ strong {
   align-items: flex-start;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .notification-avatar {
@@ -54,5 +56,6 @@ strong {
 
 .notification-content p {
   margin: 0;
-  color: #333;
+  color: dodgerblue;
 }
+

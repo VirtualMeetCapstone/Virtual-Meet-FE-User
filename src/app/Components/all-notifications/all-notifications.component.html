@@ -1,4 +1,4 @@
-<div class="all-notifications">
+<div class="all-notifications" #scrollContainer>
   <h1>Notifications</h1>
   <div class="action">
     <div class="all-button">
@@ -10,14 +10,14 @@
 
     </div>
   </div>
-  <div class="notification">
-    <div class="notification-wrapper" #scrollContainer >
-      <div class="notification-item" *ngFor="let notification of notifications">
+  <div class="notification" >
+    <div class="notification-wrapper" >
+
+    <div class="notification-item" *ngFor="let notification of notifications">
         <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
         <div class="notification-content">
-          <p>
-            <span class="notification-thread">thảo luận</span>
-            <strong>{{ notification.actor.name }}</strong> {{notification.content}}.
+          <p style="color: white">
+            <strong style="color: white">{{ notification.actor.name }}</strong> {{notification.content}}.
           </p>
           <p class="notification-time">
           </p>
@@ -40,11 +40,7 @@
           No more data to load
         </h3>
       </div>
-      <div class="notification-footer">
-        <a href="/all-notification">Xem tất cả</a>
-        <a href="#">Đánh dấu đã đọc</a>
-        <a href="#">Cài đặt</a>
-      </div>
+
     </div>
   </div>
 </div>

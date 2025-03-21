@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 import {AuthService} from "../../services/auth-service/auth.service";
 import {Notification} from "../../models/notification";
@@ -9,29 +9,31 @@ import {Notification} from "../../models/notification";
   styleUrl: './all-notifications.component.scss'
 })
 export class AllNotificationsComponent implements OnInit {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
   notifications: Notification[] = [];
   isAll = true;
   isUnread = false;
-  private totalNotification: number = 0;
-  protected loading = true;
-  private pageSize = 10;
+  totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
+
+  protected loading = false;
+  private pageSize = 15;
   private skip: number = 0;
+  userId: string = "";
 
   constructor(private notifyService: NotificationServiceService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
-  userId: string = this.authService.getUser().userId;
 
   ngOnInit(): void {
+    this.userId = this.authService.getUserFromToken().id;
 
+    this.loadMoreNotification();
   }
 
   viewAllNotifications(): void {
-    // this.notifyService.getNotificationByUserId(this.userId).subscribe(response => {
-    //   this.notifications = response.data;
-    //   this.isAll = true;
-    //   this.isUnread = false;
-    // });
+    this.isAll = true;
+    this.isUnread = false;
     this.loadMoreNotification();
   }
 
@@ -53,7 +55,7 @@ export class AllNotificationsComponent implements OnInit {
         this.skip += this.pageSize;
         this.loading = false;
         this.cdr.detectChanges();
-
+        console.log(this.notifications)
       });
   }
 
