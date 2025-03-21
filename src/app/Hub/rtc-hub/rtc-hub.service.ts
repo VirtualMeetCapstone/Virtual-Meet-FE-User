@@ -9,18 +9,15 @@ import { Peer } from '../../models/rtc/pere';
 export class RtcHubService {
   private peers: { [key: string]: Peer } = {};
   private peersSubject = new BehaviorSubject<Peer[]>([]);
-
+  private screenStream!: MediaStream | null;
   // ICE server configuration
   private config = {
     iceServers: [
-      { urls: 'stun:stun.cloudflare.com:3478' }, // Cloudflare STUN
-      { urls: 'stun:stun.cloudflare.com:53' }, // Cloudflare STUN alternative
-      { urls: 'turn:turn.cloudflare.com:3478?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP)
-      { urls: 'turn:turn.cloudflare.com:53?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP alternative)
-      { urls: 'turn:turn.cloudflare.com:3478?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP)
-      { urls: 'turn:turn.cloudflare.com:80?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP alternative)
-      { urls: 'turn:turn.cloudflare.com:5349?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (secure TCP)
-      { urls: 'turns:turn.cloudflare.com:443?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' } // Cloudflare TURN (secure TCP)
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun3.l.google.com:19302' },
+      { urls: 'stun:stun4.l.google.com:19302' }
     ]
   };
 
@@ -162,5 +159,52 @@ export class RtcHubService {
     });
     this.updatePeersSubject();
     console.log('🧹 RtcHub resources cleaned up');
+  }
+
+
+  async startScreenShare() {
+    try {
+      this.screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 },
+          frameRate: { ideal: 15, max: 20 }
+        },
+        audio: true
+      });
+
+      // Gửi stream screen share tới các peer
+      Object.values(this.peers).forEach(peer => {
+        const sender = peer.connection.getSenders().find(s => s.track?.kind === "video");
+        if (sender) {
+          // const parameters = sender.getParameters();
+          // if (!parameters.encodings) parameters.encodings = [{}];
+          // parameters.encodings[0].maxBitrate = 500 * 1000; // Giới hạn 500kbps
+          // sender.setParameters(parameters); them gioi han de tang toc do
+          sender.replaceTrack(this.screenStream!.getVideoTracks()[0]);
+        }
+      });
+
+      console.log("📡 Đã bắt đầu chia sẻ màn hình!");
+    } catch (error) {
+      console.error("❌ Lỗi khi chia sẻ màn hình:", error);
+    }
+  }
+
+  stopScreenShare() {
+    if (this.screenStream) {
+      this.screenStream.getTracks().forEach(track => track.stop());
+      this.screenStream = null;
+      const localStream = this.roomHubService.getLocalStream();
+      // Chuyển lại camera thay vì màn hình
+      Object.values(this.peers).forEach(peer => {
+        const sender = peer.connection.getSenders().find(s => s.track?.kind === "video");
+        if (sender && localStream ) {
+          sender.replaceTrack(localStream.getVideoTracks()[0]);
+        }
+      });
+
+      console.log("🛑 Đã dừng chia sẻ màn hình!");
+    }
   }
 }
