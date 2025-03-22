@@ -12,10 +12,9 @@ export class RoomServicesService {
   constructor(private http: HttpClient, private notificationService: NotificationServiceService) {}
 
   getRooms(top: number, skip: number): any {
-    const timestamp = Date.now();
-    return this.http.get<any>(
-      `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true&t=${timestamp}`
-    );
+    const urlWithParams = `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true`;
+    const finalUrl = AppConstants.addTimeStampUrl(urlWithParams);
+    return this.http.get<any>(finalUrl);
   }
 
   deleteRoom(id: string): any {

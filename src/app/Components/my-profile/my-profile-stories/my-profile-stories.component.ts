@@ -18,7 +18,7 @@ export class MyProfileStoriesComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public myProfileStoryService: MyProfileStoryService,
-    public externalService: ExternalServiceService,
+    public externalService: ExternalServiceService
   ) {}
 
   ngOnInit(): void {

@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExternalServiceService {
-
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer) {}
 
   //use it when get error or json photo: UNSAFE
   getSafeUrl(url: any): SafeUrl {
     if (!url) return 'assets/images/default-avatar.png';
 
-    console.log(url);
+    // console.log(url);
 
     try {
-      if (typeof url === 'string' && (url.startsWith('data:image') || url.startsWith('http'))) {
+      if (
+        typeof url === 'string' &&
+        (url.startsWith('data:image') || url.startsWith('http'))
+      ) {
         return this.sanitizer.bypassSecurityTrustUrl(url);
       }
       const parsed = typeof url === 'string' ? JSON.parse(url) : url;
