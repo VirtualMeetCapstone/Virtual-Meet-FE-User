@@ -61,6 +61,7 @@ import { ModalGearButtonComponent } from './Components/my-profile/modal-gear-but
 import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
 import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 import { CreatePostModalComponent } from './Components/create-post-modal/create-post-modal.component';
+import { TimeAgoFeedPipe } from './Components/news-feed-my-profile/pipe/time-ago-feed.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -84,6 +85,7 @@ import { CreatePostModalComponent } from './Components/create-post-modal/create-
     MyProfileStoriesComponent,
     SafeUrlPipe,
     TimeAgoPipe,
+    TimeAgoFeedPipe,
     CreateStoryDialogComponent,
     YoutubePlayerComponent,
     RoomComponentComponent,
