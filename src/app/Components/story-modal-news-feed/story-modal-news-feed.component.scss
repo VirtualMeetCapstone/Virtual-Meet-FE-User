@@ -1,0 +1,264 @@
+/* Nền overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(41, 41, 41, 0.95);
+  z-index: 1000;
+}
+
+/* Khung modal chính */
+.story-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 90vh;
+  background-color: rgb(142, 142, 142);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  // padding: 20px;
+  text-align: center;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container chính: đặt relative để các phần overlay có thể định vị tuyệt đối bên trong */
+.story-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Phần media: ảnh hoặc video nằm dưới */
+.story-media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.story-media img.story-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Phần overlay chứa các thành phần cần hiển thị bên trên ảnh */
+.overlay-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  /* Giữ các phần tử trong overlay ở trạng thái tương tác */
+}
+
+/* Header chứa avatar, tiêu đề, thời gian và menu */
+.story-header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 3;
+}
+
+.story-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.story-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-time {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Avatar */
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Menu ba chấm */
+.menu-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.menu-container .button {
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.menu-container .button > svg {
+  border-radius: inherit;
+  padding: 0.5rem;
+  fill: #fff;
+  width: 45px;
+  height: 45px;
+}
+
+.story-media video.story-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-container .menu-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 4;
+  min-width: 140px;
+}
+
+.menu-container .menu-options button {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.menu-container .menu-options button:hover {
+  background-color: #cbc4c4;
+}
+
+/* Nút chuyển tin */
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.prev-button {
+  left: 10px;
+}
+
+.next-button {
+  right: 10px;
+}
+
+/* Khu vực hiển thị người xem và icon tim */
+.viewers-heart-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 3;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+
+.viewers-list {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.viewer-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.more-viewers {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: gray;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Icon tim (like) */
+.heart-icon {
+  font-size: 30px;
+  color: red;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* Ẩn nhạc nếu có: chỉ để phát âm thanh */
+.music-player iframe {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hiệu ứng cho SVG (nút menu) */
+.button > svg:active {
+  background-color: rgba(65, 65, 65, 0.5);
+}
+
+.button > svg:not(:active) {
+  animation: fadeOut 0.9s;
+}
+
+@keyframes fadeOut {
+  0% {
+    outline: 1px solid rgba(90, 90, 90, 0.5);
+  }
+  100% {
+    background-color: transparent;
+  }
+}

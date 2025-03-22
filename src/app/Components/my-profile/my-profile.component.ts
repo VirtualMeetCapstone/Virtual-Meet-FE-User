@@ -48,7 +48,9 @@ export class MyProfileComponent implements OnInit {
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
-      const response = await fetch(`${AppConstants.API_BASE_URL_HTTPS}/users/${id}`);
+      const response = await fetch(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`
+      );
       if (!response.ok) throw new Error('Failed to fetch profile');
       const data = await response.json();
 
@@ -115,7 +117,7 @@ export class MyProfileComponent implements OnInit {
   openGearButton() {
     const dialogRef = this.dialog.open(ModalGearButtonComponent, {
       width: '300px',
-      data: {},
+      data: { id: this.userId },
     });
   }
 }

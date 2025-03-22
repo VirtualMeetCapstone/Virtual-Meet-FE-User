@@ -1,13 +1,11 @@
-<!-- Sidebar -->
 <div *ngIf="isLoading" class="loading-container">
   <app-loading-component />
 </div>
 
 <div class="story-feed">
-  <div class="story-card" *ngFor="let story of stories">
+  <div class="story-card" *ngFor="let story of stories; let i = index">
     <div class="story-thumbnail">
       <ng-container *ngIf="isVideo(story); else imageTemplate">
-        <!-- Nếu media là video (type=2), hiển thị video -->
         <video
           [src]="story.media.url"
           controls
@@ -16,7 +14,6 @@
         ></video>
       </ng-container>
       <ng-template #imageTemplate>
-        <!-- Nếu media là ảnh (type=1), hiển thị ảnh -->
         <img
           [src]="story.media.url"
           alt="Story Image"
@@ -31,18 +28,18 @@
           isWatch: !isWatched,
           watched: isWatched
         }"
-        (click)="openStory()"
+        (click)="openStory(i)"
       >
         <div class="story-header">
-          <img class="user-avatar" [src]="imageUrl" alt="User Avatar" />
           <div class="story-details">
             <div class="story-title">{{ story.content }}</div>
             <div class="story-time">
-              <!-- {{ story?.createTime?.getTime() || 0 | timeAgo }} -->
+              <!-- Có thể hiển thị thời gian của tin nếu cần -->
             </div>
           </div>
           <div class="menu-container">
             <button class="button" (click)="toggleMenu($event, story.id)">
+              <!-- Icon menu -->
               <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"

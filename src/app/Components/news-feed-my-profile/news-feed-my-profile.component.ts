@@ -12,7 +12,7 @@ import { MyProfileStoryService } from '../../services/my-profile-story/my-profil
 import { ModalDeleteStoryComponent } from '../story-modal-my-profile/modal-delete-story/modal-delete-story.component';
 import { NewsFeedMyProfileService } from '../../services/news-feed-my-profile/news-feed-my-profile.service';
 import { decodeJwt, getImageUrlFromToken } from '../../../utils/jwt-helper';
-import { StoryModalMyProfileComponent } from '../story-modal-my-profile/story-modal-my-profile.component';
+import { StoryModalNewsFeedComponent } from '../story-modal-news-feed/story-modal-news-feed.component';
 
 export interface Story {
   id: string;
@@ -75,22 +75,23 @@ export class NewsFeedMyProfileComponent implements OnInit {
     this.loadStories();
   }
 
-  openStory(): void {
+  openStory(index: number): void {
     if (this.stories.length === 0) return;
 
     // Gọi markAsViewed nếu cần
     this.myProfileStoryService.markAsViewed(this.userId);
     this.isWatched = true;
 
-    // Nếu this.user không tồn tại hoặc không có avatar, dùng this.userAvatar làm fallback
+    // Sử dụng userAvatar từ user hoặc fallback
     const userAvatarForDialog =
       this.user && this.user.avatar ? this.user.avatar : this.userAvatar;
 
-    this.dialog.open(StoryModalMyProfileComponent, {
+    // Mở modal, truyền danh sách tin, index của tin đã click và userAvatar
+    this.dialog.open(StoryModalNewsFeedComponent, {
       width: '500px',
       data: {
         stories: this.stories,
-        currentIndex: 0,
+        currentIndex: index,
         userAvatar: userAvatarForDialog,
       },
       hasBackdrop: true,
@@ -101,7 +102,6 @@ export class NewsFeedMyProfileComponent implements OnInit {
     this.isLoading = true;
     this.myProfileStoryService.getMyProfileStories(this.userId).subscribe({
       next: (data: any[]) => {
-        // Map API response, sử dụng userAvatar được inject làm fallback
         this.stories = data.map((apiStory: any) => ({
           id: apiStory.id,
           media: {
@@ -110,13 +110,14 @@ export class NewsFeedMyProfileComponent implements OnInit {
             thumbnailUrl: apiStory.media.thumbnailUrl,
           },
           userAvatar: apiStory.user?.avatar || this.userAvatar,
-          content: apiStory.content,
-          createTime: new Date(apiStory.createTime),
+          content: apiStory.content, // Thêm thuộc tính content
+          createTime: new Date(
+            (+apiStory.createTime - 621355968000000000) / 10000
+          ),
           musicUrl: apiStory.musicUrl || '',
         }));
-        this.stories.forEach((story, index) => {
-          console.log(`Story ${index} userAvatar: ${story.userAvatar}`);
-        });
+
+        this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Error fetching stories:', error);

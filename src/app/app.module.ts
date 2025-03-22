@@ -63,6 +63,7 @@ import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/ne
 import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 import { CreatePostModalComponent } from './Components/create-post-modal/create-post-modal.component';
 import { AllNotificationsComponent } from './Components/all-notifications/all-notifications.component';
+import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/story-modal-news-feed.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { AllNotificationsComponent } from './Components/all-notifications/all-no
     StoryListComponent,
     StoryModalMyProfileComponent,
     StoryModalComponent,
+    StoryModalNewsFeedComponent,
     LoginModalComponent,
     ModalAddEditRoomComponent,
     HomePagePostComponent,
