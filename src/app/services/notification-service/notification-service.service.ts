@@ -16,8 +16,6 @@ export class NotificationServiceService {
   }
   getNotificationByUserId(id: string, pageSize: number, skip: number): Observable<Notification> {
     const timestamp = Date.now();
-    console.log(`Fetching notifications for user: ${id}, limit: ${pageSize}, skip: ${skip}`);
-
     return this.http.get<Notification>(`${this.url}users/${id}/notifications?Top=${pageSize}&Skip=${skip}&needtotalcount=true&t=${timestamp}`);
 
   }

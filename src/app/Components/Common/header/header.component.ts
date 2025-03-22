@@ -97,6 +97,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAllNotification() {
     this.notifyService.getNotificationByUserId(this.userId,1000, 0).subscribe((data: any) => {
+
       this.totalNotification = data.totalCount;
       this.notifications = data.data; // Cập nhật danh sách nếu cần
       this.cdr.detectChanges();
