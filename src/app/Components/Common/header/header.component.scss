@@ -181,14 +181,14 @@
   top: 40px; /* Canh dưới chuông */
   right: 0;
   width: 420px;
-  background-color: #fff;
+  background-color: #333;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   z-index: 3;
   padding: 10px;
 }
 #notification-title {
-  color: black;
+  color: white;
   font-weight: 800;
 }
 strong {
@@ -213,7 +213,7 @@ strong {
 
 .notification-content p {
   margin: 0;
-  color: #333;
+  color: white;
 }
 .onNotification {
   color: white;
