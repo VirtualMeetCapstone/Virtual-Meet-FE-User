@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RoomServicesService } from '../../../services/room-services.service';
+import { RoomServicesService } from '../../../services/room-service/room-services.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
 @Component({

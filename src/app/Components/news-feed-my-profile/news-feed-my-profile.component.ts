@@ -34,8 +34,8 @@ export interface Story {
 })
 export class NewsFeedMyProfileComponent implements OnInit {
   @Input() user: any;
-
   isLoading = false;
+
   stories: Story[] = [];
   activeMenuStoryId: string | null = null;
   userId!: string;
@@ -101,6 +101,7 @@ export class NewsFeedMyProfileComponent implements OnInit {
     this.isLoading = true;
     this.myProfileStoryService.getMyProfileStories(this.userId).subscribe({
       next: (data: any[]) => {
+        // Map API response, sử dụng userAvatar được inject làm fallback
         this.stories = data.map((apiStory: any) => ({
           id: apiStory.id,
           media: {
@@ -113,7 +114,9 @@ export class NewsFeedMyProfileComponent implements OnInit {
           createTime: new Date(apiStory.createTime),
           musicUrl: apiStory.musicUrl || '',
         }));
-        this.isLoading = false;
+        this.stories.forEach((story, index) => {
+          console.log(`Story ${index} userAvatar: ${story.userAvatar}`);
+        });
       },
       error: (error: any) => {
         console.error('Error fetching stories:', error);
@@ -122,6 +125,7 @@ export class NewsFeedMyProfileComponent implements OnInit {
     });
   }
 
+  // Fallback image handler if image fails to load
   handleImageError(event: Event, fallback: string): void {
     const img = event.target as HTMLImageElement;
     img.src = 'https://cdn-icons-png.freepik.com/512/7718/7718888.png';

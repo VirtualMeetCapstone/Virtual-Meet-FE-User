@@ -1,10 +1,20 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { AuthService } from '../../../services/auth-service/auth.service';
-import { Router } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ExternalServiceService } from '../../../services/external-service/external-service.service';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  AfterViewInit,
+  ViewChild, ElementRef
+} from '@angular/core';
+import {AuthService} from '../../../services/auth-service/auth.service';
+import {Router} from '@angular/router';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {Subject, window} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ExternalServiceService} from '../../../services/external-service/external-service.service';
+import {NotificationServiceService} from "../../../services/notification-service/notification-service.service";
+import {Notification} from "../../../models/notification";
 
 @Component({
   selector: 'app-header',
@@ -12,7 +22,9 @@ import { ExternalServiceService } from '../../../services/external-service/exter
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
   isShowDropdown = false;
   isShowLoginDialog = false;
   isShowNotification = false;
@@ -21,6 +33,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   user: any = null;
   loggedIn = false;
   idNew: string = '';
+  userId: string = '';
+  pageSize: number = 5;
+  skip: number = 0;
+  loading = false;
+  totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
 
   private destroy$ = new Subject<void>();
 
@@ -29,23 +46,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private sanitizer: DomSanitizer,
     private externalService: ExternalServiceService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private notifyService: NotificationServiceService
+  ) {
+  }
 
-  notifications = [
-    {
-      avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
-      username: "oshp1512",
-      time: "1:18 PM",
-      readTime: "Vừa xong",
-    },
-    {
-      avatarUrl: "https://storage.googleapis.com/a1aa/image/xQVrqiEYzem7l89QM4ASfg2LRAhHpV5u6JCFKcw0pJ8.jpg",
-      username: "oshp1512",
-      time: "1:18 PM",
-      readTime: "Vừa xong",
-    },
-  ];
+  notifications: Notification[] = [];
 
   ngOnInit() {
     this.isLoadingUser = true;
@@ -79,6 +85,44 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
       }
     }
+    this.userId = this.authService.getUser()?.id;
+    this.loadMoreNotification();
+    this.notifyService.onNotificationUpdate()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAllNotification();
+      });
+
+  }
+
+  getAllNotification() {
+    this.notifyService.getNotificationByUserId(this.userId,1000, 0).subscribe((data: any) => {
+      this.totalNotification = data.totalCount;
+      this.notifications = data.data; // Cập nhật danh sách nếu cần
+      this.cdr.detectChanges();
+    });
+  }
+
+  loadMoreNotification() {
+    console.log("scroll")
+    if (
+      this.loading ||
+      (this.totalNotification !== null && this.notifications.length >= this.totalNotification)
+    ) {
+      return;
+    }
+
+    this.loading = true;
+    this.notifyService
+      .getNotificationByUserId(this.userId, this.pageSize, this.skip)
+      .subscribe((data: any) => {
+        this.notifications = [...this.notifications, ...data.data];
+        this.totalNotification = data.totalCount;
+        this.skip += this.pageSize;
+        this.loading = false;
+        this.cdr.detectChanges();
+
+      });
   }
 
   getSafeUrl(url: any) {
@@ -112,7 +156,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onClickNotification() {
     this.isShowNotification = !this.isShowNotification;
+    setTimeout(() => {
+      if (this.isShowNotification) {
+        this.loadMoreNotification();
+      }
+    }, 100);
   }
+
 
   toggleUserMenu() {
     this.isShowUserMenu = !this.isShowUserMenu;
@@ -120,15 +170,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-  this.user = null;
-  this.loggedIn = false;
-  this.isShowUserMenu = false;
+    this.user = null;
+    this.loggedIn = false;
+    this.isShowUserMenu = false;
 
-  window.location.reload();
-  this.cdr.markForCheck();
+    (window as any).location.reload();
+
+    this.cdr.markForCheck();
   }
 
-  trackByNotification(index: number, notification: any): number {
-    return index;
+  ngAfterViewInit(): void {
   }
+
+  // trackByNotification(index: number, notification: any): string {
+  //   return notification.id;
+  // }
+
 }

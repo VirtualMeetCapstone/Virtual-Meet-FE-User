@@ -1,14 +1,30 @@
 {
+  "version": 2,
   "name": "vmeet",
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
+  "builds": [
+    {
+      "src": "dist/virtual-meet-fe/server/server.mjs",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "dist/virtual-meet-fe/browser/**",
+          "dist/virtual-meet-fe/server/**",
+           "node_modules/zone.js/**"
+        ]
+      }
     }
-  },
+  ],
   "routes": [
     {
-      "src": "/video",
-      "headers": { "x-prerender-bypass": "true" }
+      "src": "/static/(.*)",
+      "dest": "dist/virtual-meet-fe/browser/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/virtual-meet-fe/server/server.mjs"
     }
   ]
 }

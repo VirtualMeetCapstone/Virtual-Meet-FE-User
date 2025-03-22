@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { PostserviceService } from '../../services/post-service/postservice.service';
-import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-dialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { CreatePostModalComponent } from '../create-post-modal/create-post-modal.component';
-import { AuthService } from '../../services/auth-service/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {PostserviceService} from '../../services/post-service/postservice.service';
+import {MatDialog} from '@angular/material/dialog';
+import {CreatePostModalComponent} from '../create-post-modal/create-post-modal.component';
+import {AuthService} from '../../services/auth-service/auth.service';
+import {ExternalServiceService} from '../../services/external-service/external-service.service';
 
 @Component({
   selector: 'app-home-page-post',
@@ -19,26 +19,32 @@ export class HomePagePostComponent implements OnInit {
 
   userId: string = '';
   user: any = null;
-  isLoadingUser: boolean = false;
   isShowModalDetailPost = false;
   post: any = null;
   isLoading: boolean = false;
+  id: string = '';
 
   constructor(
     private postService: PostserviceService,
     private authService: AuthService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private externalService: ExternalServiceService,
+  ) {
+  }
 
   ngOnInit(): void {
+
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
+        this.id = this.userId;
+        this.user = this.authService.getBackendUser(this.id);
       }
     });
-    console.log(this.user);
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
+
+
     }
     this.loadMorePosts();
   }
@@ -61,6 +67,7 @@ export class HomePagePostComponent implements OnInit {
         this.loading = false;
       });
   }
+
   openModalDetailPost(postId: string) {
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe((data: any) => {
@@ -69,15 +76,19 @@ export class HomePagePostComponent implements OnInit {
       this.isLoading = false;
     });
   }
+
   closeModalDetailPost() {
     this.isShowModalDetailPost = false;
   }
 
-  createPost() {}
+  createPost() {
+  }
 
-  createFeeling() {}
+  createFeeling() {
+  }
 
-  tagFriend() {}
+  tagFriend() {
+  }
 
   openCreatePost() {
     const dialogRef = this.dialog.open(CreatePostModalComponent, {
@@ -92,5 +103,9 @@ export class HomePagePostComponent implements OnInit {
         console.log('New story added:', result);
       }
     });
+  }
+
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url); // Gọi từ service
   }
 }

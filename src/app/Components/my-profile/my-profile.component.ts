@@ -115,7 +115,7 @@ export class MyProfileComponent implements OnInit {
   openGearButton() {
     const dialogRef = this.dialog.open(ModalGearButtonComponent, {
       width: '300px',
-      data: { id: this.userId },
+      data: {},
     });
   }
 }

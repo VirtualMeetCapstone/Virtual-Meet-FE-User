@@ -1,20 +1,23 @@
 <div class="container">
+
   <div class="main-content">
+
     <div class="create-post">
       <div class="user-info">
-        <img
-          alt="User profile picture"
-          height="60"
-          width="60"
-          [src]="user.photoUrl"
-          style="border-radius: 50%; object-fit: cover"
-        />
+        <div class="grid-container">
+          <!-- Story List -->
+          <div class="story-wrapper">
+            <app-story-list></app-story-list>
+          </div>
+        </div>
+
         <textarea
           (click)="openCreatePost()"
           name="content"
           placeholder="Write something here..."
         ></textarea>
       </div>
+
       <div class="actions">
         <button (click)="openCreatePost()">
           <i class="fas fa-photo-video"> </i>
@@ -33,9 +36,9 @@
           Create
         </button>
       </div>
-      <div class="d-flex justify-content-center mt-3">
-        <button type="button" class="btn btn-primary">Post</button>
-      </div>
+<!--      <div class="d-flex justify-content-center mt-3">-->
+<!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
+<!--      </div>-->
     </div>
     <div
       class="post"

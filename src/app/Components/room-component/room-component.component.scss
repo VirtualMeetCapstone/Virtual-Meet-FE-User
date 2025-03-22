@@ -6,32 +6,115 @@
   height: 100vh;
   padding: 20px;
   border-radius: 10px;
+  position: relative;
 }
 
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
   width: 100%;
-  max-width: 900px;
+  height: 100%;
+  max-width: 1000px;
   flex-grow: 1;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+
+  &.users-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .video-box {
+      width: 600px;
+      height: 600px;
+    }
+  }
+
+  &.users-2 {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+
+    .video-box {
+      width: 450px;
+      height: 450px;
+    }
+  }
+
+  &.users-3, &.users-4 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    justify-items: center;
+    align-items: center;
+
+    .video-box {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &.users-5, &.users-6 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+
+    .video-box {
+      width: 100%;
+      height: 95%;
+    }
+  }
+
+  &.users-7, &.users-8, &.users-9 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, auto);
+    justify-items: center;
+    align-items: center;
+
+    .video-box {
+      width: 100%;
+      height: 90%;
+    }
+  }
+
+  &.users-10, &.users-11, &.users-12 {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+
+    .video-box {
+      width: 100%;
+      height: 90%;
+    }
+  }
 }
 
 .video-box {
   position: relative;
-
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 16px;
-  text-align: center;
+  background-color: gray;
+  overflow: hidden;
+  width: 100%;
+  height: 90%;
+  video {
+    max-width: 100%;
+    max-height: 90%;
+    width: 100%;
+    height: 90%;
+    object-fit: cover;
+  }
+  &:has(video) .profile {
+    display: none;
+  }
 }
 
-/* Màu sắc các box */
+
 .activity {
-  //background: url('assets/whiteboard.png') center/cover no-repeat;
+
   position: relative;
 }
 
@@ -176,13 +259,16 @@
 }
 
 .youtube-container {
-  width: 80%;
-  height: 80%;
-  background: rgba(0, 0, 0, 0.8);
+  width: 80%; /* Hoặc một kích thước cụ thể như 600px */
+  max-width: 80%; /* Giới hạn chiều rộng */
+  height: auto; /* Để chiều cao tự động theo nội dung */
+  background: none; /* Bỏ nền tối để không giống overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10; /* Đảm bảo phần này nằm trên các video-box */
+  z-index: 1; /* Giảm z-index để không đè lên các phần tử khác */
+  position: relative; /* Đảm bảo nó nằm trong luồng bình thường */
+  margin: 20px auto; /* Thêm khoảng cách để không sát cạnh */
 }
 
 .youtube-container iframe {
@@ -254,4 +340,70 @@
 
 .close-modal:hover {
   background: #e53935;
+}
+.local-video {
+  border: 2px solid #4caf50; /* Viền màu xanh lá cho video của bạn */
+}
+
+.remote-video {
+  border: 2px solid #d84141; /* Viền màu đỏ cho video remote */
+}
+.video-box.more-users {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.pinned {
+  display: none; /* Ẩn tất cả các video khi có user được ghim */
+}
+
+.pin-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.fullscreen-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  z-index: 1000;
+}
+
+.fullscreen-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.close-fullscreen {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
 }

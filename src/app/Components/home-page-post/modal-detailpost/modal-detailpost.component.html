@@ -52,13 +52,21 @@
           <div class="post-comment">
             <div class="post-header">
               <img
-                [src]="user.photoUrl.url"
+                [src]="getSafeUrl(user.photoUrl)"
+
                 alt="Profile picture"
                 height="40"
                 width="40"
               />
             </div>
-            <input #commentInput type="text" placeholder="Add a comment..." />
+            <input
+              #commentInput
+              type="text"
+              placeholder="Add a comment..."
+              (keydown.enter)="
+                addComment(commentInput.value); commentInput.value = ''
+              "
+            />
             <button
               (click)="addComment(commentInput.value); commentInput.value = ''"
             >
@@ -90,13 +98,23 @@
               <div class="post-comment">
                 <div class="post-header">
                   <img
-                    [src]="user.photoUrl.url"
+
+                    [src]="getSafeUrl(user.photoUrl)"
+
                     alt="Profile picture"
                     height="40"
                     width="40"
                   />
                 </div>
-                <input #replyInput type="text" placeholder="Add a reply..." />
+                <input
+                  #replyInput
+                  type="text"
+                  placeholder="Add a reply..."
+                  (keydown.enter)="
+                    replyComment(comment.id, replyInput.value);
+                    replyInput.value = ''
+                  "
+                />
                 <button
                   (click)="
                     replyComment(comment.id, replyInput.value);
@@ -112,7 +130,7 @@
               <div *ngFor="let reply of comment.replies" class="reply">
                 <div class="d-flex">
                   <img
-                    [src]="reply.author.picture.url"
+                    [src]="getSafeUrl(reply.author.picture.url)"
                     alt="Ảnh đại diện"
                     class="comment-avatar"
                   />
@@ -122,51 +140,37 @@
                   <div class="comment-text">{{ reply.content }}</div>
                   <div class="comment-time"></div>
                 </div>
+              </div>
+            </div>
+            <div class="replies">
+              <div class="post-comment" *ngIf="comment.replies.length > 0">
+                <div class="post-header">
+                  <img
 
-                <!-- Nếu reply có thêm replies con -->
-                <div *ngIf="reply.replies?.length > 0">
-                  <div *ngFor="let subReply of reply.replies" class="reply">
-                    <div class="d-flex">
-                      <img
-                        [src]="subReply.author.picture.url"
-                        alt="Ảnh đại diện"
-                        class="comment-avatar"
-                      />
-                      <div class="comment-author">
-                        {{ subReply.author.name }}
-                      </div>
-                    </div>
-                    <div class="comment-content">
-                      <div class="comment-text">{{ subReply.content }}</div>
-                      <div class="comment-time"></div>
-                    </div>
-                  </div>
+                    [src]="getSafeUrl(user.photoUrl)"
+
+                    alt="Profile picture"
+                    height="40"
+                    width="40"
+                  />
                 </div>
-                <div>
-                  <div class="post-comment">
-                    <div class="post-header">
-                      <img
-                        [src]="user.photoUrl.url"
-                        alt="Profile picture"
-                        height="40"
-                        width="40"
-                      />
-                    </div>
-                    <input
-                      #replyInput
-                      type="text"
-                      placeholder="Add a reply..."
-                    />
-                    <button
-                      (click)="
-                        replyComment(reply.id, replyInput.value);
-                        replyInput.value = ''
-                      "
-                    >
-                      Post
-                    </button>
-                  </div>
-                </div>
+                <input
+                  #replyInput
+                  type="text"
+                  placeholder="Add a reply..."
+                  (keydown.enter)="
+                    replyComment(comment.id, replyInput.value);
+                    replyInput.value = ''
+                  "
+                />
+                <button
+                  (click)="
+                    replyComment(comment.id, replyInput.value);
+                    replyInput.value = ''
+                  "
+                >
+                  Post
+                </button>
               </div>
             </div>
           </div>

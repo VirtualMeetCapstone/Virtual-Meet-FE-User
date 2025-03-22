@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { RoomServicesService } from '../../../services/room-services.service';
+import { RoomServicesService } from '../../../services/room-service/room-services.service';
 
 @Component({
   selector: 'app-modal-delete-room',
