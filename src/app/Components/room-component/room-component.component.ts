@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   Inject,
   Injector,
   OnInit,
@@ -21,6 +22,11 @@ import { Peer } from '../../models/rtc/pere';
   styleUrl: './room-component.component.scss',
 })
 export class RoomComponentComponent implements OnInit {
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(event: any) {
+    this.leaveRoom();
+  }
+
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
@@ -59,7 +65,9 @@ export class RoomComponentComponent implements OnInit {
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
 
-
+  ngOnDestroy() {
+    this.leaveRoom();
+  }
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');
@@ -69,7 +77,7 @@ export class RoomComponentComponent implements OnInit {
         console.log('📌 Room ID từ router:', this.roomId);
       }
     });
-    
+
     try {
       await this.roomHubService.startConnection();
       this.connectionStatus = 'Connected';
@@ -98,7 +106,7 @@ export class RoomComponentComponent implements OnInit {
         this.peers = peers;
       });
 
-      this.displayLocalStream();
+      await this.displayLocalStream();
 
     } catch (err) {
       console.error('❌ Lỗi khởi tạo phòng:', err);
@@ -208,7 +216,7 @@ export class RoomComponentComponent implements OnInit {
   }
 
 
-  private displayLocalStream(): void {
+  private async displayLocalStream(): Promise<void> {
     const stream = this.roomHubService.getLocalStream();
     if (stream && this.localVideo) {
       this.localVideo.nativeElement.srcObject = stream;
