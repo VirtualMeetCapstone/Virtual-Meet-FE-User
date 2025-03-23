@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   Inject,
   Injector,
   OnInit,
@@ -21,6 +22,11 @@ import { Peer } from '../../models/rtc/pere';
   styleUrl: './room-component.component.scss',
 })
 export class RoomComponentComponent implements OnInit {
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(event: any) {
+    this.leaveRoom();
+  }
+
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
@@ -56,10 +62,16 @@ export class RoomComponentComponent implements OnInit {
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
 
+  isRecordingModalOpen: boolean = false;
+  isRecording: boolean = false;
+  recordWithAudio: boolean = true;
+
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
 
-
+  ngOnDestroy() {
+    this.leaveRoom();
+  }
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');
@@ -69,7 +81,7 @@ export class RoomComponentComponent implements OnInit {
         console.log('📌 Room ID từ router:', this.roomId);
       }
     });
-    
+
     try {
       await this.roomHubService.startConnection();
       this.connectionStatus = 'Connected';
@@ -98,7 +110,7 @@ export class RoomComponentComponent implements OnInit {
         this.peers = peers;
       });
 
-      this.displayLocalStream();
+      await this.displayLocalStream();
 
     } catch (err) {
       console.error('❌ Lỗi khởi tạo phòng:', err);
@@ -208,7 +220,7 @@ export class RoomComponentComponent implements OnInit {
   }
 
 
-  private displayLocalStream(): void {
+  private async displayLocalStream(): Promise<void> {
     const stream = this.roomHubService.getLocalStream();
     if (stream && this.localVideo) {
       this.localVideo.nativeElement.srcObject = stream;
@@ -257,6 +269,46 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
+  toggleRecordingModal(): void {
+    console.log("Toggle recording modal clicked"); // Kiểm tra xem có chạy không
+    this.isRecordingModalOpen = !this.isRecordingModalOpen;
+  }
+
+
+  toggleRecordWithAudio(): void {
+    this.recordWithAudio = !this.recordWithAudio;
+  }
+
+  async startRecording(): Promise<void> {
+    console.log("Start recording clicked");
+    if (this.rtcHub) {
+      console.log("Audio:", this.recordWithAudio);
+
+      try {
+        await this.rtcHub.startRecording(this.recordWithAudio);
+        this.isRecording = this.rtcHub.isRecording;
+        console.log("✅ Cập nhật isRecording:", this.isRecording);
+      } catch (error) {
+        console.error("❌ Lỗi khi bắt đầu quay:", error);
+      }
+
+    } else {
+      console.error("rtcHub is not initialized");
+    }
+    this.isRecordingModalOpen = false;
+  }
+
+  async stopRecording(): Promise<void> {
+    if (this.rtcHub) {
+      try {
+        await this.rtcHub.stopRecording();
+        this.isRecording = this.rtcHub.isRecording; // Cập nhật sau khi stop hoàn tất
+        console.log("✅ Cập nhật isRecording:", this.isRecording);
+      } catch (error) {
+        console.error("❌ Lỗi khi dừng quay:", error);
+      }
+    }
+  }
 
 
 }

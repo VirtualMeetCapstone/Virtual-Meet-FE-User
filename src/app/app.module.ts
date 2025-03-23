@@ -49,6 +49,7 @@ import { MyProfileStoriesComponent } from './Components/my-profile/my-profile-st
 import { StoryModalComponent } from './Components/story-modal/story-modal.component';
 import { SafeUrlPipe } from './Components/story-modal-my-profile/pipe/safe-url.pipe';
 import { TimeAgoPipe } from './Components/story-modal-my-profile/pipe/time-ago.pipe';
+import { TimeAgoFeedPipe } from './Components/news-feed-my-profile/pipe/time-ago-feed.pipe';
 import { CreateStoryDialogComponent } from './Components/create-story-dialog/create-story-dialog.component';
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
 import { RoomChatComponent } from './Components/room-chat/room-chat.component';
@@ -62,7 +63,10 @@ import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/ne
 import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 import { CreatePostModalComponent } from './Components/create-post-modal/create-post-modal.component';
 import { AllNotificationsComponent } from './Components/all-notifications/all-notifications.component';
+
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
+import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/story-modal-news-feed.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -80,12 +84,14 @@ import { PageNotFoundComponent } from './Components/page-not-found/page-not-foun
     StoryListComponent,
     StoryModalMyProfileComponent,
     StoryModalComponent,
+    StoryModalNewsFeedComponent,
     LoginModalComponent,
     ModalAddEditRoomComponent,
     HomePagePostComponent,
     MyProfileStoriesComponent,
     SafeUrlPipe,
     TimeAgoPipe,
+    TimeAgoFeedPipe,
     CreateStoryDialogComponent,
     YoutubePlayerComponent,
     RoomComponentComponent,

@@ -23,7 +23,8 @@
 }
 
 /* Ảnh hiển thị story */
-.story-image {
+.story-image,
+.story-video {
   position: absolute;
   top: 0;
   left: 0;
@@ -144,4 +145,14 @@
   .story-feed {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #555;
 }

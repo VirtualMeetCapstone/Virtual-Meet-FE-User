@@ -1,36 +1,56 @@
+<div *ngIf="isLoading" class="loading-container">
+  <app-loading-component />
+</div>
+
 <div class="story-feed">
-  <div class="story-card" *ngFor="let story of stories">
+  <div class="story-card" *ngFor="let story of stories; let i = index">
     <div class="story-thumbnail">
-      <img
-        [src]="story.media.url"
-        alt="Story Image"
-        class="story-image"
-        (error)="handleImageError($event, story.media.url)"
-      />
-      <div class="story-overlay">
+      <ng-container *ngIf="isVideo(story); else imageTemplate">
+        <video
+          [src]="story.media.url"
+          controls
+          class="story-video"
+          (error)="handleImageError($event, story.media.url)"
+        ></video>
+      </ng-container>
+      <ng-template #imageTemplate>
+        <img
+          [src]="story.media.url"
+          alt="Story Image"
+          class="story-image"
+          (error)="handleImageError($event, story.media.url)"
+        />
+      </ng-template>
+
+      <div
+        class="story-overlay"
+        [ngClass]="{
+          isWatch: !isWatched,
+          watched: isWatched
+        }"
+        (click)="openStory(i)"
+      >
         <div class="story-header">
-          <!-- Hiển thị avatar lấy từ API -->
-          <img class="user-avatar" [src]="userAvatar" alt="User Avatar" />
           <div class="story-details">
             <div class="story-title">{{ story.content }}</div>
             <div class="story-time">
-              {{ story?.createTime?.getTime() || 0 | timeAgo }}
+              <!-- Có thể hiển thị thời gian của tin nếu cần -->
             </div>
           </div>
           <div class="menu-container">
-            <!-- Ấn vào nút này sẽ toggle menu riêng cho story hiện tại -->
             <button class="button" (click)="toggleMenu($event, story.id)">
+              <!-- Icon menu -->
               <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"
                 ></path>
               </svg>
             </button>
-            <!-- Menu hiển thị khi activeMenuStoryId khớp với id của story -->
             <div *ngIf="activeMenuStoryId === story.id" class="menu-options">
               <button (click)="deleteStory(story.id); $event.stopPropagation()">
                 Xóa tin
               </button>
+              <button>Chọn làm tin nổi bật</button>
             </div>
           </div>
         </div>
