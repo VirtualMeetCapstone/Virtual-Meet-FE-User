@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   loggedIn = false;
   idNew: string = '';
   userId: string = '';
-  pageSize: number = 5;
+  pageSize: number = 10;
   skip: number = 0;
   loading = false;
   totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
