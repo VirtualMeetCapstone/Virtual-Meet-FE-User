@@ -4,6 +4,8 @@ import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../../services/auth-service/auth.service';
+import {RoomDetailModalComponent} from "../room-detail-modal/room-detail-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-home-page-room',
@@ -27,7 +29,8 @@ export class HomePageRoomComponent implements OnInit {
     private roomService: RoomServicesService,
     private roomHub: RoomHubService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog,
   ) {}
   user: any = null;
 
@@ -129,5 +132,17 @@ export class HomePageRoomComponent implements OnInit {
   }
   openModalAddRoom() {
     this.showModalAddEditRoom = true;
+  }
+
+
+  viewRoomDetail(room: any) {
+    const dialogRef = this.dialog.open(RoomDetailModalComponent, {
+      data: { room }
+
+    });
+console.log(room);
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Modal đóng:', result);
+    });
   }
 }
