@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {PostserviceService} from '../../services/post-service/postservice.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatePostModalComponent} from '../create-post-modal/create-post-modal.component';
 import {AuthService} from '../../services/auth-service/auth.service';
 import {ExternalServiceService} from '../../services/external-service/external-service.service';
+import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 
 @Component({
   selector: 'app-home-page-post',
@@ -11,6 +12,8 @@ import {ExternalServiceService} from '../../services/external-service/external-s
   styleUrls: ['./home-page-post.component.scss'],
 })
 export class HomePagePostComponent implements OnInit {
+  @Output() openPostModal = new EventEmitter<string>();
+
   listPost: any[] = [];
   totalPost: number | null = null; // Để kiểm tra khi chưa load xong
   pageSize: number = 9;
@@ -29,6 +32,7 @@ export class HomePagePostComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     private externalService: ExternalServiceService,
+    private notifyService: NotificationServiceService
   ) {
   }
 
@@ -47,6 +51,9 @@ export class HomePagePostComponent implements OnInit {
 
     }
     this.loadMorePosts();
+    this.notifyService.onOpenPostModal().subscribe((postId) => {
+      this.openModalDetailPost(postId);
+    });
   }
 
   loadMorePosts() {

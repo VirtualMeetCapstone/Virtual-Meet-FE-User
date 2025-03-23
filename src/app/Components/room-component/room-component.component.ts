@@ -62,6 +62,10 @@ export class RoomComponentComponent implements OnInit {
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
 
+  isRecordingModalOpen: boolean = false;
+  isRecording: boolean = false;
+  recordWithAudio: boolean = true;
+
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
 
@@ -265,6 +269,46 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
+  toggleRecordingModal(): void {
+    console.log("Toggle recording modal clicked"); // Kiểm tra xem có chạy không
+    this.isRecordingModalOpen = !this.isRecordingModalOpen;
+  }
+
+
+  toggleRecordWithAudio(): void {
+    this.recordWithAudio = !this.recordWithAudio;
+  }
+
+  async startRecording(): Promise<void> {
+    console.log("Start recording clicked");
+    if (this.rtcHub) {
+      console.log("Audio:", this.recordWithAudio);
+
+      try {
+        await this.rtcHub.startRecording(this.recordWithAudio);
+        this.isRecording = this.rtcHub.isRecording;
+        console.log("✅ Cập nhật isRecording:", this.isRecording);
+      } catch (error) {
+        console.error("❌ Lỗi khi bắt đầu quay:", error);
+      }
+
+    } else {
+      console.error("rtcHub is not initialized");
+    }
+    this.isRecordingModalOpen = false;
+  }
+
+  async stopRecording(): Promise<void> {
+    if (this.rtcHub) {
+      try {
+        await this.rtcHub.stopRecording();
+        this.isRecording = this.rtcHub.isRecording; // Cập nhật sau khi stop hoàn tất
+        console.log("✅ Cập nhật isRecording:", this.isRecording);
+      } catch (error) {
+        console.error("❌ Lỗi khi dừng quay:", error);
+      }
+    }
+  }
 
 
 }

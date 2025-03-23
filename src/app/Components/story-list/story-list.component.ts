@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { Viewer } from '../../models/viewer';
 import { response } from 'express';
 import { StoryService } from '../../services/story-service/story-service.service';
+import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 
 @Component({
   selector: 'app-story-list',
@@ -24,13 +25,17 @@ export class StoryListComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     public storyService: StoryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationServiceService
   ) {
     this.userId = authService.getUser()?.id;
   }
 
   ngOnInit(): void {
     this.loadStories();
+    this.notificationService.openStory$.subscribe((index: number) => {
+      this.openStory(index);
+    });
   }
 
   loadStories() {
