@@ -1,6 +1,6 @@
 <!-- Sidebar -->
 <div *ngIf="isLoading" class="loading-container">
-  <app-loading-component />
+  <app-loading-component></app-loading-component>
 </div>
 
 <div class="video-side">
@@ -17,24 +17,36 @@
         <h2 class="profile-username">{{ user.name }}</h2>
         <p class="profile-username-id">&#64;{{ user.name }}</p>
         <div class="profile-actions">
-          <button class="edit-profile-button" (click)="openEditProfile()">
-            Sửa hồ sơ
-          </button>
-          <button
-            class="promote-post-button"
-            (click)="openCreateProfileStory()"
-          >
-            Tạo tin mới
-          </button>
-          <button
-            class="settings-button"
-            (click)="openGearButton(); $event.stopPropagation()"
-          >
-            <i class="fa-solid fa-gear"></i>
-          </button>
-          <button class="share-button">
-            <i class="fa-solid fa-share"></i>
-          </button>
+          <!-- Nếu là profile của người dùng đang đăng nhập -->
+          <ng-container *ngIf="isOwnProfile; else followBtn">
+            <button class="edit-profile-button" (click)="openEditProfile()">
+              Sửa hồ sơ
+            </button>
+            <button
+              class="promote-post-button"
+              (click)="openCreateProfileStory()"
+            >
+              Tạo tin mới
+            </button>
+            <button
+              class="settings-button"
+              (click)="openGearButton(); $event.stopPropagation()"
+            >
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <button class="share-button">
+              <i class="fa-solid fa-share"></i>
+            </button>
+          </ng-container>
+          <!-- Nếu là profile của người khác -->
+          <ng-template #followBtn>
+            <button class="edit-profile-button" (click)="toggleFollow()">
+              {{ isFollowing ? "Đã Follow" : "Follow" }}
+            </button>
+            <button class="share-button">
+              <i class="fa-solid fa-share"></i>
+            </button>
+          </ng-template>
         </div>
       </div>
     </div>
