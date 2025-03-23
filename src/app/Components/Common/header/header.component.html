@@ -40,7 +40,7 @@
             <h4 id="notification-title">Thông báo</h4>
             <div class="notification-item" *ngFor="let notification of notifications">
               <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
-              <div class="notification-content">
+              <div class="notification-content" (click)="getNotification(notification)">
                 <p>
                   <strong style="color: white">{{ notification.actor.name }}</strong> {{ notification.content }}.
                 </p>
