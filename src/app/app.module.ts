@@ -64,6 +64,7 @@ import { ModalDetailpostComponent } from './Components/home-page-post/modal-deta
 import { CreatePostModalComponent } from './Components/create-post-modal/create-post-modal.component';
 import { AllNotificationsComponent } from './Components/all-notifications/all-notifications.component';
 import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/story-modal-news-feed.component';
+import { SearchComponent } from './Components/Common/search/search.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/
     ModalDetailpostComponent,
     CreatePostModalComponent,
     AllNotificationsComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,
