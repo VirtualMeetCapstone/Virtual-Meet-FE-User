@@ -67,6 +67,7 @@ import { AllNotificationsComponent } from './Components/all-notifications/all-no
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
 import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/story-modal-news-feed.component';
 import { SearchComponent } from './Components/Common/search/search.component';
+import { RoomDetailModalComponent } from './Components/room-detail-modal/room-detail-modal.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { SearchComponent } from './Components/Common/search/search.component';
     AllNotificationsComponent,
     SearchComponent,
     PageNotFoundComponent,
+    RoomDetailModalComponent,
   ],
   imports: [
     BrowserModule,
