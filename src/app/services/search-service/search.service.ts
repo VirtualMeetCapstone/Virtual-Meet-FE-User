@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 
 @Injectable({
@@ -11,8 +11,9 @@ export class SearchService {
 
   getSuggestions(query: string): Observable<string[]> {
     const url = `${AppConstants.API_BASE_URL_HTTPS}/searches/suggestions`;
+    // Nếu query rỗng, gọi API với trending = true
     if (!query.trim()) {
-      return of([]); // Trả về Observable rỗng nếu query trống
+      return this.http.get<string[]>(`${url}?trending=true`);
     }
     return this.http.get<string[]>(`${url}?query=${encodeURIComponent(query)}`);
   }
