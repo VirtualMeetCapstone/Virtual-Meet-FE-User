@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable,NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RoomHubService } from '../room-hub/room-hub.service';
 import { Peer } from '../../models/rtc/pere';
@@ -10,6 +10,10 @@ export class RtcHubService {
   private peers: { [key: string]: Peer } = {};
   private peersSubject = new BehaviorSubject<Peer[]>([]);
   private screenStream!: MediaStream | null;
+  private mediaRecorder!: MediaRecorder | null;
+  private recordedChunks: Blob[] = [];
+  public isRecording = false;
+  private recordingSubject = new BehaviorSubject<boolean>(false);
   // ICE server configuration
   private config = {
     iceServers: [
@@ -25,7 +29,9 @@ export class RtcHubService {
     ]
   };
 
-  constructor(private roomHubService: RoomHubService) {
+  constructor(private roomHubService: RoomHubService,
+    private cdr: NgZone
+  ) {
     this.setupRtcEvents();
   }
 
@@ -237,4 +243,149 @@ private sendStreamToPeer(peerId: string): void {
       console.log("🛑 Đã dừng chia sẻ màn hình!");
     }
   }
+
+  // Start recording screen or video
+  async startRecording(recordAudio: boolean = true): Promise<void> {
+    try {
+        if (this.isRecording) {
+            console.log('⚠️ Recording already in progress');
+            return;
+        }
+
+        // Lấy stream màn hình thay vì camera
+        this.screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { displaySurface: "monitor" }, // Quay toàn bộ màn hình
+            audio: recordAudio ? true : false, // Thêm audio nếu cần
+        });
+
+        if (!this.screenStream) throw new Error('Không thể lấy luồng màn hình');
+
+        const tracksToRecord: MediaStreamTrack[] = [...this.screenStream.getVideoTracks()];
+
+        if (recordAudio) {
+            const audioTracks = this.screenStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                tracksToRecord.push(audioTracks[0]); // Ghi cả âm thanh của màn hình
+            }
+        }
+
+        const recordStream = new MediaStream(tracksToRecord);
+
+        const options = {
+            mimeType: this.getSupportedMimeType(),
+            videoBitsPerSecond: 2500000, // 2.5 Mbps
+        };
+
+        this.mediaRecorder = new MediaRecorder(recordStream, options);
+        this.recordedChunks = [];
+
+        this.mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                this.recordedChunks.push(event.data);
+            }
+        };
+
+        this.mediaRecorder.onstop = () => {
+            this.saveRecording();
+        };
+
+        // Bắt đầu quay màn hình
+        this.mediaRecorder.start(1000); // Ghi thành các đoạn 1 giây
+        this.isRecording = true;
+        this.recordingSubject.next(true);
+        console.log('🔴 Đang quay màn hình');
+
+    } catch (error) {
+        console.error('❌ Lỗi khi bắt đầu quay màn hình:', error);
+        this.isRecording = false;
+        this.recordingSubject.next(false);
+    }
+}
+
+
+  // Stop the current recording
+  async stopRecording(): Promise<void> {
+    if (this.mediaRecorder && this.isRecording) {
+      this.mediaRecorder.stop();
+      this.isRecording = false;
+      this.recordingSubject.next(false);
+      console.log('⏹️ Recording stopped');
+    }
+  }
+
+  // Find a supported video MIME type
+  private getSupportedMimeType(): string {
+    const types = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm;codecs=h264,opus',
+      'video/mp4;codecs=h264,aac',
+      'video/webm',
+      'video/mp4'
+    ];
+
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        console.log(`✅ Browser supports MIME type: ${type}`);
+        return type;
+      }
+    }
+
+    // Fallback to basic webm if nothing else is supported
+    return 'video/webm';
+  }
+
+  // Save the recording and create a download link
+  private saveRecording(): void {
+    try {
+      if (this.recordedChunks.length === 0) {
+        console.warn('⚠️ No recorded data available');
+        return;
+      }
+
+      // Determine the MIME type
+      const mimeType = this.mediaRecorder?.mimeType || 'video/webm';
+      const fileExtension = mimeType.includes('mp4') ? 'mp4' : 'webm';
+
+      // Create a blob from the recorded chunks
+      const blob = new Blob(this.recordedChunks, { type: mimeType });
+      const url = URL.createObjectURL(blob);
+
+      // Create file name with timestamp
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
+      const fileName = `recording_${timestamp}.${fileExtension}`;
+
+      // Create a link element to download the recording
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style.display = 'none';
+      a.href = url;
+      a.download = fileName;
+      a.click();
+
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      this.recordedChunks = [];
+
+      console.log(`✅ Recording saved as ${fileName}`);
+      this.stopRecording();
+      setTimeout(() => {
+        this.cdr.run(() => {
+          this.isRecording = false; // Cập nhật UI một cách an toàn
+        });
+      }, 100);
+
+    } catch (error) {
+      console.error('❌ Error saving recording:', error);
+    }
+  }
+
+  // Check if recording is in progress
+  isCurrentlyRecording(): boolean {
+    return this.isRecording;
+  }
+
+
 }
