@@ -62,6 +62,7 @@ import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/ne
 import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 import { CreatePostModalComponent } from './Components/create-post-modal/create-post-modal.component';
 import { AllNotificationsComponent } from './Components/all-notifications/all-notifications.component';
+import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +97,7 @@ import { AllNotificationsComponent } from './Components/all-notifications/all-no
     ModalDetailpostComponent,
     CreatePostModalComponent,
     AllNotificationsComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
