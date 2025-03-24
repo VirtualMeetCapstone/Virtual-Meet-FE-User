@@ -211,8 +211,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
-        } else
-        {
+        } else {
           this.router.navigate(['/not-found']);
         }
 
@@ -221,14 +220,18 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.findStoryIndex(notification.source.id, (index) => {
           if (index !== -1) {
             this.notifyService.triggerOpenStory(index);
-          } else
-          {
+          } else {
             this.router.navigate(['/not-found']);
           }
         });
         break;
       case 4: // new room notification
-          this.notifyService.openRoomDetail(notification.source.id);
+        this.router.navigate(['/']).then(() => {
+          setTimeout(() => {
+            this.notifyService.openRoomDetail(notification.source.id);
+
+          }, 500);
+        });
         break;
       case 5: // new post notification
         if (notification.source.id) {
@@ -237,8 +240,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
-        } else
-        {
+        } else {
           this.router.navigate(['/not-found']);
         }
         break;
