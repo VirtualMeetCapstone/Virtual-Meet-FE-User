@@ -1,6 +1,7 @@
 import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,22 @@ export class AppComponent implements OnInit {
   isLoggedIn = false;
 
   constructor(
+    private translate: TranslateService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) {
+
+    let lang = 'en'; // Mặc định là tiếng Anh
+
+    // Kiểm tra xem đang chạy trên trình duyệt hay không
+    if (typeof window !== 'undefined' && localStorage.getItem('language')) {
+      lang = localStorage.getItem('language')!;
+    }
+
+    this.translate.setDefaultLang(lang);
+    this.translate.use(lang);
+    console.log(lang);
+  }
 
   onClickSideBar() {
     this.isHiddenSidebar = !this.isHiddenSidebar;

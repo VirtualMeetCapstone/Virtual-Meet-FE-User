@@ -85,6 +85,8 @@ export class AllNotificationsComponent implements OnInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
+        } else {
+          this.router.navigate(['/not-found']);
         }
 
         break;
@@ -92,14 +94,18 @@ export class AllNotificationsComponent implements OnInit {
         this.findStoryIndex(notification.source.id, (index) => {
           if (index !== -1) {
             this.notifyService.triggerOpenStory(index);
-          } else
-          {
+          } else {
             this.router.navigate(['/not-found']);
           }
         });
         break;
-      case 4:
-        console.log("Case 4 executed");
+      case 4: // new room notification
+        this.router.navigate(['/']).then(() => {
+          setTimeout(() => {
+            this.notifyService.openRoomDetail(notification.source.id);
+
+          }, 500);
+        });
         break;
       case 5: // new post notification
         if (notification.source.id) {
@@ -108,6 +114,8 @@ export class AllNotificationsComponent implements OnInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
+        } else {
+          this.router.navigate(['/not-found']);
         }
         break;
       case 6:

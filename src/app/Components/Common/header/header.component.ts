@@ -5,7 +5,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  ViewChild, ElementRef
+  ViewChild, ElementRef,
+  HostListener
 } from '@angular/core';
 import {AuthService} from '../../../services/auth-service/auth.service';
 import {Router} from '@angular/router';
@@ -21,6 +22,7 @@ import {StoryService} from "../../../services/story-service/story-service.servic
 import {Story} from "../../../models/story";
 import {RoomDetailModalComponent} from "../../room-detail-modal/room-detail-modal.component";
 import {RoomServicesService} from "../../../services/room-service/room-services.service";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -30,6 +32,22 @@ import {RoomServicesService} from "../../../services/room-service/room-services.
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.notification-icon')) {
+      this.isShowNotification = false;
+    }
+
+    if (!target.closest('.user-info')) {
+      this.isShowUserMenu = false;
+    }
+
+    if (!target.closest('.menu-icon')) {
+      this.isShowDropdown = false;
+    }
+  }
 
   isShowDropdown = false;
   isShowLoginDialog = false;
@@ -42,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   userId: string = '';
   pageSize: number = 10;
   skip: number = 0;
+  currentLanguage = 'en';
   loading = false;
   totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
 
@@ -58,12 +77,26 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private dialog: MatDialog,
     private storyService: StoryService,
     private roomService: RoomServicesService,
+    private translate: TranslateService,
   ) {
   }
 
   notifications: Notification[] = [];
 
   ngOnInit() {
+  // Kiểm tra nếu đang chạy trên trình duyệt thì mới truy cập localStorage
+  if (typeof window !== 'undefined') {
+    const savedLang = localStorage.getItem('language');
+    if (savedLang) {
+      this.currentLanguage = savedLang;
+      this.translate.use(this.currentLanguage);
+    } else {
+      localStorage.setItem('language', this.currentLanguage);
+      this.translate.setDefaultLang(this.currentLanguage);
+    }
+    console.log('Ngôn ngữ hiện tại:', this.currentLanguage);
+  }
+
     this.isLoadingUser = true;
     this.authService.loggedIn$
       .pipe(takeUntil(this.destroy$))
@@ -211,8 +244,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
-        } else
-        {
+        } else {
           this.router.navigate(['/not-found']);
         }
 
@@ -221,14 +253,18 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.findStoryIndex(notification.source.id, (index) => {
           if (index !== -1) {
             this.notifyService.triggerOpenStory(index);
-          } else
-          {
+          } else {
             this.router.navigate(['/not-found']);
           }
         });
         break;
       case 4: // new room notification
-          this.notifyService.openRoomDetail(notification.source.id);
+        this.router.navigate(['/']).then(() => {
+          setTimeout(() => {
+            this.notifyService.openRoomDetail(notification.source.id);
+
+          }, 500);
+        });
         break;
       case 5: // new post notification
         if (notification.source.id) {
@@ -237,8 +273,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
-        } else
-        {
+        } else {
           this.router.navigate(['/not-found']);
         }
         break;
@@ -313,6 +348,25 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
   }
+
+  toggleLanguage(event: Event) {
+    event.preventDefault(); // Ngăn chặn reload trang
+    this.currentLanguage = this.currentLanguage === 'en' ? 'vi' : 'en';
+    console.log("ngon ngu",  this.currentLanguage)
+    this.switchLanguage(this.currentLanguage);
+  }
+  switchLanguage(lang: string) {
+    console.log("Đang chuyển sang ngôn ngữ:", lang);
+    this.translate.use(lang).subscribe(() => {
+      console.log("Ngôn ngữ sau khi đổi:", this.translate.currentLang);
+
+      // Kiểm tra nếu đang chạy trên trình duyệt mới truy cập localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('language', lang);
+      }
+    });
+  }
+
 
 
 }
