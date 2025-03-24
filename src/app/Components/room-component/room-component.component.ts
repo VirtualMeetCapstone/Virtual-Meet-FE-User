@@ -14,7 +14,6 @@ import { RtcHubService } from '../../Hub/rtc-hub/rtc-hub.service';
 import { PlayerService } from '../../services/youtubeplayer-service/player.service';
 import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-player.component';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { Router } from '@angular/router';
 import { Peer } from '../../models/rtc/pere';
 @Component({
   selector: 'app-room-component',
@@ -38,7 +37,6 @@ export class RoomComponentComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
     private rtcHub: RtcHubService,
@@ -199,9 +197,7 @@ export class RoomComponentComponent implements OnInit {
   async leaveRoom() {
     try {
       await this.roomHubService.leaveRoom();
-      this.router.navigate(['/home']).then(() => {
-        window.location.reload();
-      });
+
     } catch (err) {
       console.error('Error leaving room:', err);
     }
