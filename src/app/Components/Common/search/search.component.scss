@@ -1,0 +1,131 @@
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  width: 100%;
+  cursor: text;
+}
+
+.input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+}
+
+.input::placeholder {
+  color: #aaa;
+}
+
+.label-for-search {
+  cursor: pointer;
+  padding: 0 12px;
+}
+
+.search-icon {
+  width: 18px;
+  fill: #666;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: #e0e0e0;
+  margin: 0 12px;
+}
+
+.mic-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.mic-button:hover {
+  background-color: rgba(255, 81, 0, 0.1);
+}
+
+/* Khi đang nói, thêm class active */
+.mic-button.active {
+  background-color: rgba(255, 81, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* Micro icon mặc định */
+.mic-icon {
+  width: 18px;
+  fill: #ff5100;
+  transition: fill 0.3s ease;
+}
+
+/* Khi đang nói (active) chuyển màu icon */
+.mic-button.active .mic-icon {
+  fill: #ff0000;
+}
+
+/* Thanh gợi ý dạng overlay */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.suggestions li {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #333;
+}
+
+.suggestions li:hover {
+  background-color: #f0f0f0;
+}
+
+.bullet {
+  display: inline-block;
+  width: 8px; /* Kích thước dấu tròn */
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ff5100; /* Màu sắc dấu tròn */
+  margin-right: 8px; /* Khoảng cách giữa dấu và nội dung */
+}
+
+.suggestions.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1000px) {
+  .input-container {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-container {
+    display: none;
+  }
+}

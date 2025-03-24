@@ -1,4 +1,10 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { isPlatformBrowser } from '@angular/common';
@@ -8,6 +14,7 @@ import { CreateStoryDialogComponent } from '../create-story-dialog/create-story-
 import { ModalGearButtonComponent } from './modal-gear-button/modal-gear-button.component';
 import { AppConstants } from '../../constant/AppConstants';
 import { FollowUserService } from '../../services/follow-user/follow-user.service';
+import { lastValueFrom } from 'rxjs';
 
 interface Profile {
   name: string;
@@ -36,72 +43,103 @@ export class MyProfileComponent implements OnInit {
     avatar: '',
   };
 
-  // Biến để xác định profile có phải của người dùng đăng nhập hay không
+  // Xác định profile có phải của người dùng đăng nhập hay không
   isOwnProfile: boolean = true;
   loggedInUserId: string = '';
 
-  // Biến lưu trạng thái follow (chỉ áp dụng cho profile của người khác)
+  // Trạng thái follow của profile (nếu không phải của chính người dùng)
   isFollowing: boolean = false;
 
   selectedTab = 0;
+
+  // Lưu token lấy từ localStorage
+  token: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private followUserService: FollowUserService
+    private followUserService: FollowUserService,
+    private cd: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
-    // Lấy user id của người dùng đang đăng nhập từ token (chỉ truy cập localStorage trên trình duyệt)
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
+      // Lấy token từ localStorage
+      this.token = localStorage.getItem('accessToken') || '';
+      if (this.token) {
         try {
-          const decoded = decodeJwt(token);
+          const decoded = decodeJwt(this.token);
           this.loggedInUserId = decoded.id;
         } catch (error) {
           console.error('Lỗi khi giải mã token:', error);
         }
+      } else {
+        console.error('Token not found, vui lòng đăng nhập lại.');
+        // Bạn có thể chuyển hướng về trang đăng nhập nếu cần
+        return;
       }
-    }
 
-    this.route.params.subscribe(async (params) => {
-      this.userId = params['id']; // Lấy userId từ route
-      this.isOwnProfile = this.userId === this.loggedInUserId;
-      if (this.userId) {
-        await this.fetchProfile(this.userId);
-      }
-    });
+      // Đăng ký subscribe route params và gọi fetchProfile
+      this.route.params.subscribe(async (params) => {
+        this.userId = params['id'];
+        this.isOwnProfile = this.userId === this.loggedInUserId;
+        if (this.userId) {
+          await this.fetchProfile(this.userId);
+        }
+      });
+    }
   }
 
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
-      const response = await fetch(
-        `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`
+      if (!this.token) {
+        console.error('Token not found, vui lòng đăng nhập lại.');
+        return;
+      }
+
+      // Gọi API lấy thông tin profile
+      const profileResponse = await fetch(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`,
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
       );
-      if (!response.ok) throw new Error('Failed to fetch profile');
-      const data = await response.json();
+      if (!profileResponse.ok) throw new Error('Failed to fetch profile');
+      const profileData = await profileResponse.json();
       this.user = {
-        name: data.name,
-        bio: data.bio,
-        followersCount: data.followersCount,
-        followingsCount: data.followingsCount,
-        friendsCount: data.friendsCount,
-        avatar: data.picture?.url || '',
-        id: data.id,
+        name: profileData.name,
+        bio: profileData.bio,
+        followersCount: profileData.followersCount,
+        followingsCount: profileData.followingsCount,
+        friendsCount: profileData.friendsCount,
+        avatar: profileData.picture?.url || '',
+        id: profileData.id,
       };
 
-      // Nếu đang xem profile của người khác, bạn có thể gọi API để kiểm tra trạng thái follow
+      // Gọi API kiểm tra trạng thái follow dựa vào token
+      const followResponse = await fetch(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/is-following/${id}`,
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
+      );
+      if (!followResponse.ok) throw new Error('Failed to fetch follow status');
+      const followData = await followResponse.json();
+      console.log('Dữ liệu follow status:', followData); // Debug log
+      // Giả sử BE trả về { isFollowing: true/false }
+      this.isFollowing = followData === true || followData === 'true';
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error fetching profile or follow status:', error);
     } finally {
       this.isLoading = false;
+      // Ép Angular cập nhật giao diện nếu cần
+      this.cd.detectChanges();
     }
   }
 
-  // Các hàm mở modal dành cho profile của chính người dùng
+  // Hàm mở modal chỉnh sửa profile
   openEditProfile() {
     const dialogRef = this.dialog.open(EditProfileDialogComponent, {
       width: '500px',
@@ -122,6 +160,7 @@ export class MyProfileComponent implements OnInit {
     });
   }
 
+  // Hàm mở modal tạo story
   openCreateProfileStory() {
     const dialogRef = this.dialog.open(CreateStoryDialogComponent, {
       width: '500px',
@@ -141,36 +180,22 @@ export class MyProfileComponent implements OnInit {
     });
   }
 
-  // Hàm toggle follow/unfollow dành cho profile của người khác
-  toggleFollow() {
-    console.log('followingId (người được follow):', this.userId);
-    console.log('followerId (người follow):', this.loggedInUserId);
-
-    this.followUserService
-      .followUser(this.userId, this.loggedInUserId)
-      .subscribe({
-        next: (res: any) => {
-          // Giả sử BE trả về kết quả với isFollowing và followersCount
-          if (res && typeof res.isFollowing === 'boolean') {
-            this.isFollowing = res.isFollowing;
-            this.user.followersCount = res.followersCount;
-          } else {
-            // Nếu không có response rõ ràng, tự toggle
-            this.isFollowing = !this.isFollowing;
-            if (this.isFollowing) {
-              this.user.followersCount++;
-            } else {
-              this.user.followersCount = Math.max(
-                this.user.followersCount - 1,
-                0
-              );
-            }
-          }
-        },
-        error: (error) => {
-          console.error('Error toggling follow status:', error);
-        },
-      });
+  // Hàm toggle follow/unfollow sử dụng async/await và gọi lại fetchProfile để cập nhật thông tin mới
+  async toggleFollow() {
+    console.log('followingId:', this.userId);
+    console.log('followerId:', this.loggedInUserId);
+    try {
+      // Chuyển Observable thành Promise để chờ toggle hoàn thành
+      await lastValueFrom(
+        this.followUserService.followUser(this.userId, this.loggedInUserId)
+      );
+      // Sau khi toggle thành công, gọi lại fetchProfile để cập nhật dữ liệu
+      await this.fetchProfile(this.userId);
+      // Ép Angular cập nhật giao diện
+      this.cd.detectChanges();
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+    }
   }
 
   setTab(index: number) {

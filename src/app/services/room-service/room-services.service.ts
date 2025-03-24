@@ -1,15 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConstants } from '../../constant/AppConstants';
-import {tap} from "rxjs";
+import {catchError, Observable, tap, throwError} from "rxjs";
 import {NotificationServiceService} from "../notification-service/notification-service.service";
+import {Room} from "../../models/room";
+import {Router} from "@angular/router";
 @Injectable({
   providedIn: 'root',
 })
 export class RoomServicesService {
   url = 'https://dev-vmeet.site/rooms';
 
-  constructor(private http: HttpClient, private notificationService: NotificationServiceService) {}
+  constructor(private http: HttpClient, private notificationService: NotificationServiceService
+  , private router: Router) {}
 
   getRooms(top: number, skip: number): any {
     const urlWithParams = `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true`;
@@ -75,4 +78,14 @@ export class RoomServicesService {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+  getRoomById(id: string): Observable<Room> {
+    return this.http.get<Room>(`${this.url}/${id}`).pipe(
+      catchError((error) => {
+        console.error('Error fetching room:', error);
+        this.router.navigate(['/not-found']); // Điều hướng tới trang not-found
+        return throwError(() => new Error('Room not found'));
+      })
+    );
+  }
+
 }

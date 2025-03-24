@@ -12,7 +12,9 @@ export class NotificationServiceService {
   private postModalTrigger = new Subject<string>();
   private openStorySubject = new Subject<number>();
   openStory$ = this.openStorySubject.asObservable();
+  private roomDetailSubject = new Subject<string>(); // Lưu roomId
 
+  roomDetail$ = this.roomDetailSubject.asObservable();
   url = `${AppConstants.API_BASE_URL_HTTPS}/`;
 
   constructor(private http: HttpClient) {
@@ -40,8 +42,14 @@ export class NotificationServiceService {
   onOpenPostModal(): Observable<string> {
     return this.postModalTrigger.asObservable();
   }
+
   triggerOpenStory(index: number) {
     this.openStorySubject.next(index);
+  }
+
+
+  openRoomDetail(roomId: string) {
+    this.roomDetailSubject.next(roomId);
   }
 
 }

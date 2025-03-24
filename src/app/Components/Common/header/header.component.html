@@ -7,17 +7,13 @@
   </div>
 
   <!-- Ô tìm kiếm -->
-  <div class="col-lg-4 col-md-5 col-sm-1 col-1">
-    <div class="search-container">
-      <input type="text" placeholder="Search"/>
-      <i class="fas fa-search icon"></i>
-    </div>
+  <div class="col-lg-5 col-md-5 col-sm-4 col-4">
+    <app-search></app-search>
   </div>
 
   <!-- Khu vực menu + thông báo + user -->
-  <div class="col-lg-4 col-md-3 col-sm-5 col-5">
+  <div class="col-lg-3 col-md-3 col-sm-5 col-5">
     <div class="menu-container d-flex align-items-center" style="flex-direction: row-reverse">
-
       <!-- Nếu chưa đăng nhập: Chỉ hiển thị nút Login -->
       <div *ngIf="!loggedIn">
         <button class="login-bt" (click)="onClickLoginDialog()">
@@ -32,8 +28,8 @@
           <div class="notification-bellicon" [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'">
             <i class="fa-solid fa-bell fa-xl" id="notification-bell" (click)="onClickNotification()"></i>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    {{ totalNotification }}
-  </span>
+              {{ totalNotification }}
+            </span>
           </div>
 
           <div class="notification-wrapper" #scrollContainer *ngIf="isShowNotification">
@@ -42,29 +38,16 @@
               <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
               <div class="notification-content" (click)="getNotification(notification)">
                 <p>
-                  <strong style="color: white">{{ notification.actor.name }}</strong> {{ notification.content }}.
+                  <strong style="color: white">{{ notification.actor.name }}</strong>
+                  {{ notification.content }}.
                 </p>
-                <p class="notification-time">
-                  <!--                  Hôm nay lúc {{ notification.time }} · Đã đọc: {{ notification.readTime }}-->
-                </p>
+                <p class="notification-time"></p>
                 <p class="notification-action">Đánh dấu đã đọc</p>
               </div>
             </div>
-            <div
-              infiniteScroll
-              [infiniteScrollContainer]="scrollContainer"
-              (scrolled)="loadMoreNotification()"
-              [infiniteScrollThrottle]="300"
-            >
-              <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black" *ngIf="loading">
-                Load More...
-              </h3>
-              <h3
-                style="font-weight: lighter; font-size: 20px; text-align: center; color: black"
-                *ngIf="loading == false"
-              >
-                No more data to load
-              </h3>
+            <div infiniteScroll [infiniteScrollContainer]="scrollContainer" (scrolled)="loadMoreNotification()" [infiniteScrollThrottle]="300">
+              <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black;" *ngIf="loading">Load More...</h3>
+              <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black;" *ngIf="!loading">No more data to load</h3>
             </div>
             <div class="notification-footer">
               <a href="/all-notification">Xem tất cả</a>
@@ -77,51 +60,23 @@
         <!-- User Profile -->
         <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
           <div class="user-avatar-container">
-            <!-- Hiển thị loading khi chưa có ảnh -->
             <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-
-            <!-- Hiển thị ảnh người dùng -->
-            <img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)"
-                 alt="User Avatar" class="user-avatar" loading="lazy"/>
-            <!-- Ảnh mặc định -->
+            <img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)" alt="User Avatar" class="user-avatar" loading="lazy"/>
             <ng-template #defaultAvatar>
               <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
             </ng-template>
           </div>
-
-
-          <!-- Hiển thị tên người dùng -->
-<!--          <span *ngIf="isLoadingUser; else showName">Loading...</span>-->
-<!--          <ng-template #showName>-->
-<!--            <span class="user-name">{{ user?.name }}</span>-->
-<!--          </ng-template>-->
-
-
-          <!-- User Menu -->
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">Edit Profile</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
-
-
         </div>
       </div>
-      <!-- Menu dropdown -->
-      <!-- <div class="menu-icon">
-        <i class="fa-solid fa-ellipsis fa-rotate-90 fa-lg" style="color: white; cursor: pointer; margin-left: 15px"
-          (click)="onClickDropdown()"></i>
-        <div class="dropdown-menu" *ngIf="isShowDropdown">
-          <a href="#"><i class="fas fa-home"></i>Creator tools</a>
-          <a href="#"><i class="fas fa-language"></i>English</a>
-          <a href="#"><i class="fas fa-question-circle"></i>Feedback and help</a>
-          <a href="#"><i class="fas fa-moon"></i>Dark mode</a>
-        </div>
-      </div> -->
     </div>
   </div>
 
-
   <app-login-modal [isShowLoginDialog]="isShowLoginDialog" (openLoginDialog)="isShowLoginDialog = $event">
   </app-login-modal>
+</div>
