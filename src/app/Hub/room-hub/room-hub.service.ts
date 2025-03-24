@@ -114,6 +114,7 @@ export class RoomHubService {
 
     this.hubConnection.on('Disconnect', () => {
       console.log('🚨 Server yêu cầu ngắt kết nối!');
+      this.leaveRoom();
       this.cleanup();
     });
 
