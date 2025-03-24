@@ -19,6 +19,8 @@ import {ModalDetailpostComponent} from "../../home-page-post/modal-detailpost/mo
 import {MatDialog} from "@angular/material/dialog";
 import {StoryService} from "../../../services/story-service/story-service.service";
 import {Story} from "../../../models/story";
+import {RoomDetailModalComponent} from "../../room-detail-modal/room-detail-modal.component";
+import {RoomServicesService} from "../../../services/room-service/room-services.service";
 
 @Component({
   selector: 'app-header',
@@ -38,7 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   loggedIn = false;
   idNew: string = '';
   userId: string = '';
-  pageSize: number = 5;
+  pageSize: number = 10;
   skip: number = 0;
   loading = false;
   totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
@@ -55,6 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private notifyService: NotificationServiceService,
     private dialog: MatDialog,
     private storyService: StoryService,
+    private roomService: RoomServicesService,
   ) {
   }
 
@@ -208,6 +211,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
+        } else
+        {
+          this.router.navigate(['/not-found']);
         }
 
         break;
@@ -221,8 +227,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         });
         break;
-      case 4:
-        console.log("Case 4 executed");
+      case 4: // new room notification
+          this.notifyService.openRoomDetail(notification.source.id);
         break;
       case 5: // new post notification
         if (notification.source.id) {
@@ -231,6 +237,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
               this.notifyService.triggerOpenPostModal(notification.source.id);
             }, 500);
           });
+        } else
+        {
+          this.router.navigate(['/not-found']);
         }
         break;
       case 6:

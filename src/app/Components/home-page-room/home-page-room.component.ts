@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { RoomServicesService } from '../../services/room-service/room-services.service';
-import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {RoomServicesService} from '../../services/room-service/room-services.service';
+import {RoomHubService} from '../../Hub/room-hub/room-hub.service';
+import {Router} from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import { AuthService } from '../../services/auth-service/auth.service';
+import {AuthService} from '../../services/auth-service/auth.service';
+import {RoomDetailModalComponent} from "../room-detail-modal/room-detail-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
 
 @Component({
   selector: 'app-home-page-room',
@@ -27,8 +30,12 @@ export class HomePageRoomComponent implements OnInit {
     private roomService: RoomServicesService,
     private roomHub: RoomHubService,
     private router: Router,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private notificationService: NotificationServiceService
+  ) {
+  }
+
   user: any = null;
 
   ngOnInit(): void {
@@ -43,31 +50,43 @@ export class HomePageRoomComponent implements OnInit {
     }
     console.log(this.user);
     this.getRoom();
+    this.notificationService.roomDetail$.subscribe((roomId) => {
+      this.roomService.getRoomById(roomId).subscribe((room: any) => {
+        if (room) {
+          this.viewRoomDetail(room);
+        }
+      });
+    });
   }
+
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
     });
   }
+
   async joinRoom(roomId: string) {
     const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
-}
+    this.router.navigate(['/room', roomId], {queryParams: {timestamp}});
+  }
 
-    openModalDeleteRoom(room: any) {
+  openModalDeleteRoom(room: any) {
     console.log('open modal');
     this.roomToDelete = room;
     this.showModalDeleteRoom = true;
   }
+
   openModalAddroom() {
     this.showModalAddEditRoom = true;
   }
+
   openModalEditRoom(room: any) {
     this.roomToEdit = room;
     console.log('room to edit', this.roomToEdit);
     this.showModalAddEditRoom = true;
   }
+
   closeModalDeleteRoom(event: any) {
     if (!event) {
       this.showModalDeleteRoom = false;
@@ -111,6 +130,7 @@ export class HomePageRoomComponent implements OnInit {
       }
     }
   }
+
   loadMoreRooms() {
     if (this.rooms.length >= this.totalRooms) {
       this.loading = false;
@@ -127,7 +147,20 @@ export class HomePageRoomComponent implements OnInit {
         }
       });
   }
+
   openModalAddRoom() {
     this.showModalAddEditRoom = true;
+  }
+
+
+  viewRoomDetail(room: any) {
+    const dialogRef = this.dialog.open(RoomDetailModalComponent, {
+      data: {room}
+
+    });
+    console.log("room 2",room);
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Modal đóng:', result);
+    });
   }
 }
