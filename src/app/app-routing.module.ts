@@ -11,6 +11,7 @@ import {PageNotFoundComponent} from "./Components/page-not-found/page-not-found.
 
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
+  { path: 'home', component: HomePageRoomComponent },
   { path: 'my-profile/:id', component: MyProfileComponent },
   {
     path: 'my-profile/:id/news-feed-my-profile',
