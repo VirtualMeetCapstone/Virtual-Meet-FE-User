@@ -98,8 +98,8 @@ export class RoomComponentComponent implements OnInit {
         }
       });
       this.user = await this.authService.getBackendUser(this.userId);
-      await this.roomHubService.joinRoom(this.user?.name, this.roomId);
-      console.log("name", this.user?.name);
+      await this.roomHubService.joinRoom(this.userId, this.roomId);
+
       this.initializeEventListeners();
 
       this.roomHubService.participants$.subscribe(count => {

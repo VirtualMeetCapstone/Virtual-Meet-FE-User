@@ -110,8 +110,17 @@ export class RoomHubService {
       if (this.currentUser.roomId) {
         this.currentUser.roomId = '';
       }
+    })
+
+    this.hubConnection.on('Disconnect', () => {
+      console.log('🚨 Server yêu cầu ngắt kết nối!');
+      this.cleanup();
     });
+
+
   }
+
+
 
   // Room management
   public async joinRoom(username: string, roomId: string): Promise<void> {
