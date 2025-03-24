@@ -1,0 +1,26 @@
+{
+  "header": {
+    "CREATOR_TOOLS": "Creator tools",
+    "LANGUAGE": "English",
+    "FEEDBACK_HELP": "Feedback and help",
+    "DARK_MODE": "Dark mode",
+    "NOTIFICATIONS": {
+      "TITLE" :"Notifications",
+      "MARK_AS_READ": "Mark as read",
+      "LOAD_MORE": "Load More...",
+      "NO_MORE_DATA": "No more data to load",
+      "VIEW_ALL": "View all",
+      "SETTINGS": "Settings"
+    }
+  },
+  "nav-bar": {
+    "MENU": {
+      "href1": "For you",
+      "href2": "Explore",
+      "href3": "Following",
+      "href4": "LIVE",
+      "href5": "Friends",
+      "href6": "Profile"
+    }
+  }
+}
