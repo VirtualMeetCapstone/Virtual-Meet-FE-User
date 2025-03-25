@@ -56,6 +56,13 @@
   <!-- Control Buttons -->
   <div class="action-btn-group">
     <div class="controls">
+      <app-emotion-controls (raiseHand)="onRaiseHand()" (emotionSent)="onEmotionSent($event)"></app-emotion-controls>
+      <div class="emotion-bubbles">
+        <div *ngFor="let bubble of bubbles" class="emotion-bubble" [ngClass]="bubble.type" [style.left.px]="bubble.x" [style.bottom.px]="bubble.y">
+          <i [ngClass]="getIcon(bubble.type)"></i>
+          <span class="bubble-name">{{ bubble.userName }}</span>
+        </div>
+      </div>
       <button class="control-btn" (click)="toggleScreenShare()">
         <i [ngClass]="isScreenSharing ? 'fa-solid fa-stop' : 'fa-solid fa-display'"></i>
       </button>
