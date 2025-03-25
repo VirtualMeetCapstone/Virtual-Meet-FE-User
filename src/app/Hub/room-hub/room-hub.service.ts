@@ -21,7 +21,7 @@ export class RoomHubService {
     private router: Router
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_LOCAL_BASE_URL}/roomHub`, {
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
         withCredentials: true,
       })
       .withAutomaticReconnect()
