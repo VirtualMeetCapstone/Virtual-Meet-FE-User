@@ -21,7 +21,7 @@ export class RoomHubService {
     private router: Router
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
+      .withUrl(`${AppConstants.API_LOCAL_BASE_URL}/roomHub`, {
         withCredentials: true,
       })
       .withAutomaticReconnect()
@@ -180,8 +180,14 @@ console.log("userName", username)
 
   // Thêm phương thức gửi Raise Hand
   public async sendRaiseHand(): Promise<void> {
-    await this.hubConnection.invoke('SendRaiseHand', this.currentUser.name, this.currentUser.roomId);
-    console.log('✋ Raise hand sent');
+    const userName = this.currentUser.name;
+    await this.hubConnection.invoke('SendRaiseHand', userName, this.currentUser.roomId);
+  }
+
+  public async sendLowerHand(): Promise<void> {
+    const userName = this.currentUser.name;
+    await this.hubConnection.invoke('SendLowerHand', userName, this.currentUser.roomId);
+
   }
 
   // Thêm phương thức gửi Emotion
@@ -201,6 +207,11 @@ console.log("userName", username)
 public receiveRaiseHand(callback: (username: string) => void): void {
   this.hubConnection.off('ReceiveRaiseHand');
   this.hubConnection.on('ReceiveRaiseHand', callback);
+}
+
+public receiveLowerHand(callback: (username: string) => void): void {
+  this.hubConnection.off('ReceiveLowerHand');
+  this.hubConnection.on('ReceiveLowerHand', callback);
 }
 
 // Thêm hàm lắng nghe Emotion

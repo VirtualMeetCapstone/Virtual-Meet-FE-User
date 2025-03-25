@@ -30,11 +30,6 @@ export class RoomComponentComponent implements OnInit {
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
-  roomId: string = '';
-  userId: string = '';
-  userList: string[] = [];
-  user: any = null;
-
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -48,6 +43,14 @@ export class RoomComponentComponent implements OnInit {
   ) {
     this.userId = authService.getUser()?.id;
   }
+
+//start init
+  roomId: string = '';
+  userId: string = '';
+  userList: string[] = [];
+  user: any = null;
+  raisedHands: string[] = [];
+
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
   isActivityModalOpen: boolean = false;
@@ -69,7 +72,7 @@ export class RoomComponentComponent implements OnInit {
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
-
+//end init
 
   ngOnDestroy() {
     this.leaveRoom();
@@ -309,9 +312,6 @@ export class RoomComponentComponent implements OnInit {
       }
     }
   }
-  onRaiseHand() {
-    console.log('Raise hand triggered');
-  }
 
   onEmotionSent(event: { type: string; userName: string; x: number; y: number }) {
     console.log('🔹 Full event received:', event);
@@ -342,13 +342,51 @@ export class RoomComponentComponent implements OnInit {
 }
 
 
-  getIcon(type: string): string {
-    switch (type) {
-      case 'love': return 'fa-solid fa-heart';
-      case 'haha': return 'fa-solid fa-face-laugh';
-      default: return '';
-    }
+onRaiseHand(event: { userName: string }) {
+  if (!event || !event.userName) {
+      console.error("❌ Invalid raise hand event received:", event);
+      return;
   }
 
+  console.log(`🙋 ${event.userName} đã giơ tay ✋`);
+
+  // Kiểm tra xem user đã giơ tay chưa, nếu chưa thì thêm vào
+  if (!this.raisedHands.includes(event.userName)) {
+      this.raisedHands.push(event.userName);
+  }
+
+  // Bắt buộc UI cập nhật
+  this.cdr.detectChanges();
+}
+
+onLowerHand(event: { userName: string }) {
+  if (!event || !event.userName) {
+      console.error("❌ Invalid lower hand event received:", event);
+      return;
+  }
+
+  console.log(`🙅 ${event.userName} đã hạ tay ✋`);
+
+  // Loại bỏ user khỏi danh sách giơ tay nếu họ có trong danh sách
+  const index = this.raisedHands.indexOf(event.userName);
+  if (index !== -1) {
+      this.raisedHands.splice(index, 1);
+  }
+
+  // Bắt buộc UI cập nhật
+  this.cdr.detectChanges();
+}
+
+getIcon(type: string): string {
+  switch (type) {
+    case 'love': return 'fa-solid fa-heart';
+    case 'haha': return 'fa-solid fa-face-laugh';
+    case 'like': return 'fa-solid fa-thumbs-up';
+    case 'wow': return 'fa-solid fa-face-surprise';
+    case 'sad': return 'fa-solid fa-face-sad-tear';
+    case 'angry': return 'fa-solid fa-face-angry';
+    default: return '';
+  }
+}
 
 }

@@ -558,7 +558,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  animation: floatUp 2s ease-out forwards;
+  animation: floatUp 5s ease-out forwards;
 }
 
 .emotion-bubble i {
@@ -567,6 +567,10 @@
 
 .emotion-bubble.love i { color: #ff4444; }
 .emotion-bubble.haha i { color: #ffd700; }
+.emotion-bubble.like i { color: #1877f2; }
+.emotion-bubble.wow i { color: #ff9900; }
+.emotion-bubble.sad i { color: #6699ff; }
+.emotion-bubble.angry i{ color: #ff3300; }
 
 .bubble-name {
   background: rgba(255, 255, 255, 0.8);
@@ -579,4 +583,22 @@
 @keyframes floatUp {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-200px); }
+}
+
+
+.raise-hand-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  color: #ffcc00; /* Màu vàng nổi bật */
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
+  animation: wave 1s infinite alternate;
+}
+
+@keyframes wave {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2); }
 }
