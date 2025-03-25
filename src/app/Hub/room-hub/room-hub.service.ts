@@ -104,6 +104,15 @@ export class RoomHubService {
       console.log(`🔗 Received share from ${username}`);
     });
 
+
+    this.hubConnection.on('ReceiveRaiseHand', (username: string) => {
+      console.log(`✋ ${username} raised hand`);
+    });
+
+    this.hubConnection.on('ReceiveEmotion', (username: string, type: string, x: number, y: number) => {
+      console.log(`😊 Received emotion from ${username}: ${type} at (${x}, ${y})`);
+    });
+
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
@@ -125,7 +134,7 @@ export class RoomHubService {
   // Room management
   public async joinRoom(username: string, roomId: string): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
-
+console.log("userName", username)
     if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
       await this.startConnection();
     }
@@ -157,6 +166,30 @@ export class RoomHubService {
       this.localStream = null;
     }
   }
+
+  // Thêm phương thức gửi Raise Hand
+  public async sendRaiseHand(): Promise<void> {
+    await this.hubConnection.invoke('SendRaiseHand', this.currentUser.name, this.currentUser.roomId);
+    console.log('✋ Raise hand sent');
+  }
+
+  // Thêm phương thức gửi Emotion
+  public async sendEmotion(type: string, x: number, y: number): Promise<void> {
+    await this.hubConnection.invoke('SendEmotion', this.currentUser.name, this.currentUser.roomId, type, x, y);
+    console.log(`😊 Emotion ${type} sent at (${x}, ${y})`);
+  }
+
+// Thêm hàm lắng nghe Raise Hand
+public receiveRaiseHand(callback: (username: string) => void): void {
+  this.hubConnection.off('ReceiveRaiseHand');
+  this.hubConnection.on('ReceiveRaiseHand', callback);
+}
+
+// Thêm hàm lắng nghe Emotion
+public receiveEmotion(callback: (username: string, type: string, x: number, y: number) => void): void {
+  this.hubConnection.off('ReceiveEmotion');
+  this.hubConnection.on('ReceiveEmotion', callback);
+}
 
   // Media controls
   public toggleAudio(): void {
@@ -191,6 +224,8 @@ export class RoomHubService {
     await this.hubConnection.invoke('SendShare');
     console.log('🔗 Share sent');
   }
+
+
 
   // Video sync features
   public async selectVideo(roomId: string, videoId: string): Promise<void> {

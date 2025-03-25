@@ -68,6 +68,8 @@ export class RoomComponentComponent implements OnInit {
 
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
+  bubbles: { type: string; userName: string; x: number; y: number }[] = [];
+
 
   ngOnDestroy() {
     this.leaveRoom();
@@ -307,6 +309,37 @@ export class RoomComponentComponent implements OnInit {
       } catch (error) {
         console.error("❌ Lỗi khi dừng quay:", error);
       }
+    }
+  }
+  onRaiseHand() {
+    console.log('Raise hand triggered');
+  }
+
+  onEmotionSent(event: { type: string; userName: string; x: number; y: number }) {
+    if (!event || !event.userName) {
+      console.error('Invalid emotion event received');
+      return;
+  }
+
+  console.log('Received emotion:', event);
+
+  const displayName = event.userName === this.userId ? 'you' : event.userName;
+  const modifiedEvent = {
+      ...event,
+      userName: displayName
+  };
+
+  this.bubbles.push(modifiedEvent);
+  setTimeout(() => {
+      this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
+  }, 2000);
+  }
+
+  getIcon(type: string): string {
+    switch (type) {
+      case 'love': return 'fa-solid fa-heart';
+      case 'haha': return 'fa-solid fa-face-laugh';
+      default: return '';
     }
   }
 

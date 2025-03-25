@@ -69,7 +69,7 @@ import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/
 import { SearchComponent } from './Components/Common/search/search.component';
 import { RoomDetailModalComponent } from './Components/room-detail-modal/room-detail-modal.component';
 
-
+import {EmotionControlsComponent} from './Components/room-component/emotion-controls/emotion-controls.component';
 
 import {  HttpBackend, HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -119,6 +119,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     SearchComponent,
     PageNotFoundComponent,
     RoomDetailModalComponent,
+    EmotionControlsComponent
   ],
   imports: [
     BrowserModule,
