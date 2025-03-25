@@ -7,7 +7,6 @@
 </div>
 
 <div class="container-button d-flex justify-content-center">
-
   <button
     type="button"
     class="btn btn-secondary"
@@ -19,8 +18,8 @@
 </div>
 
 <div class="container">
-  <div class="row" style="width: 100%;">
-    <div class="col-12 text-center p-3" >
+  <div class="row" style="width: 100%">
+    <div class="col-12 text-center p-3">
       <app-story-list></app-story-list>
     </div>
   </div>
@@ -106,8 +105,6 @@
         <i class="fas fa-ellipsis-h"></i>
       </div>
     </div>
-
-
   </div>
 </div>
 
@@ -117,7 +114,7 @@
   [infiniteScrollDistance]="1"
   [infiniteScrollThrottle]="300"
 >
-  <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
+  <h3 style="font-weight: bold; text-align: center" *ngIf="loading == true">
     Load More...
   </h3>
   <h3 style="font-weight: bold; text-align: center" *ngIf="loading == false">
