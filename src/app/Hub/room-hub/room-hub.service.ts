@@ -186,9 +186,16 @@ console.log("userName", username)
 
   // Thêm phương thức gửi Emotion
   public async sendEmotion(type: string, x: number, y: number): Promise<void> {
-    await this.hubConnection.invoke('SendEmotion', this.currentUser.name, this.currentUser.roomId, type, x, y);
+    const userName = this.currentUser.name;
+    const roomId = this.currentUser.roomId;
+
+    console.log(`🔹 Sending emotion from user: ${userName}, room: ${roomId}`);
+
+    await this.hubConnection.invoke('SendEmotion', userName, roomId, type, x, y);
+
     console.log(`😊 Emotion ${type} sent at (${x}, ${y})`);
-  }
+}
+
 
 // Thêm hàm lắng nghe Raise Hand
 public receiveRaiseHand(callback: (username: string) => void): void {

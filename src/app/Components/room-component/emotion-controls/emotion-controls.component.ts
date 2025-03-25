@@ -24,7 +24,7 @@ export class EmotionControlsComponent {
       console.log(`Received emotion from ${username}: ${type} at (${x}, ${y})`);
 
       if (username !== this.userId ) {
-        this.user = authService.getBackendUser(this.userId);
+        this.user = authService.getBackendUser(username);
         this.name = this.user.__zone_symbol__value.name;;
         this.emotionSent.emit({ type, userName:  this.name, x, y });
       }
