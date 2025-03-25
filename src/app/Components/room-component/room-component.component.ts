@@ -15,6 +15,7 @@ import { PlayerService } from '../../services/youtubeplayer-service/player.servi
 import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-player.component';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Peer } from '../../models/rtc/pere';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -36,6 +37,7 @@ export class RoomComponentComponent implements OnInit {
 
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
@@ -331,11 +333,12 @@ export class RoomComponentComponent implements OnInit {
 
     this.bubbles.push(modifiedEvent);
     console.log('💬 Updated bubbles:', this.bubbles);
-
+    this.cdr.detectChanges();
     setTimeout(() => {
         this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
         console.log('🧹 Bubbles after timeout:', this.bubbles);
-    }, 5000);
+        this.cdr.detectChanges();
+    }, 7000);
 }
 
 
