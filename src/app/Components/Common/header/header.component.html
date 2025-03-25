@@ -37,13 +37,15 @@
             <h4 id="notification-title">{{ 'header.NOTIFICATIONS.TITLE' | translate }}</h4>
             <div class="notification-item" *ngFor="let notification of notifications">
               <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
-              <div class="notification-content" (click)="getNotification(notification)">
-                <p>
+              <div class="notification-content" >
+                <p (click)="getNotification(notification)">
                   <strong style="color: white">{{ notification.actor.name }}</strong>
                   {{ notification.content }}.
                 </p>
                 <p class="notification-time"></p>
-                <p class="notification-action">{{ 'header.NOTIFICATIONS.MARK_AS_READ' | translate }}</p>
+
+                <p class="notification-action" *ngIf="!notification.isRead" (click)="markAsRead(notification.id)">{{ 'header.NOTIFICATIONS.MARK_AS_READ' | translate }}</p>
+
               </div>
             </div>
             <div infiniteScroll [infiniteScrollContainer]="scrollContainer" (scrolled)="loadMoreNotification()" [infiniteScrollThrottle]="300">

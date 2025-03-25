@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {AppConstants} from "../../constant/AppConstants";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, tap} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +50,13 @@ export class NotificationServiceService {
 
   openRoomDetail(roomId: string) {
     this.roomDetailSubject.next(roomId);
+  }
+  markAsRead(userId: string, notificationId: string): Observable<any> {
+    return this.http.patch(`${this.url}users/${userId}/notifications/${notificationId}/mark-as-read`, {}).pipe(
+      tap(() => {
+        this.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+      })
+    );
   }
 
 }
