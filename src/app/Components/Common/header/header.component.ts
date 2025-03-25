@@ -10,18 +10,13 @@ import {
 } from '@angular/core';
 import {AuthService} from '../../../services/auth-service/auth.service';
 import {Router} from '@angular/router';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
-import {firstValueFrom, Subject, window} from 'rxjs';
+import { Subject, window} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ExternalServiceService} from '../../../services/external-service/external-service.service';
 import {NotificationServiceService} from "../../../services/notification-service/notification-service.service";
 import {Notification} from "../../../models/notification";
-import {ModalDetailpostComponent} from "../../home-page-post/modal-detailpost/modal-detailpost.component";
-import {MatDialog} from "@angular/material/dialog";
 import {StoryService} from "../../../services/story-service/story-service.service";
 import {Story} from "../../../models/story";
-import {RoomDetailModalComponent} from "../../room-detail-modal/room-detail-modal.component";
-import {RoomServicesService} from "../../../services/room-service/room-services.service";
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -31,6 +26,26 @@ import { TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  lastScrollTop = 0;
+  isHidden = false;
+  isSticky = false;
+
+  @HostListener('window:scroll', [])
+  onScroll() {
+    if (typeof window !== 'undefined') {
+      const st = (window as any).pageYOffset || document.documentElement.scrollTop;
+      if (st < this.lastScrollTop - 10) {
+        this.isHidden = false;
+        this.isSticky = true;
+      }
+      else if (st > this.lastScrollTop + 10) {
+        this.isHidden = true;
+      }
+      this.lastScrollTop = st <= 0 ? 0 : st;
+    }
+  }
+
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
@@ -70,13 +85,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private sanitizer: DomSanitizer,
     private externalService: ExternalServiceService,
     private cdr: ChangeDetectorRef,
     private notifyService: NotificationServiceService,
-    private dialog: MatDialog,
     private storyService: StoryService,
-    private roomService: RoomServicesService,
     private translate: TranslateService,
   ) {
   }
@@ -84,7 +96,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   notifications: Notification[] = [];
 
   ngOnInit() {
-  // Kiểm tra nếu đang chạy trên trình duyệt thì mới truy cập localStorage
   if (typeof window !== 'undefined') {
     const savedLang = localStorage.getItem('language');
     if (savedLang) {
@@ -94,7 +105,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       localStorage.setItem('language', this.currentLanguage);
       this.translate.setDefaultLang(this.currentLanguage);
     }
-    console.log('Ngôn ngữ hiện tại:', this.currentLanguage);
   }
 
     this.isLoadingUser = true;
@@ -352,21 +362,13 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   toggleLanguage(event: Event) {
     event.preventDefault(); // Ngăn chặn reload trang
     this.currentLanguage = this.currentLanguage === 'en' ? 'vi' : 'en';
-    console.log("ngon ngu",  this.currentLanguage)
     this.switchLanguage(this.currentLanguage);
   }
   switchLanguage(lang: string) {
-    console.log("Đang chuyển sang ngôn ngữ:", lang);
     this.translate.use(lang).subscribe(() => {
-      console.log("Ngôn ngữ sau khi đổi:", this.translate.currentLang);
-
-      // Kiểm tra nếu đang chạy trên trình duyệt mới truy cập localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('language', lang);
       }
     });
   }
-
-
-
 }

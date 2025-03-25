@@ -1,3 +1,4 @@
+<header [class.hidden-header]="isHidden" [class.sticky-header]="isSticky">
 <div class="row p-3">
   <!-- Logo Virtual Meet -->
   <div class="col-lg-4 col-md-4 col-sm-6 col-6">
@@ -99,3 +100,4 @@
   <app-login-modal [isShowLoginDialog]="isShowLoginDialog" (openLoginDialog)="isShowLoginDialog = $event">
   </app-login-modal>
 </div>
+</header>
