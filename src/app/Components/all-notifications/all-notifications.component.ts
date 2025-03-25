@@ -32,7 +32,7 @@ export class AllNotificationsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserFromToken().id;
+    this.userId = this.authService.getUser()?.id;
 
     this.loadMoreNotification();
   }
@@ -73,6 +73,7 @@ export class AllNotificationsComponent implements OnInit {
 
   getNotification(notification: Notification) {
     // alert(notification.type)
+    this.markAsRead(notification.id);
     switch (notification.type) {
       case 1:
 
@@ -190,6 +191,19 @@ export class AllNotificationsComponent implements OnInit {
     );
   }
 
+  markAsRead( notificationId: string): void {
+    this.notifyService.markAsRead(this.userId, notificationId).subscribe({
+      next: (res) =>
+      {
+        console.log('Notification marked as read', res)
+        const notification = this.notifications.find(n => n.id === notificationId);
+        if (notification) {
+          notification.isRead = true;
+        }
+      },
+      error: (err) => console.error('Error marking as read', err)
+    });
 
+  }
 
 }

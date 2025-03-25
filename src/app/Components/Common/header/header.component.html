@@ -36,13 +36,13 @@
             <h4 id="notification-title">Thông báo</h4>
             <div class="notification-item" *ngFor="let notification of notifications">
               <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
-              <div class="notification-content" (click)="getNotification(notification)">
-                <p>
+              <div class="notification-content" >
+                <p (click)="getNotification(notification)">
                   <strong style="color: white">{{ notification.actor.name }}</strong>
                   {{ notification.content }}.
                 </p>
                 <p class="notification-time"></p>
-                <p class="notification-action">Đánh dấu đã đọc</p>
+                <p class="notification-action" *ngIf="!notification.isRead" (click)="markAsRead(notification.id)">Đánh dấu đã đọc</p>
               </div>
             </div>
             <div infiniteScroll [infiniteScrollContainer]="scrollContainer" (scrolled)="loadMoreNotification()" [infiniteScrollThrottle]="300">

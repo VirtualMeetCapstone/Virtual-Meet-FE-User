@@ -199,6 +199,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getNotification(notification: Notification) {
     // alert(notification.type)
+    this.markAsRead(notification.id);
     switch (notification.type) {
       case 1:
 
@@ -316,5 +317,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  markAsRead( notificationId: string): void {
+    this.notifyService.markAsRead(this.userId, notificationId).subscribe({
+      next: (res) => console.log('Notification marked as read', res),
+      error: (err) => console.error('Error marking as read', err)
+    });
+
+  }
 
 }
