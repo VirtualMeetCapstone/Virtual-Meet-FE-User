@@ -1,8 +1,9 @@
 <div class="controls">
-  <!-- Nút Raise Hand -->
-  <button class="control-btn" (click)="sendRaiseHand()">
-    <i class="fa-solid fa-hand"></i>
-  </button>
+<!-- Nút Toggle Raise/Lower Hand -->
+<button class="control-btn" (click)="toggleRaiseHand()">
+  <i class="fa-solid" [ngClass]="isHandRaised ? 'fa-hand' : 'fa-hand-back-fist'"></i>
+</button>
+
 
   <!-- Nút Emotion -->
   <div class="emotion-container">
@@ -10,12 +11,25 @@
       <i class="fa-solid fa-face-smile"></i>
     </button>
     <div class="emotion-options">
+      <button class="emotion-option" (click)="sendEmotion('like')" title="Like">
+        <i class="fa-solid fa-thumbs-up"></i>
+      </button>
       <button class="emotion-option" (click)="sendEmotion('love')" title="Love">
         <i class="fa-solid fa-heart"></i>
       </button>
       <button class="emotion-option" (click)="sendEmotion('haha')" title="Haha">
         <i class="fa-solid fa-face-laugh"></i>
       </button>
+      <button class="emotion-option" (click)="sendEmotion('wow')" title="Wow">
+        <i class="fa-solid fa-face-surprise"></i>
+      </button>
+      <button class="emotion-option" (click)="sendEmotion('sad')" title="Sad">
+        <i class="fa-solid fa-face-sad-tear"></i>
+      </button>
+      <button class="emotion-option" (click)="sendEmotion('angry')" title="Angry">
+        <i class="fa-solid fa-face-angry"></i>
+      </button>
     </div>
+
   </div>
 </div>

@@ -5,6 +5,9 @@
       <div class="profile"></div>
       <video [srcObject]="peer.stream" autoplay playsinline></video>
       <p class="user-name">{{ peer.userName }}</p>
+ <div class="raise-hand-icon" *ngIf="raisedHands.includes(peer.userName)">
+  ✋
+</div>
       <button class="pin-btn" (click)="pinUser(peer)">
         <i [ngClass]="pinnedUser?.userName === peer.userName ? 'fa-solid fa-thumbtack' : 'fa-solid fa-thumbtack'"></i>
       </button>
@@ -56,7 +59,7 @@
   <!-- Control Buttons -->
   <div class="action-btn-group">
     <div class="controls">
-      <app-emotion-controls (raiseHand)="onRaiseHand()" (emotionSent)="onEmotionSent($event)"></app-emotion-controls>
+      <app-emotion-controls (lowerHand)="onLowerHand($event)" (raiseHand)="onRaiseHand($event)" (emotionSent)="onEmotionSent($event)"></app-emotion-controls>
       <div class="emotion-bubbles">
         <div *ngFor="let bubble of bubbles" class="emotion-bubble" [ngClass]="bubble.type" [style.left.px]="bubble.x" [style.bottom.px]="bubble.y">
           <i [ngClass]="getIcon(bubble.type)"></i>
