@@ -14,8 +14,8 @@ import { RtcHubService } from '../../Hub/rtc-hub/rtc-hub.service';
 import { PlayerService } from '../../services/youtubeplayer-service/player.service';
 import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-player.component';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { Router } from '@angular/router';
 import { Peer } from '../../models/rtc/pere';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -37,8 +37,8 @@ export class RoomComponentComponent implements OnInit {
 
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private router: Router,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
     private rtcHub: RtcHubService,
@@ -68,6 +68,8 @@ export class RoomComponentComponent implements OnInit {
 
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
+  bubbles: { type: string; userName: string; x: number; y: number }[] = [];
+
 
   ngOnDestroy() {
     this.leaveRoom();
@@ -98,8 +100,8 @@ export class RoomComponentComponent implements OnInit {
         }
       });
       this.user = await this.authService.getBackendUser(this.userId);
-      await this.roomHubService.joinRoom(this.user?.name, this.roomId);
-      console.log("name", this.user?.name);
+      await this.roomHubService.joinRoom(this.userId, this.roomId);
+
       this.initializeEventListeners();
 
       this.roomHubService.participants$.subscribe(count => {
@@ -199,9 +201,7 @@ export class RoomComponentComponent implements OnInit {
   async leaveRoom() {
     try {
       await this.roomHubService.leaveRoom();
-      this.router.navigate(['/home']).then(() => {
-        window.location.reload();
-      });
+
     } catch (err) {
       console.error('Error leaving room:', err);
     }
@@ -307,6 +307,46 @@ export class RoomComponentComponent implements OnInit {
       } catch (error) {
         console.error("❌ Lỗi khi dừng quay:", error);
       }
+    }
+  }
+  onRaiseHand() {
+    console.log('Raise hand triggered');
+  }
+
+  onEmotionSent(event: { type: string; userName: string; x: number; y: number }) {
+    console.log('🔹 Full event received:', event);
+    console.log('🔹 Current userId:', this.userId);
+    console.log('🔹 Event userName:', event.userName);
+
+    if (!event || !event.userName) {
+        console.error('❌ Invalid emotion event received');
+        return;
+    }
+
+    const displayName = event.userName === this.userId ? 'you' : event.userName;
+    console.log(`👤 Display name resolved: ${displayName}`);
+
+    const modifiedEvent = {
+        ...event,
+        userName: displayName
+    };
+
+    this.bubbles.push(modifiedEvent);
+    console.log('💬 Updated bubbles:', this.bubbles);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+        this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
+        console.log('🧹 Bubbles after timeout:', this.bubbles);
+        this.cdr.detectChanges();
+    }, 7000);
+}
+
+
+  getIcon(type: string): string {
+    switch (type) {
+      case 'love': return 'fa-solid fa-heart';
+      case 'haha': return 'fa-solid fa-face-laugh';
+      default: return '';
     }
   }
 

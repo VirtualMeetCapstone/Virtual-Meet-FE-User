@@ -5,22 +5,19 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  ViewChild, ElementRef
+  ViewChild, ElementRef,
+  HostListener
 } from '@angular/core';
 import {AuthService} from '../../../services/auth-service/auth.service';
 import {Router} from '@angular/router';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
-import {firstValueFrom, Subject, window} from 'rxjs';
+import { Subject, window} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ExternalServiceService} from '../../../services/external-service/external-service.service';
 import {NotificationServiceService} from "../../../services/notification-service/notification-service.service";
 import {Notification} from "../../../models/notification";
-import {ModalDetailpostComponent} from "../../home-page-post/modal-detailpost/modal-detailpost.component";
-import {MatDialog} from "@angular/material/dialog";
 import {StoryService} from "../../../services/story-service/story-service.service";
 import {Story} from "../../../models/story";
-import {RoomDetailModalComponent} from "../../room-detail-modal/room-detail-modal.component";
-import {RoomServicesService} from "../../../services/room-service/room-services.service";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -29,7 +26,43 @@ import {RoomServicesService} from "../../../services/room-service/room-services.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  lastScrollTop = 0;
+  isHidden = false;
+  isSticky = false;
+
+  @HostListener('window:scroll', [])
+  onScroll() {
+    if (typeof window !== 'undefined') {
+      const st = (window as any).pageYOffset || document.documentElement.scrollTop;
+      if (st < this.lastScrollTop - 10) {
+        this.isHidden = false;
+        this.isSticky = true;
+      }
+      else if (st > this.lastScrollTop + 10) {
+        this.isHidden = true;
+      }
+      this.lastScrollTop = st <= 0 ? 0 : st;
+    }
+  }
+
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.notification-icon')) {
+      this.isShowNotification = false;
+    }
+
+    if (!target.closest('.user-info')) {
+      this.isShowUserMenu = false;
+    }
+
+    if (!target.closest('.menu-icon')) {
+      this.isShowDropdown = false;
+    }
+  }
 
   isShowDropdown = false;
   isShowLoginDialog = false;
@@ -42,6 +75,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   userId: string = '';
   pageSize: number = 10;
   skip: number = 0;
+  currentLanguage = 'en';
   loading = false;
   totalNotification: number | null = null; // Để kiểm tra khi chưa load xong
 
@@ -51,19 +85,28 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private sanitizer: DomSanitizer,
     private externalService: ExternalServiceService,
     private cdr: ChangeDetectorRef,
     private notifyService: NotificationServiceService,
-    private dialog: MatDialog,
     private storyService: StoryService,
-    private roomService: RoomServicesService,
+    private translate: TranslateService,
   ) {
   }
 
   notifications: Notification[] = [];
 
   ngOnInit() {
+  if (typeof window !== 'undefined') {
+    const savedLang = localStorage.getItem('language');
+    if (savedLang) {
+      this.currentLanguage = savedLang;
+      this.translate.use(this.currentLanguage);
+    } else {
+      localStorage.setItem('language', this.currentLanguage);
+      this.translate.setDefaultLang(this.currentLanguage);
+    }
+  }
+
     this.isLoadingUser = true;
     this.authService.loggedIn$
       .pipe(takeUntil(this.destroy$))
@@ -317,12 +360,27 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+
   markAsRead( notificationId: string): void {
     this.notifyService.markAsRead(this.userId, notificationId).subscribe({
       next: (res) => console.log('Notification marked as read', res),
       error: (err) => console.error('Error marking as read', err)
     });
 
+  }
+
+
+  toggleLanguage(event: Event) {
+    event.preventDefault(); // Ngăn chặn reload trang
+    this.currentLanguage = this.currentLanguage === 'en' ? 'vi' : 'en';
+    this.switchLanguage(this.currentLanguage);
+  }
+  switchLanguage(lang: string) {
+    this.translate.use(lang).subscribe(() => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('language', lang);
+      }
+    });
   }
 
 }

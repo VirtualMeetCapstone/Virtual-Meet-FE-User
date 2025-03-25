@@ -1,0 +1,21 @@
+<div class="controls">
+  <!-- Nút Raise Hand -->
+  <button class="control-btn" (click)="sendRaiseHand()">
+    <i class="fa-solid fa-hand"></i>
+  </button>
+
+  <!-- Nút Emotion -->
+  <div class="emotion-container">
+    <button class="control-btn emotion-btn">
+      <i class="fa-solid fa-face-smile"></i>
+    </button>
+    <div class="emotion-options">
+      <button class="emotion-option" (click)="sendEmotion('love')" title="Love">
+        <i class="fa-solid fa-heart"></i>
+      </button>
+      <button class="emotion-option" (click)="sendEmotion('haha')" title="Haha">
+        <i class="fa-solid fa-face-laugh"></i>
+      </button>
+    </div>
+  </div>
+</div>

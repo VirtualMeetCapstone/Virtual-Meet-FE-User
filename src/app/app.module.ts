@@ -69,6 +69,17 @@ import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/
 import { SearchComponent } from './Components/Common/search/search.component';
 import { RoomDetailModalComponent } from './Components/room-detail-modal/room-detail-modal.component';
 
+import {EmotionControlsComponent} from './Components/room-component/emotion-controls/emotion-controls.component';
+
+import {  HttpBackend, HttpClient } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {MultiTranslateHttpLoader} from 'ngx-translate-multi-http-loader';
+
+
+export function HttpLoaderFactory(_httpBackend: HttpBackend) {
+  return new MultiTranslateHttpLoader(_httpBackend, [ 'assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -108,6 +119,7 @@ import { RoomDetailModalComponent } from './Components/room-detail-modal/room-de
     SearchComponent,
     PageNotFoundComponent,
     RoomDetailModalComponent,
+    EmotionControlsComponent
   ],
   imports: [
     BrowserModule,
@@ -127,6 +139,13 @@ import { RoomDetailModalComponent } from './Components/room-detail-modal/room-de
     NgOptimizedImage,
     SpeedDialModule,
     Toast,
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpBackend]
+      }
+  })
   ],
   providers: [
     provideClientHydration(),
