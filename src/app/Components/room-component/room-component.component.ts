@@ -316,24 +316,32 @@ export class RoomComponentComponent implements OnInit {
   }
 
   onEmotionSent(event: { type: string; userName: string; x: number; y: number }) {
+    console.log('🔹 Full event received:', event);
+    console.log('🔹 Current userId:', this.userId);
+    console.log('🔹 Event userName:', event.userName);
+
     if (!event || !event.userName) {
-      console.error('Invalid emotion event received');
-      return;
-  }
+        console.error('❌ Invalid emotion event received');
+        return;
+    }
 
-  console.log('Received emotion:', event);
+    const displayName = event.userName === this.userId ? 'you' : event.userName;
+    console.log(`👤 Display name resolved: ${displayName}`);
 
-  const displayName = event.userName === this.userId ? 'you' : event.userName;
-  const modifiedEvent = {
-      ...event,
-      userName: displayName
-  };
+    const modifiedEvent = {
+        ...event,
+        userName: displayName
+    };
 
-  this.bubbles.push(modifiedEvent);
-  setTimeout(() => {
-      this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
-  }, 2000);
-  }
+    this.bubbles.push(modifiedEvent);
+    console.log('💬 Updated bubbles:', this.bubbles);
+
+    setTimeout(() => {
+        this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
+        console.log('🧹 Bubbles after timeout:', this.bubbles);
+    }, 5000);
+}
+
 
   getIcon(type: string): string {
     switch (type) {
