@@ -2,76 +2,75 @@
   position: relative;
   display: flex;
   align-items: center;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 10px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  max-width: 800px;
+  background: #fff;
+  border-radius: 30px;
+  padding: 12px 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  transition: box-shadow 0.3s ease;
   cursor: text;
 }
 
+.input-container:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
 .input {
-  flex-grow: 1;
+  flex: 1;
   border: none;
   outline: none;
   font-size: 16px;
   color: #333;
+  background: transparent;
 }
 
 .input::placeholder {
-  color: #aaa;
+  color: #bbb;
 }
 
 .label-for-search {
   cursor: pointer;
-  padding: 0 12px;
   display: flex;
   align-items: center;
-  transition: transform 0.3s ease;
+  margin-right: 10px;
 }
 
-.label-for-search:hover {
-  transform: scale(1.1);
+.search-icon {
+  width: 20px;
+  height: 20px;
+  fill: #888;
+  transition: fill 0.3s ease;
 }
 
 .label-for-search:hover .search-icon {
   fill: #ff5100;
-  transition: fill 0.3s ease;
-}
-
-.search-icon {
-  width: 18px;
-  fill: #666;
 }
 
 .divider {
   width: 1px;
-  height: 24px;
-  background-color: #e0e0e0;
-  margin: 0 12px;
+  height: 30px;
+  background: #ddd;
+  margin: 0 15px;
 }
 
 .mic-button {
   border: none;
-  background-color: transparent;
+  background: transparent;
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .mic-button:hover {
-  background-color: rgba(255, 81, 0, 0.1);
-}
-
-.mic-button.active {
-  background-color: rgba(255, 81, 0, 0.2);
-  transform: scale(1.1);
+  background: rgba(255, 81, 0, 0.1);
 }
 
 .mic-icon {
-  width: 18px;
+  width: 20px;
+  height: 20px;
   fill: #ff5100;
   transition: fill 0.3s ease;
 }
@@ -82,15 +81,14 @@
 
 .suggestions {
   position: absolute;
-  top: calc(100% + 5px);
+  top: calc(100% + 8px);
   left: 0;
   width: 100%;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 0;
-  max-height: 200px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  max-height: 300px;
   overflow-y: auto;
   opacity: 0;
   transform: translateY(-10px);
@@ -105,69 +103,73 @@
   pointer-events: auto;
 }
 
-/* Header của từng nhóm gợi ý */
-.suggestion-header {
-  padding: 5px 10px;
-  font-weight: bold;
-  color: #666;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #eee;
-}
-
-/* Các mục trong danh sách */
 .suggestions li {
+  list-style: none;
   padding: 10px 20px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  color: #333;
+  transition: background 0.2s ease;
+  font-size: 14px;
+  color: #444;
 }
 
 .suggestions li:hover {
-  background-color: #f0f0f0;
+  background: #f9f9f9;
 }
 
-/* Cấu hình riêng cho danh sách user */
+.suggestion-header {
+  padding: 8px 20px;
+  font-weight: bold;
+  color: #666;
+  background: #f3f3f3;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+}
+
 .user-suggestion {
   display: flex;
   align-items: center;
 }
 
 .user-avatar {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 12px;
   object-fit: cover;
 }
 
 .user-name {
   flex: 1;
-  color: #333;
+  font-size: 14px;
 }
 
-/* Bullet cho trend */
 .bullet {
   display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #ff5100;
+  background: #ff5100;
   margin-right: 8px;
 }
 
-/* Nếu cả hai nhóm có dữ liệu, thêm khoảng cách giữa chúng */
-.suggestions li.suggestion-header + li {
-  border-top: 1px solid #eee;
+.room-name {
+  font-size: 14px;
+  color: #444;
 }
 
-@media (max-width: 1000px) {
-  .input-container {
-    max-width: 350px;
-  }
+.post-name {
+  font-size: 14px;
+  color: #444;
 }
 
-@media (max-width: 768px) {
+/* Add spacing between groups */
+.suggestions .suggestion-header + li {
+  border-top: 1px solid #eaeaea;
+}
+
+@media (max-width: 600px) {
   .input-container {
-    display: none;
+    max-width: 100%;
+    padding: 10px 16px;
   }
 }

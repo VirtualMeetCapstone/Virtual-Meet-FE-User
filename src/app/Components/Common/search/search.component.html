@@ -34,7 +34,7 @@
   </button>
 
   <ul class="suggestions" [ngClass]="{ show: showSuggestions }">
-    <!-- User suggestions được hiển thị trước nếu có -->
+    <!-- User suggestions -->
     <ng-container *ngIf="userSuggestions.length > 0">
       <li class="suggestion-header">
         <img width="20" height="20" src="/img/user-icon.png" alt="user-icon" />
@@ -54,8 +54,34 @@
         <span class="user-name">{{ user.name }}</span>
       </li>
     </ng-container>
-
-    <!-- Trending suggestions được hiển thị sau -->
+    <!-- Room suggestions -->
+    <ng-container *ngIf="roomSuggestions.length > 0">
+      <li class="suggestion-header">
+        <img
+          width="20"
+          height="20"
+          src="/img/meeting-icon.png"
+          alt="room-icon"
+        />
+        Rooms
+      </li>
+      <li *ngFor="let room of roomSuggestions" (click)="selectSuggestion(room)">
+        <span class="bullet"></span>
+        <span class="room-name">{{ room.topic }}</span>
+      </li>
+    </ng-container>
+    <!-- Post suggestions -->
+    <ng-container *ngIf="postSuggestions.length > 0">
+      <li class="suggestion-header">
+        <img width="20" height="20" src="/img/post-icon.png" alt="post-icon" />
+        Posts
+      </li>
+      <li *ngFor="let post of postSuggestions" (click)="selectSuggestion(post)">
+        <span class="bullet"></span>
+        <span class="post-name">{{ post.content }}</span>
+      </li>
+    </ng-container>
+    <!-- Trending suggestions -->
     <ng-container *ngIf="trendSuggestions.length > 0">
       <li class="suggestion-header">
         <img
