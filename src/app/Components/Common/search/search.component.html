@@ -4,9 +4,10 @@
     name="text"
     class="input"
     id="input"
-    placeholder="Search"
+    placeholder="Search..."
     [value]="searchQuery"
     (input)="onSearch($event)"
+    (keyup.enter)="onEnter()"
     (focus)="onFocus()"
   />
 
@@ -20,7 +21,6 @@
 
   <div class="divider"></div>
 
-  <!-- Nút kích hoạt nhận diện giọng nói -->
   <button
     class="mic-button"
     [ngClass]="{ active: isRecording }"
@@ -33,13 +33,45 @@
     </svg>
   </button>
 
-  <!-- Thanh gợi ý hiển thị dạng overlay -->
   <ul class="suggestions" [ngClass]="{ show: showSuggestions }">
-    <li
-      *ngFor="let suggestion of suggestions"
-      (click)="selectSuggestion(suggestion)"
-    >
-      <span class="bullet"></span> {{ suggestion }}
-    </li>
+    <!-- User suggestions được hiển thị trước nếu có -->
+    <ng-container *ngIf="userSuggestions.length > 0">
+      <li class="suggestion-header">
+        <img width="20" height="20" src="/img/user-icon.png" alt="user-icon" />
+        Users
+      </li>
+      <li
+        *ngFor="let user of userSuggestions"
+        (click)="selectSuggestion(user)"
+        class="user-suggestion"
+      >
+        <img
+          [src]="user.picture.url"
+          [alt]="user.name"
+          class="user-avatar"
+          *ngIf="user.picture?.url"
+        />
+        <span class="user-name">{{ user.name }}</span>
+      </li>
+    </ng-container>
+
+    <!-- Trending suggestions được hiển thị sau -->
+    <ng-container *ngIf="trendSuggestions.length > 0">
+      <li class="suggestion-header">
+        <img
+          width="20"
+          height="20"
+          src="/img/trending-icon.png"
+          alt="trending-icon"
+        />
+        Trending
+      </li>
+      <li
+        *ngFor="let suggestion of trendSuggestions"
+        (click)="selectSuggestion(suggestion)"
+      >
+        <span class="bullet"></span> {{ suggestion }}
+      </li>
+    </ng-container>
   </ul>
 </div>

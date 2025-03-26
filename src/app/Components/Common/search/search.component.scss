@@ -26,6 +26,18 @@
 .label-for-search {
   cursor: pointer;
   padding: 0 12px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.label-for-search:hover {
+  transform: scale(1.1);
+}
+
+.label-for-search:hover .search-icon {
+  fill: #ff5100;
+  transition: fill 0.3s ease;
 }
 
 .search-icon {
@@ -53,25 +65,21 @@
   background-color: rgba(255, 81, 0, 0.1);
 }
 
-/* Khi đang nói, thêm class active */
 .mic-button.active {
   background-color: rgba(255, 81, 0, 0.2);
   transform: scale(1.1);
 }
 
-/* Micro icon mặc định */
 .mic-icon {
   width: 18px;
   fill: #ff5100;
   transition: fill 0.3s ease;
 }
 
-/* Khi đang nói (active) chuyển màu icon */
 .mic-button.active .mic-icon {
   fill: #ff0000;
 }
 
-/* Thanh gợi ý dạng overlay */
 .suggestions {
   position: absolute;
   top: calc(100% + 5px);
@@ -91,6 +99,22 @@
   pointer-events: none;
 }
 
+.suggestions.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Header của từng nhóm gợi ý */
+.suggestion-header {
+  padding: 5px 10px;
+  font-weight: bold;
+  color: #666;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #eee;
+}
+
+/* Các mục trong danh sách */
 .suggestions li {
   padding: 10px 20px;
   cursor: pointer;
@@ -102,22 +126,40 @@
   background-color: #f0f0f0;
 }
 
+/* Cấu hình riêng cho danh sách user */
+.user-suggestion {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.user-name {
+  flex: 1;
+  color: #333;
+}
+
+/* Bullet cho trend */
 .bullet {
   display: inline-block;
-  width: 8px; /* Kích thước dấu tròn */
+  width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #ff5100; /* Màu sắc dấu tròn */
-  margin-right: 8px; /* Khoảng cách giữa dấu và nội dung */
+  background-color: #ff5100;
+  margin-right: 8px;
 }
 
-.suggestions.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+/* Nếu cả hai nhóm có dữ liệu, thêm khoảng cách giữa chúng */
+.suggestions li.suggestion-header + li {
+  border-top: 1px solid #eee;
 }
 
-/* Responsive Design */
 @media (max-width: 1000px) {
   .input-container {
     max-width: 350px;
