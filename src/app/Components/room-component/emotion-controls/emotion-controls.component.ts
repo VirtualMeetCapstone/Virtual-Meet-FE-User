@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { RoomHubService } from '../../../Hub/room-hub/room-hub.service'; // Điều chỉnh đường dẫn theo cấu trúc của bạn
 import { AuthService } from '../../../services/auth-service/auth.service';
+import { TranslateService } from '../../../services/external-service/translate.service';
+import { SpeechService } from '../../../services/external-service/speech.service';
 
 @Component({
   selector: 'app-emotion-controls',
@@ -28,8 +30,12 @@ export class EmotionControlsComponent {
   name: string = '';
   user: any;
   isHandRaised = false;
-
+  text: string = '';
+  translatedText: string = '';
+  isListening: boolean = false;
   constructor(
+    private speechService: SpeechService,
+    private translateService: TranslateService,
     private roomHubService: RoomHubService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef
@@ -117,7 +123,18 @@ export class EmotionControlsComponent {
       return null;
     }
   }
+  startVoiceRecognition() {
+    this.isListening = true;
+    this.speechService.startListening((recognizedText: string) => {
+      this.text = recognizedText;
+      this.isListening = false;
+      this.translateText();
+    });
+  }
 
+  async translateText() {
+    this.translatedText = await this.translateService.translate(this.text, 'en');
+  }
   sendRaiseHand() {
     if (!this.userId) {
       console.error('❌ User ID is undefined!');

@@ -4,6 +4,17 @@
   <i class="fa-solid" [ngClass]="isHandRaised ? 'fa-hand' : 'fa-hand-back-fist'"></i>
 </button>
 
+<div class="container">
+  <h2>🎤 Nhận diện và dịch giọng nói</h2>
+
+  <button (mousedown)="startVoiceRecognition()" [disabled]="isListening">
+    {{ isListening ? "🎙 Đang nghe..." : "🎤 Nhấn giữ để nói" }}
+  </button>
+
+  <p><strong>📝 Văn bản nhận diện:</strong> {{ text }}</p>
+  <p><strong>🌍 Dịch sang Tiếng Anh:</strong> {{ translatedText }}</p>
+</div>
+
 
   <!-- Nút Emotion -->
   <div class="emotion-container">
