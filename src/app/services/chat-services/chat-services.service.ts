@@ -10,8 +10,14 @@ export class ChatServicesService {
 
   saveMessages(roomId: string, messages: any[]): void {
     const existingMessages = this.messagesMap.get(roomId) || [];
-    const newMessages = [...existingMessages, ...messages.filter(msg => !existingMessages.includes(msg))];
-    this.messagesMap.set(roomId, newMessages);
+
+    messages.forEach(msg => {
+      if (!existingMessages.some(existingMsg => existingMsg.id === msg.id)) {
+        existingMessages.push(msg);
+      }
+    });
+
+    this.messagesMap.set(roomId, existingMessages);
   }
 
   getMessages(roomId: string): any[] {

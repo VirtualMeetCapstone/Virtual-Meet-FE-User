@@ -23,14 +23,14 @@ export class RoomChatComponent implements OnInit {
               private cdr: ChangeDetectorRef) {
   }
 
+  private isEventRegistered = false; // ✅ Tránh lặp sự kiện
+
   async ngOnInit(): Promise<void> {
     this.currentUser = this.authService.getUserFromToken()?.id || localStorage.getItem('senderId') || '';
 
     this.route.paramMap.subscribe(params => {
       this.roomId = params.get('roomId') || '';
       console.log('📌 RoomChatComponent - Room ID:', this.roomId);
-
-      // ✅ Lấy tin nhắn từ service khi mở lại RoomChatComponent
       this.messages = this.chatService.getMessages(this.roomId);
     });
 
@@ -41,36 +41,48 @@ export class RoomChatComponent implements OnInit {
       return;
     }
 
-    // ✅ Xóa sự kiện cũ trước khi đăng ký mới để tránh đăng ký lại nhiều lần
-    this.hubConnection.off('ReceiveMessage');
-    this.hubConnection.on('ReceiveMessage', (message) => {
-      this.messages.push(message);
-      this.cdr.detectChanges();
-      this.chatService.saveMessages(this.roomId, this.messages); // ✅ Lưu tin nhắn sau khi push
-    });
+    if (!this.isEventRegistered) {
+      this.isEventRegistered = true;
 
-    this.hubConnection.off('DeleteMessage');
-    this.hubConnection.on('DeleteMessage', (messageId) => {
-      this.messages = this.messages.filter(msg => msg.id !== messageId);
-      this.cdr.detectChanges();
-      this.chatService.saveMessages(this.roomId, this.messages);
-    });
+      this.hubConnection.off('ReceiveMessage');
+      this.hubConnection.on('ReceiveMessage', (message) => {
+        const tempIndex = this.messages.findIndex(msg => msg.id.startsWith('temp-'));
+        if (tempIndex !== -1) {
+          this.messages[tempIndex] = message;
+        } else if (!this.messages.some(msg => msg.id === message.id)) {
+          this.messages.push(message);
+        }
 
-    this.hubConnection.off('UpdateMessage');
-    this.hubConnection.on('UpdateMessage', (message) => {
-      const index = this.messages.findIndex(msg => msg.id === message.id);
-      if (index !== -1) {
-        this.messages[index] = message;
-        this.cdr.detectChanges();
         this.chatService.saveMessages(this.roomId, this.messages);
-      }
-    });
+        this.cdr.detectChanges();
+      });
+
+      this.hubConnection.off('DeleteMessage');
+      this.hubConnection.on('DeleteMessage', (messageId) => {
+        this.messages = this.messages.filter(msg => msg.id !== messageId);
+        this.chatService.saveMessages(this.roomId, this.messages);
+        this.cdr.detectChanges();
+      });
+
+      this.hubConnection.off('UpdateMessage');
+      this.hubConnection.on('UpdateMessage', (message) => {
+        const index = this.messages.findIndex(msg => msg.id === message.id);
+        if (index !== -1) {
+          this.messages[index] = message;
+          this.chatService.saveMessages(this.roomId, this.messages);
+          this.cdr.detectChanges();
+        }
+      });
+    }
   }
+
 
   sendMessage(): void {
     if (!this.newMessage.trim()) return;
 
+    const tempId = `temp-${Date.now()}`;
     const messageData = {
+      id: tempId,
       senderId: this.currentUser,
       content: this.newMessage,
       isPinned: false
@@ -79,15 +91,14 @@ export class RoomChatComponent implements OnInit {
     console.log('RoomId: ', this.roomId);
     console.log("messageData: ", messageData);
 
-    this.messages.push({...messageData, id: Date.now()});
-    this.chatService.saveMessages(this.roomId, this.messages);
+    this.messages.push(messageData);
     this.cdr.detectChanges();
 
     this.newMessage = '';
-    this.cdr.detectChanges();
 
     this.hubConnection.invoke('SendMessage', this.roomId, messageData)
       .catch(err => console.error('❌ Send error:', err));
   }
+
 
 }
