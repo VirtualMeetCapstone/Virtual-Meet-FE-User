@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, throwError} from 'rxjs';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {jwtDecode} from 'jwt-decode';
 import {AppConstants} from '../../constant/AppConstants';
@@ -145,11 +145,9 @@ export class AuthService {
     document.cookie =
       'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
-  getUserById(userId: string): any {
-    const url = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`;
-    return this.http
-      .get<any>(url, this.httpOptions)
-      .pipe(catchError(this.handleError));
+  getUserByID(userId: string): Observable<string> {
+    return this.http.get<{ id: string, name: string }>(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`)
+      .pipe(map(user => user.name)); // ✅ Lấy ra `name`
   }
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);

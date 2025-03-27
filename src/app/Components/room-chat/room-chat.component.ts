@@ -17,6 +17,7 @@ export class RoomChatComponent implements OnInit {
   private hubConnection!: signalR.HubConnection;
   private serverUrl = 'https://dev-vmeet.site/roomHub';
   private roomId = '';
+  userCache = new Map<string, string>();
 
   constructor(private authService: AuthService, private route: ActivatedRoute,
               private roomHubService: RoomHubService, private chatService: ChatServicesService,
@@ -32,6 +33,7 @@ export class RoomChatComponent implements OnInit {
       this.roomId = params.get('roomId') || '';
       console.log('📌 RoomChatComponent - Room ID:', this.roomId);
       this.messages = this.chatService.getMessages(this.roomId);
+      this.loadUserNames();
     });
 
     this.hubConnection = this.roomHubService.getConnection();
@@ -51,6 +53,7 @@ export class RoomChatComponent implements OnInit {
           this.messages[tempIndex] = message;
         } else if (!this.messages.some(msg => msg.id === message.id)) {
           this.messages.push(message);
+          this.loadUserName(message.senderId);
         }
 
         this.chatService.saveMessages(this.roomId, this.messages);
@@ -90,7 +93,7 @@ export class RoomChatComponent implements OnInit {
 
     console.log('RoomId: ', this.roomId);
     console.log("messageData: ", messageData);
-
+    this.loadUserName(this.currentUser)
     this.messages.push(messageData);
     this.cdr.detectChanges();
 
@@ -100,5 +103,26 @@ export class RoomChatComponent implements OnInit {
       .catch(err => console.error('❌ Send error:', err));
   }
 
+  loadUserName(userId: string): void {
+    if (this.userCache.has(userId)) return; // Nếu đã có trong cache thì bỏ qua
 
+    this.authService.getUserByID(userId).subscribe((name: string) => {
+      console.log("user name la", name);
+      console.log("user id la", userId);
+      this.userCache.set(userId, name); // Lưu vào cache
+      this.cdr.detectChanges();
+    });
+  }
+
+  // ✅ Hàm lấy tên cho tất cả tin nhắn cũ
+  loadUserNames(): void {
+    this.messages.forEach(msg => this.loadUserName(msg.senderId));
+  }
+
+  // ✅ Hàm hiển thị tên user từ cache
+  getUserName(senderId: string): string {
+    console.log('senderId: ', senderId);
+    console.log("user cache", this.userCache);
+    return this.userCache.get(senderId) || 'Đang tải...';
+  }
 }
