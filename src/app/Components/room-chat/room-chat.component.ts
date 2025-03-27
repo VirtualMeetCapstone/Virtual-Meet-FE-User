@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {AuthService} from "../../services/auth-service/auth.service";
 import {ActivatedRoute} from "@angular/router";
@@ -19,7 +19,8 @@ export class RoomChatComponent implements OnInit {
   private roomId = '';
 
   constructor(private authService: AuthService, private route: ActivatedRoute,
-              private roomHubService: RoomHubService, private chatService: ChatServicesService) {
+              private roomHubService: RoomHubService, private chatService: ChatServicesService,
+              private cdr: ChangeDetectorRef) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -44,12 +45,14 @@ export class RoomChatComponent implements OnInit {
     this.hubConnection.off('ReceiveMessage');
     this.hubConnection.on('ReceiveMessage', (message) => {
       this.messages.push(message);
+      this.cdr.detectChanges();
       this.chatService.saveMessages(this.roomId, this.messages); // ✅ Lưu tin nhắn sau khi push
     });
 
     this.hubConnection.off('DeleteMessage');
     this.hubConnection.on('DeleteMessage', (messageId) => {
       this.messages = this.messages.filter(msg => msg.id !== messageId);
+      this.cdr.detectChanges();
       this.chatService.saveMessages(this.roomId, this.messages);
     });
 
@@ -58,20 +61,10 @@ export class RoomChatComponent implements OnInit {
       const index = this.messages.findIndex(msg => msg.id === message.id);
       if (index !== -1) {
         this.messages[index] = message;
+        this.cdr.detectChanges();
         this.chatService.saveMessages(this.roomId, this.messages);
       }
     });
-  }
-
-
-  async getSenderName(senderId: string): Promise<string> {
-    try {
-      const user = await this.authService.getUserById(senderId).toPromise();
-      return user?.name || 'Unknown'; // ✅ Trả về tên, nếu không có thì hiển thị 'Unknown'
-    } catch (err) {
-      console.error('❌ Lỗi lấy tên người gửi:', err);
-      return 'Unknown';
-    }
   }
 
   sendMessage(): void {
@@ -82,10 +75,19 @@ export class RoomChatComponent implements OnInit {
       content: this.newMessage,
       isPinned: false
     };
-  console.log('RoomId: ', this.roomId);
-  console.log("messageData: ", messageData);
+
+    console.log('RoomId: ', this.roomId);
+    console.log("messageData: ", messageData);
+
+    this.messages.push({...messageData, id: Date.now()});
+    this.chatService.saveMessages(this.roomId, this.messages);
+    this.cdr.detectChanges();
+
+    this.newMessage = '';
+    this.cdr.detectChanges();
+
     this.hubConnection.invoke('SendMessage', this.roomId, messageData)
-      .then(() => this.newMessage = '')
       .catch(err => console.error('❌ Send error:', err));
   }
+
 }
