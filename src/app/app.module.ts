@@ -74,6 +74,7 @@ import {EmotionControlsComponent} from './Components/room-component/emotion-cont
 import {  HttpBackend, HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {MultiTranslateHttpLoader} from 'ngx-translate-multi-http-loader';
+import { RoomControlsComponent } from './Components/room-component/room-controls/room-controls.component';
 
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
@@ -119,7 +120,8 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     SearchComponent,
     PageNotFoundComponent,
     RoomDetailModalComponent,
-    EmotionControlsComponent
+    EmotionControlsComponent,
+    RoomControlsComponent
   ],
   imports: [
     BrowserModule,

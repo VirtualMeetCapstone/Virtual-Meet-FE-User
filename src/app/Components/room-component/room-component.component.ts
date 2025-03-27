@@ -30,7 +30,6 @@ export class RoomComponentComponent implements OnInit {
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
-
   constructor(
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
@@ -50,7 +49,7 @@ export class RoomComponentComponent implements OnInit {
   userList: string[] = [];
   user: any = null;
   raisedHands: string[] = [];
-
+  private videoElement: HTMLVideoElement | null = null;
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
   isActivityModalOpen: boolean = false;
@@ -223,24 +222,40 @@ export class RoomComponentComponent implements OnInit {
   }
 
 
-  private async displayLocalStream(): Promise<void> {
+  onResolutionChanged(resolution: { width: number; height: number }) {
+    console.log(`🔧 Độ phân giải thay đổi: ${resolution.width}x${resolution.height}`);
+
+    this.displayLocalStream(); // Cập nhật hiển thị stream cục bộ
+    this.cdr.detectChanges(); // Buộc UI cập nhật
+  }
+
+
+
+
+
+  ngAfterViewInit() {
+    // Gọi sau khi phần tử <video> đã render
+    this.displayLocalStream();
+  }
+  private displayLocalStream(): void {
     const stream = this.roomHubService.getLocalStream();
     if (stream && this.localVideo) {
-      this.localVideo.nativeElement.srcObject = stream;
+      this.localVideo.nativeElement.srcObject = null; // Reset video trước
+      console.log("🎥 Track Video mới:", stream.getVideoTracks());
 
-      // Tắt mic và camera thông qua service để đồng bộ trạng thái
-      if (this.roomHubService.audioEnabled) {
-        this.roomHubService.toggleAudio();
-      }
-      if (this.roomHubService.videoEnabled) {
-        this.roomHubService.toggleVideo();
-      }
+      setTimeout(() => {
+        this.localVideo.nativeElement.srcObject = stream;
+        this.localVideo.nativeElement.play().catch((err) => {
+          console.error('❌ Lỗi khi phát video cục bộ:', err);
+        });
+      }, 100); // Tránh lỗi không cập nhật UI
 
-      // Cập nhật trạng thái hiển thị
-      this.isMicOn = this.roomHubService.audioEnabled;
-      this.isCameraOn = this.roomHubService.videoEnabled;
+      // Buộc cập nhật UI
+      this.cdr.detectChanges();
     }
   }
+
+
   get audioEnabled(): boolean {
     return this.roomHubService.audioEnabled;
   }

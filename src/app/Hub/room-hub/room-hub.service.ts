@@ -148,7 +148,10 @@ console.log("userName", username)
     }
 
     try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 360 } },
+        audio: true,
+      });
       this.currentUser.name = username;
       this.currentUser.roomId = roomId;
       await this.hubConnection.invoke('JoinRoom', username, roomId);
@@ -159,6 +162,26 @@ console.log("userName", username)
     }
   }
 
+  async updateLocalStream(newStream: MediaStream): Promise<void> {
+    // Dừng stream cũ nếu có
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop());
+    }
+
+    // Gán stream mới
+    this.localStream = newStream;
+    console.log("✅ Cập nhật stream mới:", newStream);
+
+    // Cập nhật trạng thái mic và camera
+    this._audioEnabled = newStream.getAudioTracks().length > 0;
+    this._videoEnabled = newStream.getVideoTracks().length > 0;
+
+    // Thông báo thay đổi stream cho UI
+    this.onStreamUpdated();
+  }
+  private onStreamUpdated() {
+    console.log(`🎤 Mic: ${this.audioEnabled}, 📹 Camera: ${this.videoEnabled}`);
+  }
   public async leaveRoom(): Promise<void> {
     if (!this.currentUser.roomId) return;
 
@@ -241,6 +264,8 @@ public receiveEmotion(callback: (username: string, type: string, x: number, y: n
     return this.localStream;
   }
 
+
+
   // Social features
   public async sendLike(): Promise<void> {
     if (!this.currentUser.roomId) return console.error('❌ Not in a room');
@@ -308,6 +333,9 @@ public receiveEmotion(callback: (username: string, type: string, x: number, y: n
     this.hubConnection.off('receiveplayerstatus');
     this.hubConnection.on('receiveplayerstatus', callback);
   }
+
+
+
 
   // Cleanup
   public cleanup(): void {

@@ -26,9 +26,9 @@
     <div class="video-box red">
       <p class="user-name">You</p>
       <video #localVideo autoplay playsinline muted></video>
+
       <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
-
     <!-- More Users Indicator -->
     <div *ngIf="getRemainingCount() > 0" class="video-box more-users">
       <span>+{{ getRemainingCount() }} người</span>
@@ -46,6 +46,7 @@
       <h3>Chọn Hoạt Động</h3>
       <button class="activity-option" (click)="startYouTubeTogether()">YouTube Together</button>
       <button class="activity-option" (click)="startWhiteboard()">Whiteboard</button>
+      <app-room-control (resolutionChanged)="onResolutionChanged($event)"></app-room-control>
       <button class="close-modal" (click)="closeAllModals()">Đóng</button>
     </div>
   </div>
@@ -106,6 +107,8 @@
       <button class="chat-box" (click)="toggleClose()"><i class="fa-solid fa-x"></i></button>
     </div>
   </div>
+
+
 
   <!-- Recording Indicator -->
   <div class="recording-indicator" *ngIf="isRecording">
