@@ -26,27 +26,6 @@ import { TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
-
-  lastScrollTop = 0;
-  isHidden = false;
-  isSticky = false;
-
-  @HostListener('window:scroll', [])
-  onScroll() {
-    if (typeof window !== 'undefined') {
-      const st = (window as any).pageYOffset || document.documentElement.scrollTop;
-      if (st < this.lastScrollTop - 10) {
-        this.isHidden = false;
-        this.isSticky = true;
-      }
-      else if (st > this.lastScrollTop + 10) {
-        this.isHidden = true;
-      }
-      this.lastScrollTop = st <= 0 ? 0 : st;
-    }
-  }
-
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     const target = event.target as HTMLElement;

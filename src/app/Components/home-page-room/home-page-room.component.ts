@@ -39,6 +39,7 @@ export class HomePageRoomComponent implements OnInit {
   user: any = null;
 
   ngOnInit(): void {
+    window.addEventListener('scroll', this.toggleScrollButton);
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
@@ -58,6 +59,17 @@ export class HomePageRoomComponent implements OnInit {
       });
     });
   }
+
+  toggleScrollButton = () => {
+    const button = document.querySelector('.scroll-to-top') as HTMLElement;
+    if (window.scrollY > 300) {
+      button.classList.add('show');
+    } else {
+      button.classList.remove('show');
+    }
+  };
+
+
 
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
@@ -163,4 +175,9 @@ export class HomePageRoomComponent implements OnInit {
       console.log('Modal đóng:', result);
     });
   }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
 }

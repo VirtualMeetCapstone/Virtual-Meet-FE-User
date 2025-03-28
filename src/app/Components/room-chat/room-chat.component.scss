@@ -73,7 +73,9 @@
       color: black;
     }
 
-    button {
+    button , .selectOp {
+      min-width: 40px;
+      height: 40px;
       padding: 5px 10px;
       background-color: dodgerblue;
       border-top-right-radius: 5px;
@@ -137,4 +139,13 @@ input.text {
 input.text:focus {
   background-color: #e0e0e0;
   border-color: #bdbdbd;
+}
+textarea {
+  flex: 1;
+  min-height: 40px;
+  max-height: 100px; /* Giới hạn chiều cao */
+  padding: 10px;
+  font-size: 16px;
+  resize: none; /* Không cho resize */
+  border-radius: 8px;
 }

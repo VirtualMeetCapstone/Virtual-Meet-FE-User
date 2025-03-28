@@ -4,39 +4,39 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SpeechService {
-  private recognition: any; // Khai báo biến nhận diện giọng nói
+  private recognition: any;
+  private language: string = 'vi-VN'; // Mặc định tiếng Việt
 
   constructor() {
-    // Kiểm tra nếu trình duyệt hỗ trợ Web Speech API
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       throw new Error('Trình duyệt không hỗ trợ Web Speech API');
     }
 
-    // Khởi tạo nhận diện giọng nói
     this.recognition = new SpeechRecognition();
-    this.recognition.lang = 'vi-VN'; // Cấu hình ngôn ngữ tiếng Việt
-    this.recognition.interimResults = false; // Chỉ nhận kết quả cuối cùng
-    this.recognition.continuous = false; // Dừng khi người dùng ngừng nói
+    this.recognition.interimResults = false;
+    this.recognition.continuous = false;
   }
 
-  // Bắt đầu lắng nghe
-  startListening(callback: (text: string) => void) {
+  // ✅ Thêm tham số language để chọn ngôn ngữ đầu vào
+  startListening(callback: (text: string) => void, language: string = 'vi-VN') {
+    this.language = language;
+    this.recognition.lang = this.language; // Cập nhật ngôn ngữ
+
     this.recognition.start();
 
     this.recognition.onresult = (event: any) => {
       const text = event.results[0][0].transcript;
-      callback(text); // Trả kết quả về component
+      callback(text);
     };
 
     this.recognition.onerror = (event: any) => {
       console.error('Lỗi nhận diện giọng nói:', event.error);
-      this.stopListening() ;
+      this.stopListening();
     };
   }
 
-  // Dừng lắng nghe
   stopListening() {
     this.recognition.stop();
   }

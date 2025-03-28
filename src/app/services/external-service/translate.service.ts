@@ -6,9 +6,9 @@ import { Injectable } from '@angular/core';
 })
 export class TranslateService {
   private apiUrl = 'https://deep-translate1.p.rapidapi.com/language/translate/v2';
-  private apiKey = '6d14c0f62cmsha0723917ffaab3fp14812djsn2d0cdf97d701'; // Thay API Key của bạn vào đây
+  private apiKey = '6d14c0f62cmsha0723917ffaab3fp14812djsn2d0cdf97d701';
 
-  async translate(text: string, targetLang: string = 'en'): Promise<string> {
+  async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
     try {
       console.log("📝 Đang gửi văn bản:", text);
 
@@ -16,7 +16,7 @@ export class TranslateService {
         this.apiUrl,
         {
           q: text,
-          source: 'vi',
+          source: sourceLang,
           target: targetLang,
         },
         {
@@ -30,7 +30,6 @@ export class TranslateService {
 
       console.log("📥 Phản hồi từ API:", response.data);
 
-      // Kiểm tra response có đúng không
       if (response.data && response.data.data && response.data.data.translations) {
         return response.data.data.translations.translatedText;
       } else {

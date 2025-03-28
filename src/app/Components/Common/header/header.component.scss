@@ -217,19 +217,21 @@ strong {
   justify-content: space-between;
   padding-top: 10px;
 }
-/* Khi header bị ẩn */
-.hidden-header {
-  transform: translateY(-100%);
-  transition: transform 0.3s ease-in-out;
-}
 
-/* Khi header hiển thị */
-.sticky-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
-  z-index: 1000;
-  transition: transform 0.3s ease-in-out;
-}
+
+// /* Khi header bị ẩn */
+// .hidden-header {
+//   transform: translateY(-100%);
+//   transition: transform 0.3s ease-in-out;
+// }
+
+// /* Khi header hiển thị */
+// .sticky-header {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   background-color: rgba(0, 0, 0, 0.9);
+//   z-index: 1000;
+//   transition: transform 0.3s ease-in-out;
+// }
