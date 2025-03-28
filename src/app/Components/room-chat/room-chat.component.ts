@@ -151,8 +151,13 @@ export class RoomChatComponent implements OnInit {
     this.speechService.startListening(async (recognizedText: string) => {
       this.newMessage = recognizedText;
 
-      const sourceLang = this.selectedLanguage;
-      const targetLang = sourceLang === 'vi-VN' ? 'en' : 'vi';
+      // Chỉ giữ lại mã ngôn ngữ ngắn (vi, en)
+      const sourceLang = this.selectedLanguage.includes('-')
+        ? this.selectedLanguage.split('-')[0]
+        : this.selectedLanguage;
+
+      const targetLang = sourceLang === 'vi' ? 'en' : 'vi';
+
       this.translatedText = await this.translateService.translate(
         this.newMessage,
         sourceLang,
@@ -163,7 +168,8 @@ export class RoomChatComponent implements OnInit {
       this.isListening = false;
       this.cdr.detectChanges();
     }, this.selectedLanguage);
-  }
+}
+
 
   stopVoiceRecognition() {
     this.isListening = false;
