@@ -99,13 +99,17 @@ export class RoomChatComponent implements OnInit {
     if (event instanceof KeyboardEvent) {
       event.preventDefault(); // Ngăn textarea xuống dòng khi nhấn Enter
     }
-    if (!this.newMessage.trim()) return;
+// voice trả về mảng, nên phải convert ra string
+    const messageText = Array.isArray(this.newMessage) ? this.newMessage.join(' ') : this.newMessage;
 
+    if (!messageText || typeof messageText !== 'string' || !messageText.trim()) {
+      return;
+    }
     const tempId = `temp-${Date.now()}`;
     const messageData = {
       id: tempId,
       senderId: this.currentUser,
-      content: this.newMessage,
+      content: messageText,
       isPinned: false,
     };
 
