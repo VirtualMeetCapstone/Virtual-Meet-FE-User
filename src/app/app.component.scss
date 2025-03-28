@@ -92,13 +92,6 @@ app-header {
 //   overflow-y: auto; /* Nếu nội dung quá dài, có thể scroll */
 // }
 
-app-nav-bar {
-  position: fixed;
-  top: 100px;
-  left: 0;
-  background-color: #121212;
-  z-index: 1000;
-}
 body.room-active {
   app-header,
   app-nav-bar {

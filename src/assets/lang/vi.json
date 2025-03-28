@@ -23,4 +23,14 @@
     "href6": "Hồ sơ"
   }
   }
+  ,
+  "room_chat": {
+    "TITLE": "Phòng Chat",
+    "PLACEHOLDER": "Nhập tin nhắn...",
+    "SEND_BUTTON": "Gửi",
+    "VOICE_BUTTON": "🎤 Trò chuyện bằng giọng nói",
+    "LANGUAGE_SELECT": "Chọn ngôn ngữ",
+    "LISTENING": "🎙 Đang nghe...",
+    "PRESS_TO_TALK": "Nhấn giữ để nói"
+  }
 }

@@ -23,4 +23,14 @@
       "href6": "Profile"
     }
   }
+  ,
+  "room_chat": {
+    "TITLE": "Room Chat",
+    "PLACEHOLDER": "Type a message...",
+    "SEND_BUTTON": "Send",
+    "VOICE_BUTTON": "🎤 Voice Chat",
+    "LANGUAGE_SELECT": "Select Language",
+    "LISTENING": "🎙 Listening...",
+    "PRESS_TO_TALK": "Press and hold to talk"
+  }
 }

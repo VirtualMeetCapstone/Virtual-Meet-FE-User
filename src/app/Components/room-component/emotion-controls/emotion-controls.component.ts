@@ -151,8 +151,10 @@ export class EmotionControlsComponent {
 
     if (this.isHandRaised) {
       this.sendLowerHand();
+      this.cdr.detectChanges();
     } else {
       this.sendRaiseHand();
+      this.cdr.detectChanges();
     }
   }
 
