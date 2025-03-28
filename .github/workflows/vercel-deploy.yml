@@ -19,9 +19,12 @@ jobs:
 
       - name: Clean cache and install dependencies
         run: |
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
-          npm install
+            echo "🧹 Xóa thư mục node_modules, package-lock.json và cache npm..."
+            rm -rf node_modules package-lock.json .angular .cache dist
+            npm cache clean --force
+            echo "🚀 Cài đặt lại dependencies..."
+            npm install
+
 
       - name: Build Angular
         run: npm run build -- --configuration=production
