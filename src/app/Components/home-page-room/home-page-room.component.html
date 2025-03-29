@@ -67,11 +67,13 @@
             <i
               class="fa-solid fa-trash"
               style="color: #ec1313; cursor: pointer"
+              *ngIf="user.id == room.ownerId"
               (click)="openModalDeleteRoom(room)"
             ></i>
             <i
               class="fas fa-pen text-primary ml-3"
               (click)="openModalEditRoom(room)"
+              *ngIf="user.id == room.ownerId"
               style="cursor: pointer"
             ></i>
           </div>
