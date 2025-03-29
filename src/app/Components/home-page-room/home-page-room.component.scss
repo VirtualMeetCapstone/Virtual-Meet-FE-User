@@ -96,7 +96,7 @@ body {
   margin-right: 10px;
 }
 .scroll-container {
-  height: 50vh; /* hoặc phù hợp */
+  height: 30vh; /* hoặc phù hợp */
   overflow: auto;
 }
 .dropdown-menu {
@@ -118,7 +118,16 @@ body {
   padding: 10px;
   color: black;
 }
-
+.description {
+  font-size: 1em;
+  margin-bottom: 10px;
+  color: black;
+}
+.members {
+  font-size: 0.9em;
+  color: black;
+  margin-bottom: 15px;
+}
 .join-now {
   display: flex;
   align-items: center;
