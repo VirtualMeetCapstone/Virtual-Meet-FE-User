@@ -16,6 +16,7 @@ import { YoutubePlayerComponent } from '../../Components/youtube-player/youtube-
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
+import { SpeechService } from '../../services/external-service/speech.service';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -32,6 +33,7 @@ export class RoomComponentComponent implements OnInit {
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
 
   constructor(
+    private speechService: SpeechService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _playerService: PlayerService,
@@ -56,6 +58,8 @@ export class RoomComponentComponent implements OnInit {
   isActivityModalOpen: boolean = false;
   isChatOpen = false;
   roomState: any; // Thêm biến lưu trạng thái
+
+  //wrtc
   connectionStatus: string = 'Connecting...';
   peerConnection!: RTCPeerConnection;
   localStream!: MediaStream;
@@ -68,7 +72,11 @@ export class RoomComponentComponent implements OnInit {
   isRecordingModalOpen: boolean = false;
   isRecording: boolean = false;
   recordWithAudio: boolean = true;
-
+  //sub
+  subtitle = '';
+  selectedLanguage = 'vi-VN'; // Mặc định tiếng Việt
+  isSubtitlesEnabled = false;
+  //pin
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
@@ -388,5 +396,32 @@ getIcon(type: string): string {
     default: return '';
   }
 }
+
+//start sub
+toggleSubtitles() {
+  if (this.isSubtitlesEnabled) {
+    this.speechService.stopListening();
+    this.subtitle = '';
+  } else {
+    this.speechService.startListening((text) => {
+      this.subtitle = text;
+      this.cdr.detectChanges();
+    }, this.selectedLanguage);
+  }
+
+  this.isSubtitlesEnabled = !this.isSubtitlesEnabled;
+}
+
+changeLanguage(event: any) {
+  this.selectedLanguage = event.target.value;
+  if (this.isSubtitlesEnabled) {
+    this.speechService.stopListening();
+    this.speechService.startListening((text) => {
+      this.subtitle = text;
+      this.cdr.detectChanges();
+    }, this.selectedLanguage);
+  }
+}
+//end sub
 
 }

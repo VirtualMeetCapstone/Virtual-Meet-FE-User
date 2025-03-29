@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class SpeechService {
   private recognition: any;
-  private language: string = 'vi-VN'; // Mặc định tiếng Việt
+  private isListening: boolean = false;
+  private language: string = 'vi-VN';
 
   constructor() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -15,20 +16,28 @@ export class SpeechService {
     }
 
     this.recognition = new SpeechRecognition();
+    this.recognition.continuous = true;
     this.recognition.interimResults = false;
-    this.recognition.continuous = false;
   }
 
-  // ✅ Thêm tham số language để chọn ngôn ngữ đầu vào
   startListening(callback: (text: string) => void, language: string = 'vi-VN') {
+    if (this.isListening) return;
+
+    this.isListening = true;
     this.language = language;
-    this.recognition.lang = this.language; // Cập nhật ngôn ngữ
+    this.recognition.lang = this.language;
 
     this.recognition.start();
 
     this.recognition.onresult = (event: any) => {
-      const text = event.results[0][0].transcript;
+      const text = event.results[event.results.length - 1][0].transcript;
       callback(text);
+    };
+
+    this.recognition.onend = () => {
+      if (this.isListening) {
+        this.recognition.start();
+      }
     };
 
     this.recognition.onerror = (event: any) => {
@@ -38,6 +47,7 @@ export class SpeechService {
   }
 
   stopListening() {
+    this.isListening = false;
     this.recognition.stop();
   }
 }
