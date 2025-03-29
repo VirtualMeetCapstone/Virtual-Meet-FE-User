@@ -76,6 +76,13 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   async joinRoom(roomId: string) {
+    if (!this.user) {
+      this.messages.push('Need to login before join room !!!');
+      setTimeout(() => {
+        this.messages = [];
+      }, 3000);
+      return;
+    }
     const timestamp = Date.now();
     this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
   }

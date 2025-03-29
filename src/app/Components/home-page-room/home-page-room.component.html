@@ -1,6 +1,7 @@
 <div
   class="alert alert-secondary"
   role="alert"
+  style="text-align: center; font-size: large; font-weight: bold"
   *ngFor="let message of messages"
 >
   {{ message }}
@@ -12,6 +13,7 @@
     class="btn btn-secondary"
     style="font-weight: bolder"
     (click)="openModalAddRoom()"
+    *ngIf="user"
   >
     ADD ROOM
   </button>
@@ -93,8 +95,10 @@
         width="30"
       />
     </div>
-    <div class="description text-gray-700">mấy anh vào tâm sự</div>
-    <div class="members text-gray-500">Maximum Members: 12</div>
+    <div class="description text-gray-700">{{ room.description }}</div>
+    <div class="members text-gray-500">
+      Maximum Members: {{ room.maximumMembers }}
+    </div>
     <div class="actions">
       <div class="join-now" (click)="joinRoom(room.id)">
         <i class="fas fa-phone"></i>
@@ -136,7 +140,6 @@
   [roomToEdit]="roomToEdit"
   [userId]="user.id"
 ></app-modal-add-edit-room>
-
 
 <button class="btn btn-primary scroll-to-top" (click)="scrollToTop()">
   <i class="fas fa-arrow-up"></i>
