@@ -76,6 +76,9 @@ export class RoomComponentComponent implements OnInit {
   subtitle = '';
   selectedLanguage = 'vi-VN'; // Mặc định tiếng Việt
   isSubtitlesEnabled = false;
+  isGlobalSubtitlesEnabled = false
+  private isReceiveSubtitleRegistered = false;
+  subtitles: { username: string; text: string; timestamp: number }[] = [];
   //pin
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
@@ -86,6 +89,25 @@ export class RoomComponentComponent implements OnInit {
     this.leaveRoom();
   }
   async ngOnInit() {
+    // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
+    if (!this.isReceiveSubtitleRegistered) {
+      this.roomHubService.receiveSubtitle((username, subtitle) => {
+        // Chỉ hiển thị phụ đề nếu chế độ nhận phụ đề đang bật
+        if (this.isSubtitlesEnabled) {
+          this.authService.fetchUserName(username)
+            .then(name => {
+              const displayName = name ?? username;
+              this.displaySubtitle(displayName, subtitle);
+            })
+            .catch(error => {
+              this.displaySubtitle(username, subtitle);
+            });
+        }
+      });
+      this.isReceiveSubtitleRegistered = true;
+    }
+
+
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');
       if (roomId) {
@@ -220,10 +242,7 @@ export class RoomComponentComponent implements OnInit {
 
 
 
-  toggleAudio(): void {
-    this.roomHubService.toggleAudio();
-    this.isMicOn = this.roomHubService.audioEnabled;
-  }
+
 
   toggleVideo(): void {
     this.roomHubService.toggleVideo();
@@ -346,7 +365,7 @@ export class RoomComponentComponent implements OnInit {
         this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
         console.log('🧹 Bubbles after timeout:', this.bubbles);
         this.cdr.detectChanges();
-    }, 7000);
+    }, 5000);
 }
 
 
@@ -398,30 +417,60 @@ getIcon(type: string): string {
 }
 
 //start sub
-toggleSubtitles() {
-  if (this.isSubtitlesEnabled) {
-    this.speechService.stopListening();
-    this.subtitle = '';
-  } else {
+  // Phương thức để bật/tắt chế độ "nhận phụ đề"
+  toggleSubtitles(): void {
+    this.isSubtitlesEnabled = !this.isSubtitlesEnabled;
+    // Nếu tắt nhận phụ đề, có thể xóa nội dung hiển thị trên client
+    if (!this.isSubtitlesEnabled) {
+      this.subtitle = '';
+    }
+    this.cdr.detectChanges();
+  }
+
+  private startSendingSubtitles() {
     this.speechService.startListening((text) => {
-      this.subtitle = text;
+      this.roomHubService.sendSubtitle(text);
+
+      if (this.isSubtitlesEnabled) {
+        this.subtitle = text;
+      }
       this.cdr.detectChanges();
     }, this.selectedLanguage);
   }
 
-  this.isSubtitlesEnabled = !this.isSubtitlesEnabled;
-}
-
-changeLanguage(event: any) {
-  this.selectedLanguage = event.target.value;
-  if (this.isSubtitlesEnabled) {
+  // Hàm dừng gửi phụ đề khi mic tắt
+  private stopSendingSubtitles() {
     this.speechService.stopListening();
-    this.speechService.startListening((text) => {
-      this.subtitle = text;
-      this.cdr.detectChanges();
-    }, this.selectedLanguage);
   }
-}
-//end sub
+
+  toggleAudio(): void {
+    this.roomHubService.toggleAudio();
+    this.isMicOn = this.roomHubService.audioEnabled;
+
+    if (this.isMicOn) {
+      this.startSendingSubtitles();
+    } else {
+      this.stopSendingSubtitles();
+    }
+  }
+
+  displaySubtitle(username: string, subtitle: string) {
+    const subtitleObj = { username, text: subtitle, timestamp: Date.now() };
+    this.subtitles.push(subtitleObj);
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.subtitles = this.subtitles.filter(s => s !== subtitleObj);
+      this.cdr.detectChanges();
+    }, 5000);
+  }
+
+  changeLanguage(event: any) {
+    this.selectedLanguage = event.target.value;
+    if (this.isMicOn) {
+      this.stopSendingSubtitles();
+      this.startSendingSubtitles();
+    }
+  }
 
 }

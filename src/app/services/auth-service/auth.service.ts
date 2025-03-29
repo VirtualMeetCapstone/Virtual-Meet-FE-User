@@ -129,6 +129,23 @@ export class AuthService {
     }
   }
 
+  public async fetchUserName(username: string): Promise<string | null> {
+    try {
+      const user = await this.getBackendUser(username);
+      console.log('🔹 User data received:', user);
+
+      if (!user || !user.name) {
+        console.error(`❌ User data not found for ${username}`);
+        return null;
+      }
+
+      return user.name;
+    } catch (error) {
+      console.error('❌ Error fetching user data:', error);
+      return null;
+    }
+  }
+
   updateLoginState(isLoggedIn: boolean) {
     this.loggedInSubject.next(isLoggedIn);
   }
