@@ -35,9 +35,10 @@
     </div>
   </div>
 
-  <div class="subtitle-box">
-    <p>{{ subtitle }}</p>
+  <div *ngFor="let sub of subtitles">
+    <p>{{ sub.username }}: {{ sub.text }}</p>
   </div>
+  
 
   <!-- YouTube Player -->
   <div [hidden]="!isYouTubeActive" class="youtube-container">

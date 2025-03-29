@@ -60,8 +60,7 @@ body {
 .create-post .actions button i {
   margin-right: 5px;
 }
-.button-create-post
-{
+.button-create-post {
   background-color: #007bff !important;
 }
 .post {
@@ -247,7 +246,7 @@ body {
   grid-column: span 2;
 }
 .scroll-container {
-  height: 50vh; /* hoặc phù hợp */
+  height: 30vh; /* hoặc phù hợp */
   overflow: auto;
 }
 .more-images {
@@ -307,9 +306,8 @@ body {
 
 .user-infor-detail {
   display: flex;
-
 }
-.user-name{
+.user-name {
   margin-left: 10px;
   margin-top: 5px;
   font-weight: 500;
@@ -339,5 +337,3 @@ app-story-list {
   width: 100%;
   max-width: 450px;
 }
-
-

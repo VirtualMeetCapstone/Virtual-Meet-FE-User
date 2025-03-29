@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {RoomServicesService} from '../../services/room-service/room-services.service';
-import {RoomHubService} from '../../Hub/room-hub/room-hub.service';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RoomServicesService } from '../../services/room-service/room-services.service';
+import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import {AuthService} from '../../services/auth-service/auth.service';
-import {RoomDetailModalComponent} from "../room-detail-modal/room-detail-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
+import { AuthService } from '../../services/auth-service/auth.service';
+import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
 
 @Component({
   selector: 'app-home-page-room',
@@ -33,8 +33,7 @@ export class HomePageRoomComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     private notificationService: NotificationServiceService
-  ) {
-  }
+  ) {}
 
   user: any = null;
 
@@ -69,8 +68,6 @@ export class HomePageRoomComponent implements OnInit {
     }
   };
 
-
-
   getRoom() {
     this.roomService.getRooms(9, 0).subscribe((room: any) => {
       this.rooms = room.data;
@@ -79,8 +76,15 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   async joinRoom(roomId: string) {
+    if (!this.user) {
+      this.messages.push('Need to login before join room !!!');
+      setTimeout(() => {
+        this.messages = [];
+      }, 3000);
+      return;
+    }
     const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], {queryParams: {timestamp}});
+    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
   }
 
   openModalDeleteRoom(room: any) {
@@ -150,7 +154,7 @@ export class HomePageRoomComponent implements OnInit {
     }
     this.skip += this.pageSize;
     this.roomService
-      .getRooms(this.pageSize, this.skip)
+      .getRoomsNotNeedCount(this.pageSize, this.skip)
       .subscribe((room: any) => {
         this.rooms = [...this.rooms, ...room.data];
 
@@ -164,13 +168,11 @@ export class HomePageRoomComponent implements OnInit {
     this.showModalAddEditRoom = true;
   }
 
-
   viewRoomDetail(room: any) {
     const dialogRef = this.dialog.open(RoomDetailModalComponent, {
-      data: {room}
-
+      data: { room },
     });
-    console.log("room 2",room);
+    console.log('room 2', room);
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log('Modal đóng:', result);
     });
@@ -179,5 +181,4 @@ export class HomePageRoomComponent implements OnInit {
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
 }

@@ -1,26 +1,27 @@
 <div
   class="alert alert-secondary"
   role="alert"
+  style="text-align: center; font-size: large; font-weight: bold"
   *ngFor="let message of messages"
 >
   {{ message }}
 </div>
 
 <div class="container-button d-flex justify-content-center">
-
   <button
     type="button"
     class="btn btn-secondary"
     style="font-weight: bolder"
     (click)="openModalAddRoom()"
+    *ngIf="user"
   >
     ADD ROOM
   </button>
 </div>
 
 <div class="container">
-  <div class="row" style="width: 100%;">
-    <div class="col-12 text-center p-3" >
+  <div class="row" style="width: 100%">
+    <div class="col-12 text-center p-3">
       <app-story-list></app-story-list>
     </div>
   </div>
@@ -35,6 +36,7 @@
       <div class="topic">
         {{ room.topic }}
       </div>
+
       <div class="dropdown">
         <button
           class="btn btn-secondary dropdown-toggle"
@@ -93,7 +95,10 @@
         width="30"
       />
     </div>
-
+    <div class="description text-gray-700">{{ room.description }}</div>
+    <div class="members text-gray-500">
+      Maximum Members: {{ room.maximumMembers }}
+    </div>
     <div class="actions">
       <div class="join-now" (click)="joinRoom(room.id)">
         <i class="fas fa-phone"></i>
@@ -106,8 +111,6 @@
         <i class="fas fa-ellipsis-h"></i>
       </div>
     </div>
-
-
   </div>
 </div>
 
@@ -117,7 +120,7 @@
   [infiniteScrollDistance]="1"
   [infiniteScrollThrottle]="300"
 >
-  <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
+  <h3 style="font-weight: bold; text-align: center" *ngIf="loading == true">
     Load More...
   </h3>
   <h3 style="font-weight: bold; text-align: center" *ngIf="loading == false">
@@ -137,7 +140,6 @@
   [roomToEdit]="roomToEdit"
   [userId]="user.id"
 ></app-modal-add-edit-room>
-
 
 <button class="btn btn-primary scroll-to-top" (click)="scrollToTop()">
   <i class="fas fa-arrow-up"></i>

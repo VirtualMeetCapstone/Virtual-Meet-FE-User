@@ -5,18 +5,19 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  ViewChild, ElementRef,
-  HostListener
+  ViewChild,
+  ElementRef,
+  HostListener,
 } from '@angular/core';
-import {AuthService} from '../../../services/auth-service/auth.service';
-import {Router} from '@angular/router';
-import { Subject, window} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {ExternalServiceService} from '../../../services/external-service/external-service.service';
-import {NotificationServiceService} from "../../../services/notification-service/notification-service.service";
-import {Notification} from "../../../models/notification";
-import {StoryService} from "../../../services/story-service/story-service.service";
-import {Story} from "../../../models/story";
+import { AuthService } from '../../../services/auth-service/auth.service';
+import { Router } from '@angular/router';
+import { Subject, window } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ExternalServiceService } from '../../../services/external-service/external-service.service';
+import { NotificationServiceService } from '../../../services/notification-service/notification-service.service';
+import { Notification } from '../../../models/notification';
+import { StoryService } from '../../../services/story-service/story-service.service';
+import { Story } from '../../../models/story';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -68,23 +69,22 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private notifyService: NotificationServiceService,
     private storyService: StoryService,
-    private translate: TranslateService,
-  ) {
-  }
+    private translate: TranslateService
+  ) {}
 
   notifications: Notification[] = [];
 
   ngOnInit() {
-  if (typeof window !== 'undefined') {
-    const savedLang = localStorage.getItem('language');
-    if (savedLang) {
-      this.currentLanguage = savedLang;
-      this.translate.use(this.currentLanguage);
-    } else {
-      localStorage.setItem('language', this.currentLanguage);
-      this.translate.setDefaultLang(this.currentLanguage);
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('language');
+      if (savedLang) {
+        this.currentLanguage = savedLang;
+        this.translate.use(this.currentLanguage);
+      } else {
+        localStorage.setItem('language', this.currentLanguage);
+        this.translate.setDefaultLang(this.currentLanguage);
+      }
     }
-  }
 
     this.isLoadingUser = true;
     this.authService.loggedIn$
@@ -119,28 +119,30 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.userId = this.authService.getUser()?.id;
     this.loadMoreNotification();
-    this.notifyService.onNotificationUpdate()
+    this.notifyService
+      .onNotificationUpdate()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.getAllNotification();
       });
-
   }
 
   getAllNotification() {
-    this.notifyService.getNotificationByUserId(this.userId, 1000, 0).subscribe((data: any) => {
-
-      this.totalNotification = data.totalCount;
-      this.notifications = data.data; // Cập nhật danh sách nếu cần
-      this.cdr.detectChanges();
-    });
+    this.notifyService
+      .getNotificationByUserId(this.userId, 1000, 0)
+      .subscribe((data: any) => {
+        this.totalNotification = data.totalCount;
+        this.notifications = data.data; // Cập nhật danh sách nếu cần
+        this.cdr.detectChanges();
+      });
   }
 
   loadMoreNotification() {
-    console.log("scroll")
+    console.log('scroll');
     if (
       this.loading ||
-      (this.totalNotification !== null && this.notifications.length >= this.totalNotification)
+      (this.totalNotification !== null &&
+        this.notifications.length >= this.totalNotification)
     ) {
       return;
     }
@@ -154,7 +156,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.skip += this.pageSize;
         this.loading = false;
         this.cdr.detectChanges();
-
       });
   }
 
@@ -196,7 +197,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 100);
   }
 
-
   toggleUserMenu() {
     this.isShowUserMenu = !this.isShowUserMenu;
   }
@@ -207,13 +207,11 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loggedIn = false;
     this.isShowUserMenu = false;
 
-    (window as any).location.reload();
-
+    location.reload();
     this.cdr.markForCheck();
   }
 
-  ngAfterViewInit(): void {
-  }
+  ngAfterViewInit(): void {}
 
   // trackByNotification(index: number, notification: any): string {
   //   return notification.id;
@@ -224,10 +222,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.markAsRead(notification.id);
     switch (notification.type) {
       case 1:
-
-        console.log("Case 1 executed");
+        console.log('Case 1 executed');
         break;
-      case 2:// comment on post
+      case 2: // comment on post
         if (notification.source.id) {
           this.router.navigate(['/posts']).then(() => {
             setTimeout(() => {
@@ -252,7 +249,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigate(['/']).then(() => {
           setTimeout(() => {
             this.notifyService.openRoomDetail(notification.source.id);
-
           }, 500);
         });
         break;
@@ -268,43 +264,42 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         break;
       case 6:
-        console.log("Case 6 executed");
+        console.log('Case 6 executed');
         break;
       case 7:
-        console.log("Case 7 executed");
+        console.log('Case 7 executed');
         break;
       case 8:
-        console.log("Case 8 executed");
+        console.log('Case 8 executed');
         break;
       case 9:
-        console.log("Case 9 executed");
+        console.log('Case 9 executed');
         break;
       case 10:
-        console.log("Case 10 executed");
+        console.log('Case 10 executed');
         break;
       case 11:
-        console.log("Case 11 executed");
+        console.log('Case 11 executed');
         break;
       case 12:
-        console.log("Case 12 executed");
+        console.log('Case 12 executed');
         break;
       case 13:
-        console.log("Case 13 executed");
+        console.log('Case 13 executed');
         break;
       case 14:
-        console.log("Case 14 executed");
+        console.log('Case 14 executed');
         break;
       case 15:
-        console.log("Case 15 executed");
+        console.log('Case 15 executed');
         break;
       case 16:
-        console.log("Case 16 executed");
+        console.log('Case 16 executed');
         break;
       default:
-        console.log("No matching case");
+        console.log('No matching case');
     }
   }
-
 
   private findStoryIndex(id: string, callback: (index: number) => void): void {
     // Nếu storiesData đã có dữ liệu, tìm ngay trong đó
@@ -339,15 +334,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-
-  markAsRead( notificationId: string): void {
+  markAsRead(notificationId: string): void {
     this.notifyService.markAsRead(this.userId, notificationId).subscribe({
       next: (res) => console.log('Notification marked as read', res),
-      error: (err) => console.error('Error marking as read', err)
+      error: (err) => console.error('Error marking as read', err),
     });
-
   }
-
 
   toggleLanguage(event: Event) {
     event.preventDefault(); // Ngăn chặn reload trang
@@ -361,5 +353,4 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
-
 }
