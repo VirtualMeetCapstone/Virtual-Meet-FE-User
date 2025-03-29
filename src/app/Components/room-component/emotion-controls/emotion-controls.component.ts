@@ -42,7 +42,7 @@ export class EmotionControlsComponent {
 
       if (!username || username === this.userId) return;
 
-      const name = await this.fetchUserName(username);
+      const name = await this.authService.fetchUserName(username);
       if (!name) return;
 
       console.log('🔹 Emitting emotion event:', { type, userName: name, x, y });
@@ -60,7 +60,7 @@ export class EmotionControlsComponent {
         return;
       }
 
-      const name = await this.fetchUserName(username);
+      const name = await this.authService.fetchUserName(username);
       if (!name) return;
 
       console.log('🔹 Emitting raiseHand event from SignalR:', name);
@@ -83,7 +83,7 @@ export class EmotionControlsComponent {
         return;
       }
 
-      const name = await this.fetchUserName(username);
+      const name = await this.authService.fetchUserName(username);
       if (!name) return;
 
       console.log('🔹 Emitting lowerHand event from SignalR:', name);
@@ -98,25 +98,6 @@ export class EmotionControlsComponent {
     });
   }
 
-  /**
-   * Lấy tên user từ backend một cách an toàn
-   */
-  private async fetchUserName(username: string): Promise<string | null> {
-    try {
-      const user = await this.authService.getBackendUser(username);
-      console.log('🔹 User data received:', user);
-
-      if (!user || !user.name) {
-        console.error(`❌ User data not found for ${username}`);
-        return null;
-      }
-
-      return user.name;
-    } catch (error) {
-      console.error('❌ Error fetching user data:', error);
-      return null;
-    }
-  }
 
   sendRaiseHand() {
     if (!this.userId) {

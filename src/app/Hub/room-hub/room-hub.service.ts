@@ -116,6 +116,10 @@ export class RoomHubService {
       console.log(`😊 Received emotion from ${username}: ${type} at (${x}, ${y})`);
     });
 
+    this.hubConnection.on("ReceiveSubtitle", (username: string, subtitle: string) => {
+      console.log(`${username}: ${subtitle}`);
+    });
+
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
@@ -132,6 +136,8 @@ export class RoomHubService {
       console.log('🚨 Server yêu cầu ngắt kết nối!');
       this.leaveRoom();
       this.cleanup();
+
+
 
     });
 
@@ -187,19 +193,18 @@ export class RoomHubService {
   public async sendLowerHand(): Promise<void> {
     const userName = this.currentUser.name;
     await this.hubConnection.invoke('SendLowerHand', userName, this.currentUser.roomId);
+  }
 
+  public async sendSubtitle(subtitle : string): Promise<void> {
+    const userName = this.currentUser.name;
+    await this.hubConnection.invoke('SendSubtitle', this.currentUser.roomId,userName, subtitle);
   }
 
   // Thêm phương thức gửi Emotion
   public async sendEmotion(type: string, x: number, y: number): Promise<void> {
     const userName = this.currentUser.name;
     const roomId = this.currentUser.roomId;
-
-    console.log(`🔹 Sending emotion from user: ${userName}, room: ${roomId}`);
-
     await this.hubConnection.invoke('SendEmotion', userName, roomId, type, x, y);
-
-    console.log(`😊 Emotion ${type} sent at (${x}, ${y})`);
   }
 
 
@@ -214,11 +219,18 @@ export class RoomHubService {
     this.hubConnection.on('ReceiveLowerHand', callback);
   }
 
+  public receiveSubtitle(callback: (username: string, subtitle: string) => void): void {
+    this.hubConnection.off('ReceiveSubtitle');
+    this.hubConnection.on('ReceiveSubtitle', callback);
+  }
+
 // Thêm hàm lắng nghe Emotion
   public receiveEmotion(callback: (username: string, type: string, x: number, y: number) => void): void {
     this.hubConnection.off('ReceiveEmotion');
     this.hubConnection.on('ReceiveEmotion', callback);
   }
+
+
 
   // Media controls
   public toggleAudio(): void {
