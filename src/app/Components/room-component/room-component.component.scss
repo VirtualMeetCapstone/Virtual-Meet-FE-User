@@ -602,3 +602,30 @@
   0% { transform: scale(1); }
   100% { transform: scale(1.2); }
 }
+
+/* Định dạng label và select để giống button */
+.language-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #28a745; /* Màu xanh như button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Khi hover */
+.language-select:hover {
+  background-color: #218838;
+}
+
+/* Định dạng label */
+.language-label {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  color: black; /* Đổi màu để dễ nhìn hơn */
+}

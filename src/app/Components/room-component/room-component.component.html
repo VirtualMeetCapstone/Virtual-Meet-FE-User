@@ -5,9 +5,9 @@
       <div class="profile"></div>
       <video [srcObject]="peer.stream" autoplay playsinline></video>
       <p class="user-name">{{ peer.userName }}</p>
- <div class="raise-hand-icon" *ngIf="raisedHands.includes(peer.userName)">
-  ✋
-</div>
+      <div class="raise-hand-icon" *ngIf="raisedHands.includes(peer.userName)">
+        ✋
+      </div>
       <button class="pin-btn" (click)="pinUser(peer)">
         <i [ngClass]="pinnedUser?.userName === peer.userName ? 'fa-solid fa-thumbtack' : 'fa-solid fa-thumbtack'"></i>
       </button>
@@ -35,6 +35,10 @@
     </div>
   </div>
 
+  <div class="subtitle-box">
+    <p>{{ subtitle }}</p>
+  </div>
+
   <!-- YouTube Player -->
   <div [hidden]="!isYouTubeActive" class="youtube-container">
     <app-youtube-player ngSkipHydration [roomId]="roomId"></app-youtube-player>
@@ -46,6 +50,17 @@
       <h3>Chọn Hoạt Động</h3>
       <button class="activity-option" (click)="startYouTubeTogether()">YouTube Together</button>
       <button class="activity-option" (click)="startWhiteboard()">Whiteboard</button>
+      <!-- Chọn ngôn ngữ -->
+      <label class="language-label" for="languageSelect">Phụ đề:</label>
+      <select id="languageSelect" class="language-select" (change)="changeLanguage($event)">
+        <option value="vi-VN" [selected]="selectedLanguage === 'vi-VN'">Tiếng Việt</option>
+        <option value="en-US" [selected]="selectedLanguage === 'en-US'">Tiếng Anh</option>
+      </select>
+
+      <!-- Nút bật/tắt phụ đề -->
+      <button class="activity-option" (click)="toggleSubtitles()">
+        {{ isSubtitlesEnabled ? 'Tắt Phụ Đề' : 'Bật Phụ Đề' }}
+      </button>
       <button class="close-modal" (click)="closeAllModals()">Đóng</button>
     </div>
   </div>
@@ -59,9 +74,11 @@
   <!-- Control Buttons -->
   <div class="action-btn-group">
     <div class="controls">
-      <app-emotion-controls (lowerHand)="onLowerHand($event)" (raiseHand)="onRaiseHand($event)" (emotionSent)="onEmotionSent($event)"></app-emotion-controls>
+      <app-emotion-controls (lowerHand)="onLowerHand($event)" (raiseHand)="onRaiseHand($event)"
+        (emotionSent)="onEmotionSent($event)"></app-emotion-controls>
       <div class="emotion-bubbles">
-        <div *ngFor="let bubble of bubbles" class="emotion-bubble" [ngClass]="bubble.type" [style.left.px]="bubble.x" [style.bottom.px]="bubble.y">
+        <div *ngFor="let bubble of bubbles" class="emotion-bubble" [ngClass]="bubble.type" [style.left.px]="bubble.x"
+          [style.bottom.px]="bubble.y">
           <i [ngClass]="getIcon(bubble.type)"></i>
           <span class="bubble-name">{{ bubble.userName }}</span>
         </div>
@@ -87,9 +104,7 @@
       </button>
 
       <!-- Recording Button -->
-      <button
-        class="control-btn"
-        [class.active]="isRecording"
+      <button class="control-btn" [class.active]="isRecording"
         (click)="isRecording ? stopRecording() : toggleRecordingModal()"
         title="{{ isRecording ? 'Stop Recording' : 'Start Recording' }}">
         <i class="fas" [ngClass]="isRecording ? 'fa-stop-circle' : 'fa-record-vinyl'"></i>
@@ -123,7 +138,8 @@
       <div class="modal-body">
         <div class="recording-options">
           <h3>What do you want to record?</h3>
-          <p class="description">{{ isScreenSharing ? 'You will record your currently shared screen' : 'You will record your camera video' }}</p>
+          <p class="description">{{ isScreenSharing ? 'You will record your currently shared screen' : 'You will record
+            your camera video' }}</p>
 
           <div class="option-toggle">
             <label class="switch">
