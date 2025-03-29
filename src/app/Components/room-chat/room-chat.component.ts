@@ -163,7 +163,7 @@ export class RoomChatComponent implements OnInit {
       this.isListening = false;
       this.cdr.detectChanges();
     }, this.selectedLanguage);
-  }
+}
 
   stopVoiceRecognition() {
     this.isListening = false;

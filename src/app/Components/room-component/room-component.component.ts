@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
+import { TranslateService } from '../../services/external-service/translate.service';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -34,6 +35,7 @@ export class RoomComponentComponent implements OnInit {
 
   constructor(
     private speechService: SpeechService,
+    private translateService: TranslateService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _playerService: PlayerService,
@@ -75,6 +77,7 @@ export class RoomComponentComponent implements OnInit {
   //sub
   subtitle = '';
   selectedLanguage = 'vi-VN'; // Mặc định tiếng Việt
+  selectedLangTarget = 'vi-VN'; // Mặc định tiếng Việt
   isSubtitlesEnabled = false;
   isGlobalSubtitlesEnabled = false
   private isReceiveSubtitleRegistered = false;
@@ -91,19 +94,31 @@ export class RoomComponentComponent implements OnInit {
   async ngOnInit() {
     // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
     if (!this.isReceiveSubtitleRegistered) {
-      this.roomHubService.receiveSubtitle((username, subtitle) => {
-        // Chỉ hiển thị phụ đề nếu chế độ nhận phụ đề đang bật
-        if (this.isSubtitlesEnabled) {
-          this.authService.fetchUserName(username)
-            .then(name => {
-              const displayName = name ?? username;
-              this.displaySubtitle(displayName, subtitle);
-            })
-            .catch(error => {
-              this.displaySubtitle(username, subtitle);
-            });
+      this.roomHubService.receiveSubtitle(async (username, subtitle, sourceLang) => {
+        if (!this.isSubtitlesEnabled) return;
+
+        try {
+          const name = await this.authService.fetchUserName(username);
+          const displayName = name ?? username;
+
+          // 📌 Lấy ngôn ngữ đích từ user hiện tại
+          const targetLang = this.selectedLangTarget.split('-')[0];
+          console.log("taget lag o day",targetLang)
+          let translatedText = subtitle;
+          if (sourceLang !== targetLang) {
+            try {
+              translatedText = await this.translateService.translate(subtitle, sourceLang, targetLang);
+            } catch (error) {
+              console.error("Lỗi dịch phụ đề:", error);
+            }
+          }
+
+          this.displaySubtitle(displayName, translatedText);
+        } catch (error) {
+          this.displaySubtitle(username, subtitle);
         }
       });
+
       this.isReceiveSubtitleRegistered = true;
     }
 
@@ -427,13 +442,17 @@ getIcon(type: string): string {
     this.cdr.detectChanges();
   }
 
-  private startSendingSubtitles() {
-    this.speechService.startListening((text) => {
-      this.roomHubService.sendSubtitle(text);
+  private async startSendingSubtitles() {
+    this.speechService.startListening(async (text) => {
+      if (!text || text.trim().length === 0) return;
 
+      // 📌 Phát hiện ngôn ngữ nói
+      let detectedLang = this.speechService.detectLanguageWithConfidence(text);
+      this.roomHubService.sendSubtitle(text, detectedLang);
       if (this.isSubtitlesEnabled) {
         this.subtitle = text;
       }
+
       this.cdr.detectChanges();
     }, this.selectedLanguage);
   }
@@ -466,7 +485,7 @@ getIcon(type: string): string {
   }
 
   changeLanguage(event: any) {
-    this.selectedLanguage = event.target.value;
+    this.selectedLangTarget = event.target.value;
     if (this.isMicOn) {
       this.stopSendingSubtitles();
       this.startSendingSubtitles();
