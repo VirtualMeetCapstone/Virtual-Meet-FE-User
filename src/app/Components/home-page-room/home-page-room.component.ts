@@ -71,7 +71,7 @@ export class HomePageRoomComponent implements OnInit {
   };
 
   getRoom() {
-    this.roomService.getRooms(1212, 0).subscribe((room: any) => {
+    this.roomService.getRooms(12, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
     });
