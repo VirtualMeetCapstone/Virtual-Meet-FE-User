@@ -33,6 +33,7 @@
           />
           <div class="username">
             {{ post.user.name }}
+
             <span> • Following </span>
           </div>
         </div>
@@ -52,8 +53,7 @@
           <div class="post-comment">
             <div class="post-header">
               <img
-                [src]="getSafeUrl(user.photoUrl)"
-
+                [src]="user.picture.url"
                 alt="Profile picture"
                 height="40"
                 width="40"
@@ -98,9 +98,7 @@
               <div class="post-comment">
                 <div class="post-header">
                   <img
-
-                    [src]="getSafeUrl(user.photoUrl)"
-
+                    [src]="user.picture.url"
                     alt="Profile picture"
                     height="40"
                     width="40"
@@ -146,9 +144,7 @@
               <div class="post-comment" *ngIf="comment.replies.length > 0">
                 <div class="post-header">
                   <img
-
-                    [src]="getSafeUrl(user.photoUrl)"
-
+                    [src]="user.picture.url"
                     alt="Profile picture"
                     height="40"
                     width="40"

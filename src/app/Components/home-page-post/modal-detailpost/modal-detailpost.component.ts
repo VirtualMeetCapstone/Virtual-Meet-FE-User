@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PostserviceService } from '../../../services/post-service/postservice.service';
 import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 @Component({
@@ -10,15 +10,21 @@ export class ModalDetailpostComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() post: any = null;
   @Input() user: any = '';
+  @Input() userId: any = '';
+
   currentImageIndex: number = 0;
   comments: any = [];
   groupedComments: any = {};
   isLoadingComment: boolean = false;
   messages: any = [];
-  constructor(private postService: PostserviceService,private externalService: ExternalServiceService,) {}
+  constructor(
+    private postService: PostserviceService,
+    private externalService: ExternalServiceService
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.user);
+    console.log('userfullfrommodaldetail', this.user);
+    console.log(this.userId);
     this.getComment();
   }
   getComment() {
@@ -69,7 +75,7 @@ export class ModalDetailpostComponent implements OnInit {
     }
 
     this.postService
-      .commentPost(this.user.id, this.post.id, trimmedContent)
+      .commentPost(this.userId, this.post.id, trimmedContent)
       .subscribe(
         (newComment: any) => {
           this.getComment();
@@ -87,7 +93,7 @@ export class ModalDetailpostComponent implements OnInit {
     }
 
     this.postService
-      .replyComment(this.user.id, this.post.id, parentId, trimmedContent)
+      .replyComment(this.userId, this.post.id, parentId, trimmedContent)
       .subscribe(
         (newComment: any) => {
           this.getComment();

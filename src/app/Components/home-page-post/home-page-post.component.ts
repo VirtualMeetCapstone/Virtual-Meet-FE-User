@@ -22,6 +22,7 @@ export class HomePagePostComponent implements OnInit {
 
   userId: string = '';
   user: any = null;
+
   isShowModalDetailPost = false;
   post: any = null;
   isLoading: boolean = false;
@@ -39,13 +40,16 @@ export class HomePagePostComponent implements OnInit {
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
-        this.id = this.userId;
-        this.user = this.authService.getBackendUser(this.id);
+        this.userId = this.user.id;
+        this.authService
+          .getFullInformationOfUseById(this.user.id)
+          .subscribe((user: any) => {
+            console.log('userfull', user);
+            this.user = user;
+          });
       }
     });
-    if (this.authService.isLoggedIn()) {
-      this.user = this.authService.getUser();
-    }
+
     this.loadMorePosts();
     this.notifyService.onOpenPostModal().subscribe((postId) => {
       this.openModalDetailPost(postId);
@@ -79,6 +83,7 @@ export class HomePagePostComponent implements OnInit {
   }
 
   openModalDetailPost(postId: string) {
+    console.log('user when openmodal', this.user);
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe((data: any) => {
       this.post = data;

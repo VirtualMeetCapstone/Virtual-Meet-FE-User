@@ -9,6 +9,7 @@ export class ExternalServiceService {
 
   //use it when get error or json photo: UNSAFE
   getSafeUrl(url: any): SafeUrl {
+    console.log('url', url);
     if (!url) return 'assets/images/default-avatar.png';
 
     // console.log(url);

@@ -1,8 +1,12 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, map, Observable, throwError} from 'rxjs';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {jwtDecode} from 'jwt-decode';
-import {AppConstants} from '../../constant/AppConstants';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
+import { jwtDecode } from 'jwt-decode';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Injectable({
   providedIn: 'root',
@@ -120,7 +124,7 @@ export class AuthService {
 
     try {
       const user = await this.http
-        .get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, {headers})
+        .get(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`, { headers })
         .toPromise();
       this.backendUserCache.set(userId, user);
       return user;
@@ -163,8 +167,15 @@ export class AuthService {
       'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
   getUserByID(userId: string): Observable<string> {
-    return this.http.get<{ id: string, name: string }>(`${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`)
-      .pipe(map(user => user.name)); // ✅ Lấy ra `name`
+    return this.http
+      .get<{ id: string; name: string }>(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`
+      )
+      .pipe(map((user) => user.name)); // ✅ Lấy ra `name`
+  }
+  getFullInformationOfUseById(userId: string): any {
+    const finalUrl = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`;
+    return this.http.get<any>(finalUrl);
   }
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
