@@ -99,13 +99,17 @@ export class RoomChatComponent implements OnInit {
     if (event instanceof KeyboardEvent) {
       event.preventDefault(); // Ngăn textarea xuống dòng khi nhấn Enter
     }
-    if (!this.newMessage.trim()) return;
+// voice trả về mảng, nên phải convert ra string
+    const messageText = Array.isArray(this.newMessage) ? this.newMessage.join(' ') : this.newMessage;
 
+    if (!messageText || typeof messageText !== 'string' || !messageText.trim()) {
+      return;
+    }
     const tempId = `temp-${Date.now()}`;
     const messageData = {
       id: tempId,
       senderId: this.currentUser,
-      content: this.newMessage,
+      content: messageText,
       isPinned: false,
     };
 
@@ -151,8 +155,13 @@ export class RoomChatComponent implements OnInit {
     this.speechService.startListening(async (recognizedText: string) => {
       this.newMessage = recognizedText;
 
-      const sourceLang = this.selectedLanguage;
-      const targetLang = sourceLang === 'vi-VN' ? 'en' : 'vi';
+      // Chỉ giữ lại mã ngôn ngữ ngắn (vi, en)
+      const sourceLang = this.selectedLanguage.includes('-')
+        ? this.selectedLanguage.split('-')[0]
+        : this.selectedLanguage;
+
+      const targetLang = sourceLang === 'vi' ? 'en' : 'vi';
+
       this.translatedText = await this.translateService.translate(
         this.newMessage,
         sourceLang,

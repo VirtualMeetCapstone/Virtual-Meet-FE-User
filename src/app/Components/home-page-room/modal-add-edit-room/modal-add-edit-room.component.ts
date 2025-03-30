@@ -16,6 +16,11 @@ export class ModalAddEditRoomComponent {
   constructor(private roomService: RoomServicesService) {}
   FormAdd!: FormGroup;
   loading = false;
+  isPublic = true;
+
+  togglePrivacy() {
+    this.isPublic = !this.isPublic;
+  }
 
   ngOnInit(): void {
     console.log(this.userId);
@@ -54,6 +59,7 @@ export class ModalAddEditRoomComponent {
         console.log('Response:', res);
         if (res.id) {
           this.closeModal.emit(true);
+          this.roomService.triggerRefresh();
         }
         this.loading = false;
       },

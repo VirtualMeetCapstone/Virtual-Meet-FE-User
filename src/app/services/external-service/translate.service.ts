@@ -29,6 +29,7 @@ export class TranslateService {
 
 
       if (response.data && response.data.data && response.data.data.translations) {
+        console.log("✅ Văn bản đã dịch:", response.data.data.translations.translatedText);
         return response.data.data.translations.translatedText;
       } else {
         return "Lỗi: API không trả về dữ liệu hợp lệ.";
@@ -37,6 +38,7 @@ export class TranslateService {
     } catch (error) {
       return 'Không thể dịch';
     }
-  }
+}
+
 
 }

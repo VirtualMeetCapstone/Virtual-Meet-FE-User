@@ -1,10 +1,10 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {PostserviceService} from '../../services/post-service/postservice.service';
-import {MatDialog} from '@angular/material/dialog';
-import {CreatePostModalComponent} from '../create-post-modal/create-post-modal.component';
-import {AuthService} from '../../services/auth-service/auth.service';
-import {ExternalServiceService} from '../../services/external-service/external-service.service';
-import {NotificationServiceService} from "../../services/notification-service/notification-service.service";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { PostserviceService } from '../../services/post-service/postservice.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CreatePostModalComponent } from '../create-post-modal/create-post-modal.component';
+import { AuthService } from '../../services/auth-service/auth.service';
+import { ExternalServiceService } from '../../services/external-service/external-service.service';
+import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
 
 @Component({
   selector: 'app-home-page-post',
@@ -33,11 +33,9 @@ export class HomePagePostComponent implements OnInit {
     private dialog: MatDialog,
     private externalService: ExternalServiceService,
     private notifyService: NotificationServiceService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
@@ -47,8 +45,6 @@ export class HomePagePostComponent implements OnInit {
     });
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
-
-
     }
     this.loadMorePosts();
     this.notifyService.onOpenPostModal().subscribe((postId) => {
@@ -65,14 +61,21 @@ export class HomePagePostComponent implements OnInit {
     }
 
     this.loading = true;
-    this.postService
-      .getPosts(this.pageSize, this.skip)
-      .subscribe((data: any) => {
-        this.listPost = [...this.listPost, ...data.data];
+
+    const apiCall =
+      this.totalPost === null
+        ? this.postService.getPosts(this.pageSize, this.skip)
+        : this.postService.getPostsNotNeedTotalCount(this.pageSize, this.skip);
+    apiCall.subscribe((data: any) => {
+      this.listPost = [...this.listPost, ...data.data];
+
+      if (this.totalPost === null) {
         this.totalPost = data.totalCount;
-        this.skip += this.pageSize;
-        this.loading = false;
-      });
+      }
+
+      this.skip += this.pageSize;
+      this.loading = false;
+    });
   }
 
   openModalDetailPost(postId: string) {
@@ -88,14 +91,11 @@ export class HomePagePostComponent implements OnInit {
     this.isShowModalDetailPost = false;
   }
 
-  createPost() {
-  }
+  createPost() {}
 
-  createFeeling() {
-  }
+  createFeeling() {}
 
-  tagFriend() {
-  }
+  tagFriend() {}
 
   openCreatePost() {
     const dialogRef = this.dialog.open(CreatePostModalComponent, {
