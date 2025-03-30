@@ -10,7 +10,6 @@ export class TranslateService {
 
   async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
     try {
-      console.log("📝 Đang gửi văn bản:", text);
 
       const response = await axios.post(
         this.apiUrl,
@@ -28,17 +27,14 @@ export class TranslateService {
         }
       );
 
-      console.log("📥 Phản hồi từ API:", response.data);
 
       if (response.data && response.data.data && response.data.data.translations) {
         return response.data.data.translations.translatedText;
       } else {
-        console.error("⚠️ API trả về dữ liệu không đúng định dạng:", response.data);
         return "Lỗi: API không trả về dữ liệu hợp lệ.";
       }
 
     } catch (error) {
-      console.error('❌ Lỗi dịch:', error);
       return 'Không thể dịch';
     }
   }
