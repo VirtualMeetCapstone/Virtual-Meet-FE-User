@@ -39,7 +39,6 @@ export class HomePageRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-
     window.addEventListener('scroll', this.toggleScrollButton);
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
@@ -52,6 +51,15 @@ export class HomePageRoomComponent implements OnInit {
     }
     console.log(this.user);
     this.getRoom();
+    this.roomService.refreshRoom$.subscribe(() => {
+      this.messages.push('Add room successful !!!');
+      setTimeout(() => {
+        this.messages = [];
+      }, 3000);
+      this.skip = 0;
+      this.rooms = [];
+      this.getRoom();
+    });
     this.notificationService.roomDetail$.subscribe((roomId) => {
       this.roomService.getRoomById(roomId).subscribe((room: any) => {
         if (room) {

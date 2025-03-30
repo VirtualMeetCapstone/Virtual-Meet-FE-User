@@ -19,6 +19,7 @@ import { Notification } from '../../../models/notification';
 import { StoryService } from '../../../services/story-service/story-service.service';
 import { Story } from '../../../models/story';
 import { TranslateService } from '@ngx-translate/core';
+import { HomePageRoomComponent } from '../../home-page-room/home-page-room.component';
 
 @Component({
   selector: 'app-header',
@@ -43,7 +44,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isShowDropdown = false;
     }
   }
+  @ViewChild(HomePageRoomComponent, { static: false })
+  homePageRoomComponent!: HomePageRoomComponent;
 
+  showModalAddRoom = false;
   isShowDropdown = false;
   isShowLoginDialog = false;
   isShowNotification = false;
@@ -352,5 +356,18 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         localStorage.setItem('language', lang);
       }
     });
+  }
+  openModalAddRoom() {
+    this.showModalAddRoom = true;
+    console.log(this.userId);
+  }
+  closeModalAddRoom(event: any) {
+    if (!event) {
+      this.showModalAddRoom = false;
+    } else {
+      if (this.router.url !== '/')
+        (globalThis as any).alert('Add room successful !!!!');
+    }
+    this.showModalAddRoom = false;
   }
 }

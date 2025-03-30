@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
   <div class="main-content">
     <div class="create-post">
       <div class="user-info">
@@ -278,12 +278,7 @@
     </div>
   </div>
 </div>
-<app-modal-detailpost
-  *ngIf="isShowModalDetailPost"
-  (closeModal)="closeModalDetailPost()"
-  [post]="post"
-  [user]="user"
-></app-modal-detailpost>
+
 <div *ngIf="isLoading == true" class="fullscreen-spinner text-center">
   <app-loading-component></app-loading-component>
 </div>
