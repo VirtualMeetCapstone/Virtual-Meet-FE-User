@@ -1,7 +1,5 @@
 <div class="container">
-
   <div class="main-content">
-
     <div class="create-post">
       <div class="user-info">
         <div class="grid-container">
@@ -36,9 +34,9 @@
           Create
         </button>
       </div>
-<!--      <div class="d-flex justify-content-center mt-3">-->
-<!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
-<!--      </div>-->
+      <!--      <div class="d-flex justify-content-center mt-3">-->
+      <!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
+      <!--      </div>-->
     </div>
     <div
       class="post"
@@ -80,7 +78,13 @@
               <img class="half" [src]="post.medias[0].url" alt="Error" />
               <img class="half" [src]="post.medias[1].url" alt="Error" />
             </div>
-            <img class="full" [src]="post.medias[2].url" alt="Error" />
+            <img
+              style="border-left: 3px solid #040404"
+              class="full"
+              [src]="post.medias[2].url"
+              alt="Error"
+              style="height: 100%"
+            />
           </ng-container>
 
           <ng-container *ngIf="post.medias.length === 4">
@@ -98,16 +102,24 @@
               <img class="half" [src]="post.medias[0].url" alt="Error" />
               <img class="half" [src]="post.medias[1].url" alt="Error" />
             </div>
-            <div class="grid grid-3">
+
+            <div class="grid grid-3" style="border-left: 7px solid black">
               <img
                 *ngFor="let image of post.medias.slice(2, 4)"
                 [src]="image.url"
                 alt="Error"
               />
+
               <div class="more-images" *ngIf="post.medias.length > 5">
                 <img [src]="post.medias[4].url" alt="Error" />
                 <div class="overlay">+{{ post.medias.length - 5 }}</div>
               </div>
+
+              <img
+                *ngIf="post.medias.length === 5"
+                [src]="post.medias[4].url"
+                alt="Error"
+              />
             </div>
           </ng-container>
         </div>

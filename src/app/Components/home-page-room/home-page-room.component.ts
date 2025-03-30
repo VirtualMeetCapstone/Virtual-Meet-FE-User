@@ -17,7 +17,7 @@ export class HomePageRoomComponent implements OnInit {
   roomToDelete: any = null;
   rooms: any[] = [];
   messages: any[] = [];
-  pageSize = 9;
+  pageSize = 12;
   loading = true;
   totalRooms = 0;
   skip = 0;
@@ -38,6 +38,8 @@ export class HomePageRoomComponent implements OnInit {
   user: any = null;
 
   ngOnInit(): void {
+    this.loading = true;
+
     window.addEventListener('scroll', this.toggleScrollButton);
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
@@ -69,7 +71,7 @@ export class HomePageRoomComponent implements OnInit {
   };
 
   getRoom() {
-    this.roomService.getRooms(9, 0).subscribe((room: any) => {
+    this.roomService.getRooms(1212, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
     });
@@ -148,6 +150,8 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   loadMoreRooms() {
+    this.loading = true;
+
     if (this.rooms.length >= this.totalRooms) {
       this.loading = false;
       return;
