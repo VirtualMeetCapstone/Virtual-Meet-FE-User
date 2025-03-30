@@ -59,6 +59,7 @@ export class ModalAddEditRoomComponent {
         console.log('Response:', res);
         if (res.id) {
           this.closeModal.emit(true);
+          this.roomService.triggerRefresh();
         }
         this.loading = false;
       },

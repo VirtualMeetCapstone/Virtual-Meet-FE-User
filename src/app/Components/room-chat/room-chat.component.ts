@@ -174,7 +174,6 @@ export class RoomChatComponent implements OnInit {
     }, this.selectedLanguage);
 }
 
-
   stopVoiceRecognition() {
     this.isListening = false;
     this.speechService.stopListening();

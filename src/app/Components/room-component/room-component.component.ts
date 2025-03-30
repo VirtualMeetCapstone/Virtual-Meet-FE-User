@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
+import { TranslateService } from '../../services/external-service/translate.service';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -34,6 +35,7 @@ export class RoomComponentComponent implements OnInit {
 
   constructor(
     private speechService: SpeechService,
+    private translateService: TranslateService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _playerService: PlayerService,
@@ -46,7 +48,7 @@ export class RoomComponentComponent implements OnInit {
     this.userId = authService.getUser()?.id;
   }
 
-//start init
+  //start init
   roomId: string = '';
   userId: string = '';
   userList: string[] = [];
@@ -75,15 +77,17 @@ export class RoomComponentComponent implements OnInit {
   //sub
   subtitle = '';
   selectedLanguage = 'vi-VN'; // Mặc định tiếng Việt
+  selectedLangTarget = 'vi-VN'; // Mặc định tiếng Việt
   isSubtitlesEnabled = false;
-  isGlobalSubtitlesEnabled = false
+  isGlobalSubtitlesEnabled = false;
   private isReceiveSubtitleRegistered = false;
   subtitles: { username: string; text: string; timestamp: number }[] = [];
+  private userNameCache = new Map<string, string>();
   //pin
   pinnedUser: Peer | null = null;
   isPinned: boolean = false;
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
-//end init
+  //end init
 
   ngOnDestroy() {
     this.leaveRoom();
@@ -91,19 +95,37 @@ export class RoomComponentComponent implements OnInit {
   async ngOnInit() {
     // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
     if (!this.isReceiveSubtitleRegistered) {
-      this.roomHubService.receiveSubtitle((username, subtitle) => {
-        // Chỉ hiển thị phụ đề nếu chế độ nhận phụ đề đang bật
-        if (this.isSubtitlesEnabled) {
-          this.authService.fetchUserName(username)
-            .then(name => {
-              const displayName = name ?? username;
-              this.displaySubtitle(displayName, subtitle);
-            })
-            .catch(error => {
-              this.displaySubtitle(username, subtitle);
-            });
+      this.roomHubService.receiveSubtitle(
+        async (username, subtitle, sourceLang) => {
+          if (!this.isSubtitlesEnabled) return;
+
+          try {
+            let displayName: string | undefined = this.userNameCache.get(username);
+
+            if (!displayName) {
+              const name = await this.authService.fetchUserName(username);
+              displayName = name ?? undefined;
+              if (displayName) {
+                this.userNameCache.set(username, displayName);
+              }
+            }
+            this.displaySubtitle(displayName ?? username, subtitle, 5000, false);
+
+            const targetLang = this.selectedLangTarget.split('-')[0];
+            if (sourceLang !== targetLang) {
+              this.translateService
+                .translate(subtitle, sourceLang, targetLang)
+                .then((translatedText) => {
+                  this.displaySubtitle(displayName ?? username, translatedText, 10000, true);
+                })
+                .catch((error) => console.error("Lỗi dịch phụ đề:", error));
+            }
+          } catch (error) {
+            this.displaySubtitle(username, subtitle, 5000);
+          }
         }
-      });
+      );
+
       this.isReceiveSubtitleRegistered = true;
     }
 
@@ -137,16 +159,15 @@ export class RoomComponentComponent implements OnInit {
 
       this.initializeEventListeners();
 
-      this.roomHubService.participants$.subscribe(count => {
+      this.roomHubService.participants$.subscribe((count) => {
         this.participantCount = count;
       });
 
-      this.rtcHub.peers$.subscribe(peers => {
+      this.rtcHub.peers$.subscribe((peers) => {
         this.peers = peers;
       });
 
       await this.displayLocalStream();
-
     } catch (err) {
       console.error('❌ Lỗi khởi tạo phòng:', err);
       this.connectionStatus = 'Connection failed';
@@ -164,9 +185,7 @@ export class RoomComponentComponent implements OnInit {
 
   getRemainingCount() {
     const maxDisplay = 11;
-    return this.peers.length > maxDisplay
-      ? this.peers.length - maxDisplay
-      : 0;
+    return this.peers.length > maxDisplay ? this.peers.length - maxDisplay : 0;
   }
 
   private initializeEventListeners(): void {
@@ -234,21 +253,15 @@ export class RoomComponentComponent implements OnInit {
   async leaveRoom() {
     try {
       await this.roomHubService.leaveRoom();
-
     } catch (err) {
       console.error('Error leaving room:', err);
     }
   }
 
-
-
-
-
   toggleVideo(): void {
     this.roomHubService.toggleVideo();
     this.isCameraOn = this.roomHubService.videoEnabled;
   }
-
 
   private async displayLocalStream(): Promise<void> {
     const stream = this.roomHubService.getLocalStream();
@@ -300,30 +313,28 @@ export class RoomComponentComponent implements OnInit {
   }
 
   toggleRecordingModal(): void {
-    console.log("Toggle recording modal clicked"); // Kiểm tra xem có chạy không
+    console.log('Toggle recording modal clicked'); // Kiểm tra xem có chạy không
     this.isRecordingModalOpen = !this.isRecordingModalOpen;
   }
-
 
   toggleRecordWithAudio(): void {
     this.recordWithAudio = !this.recordWithAudio;
   }
 
   async startRecording(): Promise<void> {
-    console.log("Start recording clicked");
+    console.log('Start recording clicked');
     if (this.rtcHub) {
-      console.log("Audio:", this.recordWithAudio);
+      console.log('Audio:', this.recordWithAudio);
 
       try {
         await this.rtcHub.startRecording(this.recordWithAudio);
         this.isRecording = this.rtcHub.isRecording;
-        console.log("✅ Cập nhật isRecording:", this.isRecording);
+        console.log('✅ Cập nhật isRecording:', this.isRecording);
       } catch (error) {
-        console.error("❌ Lỗi khi bắt đầu quay:", error);
+        console.error('❌ Lỗi khi bắt đầu quay:', error);
       }
-
     } else {
-      console.error("rtcHub is not initialized");
+      console.error('rtcHub is not initialized');
     }
     this.isRecordingModalOpen = false;
   }
@@ -333,90 +344,101 @@ export class RoomComponentComponent implements OnInit {
       try {
         await this.rtcHub.stopRecording();
         this.isRecording = this.rtcHub.isRecording; // Cập nhật sau khi stop hoàn tất
-        console.log("✅ Cập nhật isRecording:", this.isRecording);
+        console.log('✅ Cập nhật isRecording:', this.isRecording);
       } catch (error) {
-        console.error("❌ Lỗi khi dừng quay:", error);
+        console.error('❌ Lỗi khi dừng quay:', error);
       }
     }
   }
 
-  onEmotionSent(event: { type: string; userName: string; x: number; y: number }) {
+  onEmotionSent(event: {
+    type: string;
+    userName: string;
+    x: number;
+    y: number;
+  }) {
     console.log('🔹 Full event received:', event);
     console.log('🔹 Current userId:', this.userId);
     console.log('🔹 Event userName:', event.userName);
 
     if (!event || !event.userName) {
-        console.error('❌ Invalid emotion event received');
-        return;
+      console.error('❌ Invalid emotion event received');
+      return;
     }
 
     const displayName = event.userName === this.userId ? 'you' : event.userName;
     console.log(`👤 Display name resolved: ${displayName}`);
 
     const modifiedEvent = {
-        ...event,
-        userName: displayName
+      ...event,
+      userName: displayName,
     };
 
     this.bubbles.push(modifiedEvent);
     console.log('💬 Updated bubbles:', this.bubbles);
     this.cdr.detectChanges();
     setTimeout(() => {
-        this.bubbles = this.bubbles.filter(b => b !== modifiedEvent);
-        console.log('🧹 Bubbles after timeout:', this.bubbles);
-        this.cdr.detectChanges();
+      this.bubbles = this.bubbles.filter((b) => b !== modifiedEvent);
+      console.log('🧹 Bubbles after timeout:', this.bubbles);
+      this.cdr.detectChanges();
     }, 5000);
-}
-
-
-onRaiseHand(event: { userName: string }) {
-  if (!event || !event.userName) {
-      console.error("❌ Invalid raise hand event received:", event);
-      return;
   }
 
-  console.log(`🙋 ${event.userName} đã giơ tay ✋`);
+  onRaiseHand(event: { userName: string }) {
+    if (!event || !event.userName) {
+      console.error('❌ Invalid raise hand event received:', event);
+      return;
+    }
 
-  // Kiểm tra xem user đã giơ tay chưa, nếu chưa thì thêm vào
-  if (!this.raisedHands.includes(event.userName)) {
+    console.log(`🙋 ${event.userName} đã giơ tay ✋`);
+
+    // Kiểm tra xem user đã giơ tay chưa, nếu chưa thì thêm vào
+    if (!this.raisedHands.includes(event.userName)) {
       this.raisedHands.push(event.userName);
+    }
+
+    // Bắt buộc UI cập nhật
+    this.cdr.detectChanges();
   }
 
-  // Bắt buộc UI cập nhật
-  this.cdr.detectChanges();
-}
-
-onLowerHand(event: { userName: string }) {
-  if (!event || !event.userName) {
-      console.error("❌ Invalid lower hand event received:", event);
+  onLowerHand(event: { userName: string }) {
+    if (!event || !event.userName) {
+      console.error('❌ Invalid lower hand event received:', event);
       return;
-  }
+    }
 
-  console.log(`🙅 ${event.userName} đã hạ tay ✋`);
+    console.log(`🙅 ${event.userName} đã hạ tay ✋`);
 
-  // Loại bỏ user khỏi danh sách giơ tay nếu họ có trong danh sách
-  const index = this.raisedHands.indexOf(event.userName);
-  if (index !== -1) {
+    // Loại bỏ user khỏi danh sách giơ tay nếu họ có trong danh sách
+    const index = this.raisedHands.indexOf(event.userName);
+    if (index !== -1) {
       this.raisedHands.splice(index, 1);
+    }
+
+    // Bắt buộc UI cập nhật
+    this.cdr.detectChanges();
   }
 
-  // Bắt buộc UI cập nhật
-  this.cdr.detectChanges();
-}
-
-getIcon(type: string): string {
-  switch (type) {
-    case 'love': return 'fa-solid fa-heart';
-    case 'haha': return 'fa-solid fa-face-laugh';
-    case 'like': return 'fa-solid fa-thumbs-up';
-    case 'wow': return 'fa-solid fa-face-surprise';
-    case 'sad': return 'fa-solid fa-face-sad-tear';
-    case 'angry': return 'fa-solid fa-face-angry';
-    default: return '';
+  getIcon(type: string): string {
+    switch (type) {
+      case 'love':
+        return 'fa-solid fa-heart';
+      case 'haha':
+        return 'fa-solid fa-face-laugh';
+      case 'like':
+        return 'fa-solid fa-thumbs-up';
+      case 'wow':
+        return 'fa-solid fa-face-surprise';
+      case 'sad':
+        return 'fa-solid fa-face-sad-tear';
+      case 'angry':
+        return 'fa-solid fa-face-angry';
+      default:
+        return '';
+    }
   }
-}
 
-//start sub
+  //start sub
   // Phương thức để bật/tắt chế độ "nhận phụ đề"
   toggleSubtitles(): void {
     this.isSubtitlesEnabled = !this.isSubtitlesEnabled;
@@ -427,13 +449,17 @@ getIcon(type: string): string {
     this.cdr.detectChanges();
   }
 
-  private startSendingSubtitles() {
-    this.speechService.startListening((text) => {
-      this.roomHubService.sendSubtitle(text);
+  private async startSendingSubtitles() {
+    this.speechService.startListening(async (text) => {
+      if (!text || text.trim().length === 0) return;
 
+      // 📌 Phát hiện ngôn ngữ nói
+      let detectedLang = this.speechService.detectLanguageWithConfidence(text);
+      this.roomHubService.sendSubtitle(text, detectedLang);
       if (this.isSubtitlesEnabled) {
         this.subtitle = text;
       }
+
       this.cdr.detectChanges();
     }, this.selectedLanguage);
   }
@@ -454,23 +480,32 @@ getIcon(type: string): string {
     }
   }
 
-  displaySubtitle(username: string, subtitle: string) {
-    const subtitleObj = { username, text: subtitle, timestamp: Date.now() };
+  displaySubtitle(username: string, text: string, duration: number = 5000, isTranslated: boolean = false) {
+    const subtitleObj = {
+      username,
+      text: isTranslated ? `🔄 ${text}` : text,
+      timestamp: Date.now()
+    };
     this.subtitles.push(subtitleObj);
+
+    if (this.subtitles.length > 5) {
+      this.subtitles.shift();
+    }
+
     this.cdr.detectChanges();
 
     setTimeout(() => {
-      this.subtitles = this.subtitles.filter(s => s !== subtitleObj);
+      this.subtitles = this.subtitles.filter((s) => s !== subtitleObj);
       this.cdr.detectChanges();
-    }, 5000);
+    }, duration);
   }
 
+
   changeLanguage(event: any) {
-    this.selectedLanguage = event.target.value;
+    this.selectedLangTarget = event.target.value;
     if (this.isMicOn) {
       this.stopSendingSubtitles();
       this.startSendingSubtitles();
     }
   }
-
 }

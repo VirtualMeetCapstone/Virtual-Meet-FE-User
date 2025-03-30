@@ -5,148 +5,12 @@ body {
   background-color: #f0f0f0;
 }
 
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 20px;
-  gap: 30px;
-}
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 20px;
-  gap: 20px;
-}
-
-.room-card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  width: 340px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.room-card:hover {
-  transform: translateY(-5px);
-}
-
-.room-card .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.room-card .header img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-}
-
-.room-card .header .topic {
-  font-size: 18px;
-  font-weight: bold;
-  flex-grow: 1;
-  margin-left: 10px;
-  color: #333;
-}
-
-.room-card .header .dropdown .btn {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #666;
-  cursor: pointer;
-}
-
-.room-card .video {
-  width: 100%;
-  height: 180px;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.room-card .video img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.room-card .participants {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.room-card .participants img {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 5px;
-}
-
-.room-card .description {
-  font-size: 14px;
-  color: #555;
-  margin-top: 8px;
-}
-
-.room-card .members {
-  font-size: 13px;
-  color: #777;
-  margin-top: 5px;
-}
-
-.room-card .actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.room-card .actions .join-now {
-  display: flex;
-  align-items: center;
-  background: #007bff;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.room-card .actions .join-now:hover {
-  background: #0056b3;
-}
-
-.room-card .actions .join-now i {
-  margin-right: 5px;
-}
-
-.room-card .actions .icons i {
-  font-size: 16px;
-  color: #777;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-.room-card .actions .icons i:hover {
-  color: #333;
-}
 .room-card .header .settings {
   font-size: 18px;
   color: #666;
 }
 .scroll-container {
-  height: 50vh; /* hoặc phù hợp */
+  height: 30vh; /* hoặc phù hợp */
   overflow: auto;
 }
 .dropdown-menu {
@@ -213,4 +77,44 @@ body {
 
 .scroll-to-top.show {
   display: block;
+}
+.card {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 10, 50, 0.9),
+    rgba(10, 0, 50, 0.8)
+  );
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 20rem;
+  height: 400px;
+  cursor: pointer;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.card .room-image {
+  border-radius: 0.5rem;
+  width: 100%; /* Đảm bảo ảnh luôn phù hợp với card */
+  height: auto; /* Giữ tỷ lệ ảnh */
+  object-fit: cover; /* Cắt ảnh vừa khung mà không bị méo */
+  height: 200px; /* Giới hạn chiều cao nếu cần */
+}
+
+.badge-custom {
+  background-color: #555;
+}
+.badge-red {
+  background-color: #ff0000;
+}
+.scroll-container {
+  height: 50vh; /* hoặc phù hợp */
+  overflow: auto;
+}
+@media (min-width: 2100px) {
+  .col-lon {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
 }

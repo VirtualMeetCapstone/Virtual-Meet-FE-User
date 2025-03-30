@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConstants } from '../../constant/AppConstants';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
 import { NotificationServiceService } from '../notification-service/notification-service.service';
 import { Room } from '../../models/room';
 import { Router } from '@angular/router';
@@ -16,6 +16,12 @@ export class RoomServicesService {
     private notificationService: NotificationServiceService,
     private router: Router
   ) {}
+  private refreshRoomSource = new Subject<void>();
+  refreshRoom$ = this.refreshRoomSource.asObservable();
+
+  triggerRefresh() {
+    this.refreshRoomSource.next();
+  }
 
   getRooms(top: number, skip: number): any {
     const urlWithParams = `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true`;
