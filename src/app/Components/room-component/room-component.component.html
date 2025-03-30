@@ -35,10 +35,10 @@
     </div>
   </div>
 
+
   <div *ngFor="let sub of subtitles">
     <p>{{ sub.username }}: {{ sub.text }}</p>
   </div>
-  
 
   <!-- YouTube Player -->
   <div [hidden]="!isYouTubeActive" class="youtube-container">
@@ -54,8 +54,8 @@
       <!-- Chọn ngôn ngữ -->
       <label class="language-label" for="languageSelect">Phụ đề:</label>
       <select id="languageSelect" class="language-select" (change)="changeLanguage($event)">
-        <option value="vi-VN" [selected]="selectedLanguage === 'vi-VN'">Tiếng Việt</option>
-        <option value="en-US" [selected]="selectedLanguage === 'en-US'">Tiếng Anh</option>
+        <option value="vi-VN" [selected]="selectedLangTarget  === 'vi-VN'">Tiếng Việt</option>
+        <option value="en-US" [selected]="selectedLangTarget === 'en-US'">Tiếng Anh</option>
       </select>
 
       <!-- Nút bật/tắt phụ đề -->

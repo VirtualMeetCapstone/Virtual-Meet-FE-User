@@ -127,7 +127,7 @@ export class RoomHubService {
       if (this.currentUser.roomId) {
         this.currentUser.roomId = '';
       }
-      this.router.navigate(['/home']).then(() => {
+      this.router.navigate(['/']).then(() => {
         window.location.reload();
       });
     })
@@ -179,7 +179,7 @@ export class RoomHubService {
       this.localStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
-    this.router.navigate(['/home']).then(() => {
+    this.router.navigate(['/']).then(() => {
       window.location.reload();
     });
   }
@@ -195,10 +195,11 @@ export class RoomHubService {
     await this.hubConnection.invoke('SendLowerHand', userName, this.currentUser.roomId);
   }
 
-  public async sendSubtitle(subtitle : string): Promise<void> {
+  public async sendSubtitle(subtitle: string, sourceLang: string): Promise<void> {
     const userName = this.currentUser.name;
-    await this.hubConnection.invoke('SendSubtitle', this.currentUser.roomId,userName, subtitle);
-  }
+    await this.hubConnection.invoke('SendSubtitle', this.currentUser.roomId, userName, subtitle, sourceLang);
+}
+
 
   // Thêm phương thức gửi Emotion
   public async sendEmotion(type: string, x: number, y: number): Promise<void> {
@@ -219,10 +220,13 @@ export class RoomHubService {
     this.hubConnection.on('ReceiveLowerHand', callback);
   }
 
-  public receiveSubtitle(callback: (username: string, subtitle: string) => void): void {
+  public receiveSubtitle(callback: (username: string, subtitle: string, sourceLang: string) => void): void {
     this.hubConnection.off('ReceiveSubtitle');
-    this.hubConnection.on('ReceiveSubtitle', callback);
-  }
+    this.hubConnection.on('ReceiveSubtitle', (username, subtitle, sourceLang) => {
+        callback(username, subtitle, sourceLang);
+    });
+}
+
 
 // Thêm hàm lắng nghe Emotion
   public receiveEmotion(callback: (username: string, type: string, x: number, y: number) => void): void {
