@@ -12,7 +12,6 @@
   gap: 10px;
   width: 100%;
   margin-top: 20px;
-  cursor: pointer;
 }
 
 /* Mỗi item đại diện cho 1 "video/ảnh" của room */
@@ -21,6 +20,7 @@
   overflow: hidden;
   border-radius: 5px;
   background-color: #222; /* nền tối cho đẹp, tuỳ chỉnh */
+  cursor: pointer;
 }
 
 /* Ảnh/video chiếm toàn bộ container */

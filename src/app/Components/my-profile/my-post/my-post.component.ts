@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AppConstants } from '../../../constant/AppConstants';
-import { Router } from '@angular/router'; // Thêm Router
+import { Router } from '@angular/router'; 
 
 interface Media {
   url: string;
