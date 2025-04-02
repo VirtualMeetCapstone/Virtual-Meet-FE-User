@@ -49,7 +49,7 @@ export class MyPostComponent implements OnChanges {
 
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
-    imgElement.src = '/img/virtualMeetImageForNoImage.png';
+    imgElement.src = '/assets/img/virtualMeetImageForNoImage.png';
   }
 
   async fetchMyPost(id: string) {

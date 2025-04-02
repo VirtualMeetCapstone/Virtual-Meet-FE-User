@@ -37,7 +37,12 @@
     <!-- User suggestions -->
     <ng-container *ngIf="userSuggestions.length > 0">
       <li class="suggestion-header">
-        <img width="20" height="20" src="/img/user-icon.png" alt="user-icon" />
+        <img
+          width="20"
+          height="20"
+          src="/assets/img/user-icon.png"
+          alt="user-icon"
+        />
         Users
       </li>
       <li
@@ -60,7 +65,7 @@
         <img
           width="20"
           height="20"
-          src="/img/meeting-icon.png"
+          src="/assets/img/meeting-icon.png"
           alt="room-icon"
         />
         Rooms
@@ -73,7 +78,12 @@
     <!-- Post suggestions -->
     <ng-container *ngIf="postSuggestions.length > 0">
       <li class="suggestion-header">
-        <img width="20" height="20" src="/img/post-icon.png" alt="post-icon" />
+        <img
+          width="20"
+          height="20"
+          src="/assets/img/post-icon.png"
+          alt="post-icon"
+        />
         Posts
       </li>
       <li *ngFor="let post of postSuggestions" (click)="selectSuggestion(post)">
@@ -87,7 +97,7 @@
         <img
           width="20"
           height="20"
-          src="/img/trending-icon.png"
+          src="/assets/img/trending-icon.png"
           alt="trending-icon"
         />
         Trending
