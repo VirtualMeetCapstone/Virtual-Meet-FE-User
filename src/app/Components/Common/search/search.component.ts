@@ -179,7 +179,7 @@ export class SearchComponent {
       // It's a Post (using the "content" property for display)
       this.searchQuery = suggestion.content;
       this.selectedPost = suggestion;
-      this.router.navigate(['/posts']);
+      this.router.navigate(['/posts', suggestion.id]);
     } else {
       // Otherwise, it's a Room
       this.searchQuery = suggestion.name;

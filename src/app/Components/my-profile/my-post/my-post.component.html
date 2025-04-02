@@ -1,6 +1,10 @@
 <div class="room-list-container" *ngIf="!isMyPostLoading">
   <ng-container *ngIf="myPosts && myPosts.length > 0; else noMyPosts">
-    <div *ngFor="let myPost of myPosts" class="room-item">
+    <div
+      *ngFor="let myPost of myPosts"
+      class="room-item"
+      (click)="navigateToPost(myPost.id)"
+    >
       <img
         [src]="
           myPost.medias && myPost.medias.length > 0
@@ -8,6 +12,7 @@
             : '/assets/img/virtualMeetImageForNoImage.png'
         "
         alt="{{ myPost.content }}"
+        (error)="handleImageError($event)"
       />
       <div class="room-topic-overlay">
         <h3>{{ myPost.content }}</h3>
