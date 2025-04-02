@@ -22,6 +22,7 @@ import { StoryService } from '../../../services/story-service/story-service.serv
 import { Story } from '../../../models/story';
 import { TranslateService } from '@ngx-translate/core';
 import { PLATFORM_ID } from '@angular/core';
+import { HomePageRoomComponent } from '../../home-page-room/home-page-room.component';
 
 @Component({
   selector: 'app-header',
@@ -33,22 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   lastScrollTop = 0;
   isHidden = false;
   isSticky = false;
-
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.notification-icon')) {
-      this.isShowNotification = false;
-    }
-    if (!target.closest('.user-info')) {
-      this.isShowUserMenu = false;
-    }
-    if (!target.closest('.menu-icon')) {
-      this.isShowDropdown = false;
-    }
-  }
-
+  showModalAddRoom = false;
   isShowDropdown = false;
   isShowLoginDialog = false;
   isShowNotification = false;
@@ -69,6 +55,24 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   notifications: Notification[] = [];
 
+  @ViewChild(HomePageRoomComponent, { static: false })
+  homePageRoomComponent!: HomePageRoomComponent;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.notification-icon')) {
+      this.isShowNotification = false;
+    }
+    if (!target.closest('.user-info')) {
+      this.isShowUserMenu = false;
+    }
+    if (!target.closest('.menu-icon')) {
+      this.isShowDropdown = false;
+    }
+  }
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -81,7 +85,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // Run localStorage code only in the browser
     if (isPlatformBrowser(this.platformId)) {
       const savedLang = localStorage.getItem('language');
       if (savedLang) {
@@ -176,6 +179,47 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate([`/my-profile/${this.idNew}`]);
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onClickDropdown() {
+    this.isShowDropdown = !this.isShowDropdown;
+  }
+
+  onClickLoginDialog() {
+    this.isShowLoginDialog = true;
+  }
+
+  onCloseLoginDialog(event: boolean) {
+    this.isShowLoginDialog = event;
+  }
+
+  onClickNotification() {
+    this.isShowNotification = !this.isShowNotification;
+    setTimeout(() => {
+      if (this.isShowNotification) {
+        this.loadMoreNotification();
+      }
+    }, 100);
+  }
+
+  toggleUserMenu() {
+    this.isShowUserMenu = !this.isShowUserMenu;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.user = null;
+    this.loggedIn = false;
+    this.isShowUserMenu = false;
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.reload();
+    }
+    this.cdr.markForCheck();
+  }
+
   ngAfterViewInit(): void {}
 
   getNotification(notification: Notification) {
@@ -222,7 +266,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
           this.router.navigate(['/not-found']);
         }
         break;
-      // Other cases...
       default:
         console.log('No matching case');
     }
@@ -263,47 +306,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  onClickDropdown() {
-    this.isShowDropdown = !this.isShowDropdown;
-  }
-
-  onClickLoginDialog() {
-    this.isShowLoginDialog = true;
-  }
-
-  onCloseLoginDialog(event: boolean) {
-    this.isShowLoginDialog = event;
-  }
-
-  onClickNotification() {
-    this.isShowNotification = !this.isShowNotification;
-    setTimeout(() => {
-      if (this.isShowNotification) {
-        this.loadMoreNotification();
-      }
-    }, 100);
-  }
-
-  toggleUserMenu() {
-    this.isShowUserMenu = !this.isShowUserMenu;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.user = null;
-    this.loggedIn = false;
-    this.isShowUserMenu = false;
-    if (isPlatformBrowser(this.platformId)) {
-      window.location.reload();
-    }
-    this.cdr.markForCheck();
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   toggleLanguage(event: Event) {
     event.preventDefault();
     this.currentLanguage = this.currentLanguage === 'en' ? 'vi' : 'en';
@@ -316,5 +318,20 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         localStorage.setItem('language', lang);
       }
     });
+  }
+
+  openModalAddRoom() {
+    this.showModalAddRoom = true;
+    console.log(this.userId);
+  }
+
+  closeModalAddRoom(event: any) {
+    if (!event) {
+      this.showModalAddRoom = false;
+    } else {
+      if (this.router.url !== '/')
+        (globalThis as any).alert('Add room successful !!!!');
+    }
+    this.showModalAddRoom = false;
   }
 }

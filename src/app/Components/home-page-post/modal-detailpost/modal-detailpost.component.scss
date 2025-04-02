@@ -48,20 +48,27 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.5); /* Tăng độ nổi bật */
   border: none;
   color: white;
-  font-size: 18px;
+  font-size: 30px; /* Tăng kích thước */
   cursor: pointer;
-  padding: 10px;
+  padding: 15px; /* Tăng vùng nhấn */
+  border-radius: 50%; /* Làm nút tròn */
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.nav-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .prev-button {
-  left: 0;
+  left: 10px;
 }
 
 .next-button {
-  right: 0;
+  right: 10px;
 }
 
 .post-content {

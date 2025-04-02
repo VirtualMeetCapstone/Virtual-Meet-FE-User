@@ -1,14 +1,15 @@
 import * as signalR from '@microsoft/signalr';
-import { Injectable } from '@angular/core';
-import { AppConstants } from '../../constant/AppConstants';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {AppConstants} from '../../constant/AppConstants';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {Router} from '@angular/router';
+
 @Injectable({
   providedIn: 'root',
 })
 export class RoomHubService {
   public hubConnection: signalR.HubConnection;
-  public currentUser = { name: '', roomId: '' };
+  public currentUser = {name: '', roomId: ''};
   private _audioEnabled = true;
   private _videoEnabled = true;
   private localStream: MediaStream | null = null;
@@ -115,6 +116,10 @@ export class RoomHubService {
       console.log(`😊 Received emotion from ${username}: ${type} at (${x}, ${y})`);
     });
 
+    this.hubConnection.on("ReceiveSubtitle", (username: string, subtitle: string) => {
+      console.log(`${username}: ${subtitle}`);
+    });
+
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
@@ -122,7 +127,7 @@ export class RoomHubService {
       if (this.currentUser.roomId) {
         this.currentUser.roomId = '';
       }
-      this.router.navigate(['/home']).then(() => {
+      this.router.navigate(['/']).then(() => {
         window.location.reload();
       });
     })
@@ -132,23 +137,24 @@ export class RoomHubService {
       this.leaveRoom();
       this.cleanup();
 
+
+
     });
 
 
   }
 
 
-
   // Room management
   public async joinRoom(username: string, roomId: string): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
-console.log("userName", username)
+    console.log("userName", username)
     if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
       await this.startConnection();
     }
 
     try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.localStream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
       this.currentUser.name = username;
       this.currentUser.roomId = roomId;
       await this.hubConnection.invoke('JoinRoom', username, roomId);
@@ -173,7 +179,7 @@ console.log("userName", username)
       this.localStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
-    this.router.navigate(['/home']).then(() => {
+    this.router.navigate(['/']).then(() => {
       window.location.reload();
     });
   }
@@ -187,38 +193,48 @@ console.log("userName", username)
   public async sendLowerHand(): Promise<void> {
     const userName = this.currentUser.name;
     await this.hubConnection.invoke('SendLowerHand', userName, this.currentUser.roomId);
-
   }
+
+  public async sendSubtitle(subtitle: string, sourceLang: string): Promise<void> {
+    const userName = this.currentUser.name;
+    await this.hubConnection.invoke('SendSubtitle', this.currentUser.roomId, userName, subtitle, sourceLang);
+}
+
 
   // Thêm phương thức gửi Emotion
   public async sendEmotion(type: string, x: number, y: number): Promise<void> {
     const userName = this.currentUser.name;
     const roomId = this.currentUser.roomId;
-
-    console.log(`🔹 Sending emotion from user: ${userName}, room: ${roomId}`);
-
     await this.hubConnection.invoke('SendEmotion', userName, roomId, type, x, y);
-
-    console.log(`😊 Emotion ${type} sent at (${x}, ${y})`);
-}
+  }
 
 
 // Thêm hàm lắng nghe Raise Hand
-public receiveRaiseHand(callback: (username: string) => void): void {
-  this.hubConnection.off('ReceiveRaiseHand');
-  this.hubConnection.on('ReceiveRaiseHand', callback);
+  public receiveRaiseHand(callback: (username: string) => void): void {
+    this.hubConnection.off('ReceiveRaiseHand');
+    this.hubConnection.on('ReceiveRaiseHand', callback);
+  }
+
+  public receiveLowerHand(callback: (username: string) => void): void {
+    this.hubConnection.off('ReceiveLowerHand');
+    this.hubConnection.on('ReceiveLowerHand', callback);
+  }
+
+  public receiveSubtitle(callback: (username: string, subtitle: string, sourceLang: string) => void): void {
+    this.hubConnection.off('ReceiveSubtitle');
+    this.hubConnection.on('ReceiveSubtitle', (username, subtitle, sourceLang) => {
+        callback(username, subtitle, sourceLang);
+    });
 }
 
-public receiveLowerHand(callback: (username: string) => void): void {
-  this.hubConnection.off('ReceiveLowerHand');
-  this.hubConnection.on('ReceiveLowerHand', callback);
-}
 
 // Thêm hàm lắng nghe Emotion
-public receiveEmotion(callback: (username: string, type: string, x: number, y: number) => void): void {
-  this.hubConnection.off('ReceiveEmotion');
-  this.hubConnection.on('ReceiveEmotion', callback);
-}
+  public receiveEmotion(callback: (username: string, type: string, x: number, y: number) => void): void {
+    this.hubConnection.off('ReceiveEmotion');
+    this.hubConnection.on('ReceiveEmotion', callback);
+  }
+
+
 
   // Media controls
   public toggleAudio(): void {
@@ -253,7 +269,6 @@ public receiveEmotion(callback: (username: string, type: string, x: number, y: n
     await this.hubConnection.invoke('SendShare');
     console.log('🔗 Share sent');
   }
-
 
 
   // Video sync features
@@ -311,12 +326,14 @@ public receiveEmotion(callback: (username: string, type: string, x: number, y: n
 
   // Cleanup
   public cleanup(): void {
-    if (this.currentUser.roomId) this.leaveRoom().catch(() => {});
+    if (this.currentUser.roomId) this.leaveRoom().catch(() => {
+    });
     if (this.localStream) {
       this.localStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
-    this.hubConnection.stop().catch(() => {});
+    this.hubConnection.stop().catch(() => {
+    });
     this.participantsSubject.next(0);
     this.connectionStateSubject.next('disconnected');
     console.log('🧹 RoomHub resources cleaned up');

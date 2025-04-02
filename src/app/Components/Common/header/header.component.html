@@ -1,8 +1,14 @@
-<header [class.hidden-header]="isHidden" [class.sticky-header]="isSticky">
 <div class="row p-3">
   <!-- Logo Virtual Meet -->
   <div class="col-lg-4 col-md-4 col-sm-6 col-6">
-    <h3 style="font-size: 30px; font-weight: 700; margin-top: 10px; margin-left: 4px;">
+    <h3
+      style="
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 10px;
+        margin-left: 4px;
+      "
+    >
       <a href="/" style="text-decoration: none; color: white">VIRTUAL MEET</a>
     </h3>
   </div>
@@ -14,7 +20,10 @@
 
   <!-- Khu vực menu + thông báo + user -->
   <div class="col-lg-3 col-md-3 col-sm-5 col-5">
-    <div class="menu-container d-flex align-items-center" style="flex-direction: row-reverse">
+    <div
+      class="menu-container d-flex align-items-center"
+      style="flex-direction: row-reverse"
+    >
       <!-- Nếu chưa đăng nhập: Chỉ hiển thị nút Login -->
       <div *ngIf="!loggedIn">
         <button class="login-bt" (click)="onClickLoginDialog()">
@@ -24,82 +33,189 @@
 
       <!-- Nếu đã đăng nhập: Hiển thị thông báo + profile -->
       <div *ngIf="loggedIn" class="d-flex align-items-center">
+        <div class="button d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="font-weight: bolder"
+            (click)="openModalAddRoom()"
+          >
+            <i class="fa-regular fa-square-plus"></i> ADD ROOM
+          </button>
+        </div>
         <!-- Thông báo -->
         <div class="notification-icon mr-3">
-          <div class="notification-bellicon" [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'">
-            <i class="fa-solid fa-bell fa-xl" id="notification-bell" (click)="onClickNotification()"></i>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          <div
+            class="notification-bellicon"
+            [ngClass]="
+              isShowNotification ? 'onNotification' : 'offNotification'
+            "
+          >
+            <i
+              class="fa-solid fa-bell fa-xl"
+              id="notification-bell"
+              (click)="onClickNotification()"
+            ></i>
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            >
               {{ totalNotification }}
             </span>
           </div>
 
-          <div class="notification-wrapper" #scrollContainer *ngIf="isShowNotification">
-            <h4 id="notification-title">{{ 'header.NOTIFICATIONS.TITLE' | translate }}</h4>
-            <div class="notification-item" *ngFor="let notification of notifications">
-              <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy"/>
-              <div class="notification-content" >
+          <div
+            class="notification-wrapper"
+            #scrollContainer
+            *ngIf="isShowNotification"
+          >
+            <h4 id="notification-title">
+              {{ "header.NOTIFICATIONS.TITLE" | translate }}
+            </h4>
+            <div
+              class="notification-item"
+              *ngFor="let notification of notifications"
+            >
+              <img
+                class="notification-avatar"
+                alt="User avatar"
+                [src]="notification.actor.picture.url"
+                loading="lazy"
+              />
+              <div class="notification-content">
                 <p (click)="getNotification(notification)">
-                  <strong style="color: white">{{ notification.actor.name }}</strong>
+                  <strong style="color: white">{{
+                    notification.actor.name
+                  }}</strong>
                   {{ notification.content }}.
                 </p>
                 <p class="notification-time"></p>
 
-                <p class="notification-action" *ngIf="!notification.isRead" (click)="markAsRead(notification.id)">{{ 'header.NOTIFICATIONS.MARK_AS_READ' | translate }}</p>
-
+                <p
+                  class="notification-action"
+                  *ngIf="!notification.isRead"
+                  (click)="markAsRead(notification.id)"
+                >
+                  {{ "header.NOTIFICATIONS.MARK_AS_READ" | translate }}
+                </p>
               </div>
             </div>
-            <div infiniteScroll [infiniteScrollContainer]="scrollContainer" (scrolled)="loadMoreNotification()" [infiniteScrollThrottle]="300">
-              <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black;" *ngIf="loading">{{ 'header.NOTIFICATIONS.LOAD_MORE' | translate }}</h3>
-              <h3 style="font-weight: lighter; font-size: 20px; text-align: center; color: black;" *ngIf="!loading">{{ 'header.NOTIFICATIONS.NO_MORE_DATA' | translate }}</h3>
+            <div
+              infiniteScroll
+              [infiniteScrollContainer]="scrollContainer"
+              (scrolled)="loadMoreNotification()"
+              [infiniteScrollThrottle]="300"
+            >
+              <h3
+                style="
+                  font-weight: lighter;
+                  font-size: 20px;
+                  text-align: center;
+                  color: black;
+                "
+                *ngIf="loading"
+              >
+                {{ "header.NOTIFICATIONS.LOAD_MORE" | translate }}
+              </h3>
+              <h3
+                style="
+                  font-weight: lighter;
+                  font-size: 20px;
+                  text-align: center;
+                  color: black;
+                "
+                *ngIf="!loading"
+              >
+                {{ "header.NOTIFICATIONS.NO_MORE_DATA" | translate }}
+              </h3>
             </div>
             <div class="notification-footer">
-              <a href="/all-notification">{{ 'header.NOTIFICATIONS.VIEW_ALL' | translate }}</a>
-              <a href="#">{{ 'header.NOTIFICATIONS.MARK_AS_READ' | translate }}</a>
-              <a href="#">{{ 'header.NOTIFICATIONS.SETTINGS' | translate }}</a>
+              <a href="/all-notification">{{
+                "header.NOTIFICATIONS.VIEW_ALL" | translate
+              }}</a>
+              <a href="#">{{
+                "header.NOTIFICATIONS.MARK_AS_READ" | translate
+              }}</a>
+              <a href="#">{{ "header.NOTIFICATIONS.SETTINGS" | translate }}</a>
             </div>
           </div>
         </div>
 
         <!-- User Profile -->
-        <div class="user-info d-flex align-items-center position-relative" (click)="toggleUserMenu()">
+        <div
+          class="user-info d-flex align-items-center position-relative"
+          (click)="toggleUserMenu()"
+        >
           <div class="user-avatar-container">
-            <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
+            <div
+              *ngIf="isLoadingUser"
+              class="spinner-border text-light"
+              role="status"
+            >
               <span class="visually-hidden">Loading...</span>
             </div>
-            <img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)" alt="User Avatar" class="user-avatar" loading="lazy"/>
+            <img
+              *ngIf="!isLoadingUser; else defaultAvatar"
+              [src]="getSafeUrl(user?.picture?.url)"
+              alt="User Avatar"
+              class="user-avatar"
+              loading="lazy"
+            />
             <ng-template #defaultAvatar>
-              <i class="fa-solid fa-user-circle fa-2xl" style="color: white"></i>
+              <i
+                class="fa-solid fa-user-circle fa-2xl"
+                style="color: white"
+              ></i>
             </ng-template>
           </div>
           <div *ngIf="isShowUserMenu" class="dropdown-user">
-            <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">Edit Profile</a>
+            <a
+              href="#"
+              (click)="
+                editProfile(); $event.preventDefault(); $event.stopPropagation()
+              "
+              >Edit Profile</a
+            >
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>
 
         <div class="menu-icon">
           <i
-          class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
-          style="color: white; cursor: pointer; margin-left: 15px"
-          (click)="onClickDropdown()"
-        ></i>
+            class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
+            style="color: white; cursor: pointer; margin-left: 15px"
+            (click)="onClickDropdown()"
+          ></i>
           <div class="dropdown-menu" *ngIf="isShowDropdown">
-            <a href="#"><i class="fas fa-home"></i> {{ 'header.CREATOR_TOOLS' | translate }}</a>
+            <a href="#"
+              ><i class="fas fa-home"></i>
+              {{ "header.CREATOR_TOOLS" | translate }}</a
+            >
             <a href="#" (click)="toggleLanguage($event)">
-              <i class="fas fa-language"></i> {{ currentLanguage === 'en' ? '🇬🇧 English' : '🇻🇳 Tiếng Việt' }}
+              <i class="fas fa-language"></i>
+              {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
             </a>
 
-
-            <a href="#"><i class="fas fa-question-circle"></i> {{ 'header.FEEDBACK_HELP' | translate }}</a>
-            <a href="#"><i class="fas fa-moon"></i> {{ 'header.DARK_MODE' | translate }}</a>
+            <a href="#"
+              ><i class="fas fa-question-circle"></i>
+              {{ "header.FEEDBACK_HELP" | translate }}</a
+            >
+            <a href="#"
+              ><i class="fas fa-moon"></i>
+              {{ "header.DARK_MODE" | translate }}</a
+            >
           </div>
-          </div>
-
+        </div>
       </div>
     </div>
   </div>
-
-  <app-login-modal [isShowLoginDialog]="isShowLoginDialog" (openLoginDialog)="isShowLoginDialog = $event">
+  <app-modal-add-edit-room
+    *ngIf="showModalAddRoom"
+    (closeModal)="closeModalAddRoom($event)"
+    [userId]="userId"
+  ></app-modal-add-edit-room>
+  <app-login-modal
+    [isShowLoginDialog]="isShowLoginDialog"
+    (openLoginDialog)="isShowLoginDialog = $event"
+  >
   </app-login-modal>
 </div>
-</header>

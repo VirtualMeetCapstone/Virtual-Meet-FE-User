@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { AppConstants } from '../../constant/AppConstants';
 
@@ -16,6 +20,11 @@ export class AuthService {
   private cachedUser: any = null;
   private backendUserCache = new Map<string, any>();
   public user$: any;
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+  };
   constructor(private http: HttpClient) {
     const initialToken = this.getStoredToken();
     this.userSubject = new BehaviorSubject<any>(null);
@@ -124,6 +133,23 @@ export class AuthService {
     }
   }
 
+  public async fetchUserName(username: string): Promise<string | null> {
+    try {
+      const user = await this.getBackendUser(username);
+      console.log('🔹 User data received:', user);
+
+      if (!user || !user.name) {
+        console.error(`❌ User data not found for ${username}`);
+        return null;
+      }
+
+      return user.name;
+    } catch (error) {
+      console.error('❌ Error fetching user data:', error);
+      return null;
+    }
+  }
+
   updateLoginState(isLoggedIn: boolean) {
     this.loggedInSubject.next(isLoggedIn);
   }
@@ -139,5 +165,21 @@ export class AuthService {
     this.loggedInSubject.next(false);
     document.cookie =
       'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
+  getUserByID(userId: string): Observable<string> {
+    return this.http
+      .get<{ id: string; name: string }>(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`
+      )
+      .pipe(map((user) => user.name)); // ✅ Lấy ra `name`
+  }
+  getFullInformationOfUseById(userId: string): any {
+    const finalUrl = `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}`;
+    return this.http.get<any>(finalUrl);
+  }
+  private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error);
+
+    return throwError('Something bad happened; please try again later.');
   }
 }

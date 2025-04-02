@@ -5,7 +5,8 @@ body {
   margin: 0;
   padding: 0;
 }
-.container {
+.container-fluid {
+  width: 90%;
   display: flex;
   justify-content: center;
   padding: 20px;
@@ -60,8 +61,7 @@ body {
 .create-post .actions button i {
   margin-right: 5px;
 }
-.button-create-post
-{
+.button-create-post {
   background-color: #007bff !important;
 }
 .post {
@@ -247,7 +247,7 @@ body {
   grid-column: span 2;
 }
 .scroll-container {
-  height: 50vh; /* hoặc phù hợp */
+  height: 30vh; /* hoặc phù hợp */
   overflow: auto;
 }
 .more-images {
@@ -307,9 +307,8 @@ body {
 
 .user-infor-detail {
   display: flex;
-
 }
-.user-name{
+.user-name {
   margin-left: 10px;
   margin-top: 5px;
   font-weight: 500;
@@ -339,5 +338,35 @@ app-story-list {
   width: 100%;
   max-width: 450px;
 }
+.row {
+  display: flex;
+}
 
+.half {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+}
+.full {
+  width: 100%;
+  height: 300px; /* Làm ảnh lớn hơn */
+  object-fit: cover;
+  margin-top: 5px;
+}
 
+.grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.grid-2x2 img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.half {
+  width: 50%;
+  object-fit: cover;
+}

@@ -12,6 +12,8 @@ export class AppComponent implements OnInit {
   title = 'Virtual-Meet-FE';
   isHiddenSidebar = false;
   isLoggedIn = false;
+  isRoomPage = false;
+
 
   constructor(
     private translate: TranslateService,
@@ -29,6 +31,10 @@ export class AppComponent implements OnInit {
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
     console.log(lang);
+    //disable header sidebar when join room
+    this.router.events.subscribe(() => {
+      this.isRoomPage = this.router.url.startsWith('/room');
+    });
   }
 
   onClickSideBar() {

@@ -41,18 +41,20 @@
     flex: 1;
     overflow-y: auto;
     padding: 10px;
-
+    background-color: #252525;
     .message {
       margin-bottom: 10px;
       padding: 5px;
       border-radius: 5px;
-      background: #ddd;
     }
 
     .self {
-      background: black;
+      //background: rgb(2,0,36);
+      //background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(121,9,114,1) 35%, rgba(0,212,255,1) 100%);
       color: white;
-      text-align: right;
+      text-align: left;
+      border-radius: 10px;
+      align-self: flex-end;
     }
   }
 
@@ -60,21 +62,90 @@
     display: flex;
     padding: 10px;
     border-top: 1px solid #ccc;
+    background-color: #252525;
 
     input {
       flex: 1;
       padding: 5px;
     }
-    .text{
+
+    .text {
       color: black;
     }
 
-    button {
+    button , .selectOp {
+      min-width: 40px;
+      height: 40px;
       padding: 5px 10px;
-      background: black;
+      background-color: dodgerblue;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
       color: white;
       border: none;
       cursor: pointer;
     }
   }
+}
+
+.message-content {
+  background-color: dodgerblue;
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.sender {
+  text-align: left;
+}
+
+.text {
+  color: white;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+p.sender {
+  color: #595959;
+}
+
+.message-content:not(.self) {
+background-color: gray;
+  color: black;
+}
+
+.text:not(.self) {
+  color: white;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.sender-self {
+  text-align: right;
+}
+input.text {
+  background-color: #252525;
+
+  border: 1px solid #d1d1d1;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #ffffff;
+  outline: none;
+}
+
+input.text:focus {
+  background-color: #e0e0e0;
+  border-color: #bdbdbd;
+}
+textarea {
+  flex: 1;
+  min-height: 40px;
+  max-height: 100px; /* Giới hạn chiều cao */
+  padding: 10px;
+  font-size: 16px;
+  resize: none; /* Không cho resize */
+  border-radius: 8px;
 }

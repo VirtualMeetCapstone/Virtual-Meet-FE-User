@@ -1,16 +1,35 @@
 <div class="chat-sidebar">
   <div class="chat-header">
-    <h3>Chat</h3>
-
+    <h3>{{ 'room_chat.TITLE' | translate }}</h3>
   </div>
+
   <div class="chat-messages">
-    <div *ngFor="let message of messages" class="message" [ngClass]="{ 'self': message.sender === 'me' }">
-      <p class="sender">{{ message.sender }}</p>
-      <p class="text">{{ message.text }}</p>
+    <div *ngFor="let message of messages" class="message">
+      <p class="sender" [ngClass]="{ 'sender-self': message.senderId === currentUser }">{{ getUserName(message.senderId)
+        }}</p>
+      <div class="message-content" [ngClass]="{ 'self': message.senderId === currentUser }">
+        <p class="text" [ngClass]="{ 'self': message.senderId === currentUser }">{{ message.content }}</p>
+
+      </div>
     </div>
   </div>
+
   <div class="chat-input">
-    <input class="text" type="text" [(ngModel)]="newMessage" placeholder="Type a message..." (keydown.enter)="sendMessage()" />
-    <button (click)="sendMessage()">Send</button>
+    <textarea class="text" [(ngModel)]="newMessage" placeholder="Type a message..."
+      (keydown.enter)="sendMessage($event)">
+</textarea>
+
+    <!-- Nút voice chat -->
+    <select [(ngModel)]="selectedLanguage" class="selectOp" [title]="'room_chat.LANGUAGE_SELECT' | translate">
+      <option value="vi-VN">🇻🇳</option>
+      <option value="en-US">🇺🇸</option>
+    </select>
+
+    <button (mousedown)="startVoiceRecognition()" (mouseup)="stopVoiceRecognition()"
+      (mouseleave)="stopVoiceRecognition()" (touchstart)="startVoiceRecognition()" (touchend)="stopVoiceRecognition()"
+      [disabled]="isListening" title="Nhấn giữ và nói">
+      {{ isListening ? ('room_chat.LISTENING' | translate) : "🎤" }}
+    </button>
+
   </div>
 </div>
