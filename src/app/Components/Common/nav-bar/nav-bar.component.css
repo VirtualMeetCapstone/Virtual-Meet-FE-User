@@ -38,7 +38,10 @@
 .menu-item:hover {
   color: #ff3b3b;
 }
-
+.menu-item a {
+  text-decoration: none; /* Không có gạch chân */
+  color: inherit; /* Dùng màu chữ mặc định của thẻ li */
+}
 .new {
   background-color: #ff3b3b;
   color: #fff;

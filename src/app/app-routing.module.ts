@@ -8,6 +8,7 @@ import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/ne
 import { RoomComponentComponent } from './Components/room-component/room-component.component';
 import {AllNotificationsComponent} from "./Components/all-notifications/all-notifications.component";
 import {PageNotFoundComponent} from "./Components/page-not-found/page-not-found.component";
+import {AboutUsComponent} from "./Components/about-us/about-us.component";
 
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
@@ -19,6 +20,8 @@ const routes: Routes = [
   { path: 'posts', component: HomePagePostComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
   { path: 'all-notification', component: AllNotificationsComponent },
+  { path: 'about-us', component: AboutUsComponent },
+
 
   { path: '**', component: PageNotFoundComponent},
 ];
