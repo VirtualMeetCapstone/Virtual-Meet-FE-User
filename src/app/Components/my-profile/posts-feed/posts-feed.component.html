@@ -1,6 +1,10 @@
 <div class="room-list-container" *ngIf="!isPostsFeedLoading">
   <ng-container *ngIf="postsFeed && postsFeed.length > 0; else noPostsFeed">
-    <div *ngFor="let postFeed of postsFeed" class="room-item">
+    <div
+      *ngFor="let postFeed of postsFeed"
+      class="room-item"
+      (click)="navigateToPost(postFeed.id)"
+    >
       <img
         [src]="
           postFeed.medias && postFeed.medias.length > 0
