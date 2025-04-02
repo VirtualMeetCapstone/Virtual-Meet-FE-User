@@ -6,8 +6,9 @@ import { HomePagePostComponent } from './Components/home-page-post/home-page-pos
 import { YoutubePlayerComponent } from './Components/youtube-player/youtube-player.component';
 import { NewsFeedMyProfileComponent } from './Components/news-feed-my-profile/news-feed-my-profile.component';
 import { RoomComponentComponent } from './Components/room-component/room-component.component';
-import {AllNotificationsComponent} from "./Components/all-notifications/all-notifications.component";
-import {PageNotFoundComponent} from "./Components/page-not-found/page-not-found.component";
+import { AllNotificationsComponent } from './Components/all-notifications/all-notifications.component';
+import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
+import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
@@ -17,10 +18,11 @@ const routes: Routes = [
     component: NewsFeedMyProfileComponent,
   },
   { path: 'posts', component: HomePagePostComponent },
+  { path: 'posts/:id', component: ModalDetailpostComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
   { path: 'all-notification', component: AllNotificationsComponent },
 
-  { path: '**', component: PageNotFoundComponent},
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
