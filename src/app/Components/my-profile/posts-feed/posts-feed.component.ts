@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AppConstants } from '../../../constant/AppConstants';
+import { Router } from '@angular/router'; // Thêm Router
 
 interface Media {
   url: string;
@@ -30,12 +31,14 @@ interface PostsFeed {
 @Component({
   selector: 'app-posts-feed',
   templateUrl: './posts-feed.component.html',
-  styleUrl: './posts-feed.component.scss',
+  styleUrls: ['./posts-feed.component.scss'], // Sửa styleUrl thành styleUrls
 })
 export class PostsFeedComponent implements OnChanges {
   @Input() userId!: string; // Nhận userId từ MyProfileComponent
   postsFeed: PostsFeed[] = [];
   isPostsFeedLoading = false;
+
+  constructor(private router: Router) {} // Thêm Router vào constructor
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['userId'] && this.userId) {
@@ -56,6 +59,12 @@ export class PostsFeedComponent implements OnChanges {
       console.error('Error fetching posts feed:', error);
     } finally {
       this.isPostsFeedLoading = false;
+    }
+  }
+
+  navigateToPost(postId: string) {
+    if (postId) {
+      this.router.navigate(['/posts', postId]);
     }
   }
 }
