@@ -7,33 +7,41 @@
         style="cursor: pointer"
       ></i>
     </div>
-    <div class="post">
-      <div class="image-container">
+
+    <!-- Loading State -->
+    <div class="d-flex justify-content-center" *ngIf="isLoadingPost">
+      <app-loading-component></app-loading-component>
+    </div>
+
+    <!-- Post Content -->
+    <div class="post" *ngIf="!isLoadingPost && post">
+      <div class="image-container" *ngIf="post.medias?.length > 0">
         <button
           (click)="prevImage()"
           class="nav-button fa-solid fa-arrow-left"
+          [disabled]="currentImageIndex === 0"
         ></button>
         <img
-          [src]="post.medias[currentImageIndex]?.url"
+          [src]="getSafeUrl(post.medias[currentImageIndex]?.url)"
           alt="Hình ảnh bài viết"
           class="post-image"
         />
         <button
           (click)="nextImage()"
           class="nav-button next-button fa-solid fa-arrow-right"
+          [disabled]="currentImageIndex === post.medias.length - 1"
         ></button>
       </div>
       <div class="post-content">
         <div class="post-header">
           <img
-            [src]="post.user.picture.url"
+            [src]="getSafeUrl(post.user?.picture?.url)"
             alt="Profile picture"
             height="40"
             width="40"
           />
           <div class="username">
-            {{ post.user.name }}
-
+            {{ post.user?.name }}
             <span> • Following </span>
           </div>
         </div>
@@ -42,9 +50,9 @@
         </div>
         <div class="post-actions">
           <div class="icons">
-            <i class="far fa-heart"> </i>
-            <i class="far fa-comment"> </i>
-            <i class="far fa-paper-plane"> </i>
+            <i class="far fa-heart"></i>
+            <i class="far fa-comment"></i>
+            <i class="far fa-paper-plane"></i>
           </div>
           <div class="time">7 hours ago</div>
         </div>
@@ -53,7 +61,7 @@
           <div class="post-comment">
             <div class="post-header">
               <img
-                [src]="user.picture.url"
+                [src]="getSafeUrl(user?.picture?.url)"
                 alt="Profile picture"
                 height="40"
                 width="40"
@@ -83,22 +91,21 @@
           <div *ngFor="let comment of groupedComments" class="comment">
             <div class="d-flex">
               <img
-                [src]="comment.author.picture.url"
+                [src]="getSafeUrl(comment.author?.picture?.url)"
                 alt="Ảnh đại diện"
                 class="comment-avatar"
               />
-              <div class="comment-author">{{ comment.author.name }}</div>
+              <div class="comment-author">{{ comment.author?.name }}</div>
             </div>
-
             <div class="comment-content">
               <div class="comment-text">{{ comment.content }}</div>
               <div class="comment-time"></div>
             </div>
-            <div class="replies" *ngIf="comment.replies.length == 0">
+            <div class="replies" *ngIf="comment.replies.length === 0">
               <div class="post-comment">
                 <div class="post-header">
                   <img
-                    [src]="user.picture.url"
+                    [src]="getSafeUrl(user?.picture?.url)"
                     alt="Profile picture"
                     height="40"
                     width="40"
@@ -123,16 +130,15 @@
                 </button>
               </div>
             </div>
-
             <div class="replies" *ngIf="comment.replies.length > 0">
               <div *ngFor="let reply of comment.replies" class="reply">
                 <div class="d-flex">
                   <img
-                    [src]="getSafeUrl(reply.author.picture.url)"
+                    [src]="getSafeUrl(reply.author?.picture?.url)"
                     alt="Ảnh đại diện"
                     class="comment-avatar"
                   />
-                  <div class="comment-author">{{ reply.author.name }}</div>
+                  <div class="comment-author">{{ reply.author?.name }}</div>
                 </div>
                 <div class="comment-content">
                   <div class="comment-text">{{ reply.content }}</div>
@@ -140,11 +146,11 @@
                 </div>
               </div>
             </div>
-            <div class="replies">
-              <div class="post-comment" *ngIf="comment.replies.length > 0">
+            <div class="replies" *ngIf="comment.replies.length > 0">
+              <div class="post-comment">
                 <div class="post-header">
                   <img
-                    [src]="user.picture.url"
+                    [src]="getSafeUrl(user?.picture?.url)"
                     alt="Profile picture"
                     height="40"
                     width="40"

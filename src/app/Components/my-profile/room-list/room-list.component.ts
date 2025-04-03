@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AppConstants } from '../../../constant/AppConstants';
+import { Router } from '@angular/router';
 
 interface Media {
   url: string;
@@ -25,12 +26,14 @@ interface Room {
 @Component({
   selector: 'app-room-list',
   templateUrl: './room-list.component.html',
-  styleUrl: './room-list.component.scss',
+  styleUrls: ['./room-list.component.scss'], // Sửa styleUrl thành styleUrls
 })
 export class RoomListComponent implements OnChanges {
   @Input() userId!: string; // Nhận userId từ MyProfileComponent
   rooms: Room[] = [];
   isRoomsLoading = false;
+
+  constructor(private router: Router) {} // Đảm bảo Router được inject
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['userId'] && this.userId) {
@@ -51,6 +54,15 @@ export class RoomListComponent implements OnChanges {
       console.error('Error fetching rooms:', error);
     } finally {
       this.isRoomsLoading = false;
+    }
+  }
+
+  navigateToRoom(roomId?: string) {
+    if (roomId) {
+      const timestamp = Date.now(); // Lấy timestamp hiện tại
+      this.router.navigate(['/room', roomId], {
+        queryParams: { timestamp: timestamp },
+      });
     }
   }
 }

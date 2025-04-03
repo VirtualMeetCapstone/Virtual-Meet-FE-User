@@ -1,11 +1,15 @@
 <div class="room-list-container" *ngIf="!isPostsFeedLoading">
   <ng-container *ngIf="postsFeed && postsFeed.length > 0; else noPostsFeed">
-    <div *ngFor="let postFeed of postsFeed" class="room-item">
+    <div
+      *ngFor="let postFeed of postsFeed"
+      class="room-item"
+      (click)="navigateToPost(postFeed.id)"
+    >
       <img
         [src]="
           postFeed.medias && postFeed.medias.length > 0
             ? postFeed.medias[0].url
-            : './img/virtualMeetImageForNoImage.png'
+            : '/assets/img/virtualMeetImageForNoImage.png'
         "
         alt="{{ postFeed.content }}"
       />
@@ -16,7 +20,7 @@
   </ng-container>
   <ng-template #noPostsFeed>
     <div class="no-room">
-      <img src="./img/post-feed.png" alt="post-feed-icon" />
+      <img src="/assets/img/post-feed.png" alt="post-feed-icon" />
       <p>No posts feed, seem like you do not like anyone.</p>
     </div>
   </ng-template>
