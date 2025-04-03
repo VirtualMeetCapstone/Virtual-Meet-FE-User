@@ -259,7 +259,7 @@ export class RoomComponentComponent implements OnInit {
   }
 
   toggleVideo(): void {
-    this.roomHubService.toggleVideo();
+    this.rtcHub.toggleVideo();
     this.isCameraOn = this.roomHubService.videoEnabled;
   }
 
@@ -270,10 +270,10 @@ export class RoomComponentComponent implements OnInit {
 
       // Tắt mic và camera thông qua service để đồng bộ trạng thái
       if (this.roomHubService.audioEnabled) {
-        this.roomHubService.toggleAudio();
+        this.roomHubService.disableAudio();
       }
       if (this.roomHubService.videoEnabled) {
-        this.roomHubService.toggleVideo();
+        this.roomHubService.disableVideo();
       }
 
       // Cập nhật trạng thái hiển thị
@@ -470,7 +470,7 @@ export class RoomComponentComponent implements OnInit {
   }
 
   toggleAudio(): void {
-    this.roomHubService.toggleAudio();
+    this.rtcHub.toggleAudio();
     this.isMicOn = this.roomHubService.audioEnabled;
 
     if (this.isMicOn) {

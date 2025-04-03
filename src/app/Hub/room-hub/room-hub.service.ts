@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {AppConstants} from '../../constant/AppConstants';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,19 +11,20 @@ import {Router} from '@angular/router';
 export class RoomHubService {
   public hubConnection: signalR.HubConnection;
   public currentUser = {name: '', roomId: ''};
-  private _audioEnabled = true;
-  private _videoEnabled = true;
-  private localStream: MediaStream | null = null;
-
+  public _audioEnabled = true;
+  public _videoEnabled = true;
+  public localStream: MediaStream | null = null;
+  private urlBase = AppConstants.API_BASE_URL_HTTPS;
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
 
   constructor(
-    private router: Router
+    private router: Router,
+    private auth : AuthService
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
+      .withUrl(`${this.urlBase}/roomHub`, {
         withCredentials: true,
       })
       .withAutomaticReconnect()
@@ -165,6 +167,35 @@ export class RoomHubService {
     }
   }
 
+  public async fetchLiveKitToken(): Promise<string> {
+    try {
+      const name = await this.auth.fetchUserName(this.currentUser.name);
+      const response = await fetch(`${this.urlBase}/livekit/token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          roomName: this.currentUser.roomId,
+          participantName: name,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! Status: ${response.status}, Body: ${errorText}`);
+      }
+      const token = await response.text();
+
+      return token;
+    } catch (error) {
+      console.error('❌ Error fetching LiveKit token:', error);
+      throw error;
+    }
+  }
+
+
+
   public async leaveRoom(): Promise<void> {
     if (!this.currentUser.roomId) return;
 
@@ -237,21 +268,27 @@ export class RoomHubService {
 
 
   // Media controls
-  public toggleAudio(): void {
+
+  public disableAudio(): void {
     if (this.localStream) {
-      this._audioEnabled = !this._audioEnabled;
-      this.localStream.getAudioTracks().forEach((track) => (track.enabled = this._audioEnabled));
-      console.log(`🎤 Audio ${this._audioEnabled ? 'enabled' : 'disabled'}`);
+      this._audioEnabled = false;
+      this.localStream.getAudioTracks().forEach(
+        (track) => (track.enabled = false)
+      );
+      console.log('🎤 Audio disabled');
     }
   }
 
-  public toggleVideo(): void {
+  public disableVideo(): void {
     if (this.localStream) {
-      this._videoEnabled = !this._videoEnabled;
-      this.localStream.getVideoTracks().forEach((track) => (track.enabled = this._videoEnabled));
-      console.log(`📹 Video ${this._videoEnabled ? 'enabled' : 'disabled'}`);
+      this._videoEnabled = false;
+      this.localStream.getVideoTracks().forEach(
+        (track) => (track.enabled = false)
+      );
+      console.log('📹 Video disabled');
     }
   }
+
 
   public getLocalStream(): MediaStream | null {
     return this.localStream;

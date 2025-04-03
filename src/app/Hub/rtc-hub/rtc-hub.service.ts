@@ -1,8 +1,9 @@
-import { Injectable,NgZone } from '@angular/core';
+import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RoomHubService } from '../room-hub/room-hub.service';
 import { Peer } from '../../models/rtc/pere';
-
+import { Room, RemoteParticipant, Track, LocalTrackPublication } from 'livekit-client';
+import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,24 +15,21 @@ export class RtcHubService {
   private recordedChunks: Blob[] = [];
   public isRecording = false;
   private recordingSubject = new BehaviorSubject<boolean>(false);
+
+  // LiveKit properties
+  private livekitRoom!: Room;
+  private liveKitUrl = AppConstants.API_WSS_LIVE_KIT;
+  private liveKitToken = '';
+  private maxMeshParticipants = 4;
+  private usingLiveKit = false;
+
+  private originalVideoTrack: MediaStreamTrack | null = null;
+  // Lưu track video khi chia sẻ màn hình
+  private screenTrack: any; // Biến này lưu track video chia sẻ màn hình
   // ICE server configuration
-  private config = {
-    iceServers: [
-      { urls: 'stun:stun.cloudflare.com:3478' }, // Cloudflare STUN
-      { urls: 'stun:stun.cloudflare.com:53' }, // Cloudflare STUN alternative
-      { urls: 'turn:turn.cloudflare.com:3478?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP)
-      { urls: 'turn:turn.cloudflare.com:53?transport=udp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (UDP alternative)
-      { urls: 'turn:turn.cloudflare.com:3478?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP)
-      { urls: 'turn:turn.cloudflare.com:80?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (TCP alternative)
-      { urls: 'turn:turn.cloudflare.com:5349?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' }, // Cloudflare TURN (secure TCP)
-      { urls: 'turns:turn.cloudflare.com:443?transport=tcp', username: 'g01acb757a67a27ee8ea7908f31a697792d0c680fb8bf627a82a9a216edb3359', credential: '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a' } // Cloudflare TURN (secure TCP)
+  private config = AppConstants.config;
 
-    ]
-  };
-
-  constructor(private roomHubService: RoomHubService,
-    private cdr: NgZone
-  ) {
+  constructor(private roomHubService: RoomHubService, private cdr: NgZone) {
     this.setupRtcEvents();
   }
 
@@ -39,93 +37,132 @@ export class RtcHubService {
   get peers$(): Observable<Peer[]> {
     return this.peersSubject.asObservable();
   }
+  getPeerConnection(peerId: string): RTCPeerConnection | null {
+    const peer = this.peers[peerId];
+    return peer?.connection || null; // Sửa lỗi cú pháp ở đây
+  }
 
   // Setup WebRTC-related SignalR events
   private setupRtcEvents(): void {
     const hubConnection = this.roomHubService.getConnection();
+    if (this.usingLiveKit) {
+      console.log('dung live kit');
+      return;
+    }
 
     hubConnection.on('ExistingPeers', (peerList: any[]) => {
       peerList.forEach((peer) => {
-        console.log('Connecting to existing peer:', peer.peerId);
         this.createPeerConnection(peer.peerId, peer.userName, true);
-
-          // Gửi yêu cầu subscribe stream
-  hubConnection.invoke('RequestStream', peer.peerId).catch(err =>
-    console.error('❌ Error requesting stream:', err)
-  );
-
+        hubConnection
+          .invoke('RequestStream', peer.peerId)
+          .catch((err) => console.error('❌ Error requesting stream:', err));
       });
-
+      this.checkParticipantsAndSwitch();
     });
-  // Nhận yêu cầu gửi stream từ peer khác
-  hubConnection.on('ReceiveStreamRequest', (requesterPeerId: string) => {
-    console.log(`📩 Nhận yêu cầu stream từ: ${requesterPeerId}`);
-    this.sendStreamToPeer(requesterPeerId);
-  });
 
-
-    hubConnection.on('NewPeer', (peerId: string, peerName: string, participantCount: number) => {
-      console.log('New peer joined:', peerId, peerName);
+    hubConnection.on('NewPeer', (peerId: string, peerName: string) => {
+      if (this.usingLiveKit) return;
       this.createPeerConnection(peerId, peerName, false);
+      this.checkParticipantsAndSwitch();
     });
 
-    hubConnection.on('ReceiveOffer', async (peerId: string, peerName: string, offer: string) => {
-      try {
-        let peer = this.peers[peerId] || this.createPeerConnection(peerId, peerName, false);
-        await peer.connection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
-        const answer = await peer.connection.createAnswer();
-        await peer.connection.setLocalDescription(answer);
-        await hubConnection.invoke('SendAnswer', peerId, JSON.stringify(answer));
-      } catch (err) {
-        console.error('Error handling offer:', err);
-      }
+    hubConnection.on('ReceiveStreamRequest', (requesterPeerId: string) => {
+      console.log(`📩 Nhận yêu cầu stream từ: ${requesterPeerId}`);
+      this.sendStreamToPeer(requesterPeerId);
     });
 
-    hubConnection.on('ReceiveAnswer', async (peerId: string, answer: string) => {
-      try {
-        if (this.peers[peerId]) {
-          await this.peers[peerId].connection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answer)));
+    hubConnection.on(
+      'ReceiveOffer',
+      async (peerId: string, peerName: string, offer: string) => {
+        try {
+          let peer =
+            this.peers[peerId] ||
+            this.createPeerConnection(peerId, peerName, false);
+          if (!peer.connection) return; // Kiểm tra connection
+          await peer.connection.setRemoteDescription(
+            new RTCSessionDescription(JSON.parse(offer))
+          );
+          const answer = await peer.connection.createAnswer();
+          await peer.connection.setLocalDescription(answer);
+          await hubConnection.invoke(
+            'SendAnswer',
+            peerId,
+            JSON.stringify(answer)
+          );
+        } catch (err) {
+          console.error('Error handling offer:', err);
         }
-      } catch (err) {
-        console.error('Error handling answer:', err);
       }
-    });
+    );
 
-    hubConnection.on('ReceiveCandidate', async (peerId: string, candidate: string) => {
-      try {
-        if (this.peers[peerId]) {
-          await this.peers[peerId].connection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)));
+    hubConnection.on(
+      'ReceiveAnswer',
+      async (peerId: string, answer: string) => {
+        try {
+          const peer = this.peers[peerId];
+          if (peer?.connection) {
+            await peer.connection.setRemoteDescription(
+              new RTCSessionDescription(JSON.parse(answer))
+            );
+          }
+        } catch (err) {
+          console.error('Error handling answer:', err);
         }
-      } catch (err) {
-        console.error('Error handling ICE candidate:', err);
       }
-    });
+    );
 
-    hubConnection.on('PeerDisconnected', (peerId: string, participantCount: number) => {
-      console.log('Peer disconnected:', peerId);
-      if (this.peers[peerId]) {
-        this.peers[peerId].connection.close();
+    hubConnection.on(
+      'ReceiveCandidate',
+      async (peerId: string, candidate: string) => {
+        try {
+          const peer = this.peers[peerId];
+          if (peer?.connection) {
+            await peer.connection.addIceCandidate(
+              new RTCIceCandidate(JSON.parse(candidate))
+            );
+          }
+        } catch (err) {
+          console.error('Error handling ICE candidate:', err);
+        }
+      }
+    );
+
+    hubConnection.on('PeerDisconnected', (peerId: string) => {
+      if (this.usingLiveKit) return;
+      const peer = this.peers[peerId];
+      if (peer?.connection) {
+        peer.connection.close();
         delete this.peers[peerId];
         this.updatePeersSubject();
       }
+      this.checkParticipantsAndSwitch();
     });
   }
 
-// Gửi lại stream đến peer đã yêu cầu
-private sendStreamToPeer(peerId: string): void {
-  const peer = this.peers[peerId];
-  if (!peer) return;
+  private sendStreamToPeer(peerId: string): void {
+    const peer = this.peers[peerId];
+    if (!peer?.connection) return;
 
-  const localStream = this.roomHubService.getLocalStream();
-  if (localStream) {
-    localStream.getTracks().forEach(track => {
-      peer.connection.addTrack(track, localStream);
-    });
+    const localStream = this.roomHubService.getLocalStream();
+    if (localStream) {
+      localStream.getTracks().forEach((track) => {
+        peer.connection!.addTrack(track, localStream); // Dùng ! vì đã kiểm tra ở trên
+      });
+    }
   }
-}
 
-  // Create a new peer connection
-  private createPeerConnection(peerId: string, peerName: string, initiator: boolean): Peer {
+  private createPeerConnection(
+    peerId: string,
+    peerName: string,
+    initiator: boolean
+  ): Peer {
+    if (this.usingLiveKit) {
+      const peer: Peer = { peerId, userName: peerName };
+      this.peers[peerId] = peer;
+      this.updatePeersSubject();
+      return peer;
+    }
+
     const peerConnection = new RTCPeerConnection(this.config);
     const hubConnection = this.roomHubService.getConnection();
 
@@ -134,30 +171,34 @@ private sendStreamToPeer(peerId: string): void {
       userName: peerName,
       connection: peerConnection,
     };
-
     this.peers[peerId] = peer;
 
     const localStream = this.roomHubService.getLocalStream();
     if (localStream) {
-      localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
+      localStream
+        .getTracks()
+        .forEach((track) => peerConnection.addTrack(track, localStream));
     }
 
     peerConnection.ontrack = (event) => {
       peer.stream = event.streams[0];
+      console.log('Received remote stream for peer:', peer.peerId);
       this.updatePeersSubject();
     };
 
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        hubConnection.invoke('SendCandidate', peerId, JSON.stringify(event.candidate)).catch((err) =>
-          console.error('Error sending ICE candidate:', err)
-        );
+        hubConnection
+          .invoke('SendCandidate', peerId, JSON.stringify(event.candidate))
+          .catch((err) => console.error('Error sending ICE candidate:', err));
       }
     };
 
     peerConnection.onconnectionstatechange = () => {
-      console.log(`Connection state with peer ${peerId} changed to: ${peerConnection.connectionState}`);
-      if (peerConnection.connectionState === 'failed' || peerConnection.connectionState === 'closed') {
+      if (
+        peerConnection.connectionState === 'failed' ||
+        peerConnection.connectionState === 'closed'
+      ) {
         delete this.peers[peerId];
         this.updatePeersSubject();
       }
@@ -168,8 +209,10 @@ private sendStreamToPeer(peerId: string): void {
         .createOffer()
         .then((offer) => peerConnection.setLocalDescription(offer))
         .then(() =>
-          hubConnection.invoke('SendOffer', peerId, JSON.stringify(peerConnection.localDescription)).catch((err) =>
-            console.error('Error sending offer:', err)
+          hubConnection.invoke(
+            'SendOffer',
+            peerId,
+            JSON.stringify(peerConnection.localDescription)
           )
         )
         .catch((err) => console.error('Error creating offer:', err));
@@ -178,18 +221,23 @@ private sendStreamToPeer(peerId: string): void {
     this.updatePeersSubject();
     return peer;
   }
-
   // Update peers subject
   private updatePeersSubject(): void {
-    const peerList = Object.values(this.peers);
-    this.peersSubject.next(peerList);
+    this.cdr.run(() => {
+      const peerList = Object.values(this.peers);
+      console.log(
+        'Peers list updated:',
+        peerList.map((p) => ({ id: p.peerId, hasStream: !!p.stream }))
+      );
+      this.peersSubject.next([...peerList]);
+    });
   }
 
   // Cleanup WebRTC resources
   public cleanup(): void {
     Object.keys(this.peers).forEach((peerId) => {
       if (this.peers[peerId]) {
-        this.peers[peerId].connection.close();
+        this.peers[peerId].connection?.close();
         delete this.peers[peerId];
       }
     });
@@ -197,111 +245,137 @@ private sendStreamToPeer(peerId: string): void {
     console.log('🧹 RtcHub resources cleaned up');
   }
 
-
   async startScreenShare() {
     try {
       this.screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
           width: { ideal: 1280, max: 1920 },
           height: { ideal: 720, max: 1080 },
-          frameRate: { ideal: 15, max: 20 }
+          frameRate: { ideal: 15, max: 20 },
         },
-        audio: true
+        audio: true,
       });
+      this.screenTrack = this.screenStream.getVideoTracks()[0];
 
-      // Gửi stream screen share tới các peer
-      Object.values(this.peers).forEach(peer => {
-        const sender = peer.connection.getSenders().find(s => s.track?.kind === "video");
-        if (sender) {
-          // const parameters = sender.getParameters();
-          // if (!parameters.encodings) parameters.encodings = [{}];
-          // parameters.encodings[0].maxBitrate = 500 * 1000; // Giới hạn 500kbps
-          // sender.setParameters(parameters); them gioi han de tang toc do
-          sender.replaceTrack(this.screenStream!.getVideoTracks()[0]);
-        }
-      });
+      if (this.usingLiveKit) {
+        this.livekitRoom.localParticipant.publishTrack(
+          this.screenStream.getVideoTracks()[0]
+        );
+        console.log('📡 Đã bắt đầu chia sẻ màn hình với LiveKit!');
+      } else {
+        // Gửi stream màn hình chia sẻ tới các peer trong Mesh
+        Object.values(this.peers).forEach((peer) => {
+          const sender = peer.connection
+            ?.getSenders()
+            .find((s) => s.track?.kind === 'video');
+          if (sender) {
+            sender.replaceTrack(this.screenStream!.getVideoTracks()[0]);
+          }
+        });
+        console.log('📡 Đã bắt đầu chia sẻ màn hình với Mesh!');
+      }
 
-      console.log("📡 Đã bắt đầu chia sẻ màn hình!");
+      console.log('📡 Đã bắt đầu chia sẻ màn hình!');
     } catch (error) {
-      console.error("❌ Lỗi khi chia sẻ màn hình:", error);
+      console.error('❌ Lỗi khi chia sẻ màn hình:', error);
     }
   }
-
   stopScreenShare() {
     if (this.screenStream) {
-      this.screenStream.getTracks().forEach(track => track.stop());
+      // Dừng các track của màn hình chia sẻ
+      this.screenStream.getTracks().forEach((track) => track.stop());
       this.screenStream = null;
-      const localStream = this.roomHubService.getLocalStream();
-      // Chuyển lại camera thay vì màn hình
-      Object.values(this.peers).forEach(peer => {
-        const sender = peer.connection.getSenders().find(s => s.track?.kind === "video");
-        if (sender && localStream ) {
-          sender.replaceTrack(localStream.getVideoTracks()[0]);
-        }
-      });
 
-      console.log("🛑 Đã dừng chia sẻ màn hình!");
+      // Lấy lại local stream (video từ camera)
+      const localStream = this.roomHubService.getLocalStream();
+
+      if (localStream) {
+        // Kiểm tra nếu đang sử dụng LiveKit và cập nhật track mới
+        if (this.usingLiveKit && this.livekitRoom) {
+          // Unpublish track chia sẻ màn hình nếu có
+          if (this.screenTrack) {
+            this.livekitRoom.localParticipant.unpublishTrack(this.screenTrack);
+          }
+        } else {
+          // Trường hợp không dùng LiveKit, chỉ cần cập nhật lại peer connection
+          Object.values(this.peers).forEach((peer) => {
+            const sender = peer.connection
+              ?.getSenders()
+              .find((s) => s.track?.kind === 'video');
+            if (sender) {
+              sender.replaceTrack(localStream.getVideoTracks()[0]);
+            }
+          });
+          console.log('📡 Đã chuyển lại camera thay vì màn hình chia sẻ.');
+        }
+      } else {
+        console.error('❌ Không tìm thấy localStream để thay thế track video.');
+      }
+
+      console.log('🛑 Đã dừng chia sẻ màn hình!');
+    } else {
+      console.log('🛑 Không có màn hình chia sẻ nào để dừng.');
     }
   }
 
   // Start recording screen or video
   async startRecording(recordAudio: boolean = true): Promise<void> {
     try {
-        if (this.isRecording) {
-            console.log('⚠️ Recording already in progress');
-            return;
+      if (this.isRecording) {
+        console.log('⚠️ Recording already in progress');
+        return;
+      }
+
+      // Lấy stream màn hình thay vì camera
+      this.screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: { displaySurface: 'monitor' }, // Quay toàn bộ màn hình
+        audio: recordAudio ? true : false, // Thêm audio nếu cần
+      });
+
+      if (!this.screenStream) throw new Error('Không thể lấy luồng màn hình');
+
+      const tracksToRecord: MediaStreamTrack[] = [
+        ...this.screenStream.getVideoTracks(),
+      ];
+
+      if (recordAudio) {
+        const audioTracks = this.screenStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+          tracksToRecord.push(audioTracks[0]); // Ghi cả âm thanh của màn hình
         }
+      }
 
-        // Lấy stream màn hình thay vì camera
-        this.screenStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { displaySurface: "monitor" }, // Quay toàn bộ màn hình
-            audio: recordAudio ? true : false, // Thêm audio nếu cần
-        });
+      const recordStream = new MediaStream(tracksToRecord);
 
-        if (!this.screenStream) throw new Error('Không thể lấy luồng màn hình');
+      const options = {
+        mimeType: this.getSupportedMimeType(),
+        videoBitsPerSecond: 2500000, // 2.5 Mbps
+      };
 
-        const tracksToRecord: MediaStreamTrack[] = [...this.screenStream.getVideoTracks()];
+      this.mediaRecorder = new MediaRecorder(recordStream, options);
+      this.recordedChunks = [];
 
-        if (recordAudio) {
-            const audioTracks = this.screenStream.getAudioTracks();
-            if (audioTracks.length > 0) {
-                tracksToRecord.push(audioTracks[0]); // Ghi cả âm thanh của màn hình
-            }
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          this.recordedChunks.push(event.data);
         }
+      };
 
-        const recordStream = new MediaStream(tracksToRecord);
+      this.mediaRecorder.onstop = () => {
+        this.saveRecording();
+      };
 
-        const options = {
-            mimeType: this.getSupportedMimeType(),
-            videoBitsPerSecond: 2500000, // 2.5 Mbps
-        };
-
-        this.mediaRecorder = new MediaRecorder(recordStream, options);
-        this.recordedChunks = [];
-
-        this.mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                this.recordedChunks.push(event.data);
-            }
-        };
-
-        this.mediaRecorder.onstop = () => {
-            this.saveRecording();
-        };
-
-        // Bắt đầu quay màn hình
-        this.mediaRecorder.start(1000); // Ghi thành các đoạn 1 giây
-        this.isRecording = true;
-        this.recordingSubject.next(true);
-        console.log('🔴 Đang quay màn hình');
-
+      // Bắt đầu quay màn hình
+      this.mediaRecorder.start(1000); // Ghi thành các đoạn 1 giây
+      this.isRecording = true;
+      this.recordingSubject.next(true);
+      console.log('🔴 Đang quay màn hình');
     } catch (error) {
-        console.error('❌ Lỗi khi bắt đầu quay màn hình:', error);
-        this.isRecording = false;
-        this.recordingSubject.next(false);
+      console.error('❌ Lỗi khi bắt đầu quay màn hình:', error);
+      this.isRecording = false;
+      this.recordingSubject.next(false);
     }
-}
-
+  }
 
   // Stop the current recording
   async stopRecording(): Promise<void> {
@@ -321,7 +395,7 @@ private sendStreamToPeer(peerId: string): void {
       'video/webm;codecs=h264,opus',
       'video/mp4;codecs=h264,aac',
       'video/webm',
-      'video/mp4'
+      'video/mp4',
     ];
 
     for (const type of types) {
@@ -353,7 +427,12 @@ private sendStreamToPeer(peerId: string): void {
 
       // Create file name with timestamp
       const now = new Date();
-      const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
+      const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now
+        .getHours()
+        .toString()
+        .padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
       const fileName = `recording_${timestamp}.${fileExtension}`;
 
       // Create a link element to download the recording
@@ -376,7 +455,6 @@ private sendStreamToPeer(peerId: string): void {
           this.isRecording = false; // Cập nhật UI một cách an toàn
         });
       }, 100);
-
     } catch (error) {
       console.error('❌ Error saving recording:', error);
     }
@@ -386,6 +464,345 @@ private sendStreamToPeer(peerId: string): void {
   isCurrentlyRecording(): boolean {
     return this.isRecording;
   }
+  getRTCSender(videoTrack: MediaStreamTrack): RTCRtpSender | null {
+    // Kiểm tra nếu dùng LiveKit
+    if (this.livekitRoom && this.livekitRoom.localParticipant) {
+      const publication: LocalTrackPublication | undefined = this.livekitRoom.localParticipant.getTrackPublication(
+        videoTrack.kind === 'video' ? Track.Source.Camera : Track.Source.Microphone
+      );
+
+      if (publication && publication.track?.mediaStreamTrack === videoTrack) {
+        console.log("🔍 Found LiveKit publication for track ID:", videoTrack.id);
+        return null;
+      } else {
+        console.log("❌ No matching LiveKit publication for track ID:", videoTrack.id);
+        return null;
+      }
+    }
+
+    // Fallback về WebRTC thuần
+    for (const peer of Object.values(this.peers)) {
+      if (peer.connection) {
+        const sender = peer.connection
+          .getSenders()
+          .find((s) => s.track === videoTrack); // So sánh trực tiếp track
+        if (sender) {
+          console.log("🔍 Found WebRTC sender for track ID:", videoTrack.id);
+          return sender;
+        }
+      }
+    }
+    console.log("❌ No sender found for track ID:", videoTrack.id);
+    return null;
+  }
+  //---------------code moi
+  private checkParticipantsAndSwitch(): void {
+    const participantCount = Object.keys(this.peers).length;
+    console.log('nguoi tham gia o day', participantCount);
+    if (participantCount > this.maxMeshParticipants && !this.usingLiveKit) {
+      this.switchToLiveKit();
+    } else if (
+      participantCount <= this.maxMeshParticipants &&
+      this.usingLiveKit
+    ) {
+      this.switchToMesh();
+    }
+  }
+
+  private async switchToLiveKit(): Promise<void> {
+    this.usingLiveKit = true;
+    await this.cleanupMeshConnections();
+    await this.connectToLiveKit();
+  }
+
+  private async switchToMesh(): Promise<void> {
+    this.usingLiveKit = false;
+    if (this.livekitRoom) {
+      this.livekitRoom.disconnect();
+    }
+    const hubConnection = this.roomHubService.getConnection();
+    await hubConnection.invoke('GetExistingPeers');
+  }
+
+  private async cleanupMeshConnections(): Promise<void> {
+    Object.values(this.peers).forEach((peer) => {
+      if (peer.connection) {
+        peer.connection.close();
+      }
+    });
+    this.peers = {};
+    this.updatePeersSubject();
+  }
+
+  private async connectToLiveKit(): Promise<void> {
+    try {
+      console.log('🚀 Initializing LiveKit connection...');
+
+      this.livekitRoom = new Room();
+      console.log('✅ LiveKit Room instance created');
+
+      this.liveKitToken = await this.roomHubService.fetchLiveKitToken();
+      console.log('🌍 Connecting to LiveKit server:', this.liveKitUrl);
+      await this.livekitRoom.connect(this.liveKitUrl, this.liveKitToken, {
+        autoSubscribe: true, // Đảm bảo subscribe tất cả track từ remote participant
+      });
+      console.log('✅ Successfully connected to LiveKit!');
+
+      const localStream = this.roomHubService.getLocalStream();
+      console.log('🎥 Retrieved local stream:', localStream);
+
+      if (localStream) {
+        for (const track of localStream.getTracks()) {
+          // Kiểm tra trạng thái của từng track theo loại
+          if (track.kind === 'video' && !this.roomHubService.videoEnabled) {
+            console.log('📡 Video track is disabled, skipping publish.');
+            continue; // Bỏ qua nếu camera bị tắt
+          }
+          if (track.kind === 'audio' && !this.roomHubService.audioEnabled) {
+            console.log('📡 Audio track is disabled, skipping publish.');
+            continue; // Bỏ qua nếu mic bị tắt
+          }
+          console.log(`📡 Publishing track: ${track.kind}`);
+          await this.livekitRoom.localParticipant.publishTrack(track);
+          console.log(`✅ Published ${track.kind} track successfully`);
+        }
+      }
+
+      // Cài đặt các sự kiện của LiveKit
+      this.livekitRoom
+        .on('participantConnected', (participant) => {
+          console.log(`👤 Participant connected: ${participant.identity}`);
+          // Xử lý các track đã có của participant
+          Array.from(participant.trackPublications.values()).forEach(
+            (publication) => {
+              if (publication.isSubscribed && publication.track) {
+                this.handleLiveKitTrack(publication.track, participant);
+              }
+            }
+          );
+          this.updateLiveKitParticipants();
+        })
+        .on('participantDisconnected', (participant) => {
+          console.log(`🚪 Participant disconnected: ${participant.identity}`);
+          this.updateLiveKitParticipants();
+        })
+        .on('trackSubscribed', (track, publication, participant) => {
+          console.log(
+            `🎧 Track subscribed: ${track.kind} from ${participant.identity}`
+          );
+          this.handleLiveKitTrack(track, participant);
+        });
+
+      this.updateLiveKitParticipants();
+      console.log('🔄 LiveKit participants updated');
+    } catch (error) {
+      console.error('❌ Error connecting to LiveKit:', error);
+      this.usingLiveKit = false;
+    }
+  }
+
+  private handleLiveKitTrack(
+    track: Track,
+    participant: RemoteParticipant
+  ): void {
+    this.cdr.run(() => {
+      if (track.kind === Track.Kind.Video || track.kind === Track.Kind.Audio) {
+        // Check if peer already exists
+        let peer = this.peers[participant.identity];
+
+        if (!peer) {
+          // Create new peer if it doesn't exist
+          peer = {
+            peerId: participant.identity,
+            userName: participant.name || participant.identity,
+            stream: new MediaStream([track.mediaStreamTrack]),
+          };
+          this.peers[participant.identity] = peer;
+        } else if (peer.stream) {
+          // Add track to existing stream if the peer already has a stream
+          peer.stream.addTrack(track.mediaStreamTrack);
+        } else {
+          // Create a new stream if the peer exists but doesn't have a stream
+          peer.stream = new MediaStream([track.mediaStreamTrack]);
+        }
+
+        console.log(
+          `Updated peer with stream: ${participant.identity}, kind: ${track.kind}`
+        );
+        this.updatePeersSubject();
+      }
+    });
+  }
+
+  private updateLiveKitParticipants(): void {
+    if (!this.usingLiveKit) return;
+
+    this.cdr.run(() => {
+      const remoteParticipants = this.livekitRoom.remoteParticipants;
+
+      // First, ensure existing peers are updated correctly
+      remoteParticipants.forEach((participant) => {
+        if (!this.peers[participant.identity]) {
+          // Add new peer if not already present
+          this.peers[participant.identity] = {
+            peerId: participant.identity,
+            userName: participant.name || participant.identity,
+          };
+
+          // If participant already has published tracks, handle them
+          Array.from(participant.trackPublications.values()).forEach(
+            (publication) => {
+              if (publication.track && publication.isSubscribed) {
+                this.handleLiveKitTrack(publication.track, participant);
+              }
+            }
+          );
+        } else {
+          // Update the existing peer if needed
+          const peer = this.peers[participant.identity];
+          if (participant.trackPublications.size === 0) {
+            // Don't immediately disconnect if no tracks, just mark as disconnected
+            peer.isDisconnected = true;
+            console.log(
+              `Participant ${participant.identity} disconnected (no tracks)`
+            );
+          } else {
+            // Ensure the peer is connected if tracks are available
+            peer.isDisconnected = false;
+
+            // Handle the tracks of the existing peer
+            Array.from(participant.trackPublications.values()).forEach(
+              (publication) => {
+                if (publication.track && publication.isSubscribed) {
+                  this.handleLiveKitTrack(publication.track, participant);
+                }
+              }
+            );
+          }
+        }
+      });
+
+      // Remove disconnected participants from peers list after checking
+      Object.keys(this.peers).forEach((peerId) => {
+        const peer = this.peers[peerId];
+        if (
+          peer.isDisconnected &&
+          !Array.from(this.livekitRoom.remoteParticipants.keys()).includes(peerId)
+        ) {
+          // Remove the peer if no longer in the remoteParticipants list
+          delete this.peers[peerId];
+          console.log(`Peer ${peerId} removed from peers list`);
+        }
+      });
+
+      // Finally update the peers subject
+      this.updatePeersSubject();
+    });
+  }
 
 
+  public async toggleVideo(): Promise<void> {
+    if (!this.roomHubService.localStream) {
+      return;
+    }
+
+    this.roomHubService._videoEnabled = !this.roomHubService._videoEnabled;
+
+    const videoTracks = this.roomHubService.localStream.getVideoTracks();
+    if (videoTracks.length === 0) {
+      return;
+    }
+
+    for (const track of videoTracks) {
+      track.enabled = this.roomHubService._videoEnabled;
+
+      if (this.livekitRoom && this.livekitRoom.localParticipant) {
+        const publication = this.livekitRoom.localParticipant.getTrackPublication(
+          track.kind === 'video' ? Track.Source.Camera : Track.Source.Microphone
+        );
+        if (this.roomHubService._videoEnabled) {
+          if (publication) {
+            // Track đã được publish, không cần làm gì thêm vì track.enabled đã được set
+          } else if (this.livekitRoom.state === 'connected') {
+            try {
+              await this.livekitRoom.localParticipant.publishTrack(track);
+            } catch (err) {
+              // Xử lý lỗi im lặng, có thể thêm logic retry nếu cần
+            }
+          }
+        }
+      } else {
+        const sender = this.getRTCSender(track);
+        if (this.roomHubService._videoEnabled) {
+          if (sender) {
+            try {
+              await sender.replaceTrack(track);
+            } catch (err) {
+              // Xử lý lỗi im lặng
+            }
+          } else {
+            for (const peer of Object.values(this.peers)) {
+              if (peer.connection && peer.connection.connectionState === 'connected') {
+                peer.connection.addTrack(track, this.roomHubService.localStream);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Bật/tắt audio
+  public async toggleAudio(): Promise<void> {
+    if (!this.roomHubService.localStream) {
+      return;
+    }
+
+    this.roomHubService._audioEnabled = !this.roomHubService._audioEnabled;
+
+    const audioTracks = this.roomHubService.localStream.getAudioTracks();
+    if (audioTracks.length === 0) {
+      return;
+    }
+
+    for (const track of audioTracks) {
+      track.enabled = this.roomHubService._audioEnabled;
+
+      if (this.livekitRoom && this.livekitRoom.localParticipant) {
+        const publication = this.livekitRoom.localParticipant.getTrackPublication(
+          track.kind === 'audio' ? Track.Source.Microphone : Track.Source.Camera
+        );
+        if (this.roomHubService._audioEnabled) {
+          if (publication) {
+            // Track đã được publish, không cần làm gì thêm vì track.enabled đã được set
+          } else if (this.livekitRoom.state === 'connected') {
+            try {
+              await this.livekitRoom.localParticipant.publishTrack(track);
+            } catch (err) {
+              // Xử lý lỗi im lặng, có thể thêm logic retry nếu cần
+            }
+          }
+        }
+      } else {
+        const sender = this.getRTCSender(track);
+        if (this.roomHubService._audioEnabled) {
+          if (sender) {
+            try {
+              await sender.replaceTrack(track);
+            } catch (err) {
+              // Xử lý lỗi im lặng
+            }
+          } else {
+            for (const peer of Object.values(this.peers)) {
+              if (peer.connection && peer.connection.connectionState === 'connected') {
+                peer.connection.addTrack(track, this.roomHubService.localStream);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
