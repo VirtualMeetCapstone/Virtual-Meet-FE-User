@@ -147,30 +147,45 @@
   margin-top: 39%;
   margin-right: 80%;
   margin-bottom: 29%;
-  margin-left: 0px;
-  height: 32%;
-  width: 20%;
+  margin-left: -70px;
+  height: 40%;
+  width: 30%;
   position: absolute;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number2img {
-  margin-top: 19%;
+  margin-top: 10%;
   margin-right: 42%;
   margin-bottom: 42%;
   margin-left: 23%;
   width: 35%;
   height: 39%;
   position: absolute;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number3img {
-  width: 13%;
-  height: 21%;
+  width: 40%;
+  height: 40%;
   position: absolute;
-  margin-top: 62%;
+  margin-top: 55%;
   margin-right: 64%;
   margin-bottom: 30%;
-  margin-left: 23%;
+  margin-left: 25%;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number4vid {
@@ -181,6 +196,11 @@
   margin-right: 27%;
   margin-bottom: 0px;
   margin-left: 39%;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number5img {
@@ -191,6 +211,11 @@
   margin-right: 27%;
   margin-bottom: 41%;
   margin-left: 60%;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number6img {
@@ -201,16 +226,26 @@
   margin-left: 62%;
   width: 35%;
   height: 33%;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .number7img {
   position: absolute;
-  width: 25%;
+  width: 35%;
   margin-top: 40%;
   margin-right: 0px;
   margin-bottom: 18%;
-  margin-left: 75%;
+  margin-left: 70%;
   height: 42%;
+  border-radius: 5px;
+  border: 5px solid transparent; /* Set a transparent border first */
+  border-image: linear-gradient(0deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient border */
+  border-image-slice: 1; /* Ensure the gradient covers the entire border */
+
 }
 
 .text-blk.subHeading {
