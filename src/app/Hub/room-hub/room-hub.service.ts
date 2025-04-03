@@ -14,7 +14,7 @@ export class RoomHubService {
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
-
+  private urlBase = AppConstants.API_BASE_URL_HTTPS;
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
@@ -24,7 +24,7 @@ export class RoomHubService {
     private auth : AuthService
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/roomHub`, {
+      .withUrl(`${this.urlBase}/roomHub`, {
         withCredentials: true,
       })
       .withAutomaticReconnect()
@@ -170,14 +170,14 @@ export class RoomHubService {
   public async fetchLiveKitToken(): Promise<string> {
     try {
       const name = await this.auth.fetchUserName(this.currentUser.name);
-      const response = await fetch('http://localhost:6080/token', {
+      const response = await fetch(`${this.urlBase}/livekit/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          roomName:  this.currentUser.roomId,
-          participantName:  name
+          roomName: this.currentUser.roomId,
+          participantName: name,
         }),
       });
 
@@ -185,15 +185,16 @@ export class RoomHubService {
         const errorText = await response.text();
         throw new Error(`HTTP error! Status: ${response.status}, Body: ${errorText}`);
       }
+      const token = await response.text();
 
-      const data = await response.json();
-      console.log('Token response:', data); // Debug dữ liệu trả về
-      return data.token; // Trả về token từ { token: "..." }
+      return token;
     } catch (error) {
       console.error('❌ Error fetching LiveKit token:', error);
-      throw error; // Ném lỗi để xử lý ở nơi gọi
+      throw error;
     }
   }
+
+
 
   public async leaveRoom(): Promise<void> {
     if (!this.currentUser.roomId) return;

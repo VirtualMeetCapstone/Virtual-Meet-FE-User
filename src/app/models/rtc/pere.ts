@@ -3,4 +3,5 @@ export interface Peer {
   userName: string;
   connection?: RTCPeerConnection;
   stream?: MediaStream;
+  isDisconnected?: boolean;
 }
