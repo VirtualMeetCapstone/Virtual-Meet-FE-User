@@ -252,7 +252,7 @@ export class RoomComponentComponent implements OnInit {
 
   async leaveRoom() {
     try {
-      await this.roomHubService.leaveRoom();
+      await this.rtcHub.leaveRoom();
     } catch (err) {
       console.error('Error leaving room:', err);
     }

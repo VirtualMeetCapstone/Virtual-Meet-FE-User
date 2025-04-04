@@ -29,6 +29,12 @@
       <div class="mute-icon"><i class="fa-solid fa-microphone"></i></div>
     </div>
 
+    <!-- Local Screen Share Preview -->
+    <div class="video-box screen-share" *ngIf="isScreenSharing">
+      <p class="user-name">Your Screen</p>
+      <video id="localScreenPreview" autoplay playsinline muted></video>
+    </div>
+
     <!-- More Users Indicator -->
     <div *ngIf="getRemainingCount() > 0" class="video-box more-users">
       <span>+{{ getRemainingCount() }} người</span>
