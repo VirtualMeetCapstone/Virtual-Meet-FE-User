@@ -25,7 +25,7 @@ export class RtcHubService {
   private livekitRoom!: Room;
   private liveKitUrl = AppConstants.API_WSS_LIVE_KIT;
   private liveKitToken = '';
-  private maxMeshParticipants = 0;
+  private maxMeshParticipants = 4;
   private usingLiveKit = false;
 
   private originalVideoTrack: MediaStreamTrack | null = null;
@@ -266,7 +266,7 @@ export class RtcHubService {
         screenPreview.srcObject = this.screenStream;
         screenPreview.play();
       }
-      
+
       if (this.usingLiveKit) {
         this.livekitRoom.localParticipant.publishTrack(
           this.screenStream.getVideoTracks()[0]
