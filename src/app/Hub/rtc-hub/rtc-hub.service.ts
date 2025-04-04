@@ -2,7 +2,12 @@ import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RoomHubService } from '../room-hub/room-hub.service';
 import { Peer } from '../../models/rtc/pere';
-import { Room, RemoteParticipant, Track, LocalTrackPublication } from 'livekit-client';
+import {
+  Room,
+  RemoteParticipant,
+  Track,
+  LocalTrackPublication,
+} from 'livekit-client';
 import { AppConstants } from '../../constant/AppConstants';
 @Injectable({
   providedIn: 'root',
@@ -20,20 +25,17 @@ export class RtcHubService {
   private livekitRoom!: Room;
   private liveKitUrl = AppConstants.API_WSS_LIVE_KIT;
   private liveKitToken = '';
-  private maxMeshParticipants = 4;
+  private maxMeshParticipants = 0;
   private usingLiveKit = false;
 
   private originalVideoTrack: MediaStreamTrack | null = null;
-  // Lưu track video khi chia sẻ màn hình
-  private screenTrack: any; // Biến này lưu track video chia sẻ màn hình
-  // ICE server configuration
+  private screenTrack: any;
   private config = AppConstants.config;
 
   constructor(private roomHubService: RoomHubService, private cdr: NgZone) {
     this.setupRtcEvents();
   }
 
-  // Public observable for peers
   get peers$(): Observable<Peer[]> {
     return this.peersSubject.asObservable();
   }
@@ -256,7 +258,15 @@ export class RtcHubService {
         audio: true,
       });
       this.screenTrack = this.screenStream.getVideoTracks()[0];
-
+      // Hiển thị màn hình đã chia sẻ cho chính người dùng
+      const screenPreview = document.getElementById(
+        'localScreenPreview'
+      ) as HTMLVideoElement;
+      if (screenPreview) {
+        screenPreview.srcObject = this.screenStream;
+        screenPreview.play();
+      }
+      
       if (this.usingLiveKit) {
         this.livekitRoom.localParticipant.publishTrack(
           this.screenStream.getVideoTracks()[0]
@@ -467,15 +477,24 @@ export class RtcHubService {
   getRTCSender(videoTrack: MediaStreamTrack): RTCRtpSender | null {
     // Kiểm tra nếu dùng LiveKit
     if (this.livekitRoom && this.livekitRoom.localParticipant) {
-      const publication: LocalTrackPublication | undefined = this.livekitRoom.localParticipant.getTrackPublication(
-        videoTrack.kind === 'video' ? Track.Source.Camera : Track.Source.Microphone
-      );
+      const publication: LocalTrackPublication | undefined =
+        this.livekitRoom.localParticipant.getTrackPublication(
+          videoTrack.kind === 'video'
+            ? Track.Source.Camera
+            : Track.Source.Microphone
+        );
 
       if (publication && publication.track?.mediaStreamTrack === videoTrack) {
-        console.log("🔍 Found LiveKit publication for track ID:", videoTrack.id);
+        console.log(
+          '🔍 Found LiveKit publication for track ID:',
+          videoTrack.id
+        );
         return null;
       } else {
-        console.log("❌ No matching LiveKit publication for track ID:", videoTrack.id);
+        console.log(
+          '❌ No matching LiveKit publication for track ID:',
+          videoTrack.id
+        );
         return null;
       }
     }
@@ -487,12 +506,12 @@ export class RtcHubService {
           .getSenders()
           .find((s) => s.track === videoTrack); // So sánh trực tiếp track
         if (sender) {
-          console.log("🔍 Found WebRTC sender for track ID:", videoTrack.id);
+          console.log('🔍 Found WebRTC sender for track ID:', videoTrack.id);
           return sender;
         }
       }
     }
-    console.log("❌ No sender found for track ID:", videoTrack.id);
+    console.log('❌ No sender found for track ID:', videoTrack.id);
     return null;
   }
   //---------------code moi
@@ -584,6 +603,10 @@ export class RtcHubService {
         })
         .on('participantDisconnected', (participant) => {
           console.log(`🚪 Participant disconnected: ${participant.identity}`);
+          if (this.peers[participant.identity]) {
+            delete this.peers[participant.identity];
+            console.log(`Peer ${participant.identity} removed immediately`);
+          }
           this.updateLiveKitParticipants();
         })
         .on('trackSubscribed', (track, publication, participant) => {
@@ -687,7 +710,9 @@ export class RtcHubService {
         const peer = this.peers[peerId];
         if (
           peer.isDisconnected &&
-          !Array.from(this.livekitRoom.remoteParticipants.keys()).includes(peerId)
+          !Array.from(this.livekitRoom.remoteParticipants.keys()).includes(
+            peerId
+          )
         ) {
           // Remove the peer if no longer in the remoteParticipants list
           delete this.peers[peerId];
@@ -700,50 +725,86 @@ export class RtcHubService {
     });
   }
 
-
   public async toggleVideo(): Promise<void> {
     if (!this.roomHubService.localStream) {
       return;
     }
 
+    // Lật trạng thái video: nếu đang tắt thì bật, nếu bật thì tắt
     this.roomHubService._videoEnabled = !this.roomHubService._videoEnabled;
 
-    const videoTracks = this.roomHubService.localStream.getVideoTracks();
+    // Lấy danh sách video tracks hiện có
+    let videoTracks = this.roomHubService.localStream.getVideoTracks();
+
+    // Nếu người dùng muốn bật video nhưng chưa có video track, yêu cầu tạo mới
+    if (this.roomHubService._videoEnabled && videoTracks.length === 0) {
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        const newVideoTracks = newStream.getVideoTracks();
+        newVideoTracks.forEach((track) => {
+          this.roomHubService.localStream!.addTrack(track);
+          videoTracks.push(track);
+        });
+      } catch (err) {
+        console.error('❌ Không thể lấy video track:', err);
+        return;
+      }
+    }
+
+    // Nếu vẫn không có video track sau khi yêu cầu, thoát hàm
     if (videoTracks.length === 0) {
+      console.warn('❌ Không có video track để thay đổi trạng thái.');
       return;
     }
 
+    // Lặp qua tất cả các video tracks để bật/tắt theo trạng thái mới
     for (const track of videoTracks) {
       track.enabled = this.roomHubService._videoEnabled;
 
+      // Nếu đang sử dụng livekit để publish track
       if (this.livekitRoom && this.livekitRoom.localParticipant) {
-        const publication = this.livekitRoom.localParticipant.getTrackPublication(
-          track.kind === 'video' ? Track.Source.Camera : Track.Source.Microphone
-        );
+        const publication =
+          this.livekitRoom.localParticipant.getTrackPublication(
+            track.kind === 'video'
+              ? Track.Source.Camera
+              : Track.Source.Microphone
+          );
         if (this.roomHubService._videoEnabled) {
           if (publication) {
-            // Track đã được publish, không cần làm gì thêm vì track.enabled đã được set
+            // Nếu track đã publish, chỉ cần set track.enabled
           } else if (this.livekitRoom.state === 'connected') {
             try {
               await this.livekitRoom.localParticipant.publishTrack(track);
             } catch (err) {
-              // Xử lý lỗi im lặng, có thể thêm logic retry nếu cần
+              // Xử lý lỗi nếu cần
             }
           }
+        } else {
+          // Nếu tắt video, có thể unpublish track nếu framework hỗ trợ
+          // (tuỳ vào API của LiveKit)
         }
       } else {
+        // Nếu không dùng livekit, kiểm tra và thay thế track cho RTCPeerConnection
         const sender = this.getRTCSender(track);
         if (this.roomHubService._videoEnabled) {
           if (sender) {
             try {
               await sender.replaceTrack(track);
             } catch (err) {
-              // Xử lý lỗi im lặng
+              // Xử lý lỗi nếu cần
             }
           } else {
             for (const peer of Object.values(this.peers)) {
-              if (peer.connection && peer.connection.connectionState === 'connected') {
-                peer.connection.addTrack(track, this.roomHubService.localStream);
+              if (
+                peer.connection &&
+                peer.connection.connectionState === 'connected'
+              ) {
+                peer.connection.addTrack(
+                  track,
+                  this.roomHubService.localStream
+                );
                 break;
               }
             }
@@ -759,23 +820,49 @@ export class RtcHubService {
       return;
     }
 
+    // Lật trạng thái audio: nếu đang tắt thì bật, nếu bật thì tắt
     this.roomHubService._audioEnabled = !this.roomHubService._audioEnabled;
 
-    const audioTracks = this.roomHubService.localStream.getAudioTracks();
+    // Lấy danh sách audio tracks hiện có
+    let audioTracks = this.roomHubService.localStream.getAudioTracks();
+
+    // Nếu người dùng muốn bật audio mà chưa có audio track, yêu cầu tạo mới
+    if (this.roomHubService._audioEnabled && audioTracks.length === 0) {
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const newAudioTracks = newStream.getAudioTracks();
+        newAudioTracks.forEach((track) => {
+          this.roomHubService.localStream!.addTrack(track);
+          audioTracks.push(track);
+        });
+      } catch (err) {
+        console.error('❌ Không thể lấy audio track:', err);
+        return;
+      }
+    }
+
+    // Nếu sau khi cố gắng vẫn không có audio track thì thoát hàm
     if (audioTracks.length === 0) {
+      console.warn('❌ Không có audio track để thay đổi trạng thái.');
       return;
     }
 
+    // Lặp qua tất cả các audio tracks để bật/tắt theo trạng thái mới
     for (const track of audioTracks) {
       track.enabled = this.roomHubService._audioEnabled;
 
       if (this.livekitRoom && this.livekitRoom.localParticipant) {
-        const publication = this.livekitRoom.localParticipant.getTrackPublication(
-          track.kind === 'audio' ? Track.Source.Microphone : Track.Source.Camera
-        );
+        const publication =
+          this.livekitRoom.localParticipant.getTrackPublication(
+            track.kind === 'audio'
+              ? Track.Source.Microphone
+              : Track.Source.Camera
+          );
         if (this.roomHubService._audioEnabled) {
           if (publication) {
-            // Track đã được publish, không cần làm gì thêm vì track.enabled đã được set
+            // Track đã được publish, chỉ cần set track.enabled
           } else if (this.livekitRoom.state === 'connected') {
             try {
               await this.livekitRoom.localParticipant.publishTrack(track);
@@ -795,8 +882,14 @@ export class RtcHubService {
             }
           } else {
             for (const peer of Object.values(this.peers)) {
-              if (peer.connection && peer.connection.connectionState === 'connected') {
-                peer.connection.addTrack(track, this.roomHubService.localStream);
+              if (
+                peer.connection &&
+                peer.connection.connectionState === 'connected'
+              ) {
+                peer.connection.addTrack(
+                  track,
+                  this.roomHubService.localStream
+                );
                 break;
               }
             }
@@ -804,5 +897,17 @@ export class RtcHubService {
         }
       }
     }
+  }
+
+  public async leaveRoom(): Promise<void> {
+    if (this.usingLiveKit && this.livekitRoom) {
+      try {
+        await this.livekitRoom.disconnect();
+        console.log('🛑 Disconnected from LiveKit room.');
+      } catch (error) {
+        console.error('❌ Lỗi khi rời phòng LiveKit:', error);
+      }
+    }
+    this.roomHubService.leaveRoom();
   }
 }
