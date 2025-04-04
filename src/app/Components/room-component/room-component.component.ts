@@ -51,6 +51,7 @@ export class RoomComponentComponent implements OnInit {
   //start init
   roomId: string = '';
   userId: string = '';
+  joinNotification = '';
   userList: string[] = [];
   user: any = null;
   raisedHands: string[] = [];
@@ -100,7 +101,8 @@ export class RoomComponentComponent implements OnInit {
           if (!this.isSubtitlesEnabled) return;
 
           try {
-            let displayName: string | undefined = this.userNameCache.get(username);
+            let displayName: string | undefined =
+              this.userNameCache.get(username);
 
             if (!displayName) {
               const name = await this.authService.fetchUserName(username);
@@ -109,16 +111,26 @@ export class RoomComponentComponent implements OnInit {
                 this.userNameCache.set(username, displayName);
               }
             }
-            this.displaySubtitle(displayName ?? username, subtitle, 5000, false);
+            this.displaySubtitle(
+              displayName ?? username,
+              subtitle,
+              5000,
+              false
+            );
 
             const targetLang = this.selectedLangTarget.split('-')[0];
             if (sourceLang !== targetLang) {
               this.translateService
                 .translate(subtitle, sourceLang, targetLang)
                 .then((translatedText) => {
-                  this.displaySubtitle(displayName ?? username, translatedText, 10000, true);
+                  this.displaySubtitle(
+                    displayName ?? username,
+                    translatedText,
+                    10000,
+                    true
+                  );
                 })
-                .catch((error) => console.error("Lỗi dịch phụ đề:", error));
+                .catch((error) => console.error('Lỗi dịch phụ đề:', error));
             }
           } catch (error) {
             this.displaySubtitle(username, subtitle, 5000);
@@ -128,7 +140,6 @@ export class RoomComponentComponent implements OnInit {
 
       this.isReceiveSubtitleRegistered = true;
     }
-
 
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');
@@ -188,7 +199,23 @@ export class RoomComponentComponent implements OnInit {
     return this.peers.length > maxDisplay ? this.peers.length - maxDisplay : 0;
   }
 
+
+  showJoinNotification(userName: string) {
+    this.joinNotification = `${userName} đã tham gia phòng`;
+    setTimeout(() => {
+      this.joinNotification = '';
+    }, 3000);
+  }
+
+
   private initializeEventListeners(): void {
+    this.roomHubService.ReceiveJoinNotification((userId: string) => {
+      (async () => {
+        const name = await this.authService.fetchUserName(userId);
+        this.showJoinNotification(name || userId);
+      })();
+    });
+
     this.roomHubService.receiveShare((username) => {
       this.isYouTubeActive = true;
     });
@@ -480,11 +507,16 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
-  displaySubtitle(username: string, text: string, duration: number = 5000, isTranslated: boolean = false) {
+  displaySubtitle(
+    username: string,
+    text: string,
+    duration: number = 5000,
+    isTranslated: boolean = false
+  ) {
     const subtitleObj = {
       username,
       text: isTranslated ? `🔄 ${text}` : text,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.subtitles.push(subtitleObj);
 
@@ -499,7 +531,6 @@ export class RoomComponentComponent implements OnInit {
       this.cdr.detectChanges();
     }, duration);
   }
-
 
   changeLanguage(event: any) {
     this.selectedLangTarget = event.target.value;
