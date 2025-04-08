@@ -175,9 +175,10 @@ export class RoomComponentComponent implements OnInit {
   }
 
   getVideoGridClass(): string {
-    const userCount = this.peers.length;
-    return `users-${Math.min(userCount, 12)}`;
+    const totalUsers = this.peers.length + 1; // +1 cho local video
+    return `users-${Math.min(totalUsers, 12)}`; // giới hạn tối đa 12
   }
+
   getDisplayedParticipants() {
     const maxDisplay = 11;
     return this.peers.slice(0, maxDisplay);
