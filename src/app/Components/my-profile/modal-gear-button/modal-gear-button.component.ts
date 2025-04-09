@@ -1,6 +1,11 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ModalDeleteAccountComponent } from '../modal-delete-account/modal-delete-account.component';
 
 @Component({
   selector: 'app-modal-gear-button',
@@ -10,6 +15,7 @@ import { Router } from '@angular/router';
 export class ModalGearButtonComponent {
   constructor(
     private router: Router,
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<ModalGearButtonComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -25,5 +31,12 @@ export class ModalGearButtonComponent {
     }
     this.router.navigate(['/my-profile', this.data.id, 'news-feed-my-profile']);
     this.close();
+  }
+
+  deleteAccount() {
+    const dialogRef = this.dialog.open(ModalDeleteAccountComponent, {
+      width: '400px',
+      data: { id: this.data.id },
+    });
   }
 }
