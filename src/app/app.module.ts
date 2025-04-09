@@ -69,16 +69,16 @@ import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/
 import { SearchComponent } from './Components/Common/search/search.component';
 import { RoomDetailModalComponent } from './Components/room-detail-modal/room-detail-modal.component';
 
-import {EmotionControlsComponent} from './Components/room-component/emotion-controls/emotion-controls.component';
+import { EmotionControlsComponent } from './Components/room-component/emotion-controls/emotion-controls.component';
 
-import {  HttpBackend, HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import {MultiTranslateHttpLoader} from 'ngx-translate-multi-http-loader';
+import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 import { AboutUsComponent } from './Components/about-us/about-us.component';
-
+import { ModalDeleteAccountComponent } from './Components/my-profile/modal-delete-account/modal-delete-account.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
-  return new MultiTranslateHttpLoader(_httpBackend, [ 'assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
+  return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
 }
 
 @NgModule({
@@ -121,7 +121,8 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     PageNotFoundComponent,
     RoomDetailModalComponent,
     EmotionControlsComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    ModalDeleteAccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -143,11 +144,11 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     Toast,
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpBackend]
-      }
-  })
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpBackend],
+      },
+    }),
   ],
   providers: [
     provideClientHydration(),

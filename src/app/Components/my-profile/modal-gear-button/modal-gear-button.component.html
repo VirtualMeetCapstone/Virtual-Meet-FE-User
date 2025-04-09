@@ -9,7 +9,11 @@
         <img src="/assets/img/story-icon.png" alt="" />
         Kho lưu trữ tin
       </button>
-      <button type="button" class="button button-delete">
+      <button
+        type="button"
+        class="button button-delete"
+        (click)="deleteAccount(); $event.stopPropagation()"
+      >
         <img src="/assets/img/trash-icon.png" alt="" />
         Xóa tài khoản
       </button>
