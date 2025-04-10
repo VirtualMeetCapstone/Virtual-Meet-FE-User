@@ -1,3 +1,6 @@
+import { inject } from "@angular/core";
+import { AuthService } from "../app/services/auth-service/auth.service";
+
 export function decodeJwt(token: string): any {
   const parts = token.split('.');
   if (parts.length !== 3) {
@@ -34,44 +37,3 @@ export function getImageUrlFromToken(token: string): string {
   return pictureData.Url;
 }
 
-export async function fetchWithAuth(
-  url: string,
-  options: RequestInit = {}
-): Promise<Response | null> {
-  const accessToken = localStorage.getItem('accessToken');
-
-  if (!accessToken || isTokenExpired(accessToken)) {
-    console.warn('⛔ Token không tồn tại hoặc đã hết hạn. Redirect đến login.');
-    return null;
-  }
-
-  const isFormData = options.body instanceof FormData;
-
-  const headers: HeadersInit = {
-    ...(options.headers || {}),
-    Authorization: `Bearer ${accessToken}`,
-    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-  };
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      headers,
-      body: isFormData
-        ? options.body
-        : options.body
-        ? JSON.stringify(options.body)
-        : undefined,
-    });
-
-    if (response.status === 401) {
-      console.warn('⛔ Server báo token không hợp lệ.');
-      return null;
-    }
-
-    return response;
-  } catch (error) {
-    console.error('❌ Lỗi gọi API:', error);
-    return null;
-  }
-}

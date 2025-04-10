@@ -15,6 +15,7 @@ import { ModalGearButtonComponent } from './modal-gear-button/modal-gear-button.
 import { AppConstants } from '../../constant/AppConstants';
 import { FollowUserService } from '../../services/follow-user/follow-user.service';
 import { lastValueFrom } from 'rxjs';
+import { HttpAuthService } from '../../../utils/HttpAuthService';
 
 interface Profile {
   name: string;
@@ -51,11 +52,8 @@ export class MyProfileComponent implements OnInit {
   isFollowing: boolean = false;
 
   selectedTab = 0;
-
-  // Lưu token lấy từ localStorage
-  token: string = '';
-
   constructor(
+    private httpAuthService: HttpAuthService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -65,21 +63,6 @@ export class MyProfileComponent implements OnInit {
 
   async ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Lấy token từ localStorage
-      this.token = localStorage.getItem('accessToken') || '';
-      if (this.token) {
-        try {
-          const decoded = decodeJwt(this.token);
-          this.loggedInUserId = decoded.id;
-        } catch (error) {
-          console.error('Lỗi khi giải mã token:', error);
-        }
-      } else {
-        console.error('Token not found, vui lòng đăng nhập lại.');
-        // Bạn có thể chuyển hướng về trang đăng nhập nếu cần
-        return;
-      }
-
       // Đăng ký subscribe route params và gọi fetchProfile
       this.route.params.subscribe(async (params) => {
         this.userId = params['id'];
@@ -94,20 +77,12 @@ export class MyProfileComponent implements OnInit {
   async fetchProfile(id: string) {
     this.isLoading = true;
     try {
-      if (!this.token) {
-        console.error('Token not found, vui lòng đăng nhập lại.');
-        return;
-      }
-
       // Gọi API lấy thông tin profile
-      const profileResponse = await fetch(
-        `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`,
-        {
-          headers: { Authorization: `Bearer ${this.token}` },
-        }
+      const profileResponse = await this.httpAuthService.fetchWithAuth(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`
       );
-      if (!profileResponse.ok) throw new Error('Failed to fetch profile');
-      const profileData = await profileResponse.json();
+      if (!profileResponse!.ok) throw new Error('Failed to fetch profile');
+      const profileData = await profileResponse!.json();
       this.user = {
         name: profileData.name,
         bio: profileData.bio,
@@ -119,14 +94,11 @@ export class MyProfileComponent implements OnInit {
       };
 
       // Gọi API kiểm tra trạng thái follow dựa vào token
-      const followResponse = await fetch(
-        `${AppConstants.API_BASE_URL_HTTPS}/users/is-following/${id}`,
-        {
-          headers: { Authorization: `Bearer ${this.token}` },
-        }
+      const followResponse = await this.httpAuthService.fetchWithAuth(
+        `${AppConstants.API_BASE_URL_HTTPS}/users/is-following/${id}`
       );
-      if (!followResponse.ok) throw new Error('Failed to fetch follow status');
-      const followData = await followResponse.json();
+      if (!followResponse!.ok) throw new Error('Failed to fetch follow status');
+      const followData = await followResponse!.json();
       console.log('Dữ liệu follow status:', followData); // Debug log
       // Giả sử BE trả về { isFollowing: true/false }
       this.isFollowing = followData === true || followData === 'true';

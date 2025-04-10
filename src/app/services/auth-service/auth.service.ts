@@ -25,6 +25,9 @@ export class AuthService {
       'Content-Type': 'application/json',
     }),
   };
+  private refreshInProgress = false;
+  private refreshQueue: ((token: string | null) => void)[] = [];
+
   constructor(private http: HttpClient) {
     const initialToken = this.getStoredToken();
     this.userSubject = new BehaviorSubject<any>(null);
@@ -42,12 +45,60 @@ export class AuthService {
     return this.isBrowser() ? localStorage.getItem('accessToken') || '' : '';
   }
 
+  getRefreshTokenSafely(): string | null {
+    return this.isBrowser() ? localStorage.getItem('refreshToken') : null;
+  }
+
+
   getToken(): string {
     return this.tokenSubject.value;
   }
+  async getValidAccessToken(): Promise<string | null> {
+    const accessToken = this.getToken();
+    if (accessToken && !this.isTokenExpired(accessToken)) {
+      return accessToken;
+    }
+
+    const refreshToken = this.getRefreshTokenSafely();
+    if (!refreshToken) {
+      this.logout();
+      return null;
+    }
+
+    // Nếu đang làm mới → đợi
+    if (this.refreshInProgress) {
+      return new Promise(resolve => {
+        this.refreshQueue.push(resolve);
+      });
+    }
+
+    this.refreshInProgress = true;
+
+    try {
+      const newTokens = await this.refreshToken(refreshToken).toPromise();
+      this.setToken(newTokens!.accessToken, newTokens!.refreshToken);
+
+      // ✅ Thông báo cho tất cả những người đang chờ
+      this.refreshQueue.forEach(cb => cb(newTokens!.accessToken));
+      this.refreshQueue = [];
+      return newTokens!.accessToken;
+    } catch (err) {
+      console.error('❌ Refresh token không hợp lệ, đăng xuất');
+      this.logout();
+
+      this.refreshQueue.forEach(cb => cb(null));
+      this.refreshQueue = [];
+      return null;
+    } finally {
+      this.refreshInProgress = false;
+    }
+  }
+
+
 
   setToken(accessToken: string, refreshToken: string) {
     if (this.isBrowser()) {
+      console.log('🚀 Setting token:', refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       this.tokenSubject.next(accessToken);
@@ -62,6 +113,29 @@ export class AuthService {
       return true;
     }
   }
+
+  refreshToken(refreshToken: string): Observable<{ accessToken: string; refreshToken: string }> {
+    return this.http.post<any>(
+      `${AppConstants.API_BASE_URL_HTTPS}/refresh-token`,
+      { token: refreshToken },
+      this.httpOptions
+    ).pipe(
+      map((res) => {
+        if (res?.accessToken && res?.refreshToken) {
+          return {
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken
+          };
+        }
+        throw new Error('Invalid refresh response');
+      }),
+      catchError(err => {
+        console.error('❌ Lỗi refresh token:', err);
+        return throwError(() => new Error('Không thể làm mới access token'));
+      })
+    );
+  }
+
 
   isLoggedIn(): boolean {
     return !!this.getToken();
@@ -161,6 +235,28 @@ export class AuthService {
   logout() {
     console.log('🚪 Logging out due to expired token');
 
+    const refreshToken = this.getRefreshTokenSafely();
+
+    if (refreshToken) {
+      fetch(`${AppConstants.API_BASE_URL_HTTPS}/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'text/plain',
+        },
+        body: JSON.stringify({ token: refreshToken }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            console.warn('⚠️ Backend logout thất bại:', res.status);
+          }
+        })
+        .catch((err) => {
+          console.error('❌ Lỗi khi gọi API logout:', err);
+        });
+    }
+
+    // Dọn dẹp local
     if (this.isBrowser()) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
@@ -169,9 +265,8 @@ export class AuthService {
 
     this.cachedUser = null;
     this.loggedInSubject.next(false);
-    document.cookie =
-      'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
+
   getUserByID(userId: string): Observable<string> {
     return this.http
       .get<{ id: string; name: string }>(
