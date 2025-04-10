@@ -43,13 +43,19 @@
   justify-content: center;
 }
 
+.story-video {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
 img.story-image {
   margin-top: 20px;
   height: 70vh;
   border-radius: 10px;
   transition: width 0.3s ease-in-out;
 }
-
 
 iframe.story-video {
   margin-top: 20vh;

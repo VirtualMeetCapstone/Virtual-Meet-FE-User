@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { Viewer } from '../../models/viewer';
@@ -18,6 +25,7 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
   currentIndex: number;
   currentStory: any;
   isLiked = false;
+  @ViewChild('storyVideo') storyVideo!: ElementRef<HTMLVideoElement>;
 
   constructor(
     public dialogRef: MatDialogRef<StoryModalComponent>,
@@ -60,50 +68,33 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
   }
 
   next(): void {
-    // Đánh dấu story hiện tại là đã xem
     this.currentStory.isViewed = true;
-
-    // Cập nhật currentStory vào danh sách stories
     this.stories[this.currentIndex] = this.currentStory;
-
-    // Gọi API để cập nhật trạng thái xem story trên server
     this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
-
-    // Chuyển sang story tiếp theo
-    this.currentIndex = (this.currentIndex + 1) % this.stories.length;
-    this.currentStory = this.stories[this.currentIndex];
-    this.loadViewer(this.currentStory);
-    // Cập nhật giao diện và kiểm tra trạng thái
-    this.adjustStoryImageSize();
-    this.checkIsLiked();
-
-    // Đóng modal nếu đã xem hết danh sách
-    if (this.currentIndex === 0) {
+    if (this.currentIndex + 1 < this.stories.length) {
+      this.currentIndex += 1;
+      this.currentStory = this.stories[this.currentIndex];
+      this.loadViewer(this.currentStory);
+      this.adjustStoryImageSize();
+      this.checkIsLiked();
+      setTimeout(() => this.tryAutoplayVideo(), 200);
+    } else {
       this.close();
     }
   }
 
   previous(): void {
-    // Đánh dấu story hiện tại là đã xem
     this.currentStory.isViewed = true;
-
-    // Cập nhật currentStory vào danh sách stories
     this.stories[this.currentIndex] = this.currentStory;
-
-    // Gọi API để cập nhật trạng thái xem story trên server
     this.storyService.viewStory(this.userId, this.currentStory.id).subscribe();
-
-    // Quay lại story trước đó
-    this.currentIndex =
-      (this.currentIndex - 1 + this.stories.length) % this.stories.length;
-    this.currentStory = this.stories[this.currentIndex];
-    this.loadViewer(this.currentStory);
-    // Cập nhật giao diện và kiểm tra trạng thái
-    this.adjustStoryImageSize();
-    this.checkIsLiked();
-
-    // Đóng modal nếu đã xem hết danh sách
-    if (this.currentIndex === this.stories.length - 1) {
+    if (this.currentIndex - 1 >= 0) {
+      this.currentIndex -= 1;
+      this.currentStory = this.stories[this.currentIndex];
+      this.loadViewer(this.currentStory);
+      this.adjustStoryImageSize();
+      this.checkIsLiked();
+      setTimeout(() => this.tryAutoplayVideo(), 200);
+    } else {
       this.close();
     }
   }
@@ -125,6 +116,7 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadViewer(this.currentStory);
+    setTimeout(() => this.tryAutoplayVideo(), 200);
   }
 
   checkIsViewed() {
@@ -162,6 +154,37 @@ export class StoryModalComponent implements OnInit, AfterViewInit {
         console.error('Unexpected response format:', response);
       }
     });
+  }
+
+  isVideo(url: string): boolean {
+    if (!url) return false;
+    return /\.(mp4|webm|ogg)$/i.test(url);
+  }
+
+  tryAutoplayVideo(): void {
+    if (this.isVideo(this.currentStory?.media?.url)) {
+      if (this.storyVideo && this.storyVideo.nativeElement) {
+        const videoElem = this.storyVideo.nativeElement;
+        videoElem.pause();
+        videoElem.load();
+        videoElem.play().catch((err) => {
+          console.error('Autoplay failed:', err);
+        });
+      } else {
+        setTimeout(() => {
+          const videoElement = document.querySelector(
+            '.story-video'
+          ) as HTMLVideoElement;
+          if (videoElement) {
+            videoElement.pause();
+            videoElement.load();
+            videoElement.play().catch((err) => {
+              console.error('Autoplay failed:', err);
+            });
+          }
+        }, 200);
+      }
+    }
   }
 
   adjustStoryImageSize() {
