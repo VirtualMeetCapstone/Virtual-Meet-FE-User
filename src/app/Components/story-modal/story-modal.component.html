@@ -6,9 +6,8 @@
     <div class="story-wrapper">
       <div class="row">
         <img
-
-         [src]="currentStory.user.picture.url"
-         class="story-user-avatar"
+          [src]="currentStory.user.picture.url"
+          class="story-user-avatar"
           alt="User Avatar"
         />
         <div class="story-title">{{ currentStory?.user.name }}</div>
@@ -16,12 +15,29 @@
       </div>
 
       <div class="story-media">
-        <img
-         [src]="currentStory.media.url"
-          alt="Story Image"
-          class="story-image"
-        />
-        <!-- <iframe src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" class="story-video" allowfullscreen></iframe> -->
+        <!-- Video -->
+        <ng-container
+          *ngIf="isVideo(currentStory?.media?.url); else imageBlock"
+        >
+          <video
+            #storyVideo
+            class="story-video"
+            controls
+            (ended)="next()"
+            [attr.data-key]="currentStory?.media?.url"
+          >
+            <source [src]="currentStory?.media?.url" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </ng-container>
+        <!-- Image -->
+        <ng-template #imageBlock>
+          <img
+            [src]="currentStory?.media?.url"
+            alt="Story Image"
+            class="story-image"
+          />
+        </ng-template>
       </div>
     </div>
 
