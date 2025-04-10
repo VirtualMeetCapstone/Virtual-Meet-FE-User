@@ -7,7 +7,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class YoutubeService {
-  private BASE_URL = `${AppConstants.API_BASE_URL_HTTPS}`;
+  private BASE_URL = `${AppConstants.API_BASE_URL_HTTPS}/ytb`;
 
   constructor(private http: HttpClient) {}
 
