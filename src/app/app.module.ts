@@ -19,12 +19,13 @@ import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SpeedDialModule } from 'primeng/speeddial';
 import {
+  HTTP_INTERCEPTORS,
   HttpClientModule,
   provideHttpClient,
   withFetch,
 } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { TokenInterceptor } from './services/auth-service/TokenInterceptor';
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 import { StoryListComponent } from './Components/story-list/story-list.component';
 import { CarouselModule } from 'primeng/carousel';
@@ -172,11 +173,18 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
           },
         ],
         onError: (err) => {
-          console.error(err);
+          console.error('Google Login Error:', err);
         },
       } as SocialAuthServiceConfig,
     },
+
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
   ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

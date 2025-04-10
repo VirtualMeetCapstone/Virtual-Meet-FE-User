@@ -48,9 +48,20 @@ export class AuthService {
 
   setToken(accessToken: string, refreshToken: string) {
     if (this.isBrowser()) {
+      console.log('Setting token:', accessToken);
+      console.log('Setting refresh token:', refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       this.tokenSubject.next(accessToken);
+    }
+  }
+  isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      return Date.now() > exp;
+    } catch (e) {
+      return true;
     }
   }
 
@@ -109,11 +120,6 @@ export class AuthService {
     }
   }
 
-  login(token: string, refreshToken: string) {
-    this.setToken(token, refreshToken);
-    this.updateLoginState(true);
-  }
-
   async getBackendUser(userId: string): Promise<any> {
     if (this.backendUserCache.has(userId)) {
       return this.backendUserCache.get(userId);
@@ -155,6 +161,8 @@ export class AuthService {
   }
 
   logout() {
+    console.log('🚪 Logging out due to expired token');
+
     if (this.isBrowser()) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');

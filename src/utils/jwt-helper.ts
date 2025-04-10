@@ -14,6 +14,16 @@ export function decodeJwt(token: string): any {
   return JSON.parse(jsonPayload);
 }
 
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp * 1000;
+    return Date.now() > exp;
+  } catch (e) {
+    return true;
+  }
+}
+
 export function getImageUrlFromToken(token: string): string {
   const decoded = decodeJwt(token);
   if (!decoded.picture) {
@@ -22,4 +32,46 @@ export function getImageUrlFromToken(token: string): string {
   // decoded.picture chứa chuỗi JSON, hãy parse nó
   const pictureData = JSON.parse(decoded.picture);
   return pictureData.Url;
+}
+
+export async function fetchWithAuth(
+  url: string,
+  options: RequestInit = {}
+): Promise<Response | null> {
+  const accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken || isTokenExpired(accessToken)) {
+    console.warn('⛔ Token không tồn tại hoặc đã hết hạn. Redirect đến login.');
+    return null;
+  }
+
+  const isFormData = options.body instanceof FormData;
+
+  const headers: HeadersInit = {
+    ...(options.headers || {}),
+    Authorization: `Bearer ${accessToken}`,
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+  };
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      body: isFormData
+        ? options.body
+        : options.body
+        ? JSON.stringify(options.body)
+        : undefined,
+    });
+
+    if (response.status === 401) {
+      console.warn('⛔ Server báo token không hợp lệ.');
+      return null;
+    }
+
+    return response;
+  } catch (error) {
+    console.error('❌ Lỗi gọi API:', error);
+    return null;
+  }
 }
