@@ -48,8 +48,6 @@ export class AuthService {
 
   setToken(accessToken: string, refreshToken: string) {
     if (this.isBrowser()) {
-      console.log('Setting token:', accessToken);
-      console.log('Setting refresh token:', refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       this.tokenSubject.next(accessToken);

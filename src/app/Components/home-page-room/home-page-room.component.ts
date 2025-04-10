@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RoomServicesService } from '../../services/room-service/room-services.service';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home-page-room',
@@ -27,6 +28,7 @@ export class HomePageRoomComponent implements OnInit {
   userList: string[] = [];
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private roomService: RoomServicesService,
     private roomHub: RoomHubService,
     private router: Router,
@@ -39,7 +41,9 @@ export class HomePageRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    window.addEventListener('scroll', this.toggleScrollButton);
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('scroll', this.toggleScrollButton);
+    }
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
@@ -191,6 +195,8 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

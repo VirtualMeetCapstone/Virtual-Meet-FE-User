@@ -82,59 +82,6 @@ export class RoomHubService {
 
   // Setup non-WebRTC SignalR events
   private setupSignalREvents(): void {
-    this.hubConnection.on('ReceiveRoomState', (state) => {
-      console.log('📦 Received room state:', state);
-    });
-
-    this.hubConnection.on('RoomStateUpdated', (state) => {
-      console.log('🔄 Room state updated:', state);
-    });
-
-    this.hubConnection.on(
-      'ReceiveSelectedVideo',
-      (
-        roomId: string,
-        videoId: string,
-        timestamp: number,
-        isPaused: boolean
-      ) => {
-        console.log(
-          `📨 Received video event - Room: ${roomId}, Video: ${videoId}, Time: ${timestamp}s, Paused: ${isPaused}`
-        );
-      }
-    );
-
-    this.hubConnection.on('receiveplayerstatus', (roomId, status, time) => {
-      console.log(`📡 Received player status: ${status}, time: ${time}s`);
-    });
-
-    this.hubConnection.on('ReceiveLike', (username: string) => {
-      console.log(`👍 Received like from ${username}`);
-    });
-
-    this.hubConnection.on('ReceiveShare', (username: string) => {
-      console.log(`🔗 Received share from ${username}`);
-    });
-
-    this.hubConnection.on('ReceiveRaiseHand', (username: string) => {
-      console.log(`✋ ${username} raised hand`);
-    });
-
-    this.hubConnection.on(
-      'ReceiveEmotion',
-      (username: string, type: string, x: number, y: number) => {
-        console.log(
-          `😊 Received emotion from ${username}: ${type} at (${x}, ${y})`
-        );
-      }
-    );
-
-    this.hubConnection.on(
-      'ReceiveSubtitle',
-      (username: string, subtitle: string) => {
-        console.log(`${username}: ${subtitle}`);
-      }
-    );
 
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
@@ -156,7 +103,7 @@ export class RoomHubService {
   }
 
   // Room management
-  public async joinRoom(username: string, roomId: string): Promise<void> {
+  public async joinRoom(username: string, roomId: string, password: string = ''): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
     console.log('userName', username);
 
@@ -193,7 +140,7 @@ export class RoomHubService {
       // Cập nhật thông tin người dùng và tham gia phòng
       this.currentUser.name = username;
       this.currentUser.roomId = roomId;
-      await this.hubConnection.invoke('JoinRoom', username, roomId);
+      await this.hubConnection.invoke('JoinRoom', username, roomId, password);
       console.log(`✅ Joined room ${roomId} as ${username}`);
     } catch (err) {
       console.error('❌ Error joining room:', err);
@@ -305,6 +252,11 @@ export class RoomHubService {
   public receiveLowerHand(callback: (username: string) => void): void {
     this.hubConnection.off('ReceiveLowerHand');
     this.hubConnection.on('ReceiveLowerHand', callback);
+  }
+
+  public ReceiveJoinNotification(callback: (username: string) => void): void {
+    this.hubConnection.off('ReceiveJoinNotification');
+    this.hubConnection.on('ReceiveJoinNotification', callback);
   }
 
   public receiveSubtitle(
