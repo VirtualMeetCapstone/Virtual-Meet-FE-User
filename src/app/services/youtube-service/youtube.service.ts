@@ -1,43 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class YoutubeService {
-  private API_KEY = 'AIzaSyBov6HYaR6Z-2lswDDxggMYmOJM7wuw1Uo'; // Thay bằng API Key của bạn
-  private API_URL = 'https://www.googleapis.com/youtube/v3/videos';
-  private SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
+  private BASE_URL = `${AppConstants.API_BASE_URL_HTTPS}`;
+
   constructor(private http: HttpClient) {}
-  private isApiLoaded = false;
 
   getTrendingVideos(pageToken: string = ''): Observable<any> {
-    let params: any = {
-      part: 'snippet',
-      chart: 'mostPopular',
-      regionCode: 'VN',
-      maxResults: '10',
-      key: this.API_KEY,
-    };
-
-    if (pageToken) {
-      params.pageToken = pageToken;
-    }
-
-    return this.http.get(this.API_URL, { params });
+    const params: any = pageToken ? { pageToken } : {};
+    return this.http.get(`${this.BASE_URL}/trending`, { params });
   }
 
-
   searchVideos(query: string): Observable<any> {
-    return this.http.get(this.SEARCH_URL, {
-      params: {
-        part: 'snippet',
-        q: query,
-        type: 'video',
-        maxResults: '10',
-        key: this.API_KEY,
-      },
+    return this.http.get(`${this.BASE_URL}/search`, {
+      params: { q: query },
     });
-}
+  }
 }

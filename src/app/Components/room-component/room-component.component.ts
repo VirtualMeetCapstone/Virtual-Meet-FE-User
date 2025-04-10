@@ -55,6 +55,8 @@ export class RoomComponentComponent implements OnInit {
   userList: string[] = [];
   user: any = null;
   raisedHands: string[] = [];
+  roomPassword: string = '';
+
 
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
@@ -166,7 +168,8 @@ export class RoomComponentComponent implements OnInit {
         }
       });
       this.user = await this.authService.getBackendUser(this.userId);
-      await this.roomHubService.joinRoom(this.userId, this.roomId);
+      //lay pass word tuong ung voi roomId
+      await this.roomHubService.joinRoom(this.userId, this.roomId, this.roomPassword);
 
       this.initializeEventListeners();
 

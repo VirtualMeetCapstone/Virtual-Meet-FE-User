@@ -103,7 +103,7 @@ export class RoomHubService {
   }
 
   // Room management
-  public async joinRoom(username: string, roomId: string): Promise<void> {
+  public async joinRoom(username: string, roomId: string, password: string = ''): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
     console.log('userName', username);
 
@@ -140,7 +140,7 @@ export class RoomHubService {
       // Cập nhật thông tin người dùng và tham gia phòng
       this.currentUser.name = username;
       this.currentUser.roomId = roomId;
-      await this.hubConnection.invoke('JoinRoom', username, roomId);
+      await this.hubConnection.invoke('JoinRoom', username, roomId, password);
       console.log(`✅ Joined room ${roomId} as ${username}`);
     } catch (err) {
       console.error('❌ Error joining room:', err);
