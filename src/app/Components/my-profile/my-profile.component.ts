@@ -64,23 +64,6 @@ export class MyProfileComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-
-      // Lấy token từ localStorage
-      this.token = localStorage.getItem('accessToken') || '';
-      if (this.token) {
-        try {
-          const decoded = decodeJwt(this.token);
-          this.loggedInUserId = decoded.id;
-        } catch (error) {
-          console.error('Lỗi khi giải mã token:', error);
-        }
-
-      } else {
-        console.error('Token not found, vui lòng đăng nhập lại.');
-        return;
-
-      }
-
     if (isPlatformBrowser(this.platformId)) {
       // Lấy token từ localStorage
       this.token = localStorage.getItem('accessToken') || '';
