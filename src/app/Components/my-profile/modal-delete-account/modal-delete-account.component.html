@@ -1,0 +1,20 @@
+<div class="modal-delete-overlay">
+  <div class="modal-delete-story">
+    <p>Bạn có chắc chắn muốn xóa tài khoản này không?</p>
+    <p>
+      Để xác nhận, hãy nhập:
+      <strong class="strong-text">delete/{{ data.id }}</strong>
+    </p>
+    <input
+      type="text"
+      [(ngModel)]="confirmationInput"
+      class="type-input-text"
+      placeholder="Nhập chuỗi xác nhận"
+    />
+    <div class="actions">
+      <button class="cancel-btn" mat-button (click)="cancel()">Hủy</button>
+      <button mat-button color="warn" (click)="confirm()">Xóa</button>
+    </div>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </div>
+</div>

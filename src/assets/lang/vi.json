@@ -5,7 +5,7 @@
     "FEEDBACK_HELP": "Phản hồi và trợ giúp",
     "DARK_MODE": "Chế độ tối",
     "NOTIFICATIONS": {
-      "TITLE" :"Thông báo",
+      "TITLE": "Thông báo",
       "MARK_AS_READ": "Đánh dấu đã đọc",
       "LOAD_MORE": "Tải thêm...",
       "NO_MORE_DATA": "Không còn dữ liệu để tải",
@@ -14,17 +14,16 @@
     }
   },
   "nav-bar": {
-  "MENU": {
-    "href1": "Dành cho bạn",
-    "href2": "Khám phá",
-    "href3": "Đang Follow",
-    "href4": "LIVE",
-    "href5": "Bạn bè",
-    "href6": "Hồ sơ",
-    "href7": "Về chúng tôi"
-  }
-  }
-  ,
+    "MENU": {
+      "href1": "Dành cho bạn",
+      "href2": "Khám phá",
+      "href3": "Đang Follow",
+      "href4": "LIVE",
+      "href5": "Bạn bè",
+      "href6": "Bài đăng",
+      "href7": "Về chúng tôi"
+    }
+  },
   "room_chat": {
     "TITLE": "Phòng Chat",
     "PLACEHOLDER": "Nhập tin nhắn...",

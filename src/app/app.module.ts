@@ -19,12 +19,13 @@ import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SpeedDialModule } from 'primeng/speeddial';
 import {
+  HTTP_INTERCEPTORS,
   HttpClientModule,
   provideHttpClient,
   withFetch,
 } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { TokenInterceptor } from './services/auth-service/TokenInterceptor';
 import { ModalDeleteRoomComponent } from './Components/home-page-room/modal-delete-room/modal-delete-room.component';
 import { StoryListComponent } from './Components/story-list/story-list.component';
 import { CarouselModule } from 'primeng/carousel';
@@ -69,16 +70,16 @@ import { StoryModalNewsFeedComponent } from './Components/story-modal-news-feed/
 import { SearchComponent } from './Components/Common/search/search.component';
 import { RoomDetailModalComponent } from './Components/room-detail-modal/room-detail-modal.component';
 
-import {EmotionControlsComponent} from './Components/room-component/emotion-controls/emotion-controls.component';
+import { EmotionControlsComponent } from './Components/room-component/emotion-controls/emotion-controls.component';
 
-import {  HttpBackend, HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import {MultiTranslateHttpLoader} from 'ngx-translate-multi-http-loader';
+import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 import { AboutUsComponent } from './Components/about-us/about-us.component';
-
+import { ModalDeleteAccountComponent } from './Components/my-profile/modal-delete-account/modal-delete-account.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
-  return new MultiTranslateHttpLoader(_httpBackend, [ 'assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
+  return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
 }
 
 @NgModule({
@@ -121,7 +122,8 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     PageNotFoundComponent,
     RoomDetailModalComponent,
     EmotionControlsComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    ModalDeleteAccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -143,11 +145,11 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     Toast,
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpBackend]
-      }
-  })
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpBackend],
+      },
+    }),
   ],
   providers: [
     provideClientHydration(),
@@ -171,11 +173,18 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
           },
         ],
         onError: (err) => {
-          console.error(err);
+          console.error('Google Login Error:', err);
         },
       } as SocialAuthServiceConfig,
     },
+
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
   ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}
