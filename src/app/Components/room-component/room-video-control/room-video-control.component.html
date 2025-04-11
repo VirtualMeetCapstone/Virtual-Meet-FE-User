@@ -1,0 +1,17 @@
+<div class="room-control">
+  <label for="resolution">Độ phân giải:</label>
+  <select
+    id="resolution"
+    [(ngModel)]="selectedResolution"
+    (change)="onResolutionChange()"
+  >
+    <option
+      *ngFor="let res of resolutions"
+      [ngValue]="res"
+      [disabled]="res.isVip && !isVipUser"
+      [class.vip-disabled]="res.isVip && !isVipUser"
+    >
+      {{ res.label }} <span *ngIf="res.isVip">⭐ VIP</span>
+    </option>
+  </select>
+</div>

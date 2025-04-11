@@ -1,4 +1,11 @@
-import { Component, OnInit, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+} from '@angular/core';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { HttpClient } from '@angular/common/http';
 import { AppConstants } from '../../../constant/AppConstants';
@@ -38,23 +45,30 @@ export class LoginModalComponent implements OnInit {
   }
 
   sendTokenToBackend(idToken: string) {
-    const url = `${AppConstants.API_BASE_URL_HTTPS}/signin/google?idToken=${encodeURIComponent(idToken)}`;
+    const url = `${
+      AppConstants.API_BASE_URL_HTTPS
+    }/signin/google?idToken=${encodeURIComponent(idToken)}`;
 
-    this.http.get<{ accessToken: string; refreshToken: string }>(url).pipe(
-      take(1),
-      switchMap(response => {
-        if (response?.accessToken) {
-          this.customAuthService.setToken(response.accessToken, response.refreshToken);
-          return [true];
-        }
-        return [false];
-      })
-    ).subscribe(
-      isLoggedIn => this.customAuthService.updateLoginState(isLoggedIn),
-      error => console.error('Error sending token:', error)
-    );
+    this.http
+      .get<{ accessToken: string; refreshToken: string }>(url)
+      .pipe(
+        take(1),
+        switchMap((response) => {
+          if (response?.accessToken) {
+            this.customAuthService.setToken(
+              response.accessToken,
+              response.refreshToken
+            );
+            return [true];
+          }
+          return [false];
+        })
+      )
+      .subscribe(
+        (isLoggedIn) => this.customAuthService.updateLoginState(isLoggedIn),
+        (error) => console.error('Error sending token:', error)
+      );
   }
-
 
   signOut(): void {
     this.authService.signOut().then(() => {
@@ -64,4 +78,5 @@ export class LoginModalComponent implements OnInit {
       this.openLoginDialog.emit(false);
     });
   }
+
 }

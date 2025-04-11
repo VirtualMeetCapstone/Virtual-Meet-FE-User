@@ -82,7 +82,6 @@ export class RoomHubService {
 
   // Setup non-WebRTC SignalR events
   private setupSignalREvents(): void {
-
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
@@ -103,7 +102,11 @@ export class RoomHubService {
   }
 
   // Room management
-  public async joinRoom(username: string, roomId: string, password: string = ''): Promise<void> {
+  public async joinRoom(
+    username: string,
+    roomId: string,
+    password: string = ''
+  ): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
     console.log('userName', username);
 
@@ -121,6 +124,7 @@ export class RoomHubService {
 
       // Cho phép lựa chọn nếu có cả camera và mic
       let constraints;
+
       if (hasCamera && hasMicrophone) {
         const useVideo = window.confirm(
           'Bạn có muốn sử dụng camera không? (Nhấn OK: có, Nhấn Cancel: không)'
@@ -128,13 +132,26 @@ export class RoomHubService {
         const useAudio = window.confirm(
           'Bạn có muốn sử dụng mic không? (Nhấn OK: có, Nhấn Cancel: không)'
         );
-        constraints = { video: useVideo, audio: useAudio };
+
+        constraints = {
+          video: useVideo
+            ? { width: { ideal: 640 }, height: { ideal: 360 } }
+            : false,
+          audio: useAudio,
+        };
+      } else if (hasCamera) {
+        constraints = {
+          video: { width: { ideal: 640 }, height: { ideal: 360 } },
+          audio: false,
+        };
+      } else if (hasMicrophone) {
+        constraints = { video: false, audio: true };
       } else {
-        // Nếu chỉ có một trong hai thiết bị, sử dụng thiết bị đó
-        constraints = { video: hasCamera, audio: hasMicrophone };
+        alert('⚠️ Không phát hiện được camera hoặc micro.');
+        return;
       }
 
-      // Lấy local stream theo constraints đã chọn
+      // ✅ Lấy stream theo constraints cuối cùng
       this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
 
       // Cập nhật thông tin người dùng và tham gia phòng
@@ -146,6 +163,27 @@ export class RoomHubService {
       console.error('❌ Error joining room:', err);
       throw err;
     }
+  }
+
+  async updateLocalStream(newStream: MediaStream): Promise<void> {
+    // Dừng stream cũ nếu có
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop());
+    }
+
+    // Gán stream mới
+    this.localStream = newStream;
+    console.log("✅ Cập nhật stream mới:", newStream);
+
+    // Cập nhật trạng thái mic và camera
+    this._audioEnabled = newStream.getAudioTracks().length > 0;
+    this._videoEnabled = newStream.getVideoTracks().length > 0;
+
+    // Thông báo thay đổi stream cho UI
+    this.onStreamUpdated();
+  }
+  private onStreamUpdated() {
+    console.log(`🎤 Mic: ${this.audioEnabled}, 📹 Camera: ${this.videoEnabled}`);
   }
 
   public async fetchLiveKitToken(): Promise<string> {

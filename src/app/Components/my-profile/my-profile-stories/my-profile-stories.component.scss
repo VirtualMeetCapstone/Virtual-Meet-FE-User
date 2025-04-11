@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .avatar-wrapper {
@@ -14,24 +15,71 @@
   justify-content: center;
   cursor: pointer;
   border: 3px solid transparent;
-}
+  position: relative;
+  padding: 2px;
 
-.isWatch {
-  border-color: rgb(255, 0, 68);
-}
+  &.isWatch {
+    border-color: rgb(255, 0, 68);
+  }
 
-.watched {
-  border-color: rgb(116, 116, 116);
+  &.watched {
+    border-color: rgb(116, 116, 116);
+  }
+
+  &.vip-border {
+    border: 3px solid gold;
+    box-shadow: 0 0 10px gold;
+  }
 }
 
 .profile-pic-large {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
-/* CSS cho danh sách story */
+.vip-crown {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 24px;
+  background: #00000000;
+  border-radius: 50%;
+  padding: 2px;
+  color: gold;
+  z-index: 2;
+  animation: sparkle 1.5s infinite ease-in-out;
+}
+
+
+/* Glow nhẹ lấp lánh */
+@keyframes vipGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px 2px gold;
+  }
+  50% {
+    box-shadow: 0 0 12px 5px gold;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 0.7;
+  }
+}
+
+
+.vip-glow {
+  box-shadow: 0 0 10px 3px gold; /* ánh vàng */
+  animation: vipGlow 1.5s infinite ease-in-out;
+}
+/* Phần story */
 .story-list {
   display: flex;
   flex-wrap: wrap;

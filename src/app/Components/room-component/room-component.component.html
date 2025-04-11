@@ -62,6 +62,7 @@
       <h3>Chọn Hoạt Động</h3>
       <button class="activity-option" (click)="startYouTubeTogether()">YouTube Together</button>
       <button class="activity-option" (click)="startWhiteboard()">Whiteboard</button>
+      <app-room-video-control (resolutionChanged)="onResolutionChanged($event)"></app-room-video-control>
       <!-- Chọn ngôn ngữ -->
       <label class="language-label" for="languageSelect">Phụ đề:</label>
       <select id="languageSelect" class="language-select" (change)="changeLanguage($event)">

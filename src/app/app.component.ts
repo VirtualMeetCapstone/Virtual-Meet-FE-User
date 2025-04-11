@@ -1,8 +1,9 @@
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-
+import { UserVipService } from './services/user-vip-service/user-vip.service';
+import { AuthService } from './services/auth-service/auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,8 +15,9 @@ export class AppComponent implements OnInit {
   isLoggedIn = false;
   isRoomPage = false;
 
-
   constructor(
+    private authService: AuthService,
+    private userVipService: UserVipService,
     private translate: TranslateService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -45,6 +47,11 @@ export class AppComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('accessToken');
       this.isLoggedIn = !!token;
+      const userId = this.authService.getUser()?.id;
+      if (userId) {
+        this.userVipService.loadVipLevel(userId);
+        console.log('VIP level loaded:', this.userVipService.getVipLevel());
+      }
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
         console.log('Chưa đăng nhập');

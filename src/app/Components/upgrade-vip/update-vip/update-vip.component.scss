@@ -1,0 +1,157 @@
+.upgrade-vip-container {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(to bottom, #1e1e2f, #12121b); // Màu xanh đen
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  color: #ffffff; // Màu chữ trắng
+}
+
+.user-summary {
+  margin-bottom: 20px;
+  background: #2a2a3b; // Màu nền xanh đen nhạt
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 3px solid #4caf50; // Màu xanh lá nổi bật
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.vip-status {
+  color: #4caf50; // Màu xanh lá cho trạng thái VIP
+  font-weight: bold;
+}
+
+.vip-benefits {
+  margin: 20px 0;
+  background: #2a2a3b; // Màu nền xanh đen nhạt
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.vip-benefits h3 {
+  color: #4caf50; // Màu xanh lá cho tiêu đề
+  margin-bottom: 10px;
+}
+
+.vip-benefits ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vip-benefits li {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.vip-options {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.vip-card {
+  padding: 16px;
+  border: 2px solid #3a3a4b; // Màu viền xanh đen đậm
+  border-radius: 12px;
+  width: 180px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #2a2a3b; // Màu nền xanh đen nhạt
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+}
+
+.vip-card:hover {
+  transform: scale(1.05);
+  border-color: #4caf50; // Màu xanh lá khi hover
+}
+
+.vip-card.selected {
+  border-color: #4caf50;
+  background: #1e1e2f; // Màu xanh đen đậm hơn khi được chọn
+  box-shadow: 0 0 8px #4caf50;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.btn-upgrade {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #4caf50; // Màu xanh lá cho nút
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+.btn-upgrade:hover {
+  background: #45a049; // Màu xanh lá đậm hơn khi hover
+}
+
+.btn-upgrade:disabled {
+  background: #3a3a4b; // Màu xanh đen nhạt khi bị vô hiệu hóa
+  cursor: not-allowed;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: #2a2a3b;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  color: #ffffff;
+  width: 300px;
+}
+
+.popup p {
+  margin-bottom: 20px;
+}
+
+.btn-close {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #4caf50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.btn-close:hover {
+  background: #45a049;
+}

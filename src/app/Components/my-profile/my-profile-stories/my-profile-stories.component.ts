@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { StoryModalMyProfileComponent } from '../../story-modal-my-profile/story-modal-my-profile.component';
 import { MyProfileStoryService } from '../../../services/my-profile-story/my-profile-story.service';
 import { ExternalServiceService } from '../../../services/external-service/external-service.service';
+import { UserVipService } from '../../../services/user-vip-service/user-vip.service';
 @Component({
   selector: 'app-my-profile-stories',
   templateUrl: './my-profile-stories.component.html',
@@ -16,6 +17,7 @@ export class MyProfileStoriesComponent implements OnInit {
   isWatched = false;
 
   constructor(
+    public userVipService: UserVipService,
     public dialog: MatDialog,
     public myProfileStoryService: MyProfileStoryService,
     public externalService: ExternalServiceService

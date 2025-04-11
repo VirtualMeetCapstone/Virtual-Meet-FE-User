@@ -1,10 +1,10 @@
-<!-- Phần avatar của user -->
 <div class="profile-avatar-container">
   <div
     class="avatar-wrapper"
     [ngClass]="{
       isWatch: !isWatched,
-      watched: isWatched
+      watched: isWatched,
+      'vip-glow': userVipService.isVip()
     }"
     (click)="openStory()"
   >
@@ -13,5 +13,8 @@
       class="profile-pic-large"
       alt="User Profile"
     />
+  </div>
+  <div class="vip-crown" *ngIf="userVipService.isVip()">
+    👑
   </div>
 </div>

@@ -1,0 +1,53 @@
+<div class="upgrade-vip-container">
+  <h2>Nâng cấp tài khoản VIP</h2>
+
+  <div class="user-summary">
+    <img [src]="user.avatar" class="profile-avatar" alt="Avatar người dùng" />
+    <p class="username">{{ user.username }}</p>
+    <p>Trạng thái VIP:
+      <span *ngIf="isVip(); else notVip" class="vip-status">⭐ VIP</span>
+      <ng-template #notVip><span>Thường</span></ng-template>
+    </p>
+    <p *ngIf="isVip()">Hết hạn: {{ user.expireAt | date:'short' }}</p>
+  </div>
+
+  <div class="vip-benefits">
+    <h3>Đặc quyền VIP</h3>
+    <ul>
+      <li>⭐ Truy cập độ phân giải cao (1080p, 4K)</li>
+      <li>⭐ Ưu tiên hỗ trợ khách hàng</li>
+      <li>⭐ Tăng giới hạn thành viên phòng họp</li>
+      <li>⭐ Không quảng cáo</li>
+    </ul>
+  </div>
+
+  <div class="vip-options">
+    <div
+      class="vip-card"
+      *ngFor="let pack of vipPackages"
+      (click)="selectPack(pack)"
+      [class.selected]="selectedPack === pack"
+    >
+      <h3>{{ pack.label }}</h3>
+      <p class="price">{{ pack.price | currency:'VND' }}</p>
+      <p>Hiệu lực: {{ pack.duration }} ngày</p>
+    </div>
+  </div>
+
+  <!-- Nút xác nhận thanh toán chỉ hiển thị nếu user không phải là VIP -->
+  <button
+    class="btn-upgrade"
+    [disabled]="!selectedPack"
+    (click)="createVipPayment()"
+    *ngIf="!isVip()">
+    Xác nhận nâng cấp
+  </button>
+
+  <!-- Popup -->
+  <div class="popup-overlay" *ngIf="showPopup">
+    <div class="popup">
+      <p>{{ paymentMessage }}</p>
+      <button class="btn-close" (click)="closePopup()">Đóng</button>
+    </div>
+  </div>
+</div>

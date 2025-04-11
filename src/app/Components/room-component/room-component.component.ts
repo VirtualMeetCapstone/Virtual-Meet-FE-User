@@ -55,6 +55,7 @@ export class RoomComponentComponent implements OnInit {
   userList: string[] = [];
   user: any = null;
   raisedHands: string[] = [];
+  private videoElement: HTMLVideoElement | null = null;
   roomPassword: string = '';
 
 
@@ -167,7 +168,6 @@ export class RoomComponentComponent implements OnInit {
           );
         }
       });
-      this.user = await this.authService.getBackendUser(this.userId);
       //lay pass word tuong ung voi roomId
       await this.roomHubService.joinRoom(this.userId, this.roomId, this.roomPassword);
 
@@ -294,24 +294,31 @@ export class RoomComponentComponent implements OnInit {
     this.isCameraOn = this.roomHubService.videoEnabled;
   }
 
-  private async displayLocalStream(): Promise<void> {
-    const stream = this.roomHubService.getLocalStream();
-    if (stream && this.localVideo) {
-      this.localVideo.nativeElement.srcObject = stream;
+ private async displayLocalStream(): Promise<void> {
+  const stream = this.roomHubService.getLocalStream();
+  if (stream && this.localVideo) {
+    this.localVideo.nativeElement.srcObject = stream;
 
-      // Tắt mic và camera thông qua service để đồng bộ trạng thái
-      if (this.roomHubService.audioEnabled) {
-        this.roomHubService.disableAudio();
-      }
-      if (this.roomHubService.videoEnabled) {
-        this.roomHubService.disableVideo();
-      }
-
-      // Cập nhật trạng thái hiển thị
-      this.isMicOn = this.roomHubService.audioEnabled;
-      this.isCameraOn = this.roomHubService.videoEnabled;
+    // Tắt mic và camera thông qua service để đồng bộ trạng thái
+    if (this.roomHubService.audioEnabled) {
+      this.roomHubService.disableAudio();
     }
+    if (this.roomHubService.videoEnabled) {
+      this.roomHubService.disableVideo();
+    }
+
+    // Cập nhật trạng thái hiển thị
+    this.isMicOn = this.roomHubService.audioEnabled;
+    this.isCameraOn = this.roomHubService.videoEnabled;
+
+    // Log trạng thái để kiểm tra
+    console.log('🎤 Mic trạng thái:', this.isMicOn);
+    console.log('🎥 Camera trạng thái:', this.isCameraOn);
+
+    // Buộc cập nhật UI
+    this.cdr.detectChanges();
   }
+}
   get audioEnabled(): boolean {
     return this.roomHubService.audioEnabled;
   }
@@ -542,5 +549,17 @@ export class RoomComponentComponent implements OnInit {
       this.stopSendingSubtitles();
       this.startSendingSubtitles();
     }
+  }
+
+  //control - change for vip
+  onResolutionChanged(resolution: { width: number; height: number }) {
+    console.log(`🔧 Độ phân giải thay đổi: ${resolution.width}x${resolution.height}`);
+
+    this.displayLocalStream(); // Cập nhật hiển thị stream cục bộ
+    this.cdr.detectChanges(); // Buộc UI cập nhật
+  }
+  ngAfterViewInit() {
+    // Gọi sau khi phần tử <video> đã render
+    this.displayLocalStream();
   }
 }

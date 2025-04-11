@@ -13,7 +13,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class RtcHubService {
-  private peers: { [key: string]: Peer } = {};
+  public peers: { [key: string]: Peer } = {};
   private peersSubject = new BehaviorSubject<Peer[]>([]);
   private screenStream!: MediaStream | null;
   private mediaRecorder!: MediaRecorder | null;
@@ -41,7 +41,7 @@ export class RtcHubService {
   }
   getPeerConnection(peerId: string): RTCPeerConnection | null {
     const peer = this.peers[peerId];
-    return peer?.connection || null; // Sửa lỗi cú pháp ở đây
+    return peer?.connection || null;
   }
 
   // Setup WebRTC-related SignalR events
