@@ -50,6 +50,13 @@ export class UpdateVipComponent implements OnInit {
       return;
     }
 
+    // Khôi phục selectedPack từ localStorage nếu có
+    const savedPack = localStorage.getItem('selectedPack');
+    if (savedPack) {
+      this.selectedPack = JSON.parse(savedPack);
+      localStorage.removeItem('selectedPack'); // Xóa sau khi dùng
+    }
+
     this.userVipService.loadVipLevel(userId);
 
     this.auth.getBackendUser(userId).then((user) => {
@@ -69,15 +76,29 @@ export class UpdateVipComponent implements OnInit {
       const totalAmount = params['totalAmount'];
       const status = params['status'];
 
-      if (status === 'PAID') { // Xử lý trạng thái PAID
+      if (status === 'PAID' || params['cancel'] === 'false') { // Xử lý trạng thái PAID
+        if (!this.selectedPack) {
+          console.error('❌ Không có gói VIP nào được chọn!');
+          this.paymentMessage = 'Không thể xử lý thanh toán vì chưa chọn gói VIP.';
+          this.showPopup = true;
+          return;
+        }
+
         this.paymentMessage = `Thanh toán thành công! Mã đơn hàng: ${orderId}, Tổng tiền: ${totalAmount} VND.`;
+        console.log('Thanh toán thành công! Mã đơn hàng:', orderId, 'Tổng tiền:', totalAmount, 'VND.');
 
         // Gọi API để cập nhật trạng thái VIP
         const expireAt = new Date();
-        expireAt.setDate(expireAt.getDate() + this.selectedPack.duration); // Tính ngày hết hạn
+        expireAt.setDate(expireAt.getDate() + this.selectedPack.duration);
+        console.log('Ngày hết hạn VIP:', expireAt.toISOString());
+        console.log(' this.selectedPack.duration:', this.selectedPack.duration);
+
         this.updateVipLevel(userId!, 'vip', expireAt.toISOString(), () => {
           // Hiển thị popup sau khi cập nhật VIP thành công
           this.showPopup = true;
+
+          // Cập nhật lại thông tin người dùng và giao diện
+          this.refreshUserInfo(userId);
         });
       } else if (status === 'failed' || params['cancel'] === 'true') {
         this.paymentMessage = `Thanh toán thất bại! Mã đơn hàng: ${orderId}. Vui lòng thử lại.`;
@@ -96,6 +117,8 @@ export class UpdateVipComponent implements OnInit {
 
   selectPack(pack: any): void {
     this.selectedPack = pack;
+    // Lưu selectedPack vào localStorage
+    localStorage.setItem('selectedPack', JSON.stringify(this.selectedPack));
   }
 
   createVipPayment(): void {
@@ -139,12 +162,28 @@ export class UpdateVipComponent implements OnInit {
         console.log('✅ Cập nhật trạng thái VIP thành công!');
         this.user.vipLevel = level;
         this.user.expireAt = expireAt;
-        callback(); // Gọi callback sau khi cập nhật thành công
+        callback();
       },
       error: (err) => {
         console.error('❌ Lỗi khi cập nhật trạng thái VIP:', err);
         alert('Đã xảy ra lỗi khi cập nhật trạng thái VIP. Vui lòng thử lại!');
       },
+    });
+  }
+
+  // Thêm phương thức để làm mới thông tin người dùng
+  private refreshUserInfo(userId: string): void {
+    this.auth.getBackendUser(userId).then((user) => {
+      this.userNew = user;
+
+      this.user.avatar = this.userNew?.picture.url;
+      this.user.username = this.userNew?.name;
+      this.user.vipLevel = this.userVipService.getVipLevel();
+      this.user.expireAt = this.userVipService.getExpireAt();
+
+      console.log('✅ Thông tin người dùng đã được làm mới:', this.user);
+    }).catch((err) => {
+      console.error('❌ Lỗi khi làm mới thông tin người dùng:', err);
     });
   }
 }
