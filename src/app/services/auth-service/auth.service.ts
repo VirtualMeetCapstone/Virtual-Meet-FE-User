@@ -256,10 +256,9 @@ export class AuthService {
         });
     }
 
-    // Dọn dẹp local
+    // Xóa toàn bộ localStorage
     if (this.isBrowser()) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.clear(); // Xóa toàn bộ dữ liệu trong localStorage
       this.tokenSubject.next('');
     }
 
