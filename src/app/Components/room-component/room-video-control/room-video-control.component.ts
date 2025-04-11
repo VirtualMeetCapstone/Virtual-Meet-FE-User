@@ -1,6 +1,7 @@
 import { Component, HostBinding, Output, EventEmitter, OnInit } from '@angular/core';
 import { RoomHubService } from '../../../Hub/room-hub/room-hub.service';
 import { RtcHubService } from '../../../Hub/rtc-hub/rtc-hub.service';
+import { UserVipService } from '../../../services/user-vip-service/user-vip.service'; // Import UserVipService
 
 const resolutionLevels = [
   { label: "144p", width: 256, height: 144, isVip: false },
@@ -26,7 +27,8 @@ export class RoomVideoControlComponent implements OnInit {
 
   constructor(
     private roomHubService: RoomHubService,
-    private rtcHub: RtcHubService
+    private rtcHub: RtcHubService,
+    private userVipService: UserVipService // Inject UserVipService
   ) {}
 
   ngOnInit() {
@@ -48,7 +50,7 @@ export class RoomVideoControlComponent implements OnInit {
   }
 
   private getUserVipLevel(): 'free' | 'vip' {
-    return 'free';
+    return this.userVipService.getVipLevel(); // Lấy trạng thái VIP từ UserVipService
   }
 
   async onResolutionChange() {
