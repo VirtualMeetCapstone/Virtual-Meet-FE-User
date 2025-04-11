@@ -4,6 +4,7 @@ import { UserVipService } from '../../../services/user-vip-service/user-vip.serv
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { AppConstants } from '../../../constant/AppConstants'; // Import AppConstants
+import { ChangeDetectorRef } from '@angular/core'; // Import ChangeDetectorRef
 
 @Component({
   selector: 'app-update-vip',
@@ -35,7 +36,8 @@ export class UpdateVipComponent implements OnInit {
     private auth: AuthService,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,8 @@ export class UpdateVipComponent implements OnInit {
       this.user.username = this.userNew?.name;
       this.user.vipLevel = this.userVipService.getVipLevel();
       this.user.expireAt = this.userVipService.getExpireAt();
+
+      this.cdr.detectChanges(); // Buộc cập nhật lại UI sau khi lấy thông tin người dùng
     }).catch((err) => {
       console.error('❌ Lỗi khi lấy thông tin người dùng:', err);
     });
@@ -74,16 +78,27 @@ export class UpdateVipComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       const orderId = params['orderId'];
       const totalAmount = params['totalAmount'];
+      const packageId = params['packageId']; // Lấy packageId từ queryParams
       const status = params['status'];
 
-      if (status === 'PAID' || params['cancel'] === 'false') { // Xử lý trạng thái PAID
-        if (!this.selectedPack) {
-          console.error('❌ Không có gói VIP nào được chọn!');
-          this.paymentMessage = 'Không thể xử lý thanh toán vì chưa chọn gói VIP.';
-          this.showPopup = true;
-          return;
-        }
+      // Kiểm tra nếu packageId không tồn tại
+      if (!packageId) {
+        console.warn('⚠️ Không có packageId trong queryParams.');
+        return; // Không thực hiện xử lý nếu không có packageId
+      }
 
+      // Tìm gói VIP dựa trên packageId
+      this.selectedPack = this.vipPackages.find(pack => pack.id === parseInt(packageId, 10));
+
+      if (!this.selectedPack) {
+        console.error('❌ Không tìm thấy gói VIP tương ứng với packageId:', packageId);
+        this.paymentMessage = 'Không thể xử lý thanh toán vì không tìm thấy gói VIP.';
+        this.showPopup = true;
+        this.cdr.detectChanges(); // Buộc cập nhật lại UI khi hiển thị popup
+        return;
+      }
+
+      if (status === 'PAID' || params['cancel'] === 'false') { // Xử lý trạng thái PAID
         this.paymentMessage = `Thanh toán thành công! Mã đơn hàng: ${orderId}, Tổng tiền: ${totalAmount} VND.`;
         console.log('Thanh toán thành công! Mã đơn hàng:', orderId, 'Tổng tiền:', totalAmount, 'VND.');
 
@@ -94,15 +109,13 @@ export class UpdateVipComponent implements OnInit {
         console.log(' this.selectedPack.duration:', this.selectedPack.duration);
 
         this.updateVipLevel(userId!, 'vip', expireAt.toISOString(), () => {
-          // Hiển thị popup sau khi cập nhật VIP thành công
           this.showPopup = true;
-
-          // Cập nhật lại thông tin người dùng và giao diện
-          this.refreshUserInfo(userId);
+          this.cdr.detectChanges(); // Buộc cập nhật lại UI sau khi cập nhật trạng thái VIP
         });
       } else if (status === 'failed' || params['cancel'] === 'true') {
         this.paymentMessage = `Thanh toán thất bại! Mã đơn hàng: ${orderId}. Vui lòng thử lại.`;
         this.showPopup = true; // Hiển thị popup ngay lập tức khi thất bại
+        this.cdr.detectChanges(); // Buộc cập nhật lại UI khi hiển thị popup
       }
     });
   }
@@ -113,12 +126,13 @@ export class UpdateVipComponent implements OnInit {
 
   closePopup(): void {
     this.showPopup = false;
+    this.cdr.detectChanges(); // Buộc cập nhật lại UI khi đóng popup
   }
 
   selectPack(pack: any): void {
     this.selectedPack = pack;
-    // Lưu selectedPack vào localStorage
     localStorage.setItem('selectedPack', JSON.stringify(this.selectedPack));
+    this.cdr.detectChanges(); // Buộc cập nhật lại UI khi chọn gói VIP
   }
 
   createVipPayment(): void {
@@ -128,6 +142,7 @@ export class UpdateVipComponent implements OnInit {
     }
 
     this.isLoading = true; // Bắt đầu loading
+    this.cdr.detectChanges(); // Buộc cập nhật lại UI khi bắt đầu loading
 
     const payload = {
       packageId: this.selectedPack.id, // Gửi ID gói VIP
@@ -135,7 +150,8 @@ export class UpdateVipComponent implements OnInit {
 
     this.http.post<any>(`${AppConstants.API_BASE_URL_HTTPS}/vip-payment/create`, payload).subscribe({
       next: (response) => {
-        this.isLoading = false; // Kết thúc loading
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Buộc cập nhật lại UI khi kết thúc loading
         if (response.checkoutUrl) {
           // Chuyển hướng đến URL thanh toán
           window.location.href = response.checkoutUrl;
@@ -145,6 +161,7 @@ export class UpdateVipComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false; // Kết thúc loading
+        this.cdr.detectChanges(); // Buộc cập nhật lại UI khi kết thúc loading
         console.error('❌ Lỗi khi tạo thanh toán:', err);
         alert('Đã xảy ra lỗi khi tạo thanh toán. Vui lòng thử lại!');
       }
@@ -162,28 +179,14 @@ export class UpdateVipComponent implements OnInit {
         console.log('✅ Cập nhật trạng thái VIP thành công!');
         this.user.vipLevel = level;
         this.user.expireAt = expireAt;
+
+        this.router.navigate(['/up-vip'], { queryParams: {}, replaceUrl: true });
         callback();
       },
       error: (err) => {
         console.error('❌ Lỗi khi cập nhật trạng thái VIP:', err);
         alert('Đã xảy ra lỗi khi cập nhật trạng thái VIP. Vui lòng thử lại!');
       },
-    });
-  }
-
-  // Thêm phương thức để làm mới thông tin người dùng
-  private refreshUserInfo(userId: string): void {
-    this.auth.getBackendUser(userId).then((user) => {
-      this.userNew = user;
-
-      this.user.avatar = this.userNew?.picture.url;
-      this.user.username = this.userNew?.name;
-      this.user.vipLevel = this.userVipService.getVipLevel();
-      this.user.expireAt = this.userVipService.getExpireAt();
-
-      console.log('✅ Thông tin người dùng đã được làm mới:', this.user);
-    }).catch((err) => {
-      console.error('❌ Lỗi khi làm mới thông tin người dùng:', err);
     });
   }
 }
