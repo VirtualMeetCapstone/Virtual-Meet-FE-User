@@ -29,7 +29,7 @@ export class UserVipService {
     if (!this.isBrowser) return;
 
     this.http.get<{ level: 'free' | 'vip', expireAt?: string }>(
-      `${AppConstants.API_LOCAL_BASE_URL}/users/${userId}/vip-level`
+      `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/vip-level`
     ).subscribe({
       next: (res) => {
         this.vipLevel = res.level;
