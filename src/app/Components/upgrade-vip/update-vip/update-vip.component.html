@@ -34,14 +34,17 @@
     </div>
   </div>
 
-  <!-- Nút xác nhận thanh toán chỉ hiển thị nếu user không phải là VIP -->
+  <!-- Nút xác nhận thanh toán -->
   <button
     class="btn-upgrade"
-    [disabled]="!selectedPack"
+    [disabled]="!selectedPack || isLoading"
     (click)="createVipPayment()"
     *ngIf="!isVip()">
     Xác nhận nâng cấp
   </button>
+
+  <!-- Loading -->
+  <app-loading-component *ngIf="isLoading"></app-loading-component>
 
   <!-- Popup -->
   <div class="popup-overlay" *ngIf="showPopup">

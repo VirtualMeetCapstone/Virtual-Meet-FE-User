@@ -28,6 +28,7 @@ export class UpdateVipComponent implements OnInit {
   selectedPack: any = null;
   paymentMessage: string | null = null; // Nội dung thông báo
   showPopup: boolean = false; // Trạng thái hiển thị popup
+  isLoading: boolean = false; // Trạng thái loading
 
   constructor(
     private userVipService: UserVipService,
@@ -103,12 +104,15 @@ export class UpdateVipComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true; // Bắt đầu loading
+
     const payload = {
       packageId: this.selectedPack.id, // Gửi ID gói VIP
     };
 
     this.http.post<any>(`${AppConstants.API_BASE_URL_HTTPS}/vip-payment/create`, payload).subscribe({
       next: (response) => {
+        this.isLoading = false; // Kết thúc loading
         if (response.checkoutUrl) {
           // Chuyển hướng đến URL thanh toán
           window.location.href = response.checkoutUrl;
@@ -117,6 +121,7 @@ export class UpdateVipComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.isLoading = false; // Kết thúc loading
         console.error('❌ Lỗi khi tạo thanh toán:', err);
         alert('Đã xảy ra lỗi khi tạo thanh toán. Vui lòng thử lại!');
       }
