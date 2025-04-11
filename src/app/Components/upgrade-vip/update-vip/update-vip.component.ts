@@ -69,7 +69,7 @@ export class UpdateVipComponent implements OnInit {
       const totalAmount = params['totalAmount'];
       const status = params['status'];
 
-      if (status === 'success') {
+      if (status === 'PAID') { // Xử lý trạng thái PAID
         this.paymentMessage = `Thanh toán thành công! Mã đơn hàng: ${orderId}, Tổng tiền: ${totalAmount} VND.`;
 
         // Gọi API để cập nhật trạng thái VIP
