@@ -8,8 +8,8 @@
       <span *ngIf="isVip(); else notVip" class="vip-status">⭐ VIP</span>
       <ng-template #notVip><span>Thường</span></ng-template>
     </p>
-    <p *ngIf="isVip()">Hết hạn: {{ user.expireAt | date:'short' }}</p>
-  </div>
+    <p *ngIf="isVip()">Hết hạn: {{ user.expireAt | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+      </div>
 
   <div class="vip-benefits">
     <h3>Đặc quyền VIP</h3>
@@ -49,7 +49,7 @@
   <!-- Popup -->
   <div class="popup-overlay" *ngIf="showPopup">
     <div class="popup">
-      <p>{{ paymentMessage }}</p>
+      <p [innerHTML]="paymentMessage"></p>
       <button class="btn-close" (click)="closePopup()">Đóng</button>
     </div>
   </div>

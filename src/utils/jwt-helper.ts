@@ -1,6 +1,3 @@
-import { inject } from "@angular/core";
-import { AuthService } from "../app/services/auth-service/auth.service";
-
 export function decodeJwt(token: string): any {
   const parts = token.split('.');
   if (parts.length !== 3) {

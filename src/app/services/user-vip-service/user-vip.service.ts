@@ -7,7 +7,7 @@ import { AppConstants } from '../../constant/AppConstants';
 export class UserVipService {
   private readonly LOCAL_KEY = 'userVip';
   private isBrowser: boolean;
-  private vipLevel: 'free' | 'vip' = 'free';
+  private vipPackageId: number = 0;  // Sử dụng packageId thay vì level
   private expireAt?: string;
 
   constructor(
@@ -19,7 +19,7 @@ export class UserVipService {
       const cached = localStorage.getItem(this.LOCAL_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        this.vipLevel = parsed.level;
+        this.vipPackageId = parsed.packageId;
         this.expireAt = parsed.expireAt;
       }
     }
@@ -28,26 +28,28 @@ export class UserVipService {
   loadVipLevel(userId: string) {
     if (!this.isBrowser) return;
 
-    this.http.get<{ level: 'free' | 'vip', expireAt?: string }>(
+    this.http.get<{ packageId: number, expireAt?: string }>(
       `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/vip-level`
     ).subscribe({
       next: (res) => {
-        this.vipLevel = res.level;
+        console.log('VIP package loaded:', res);
+        this.vipPackageId = res.packageId;
         this.expireAt = res.expireAt;
         localStorage.setItem(this.LOCAL_KEY, JSON.stringify(res));
       },
       error: (err) => {
-        console.error('Failed to load VIP level', err);
+        console.error('Failed to load VIP package', err);
       }
     });
   }
 
-  getVipLevel(): 'free' | 'vip' {
-    return this.vipLevel;
+  getVipPackageId(): number {
+    return this.vipPackageId;
   }
 
   isVip(): boolean {
-    if (this.vipLevel !== 'vip') return false;
+    // Kiểm tra nếu gói VIP tồn tại và chưa hết hạn
+    if (this.vipPackageId === 0) return false;
     if (!this.expireAt) return true;
     return new Date(this.expireAt) > new Date();
   }
