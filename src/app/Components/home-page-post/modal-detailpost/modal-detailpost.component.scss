@@ -9,22 +9,29 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto; /* Enable scrolling if content overflows */
 }
 
 .modal-content {
-  width: 90%; /* Thay đổi từ 100% thành 90% để có khoảng cách bên */
+  width: 90%;
+  max-width: 1800px; /* Limit width for better layout */
   background-color: #121212;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
-  flex-direction: column; /* Đặt thành cột để dễ dàng điều chỉnh */
+  flex-direction: column;
+  position: relative; /* For absolute positioning of close button */
 }
 
 .title .iconX {
   color: white;
   font-size: 28px;
   font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
 .post {
@@ -34,27 +41,29 @@
 
 .image-container {
   position: relative;
-  width: 100%; /* Đặt lại thành 100% */
+  width: 100%;
+  height: 80vh; /* Fixed height for media */
+  overflow: hidden; /* Prevent overflow */
 }
 
-.post-image {
+.post-image,
+.post-video {
   width: 100%;
-  height: 80vh; /* Đặt lại chiều cao thành tự động */
-  max-height: 80vh; /* Giới hạn chiều cao tối đa */
-  display: block;
+  height: 100%;
+  object-fit: contain; /* Fit media within container */
 }
 
 .nav-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5); /* Tăng độ nổi bật */
+  background-color: rgba(0, 0, 0, 0.5);
   border: none;
   color: white;
-  font-size: 30px; /* Tăng kích thước */
+  font-size: 30px;
   cursor: pointer;
-  padding: 15px; /* Tăng vùng nhấn */
-  border-radius: 50%; /* Làm nút tròn */
+  padding: 15px;
+  border-radius: 50%;
   transition: background-color 0.3s, transform 0.2s;
 }
 

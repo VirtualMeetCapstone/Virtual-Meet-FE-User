@@ -15,7 +15,7 @@ export class ModalDetailpostComponent implements OnInit {
   @Input() user: any = '';
   @Input() userId: any = '';
 
-  currentImageIndex: number = 0;
+  currentMediaIndex: number = 0;
   comments: any = [];
   groupedComments: any = {};
   isLoadingComment: boolean = false;
@@ -181,18 +181,19 @@ export class ModalDetailpostComponent implements OnInit {
     setTimeout(() => (this.messages = []), 3000);
   }
 
-  onCloseModal() {
+  onCloseModal(event?: MouseEvent) {
+    if (event && event.target !== event.currentTarget) return; // Close only if clicked outside modal-content
     this.closeModal.emit(false);
     this.router.navigate(['/posts']);
   }
 
-  prevImage() {
-    if (this.currentImageIndex > 0) this.currentImageIndex--;
+  prevMedia() {
+    if (this.currentMediaIndex > 0) this.currentMediaIndex--;
   }
 
-  nextImage() {
-    if (this.currentImageIndex < this.post?.medias?.length - 1)
-      this.currentImageIndex++;
+  nextMedia() {
+    if (this.currentMediaIndex < this.post?.medias?.length - 1)
+      this.currentMediaIndex++;
   }
 
   getSafeUrl(url: any) {

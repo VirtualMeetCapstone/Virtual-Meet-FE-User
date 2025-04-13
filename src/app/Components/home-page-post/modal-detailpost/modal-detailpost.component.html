@@ -1,4 +1,4 @@
-<div class="modal">
+<div class="modal" (click)="onCloseModal($event)">
   <div class="modal-content">
     <div class="title">
       <i
@@ -17,19 +17,28 @@
     <div class="post" *ngIf="!isLoadingPost && post">
       <div class="image-container" *ngIf="post.medias?.length > 0">
         <button
-          (click)="prevImage()"
+          (click)="prevMedia()"
           class="nav-button fa-solid fa-arrow-left"
-          [disabled]="currentImageIndex === 0"
+          [disabled]="currentMediaIndex === 0"
         ></button>
-        <img
-          [src]="getSafeUrl(post.medias[currentImageIndex]?.url)"
-          alt="Hình ảnh bài viết"
-          class="post-image"
-        />
+        <ng-container *ngIf="post.medias[currentMediaIndex].type === 1">
+          <img
+            [src]="getSafeUrl(post.medias[currentMediaIndex]?.url)"
+            alt="Hình ảnh bài viết"
+            class="post-image"
+          />
+        </ng-container>
+        <ng-container *ngIf="post.medias[currentMediaIndex].type === 2">
+          <video
+            [src]="getSafeUrl(post.medias[currentMediaIndex]?.url)"
+            controls
+            class="post-video"
+          ></video>
+        </ng-container>
         <button
-          (click)="nextImage()"
+          (click)="nextMedia()"
           class="nav-button next-button fa-solid fa-arrow-right"
-          [disabled]="currentImageIndex === post.medias.length - 1"
+          [disabled]="currentMediaIndex === post.medias.length - 1"
         ></button>
       </div>
       <div class="post-content">
