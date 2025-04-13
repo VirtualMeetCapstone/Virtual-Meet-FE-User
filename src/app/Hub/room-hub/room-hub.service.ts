@@ -173,7 +173,7 @@ export class RoomHubService {
 
     // Gán stream mới
     this.localStream = newStream;
-    console.log("✅ Cập nhật stream mới:", newStream);
+    console.log('✅ Cập nhật stream mới:', newStream);
 
     // Cập nhật trạng thái mic và camera
     this._audioEnabled = newStream.getAudioTracks().length > 0;
@@ -183,7 +183,9 @@ export class RoomHubService {
     this.onStreamUpdated();
   }
   private onStreamUpdated() {
-    console.log(`🎤 Mic: ${this.audioEnabled}, 📹 Camera: ${this.videoEnabled}`);
+    console.log(
+      `🎤 Mic: ${this.audioEnabled}, 📹 Camera: ${this.videoEnabled}`
+    );
   }
 
   public async fetchLiveKitToken(): Promise<string> {

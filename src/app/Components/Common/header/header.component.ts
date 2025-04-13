@@ -31,6 +31,8 @@ import { HomePageRoomComponent } from '../../home-page-room/home-page-room.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+  isShowMobileMenu = false;
+
   lastScrollTop = 0;
   isHidden = false;
   isSticky = false;
@@ -333,5 +335,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         (globalThis as any).alert('Add room successful !!!!');
     }
     this.showModalAddRoom = false;
+  }
+  toggleMobileMenu() {
+    this.isShowMobileMenu = !this.isShowMobileMenu;
   }
 }

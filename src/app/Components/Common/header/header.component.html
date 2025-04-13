@@ -173,13 +173,10 @@
               (click)="
                 editProfile(); $event.preventDefault(); $event.stopPropagation()
               "
-              >Edit Profile</a>
-
-              <a
-              href="/up-vip"
-              (click)="$event.stopPropagation()"
-              >Up VIP</a
+              >Edit Profile</a
             >
+
+            <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>

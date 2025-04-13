@@ -222,14 +222,6 @@ body {
   width: 100%;
 }
 
-.post-images img {
-  width: 100%;
-  height: auto;
-  max-height: 500px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
 .post-images:has(img:nth-child(1):nth-last-child(1)) {
   grid-template-columns: 1fr;
 }

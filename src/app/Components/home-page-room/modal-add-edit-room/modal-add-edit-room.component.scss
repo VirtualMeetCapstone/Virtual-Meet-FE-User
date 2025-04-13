@@ -115,3 +115,36 @@ input:not(:checked) + .slider .label-text {
 input:checked + .slider:before {
   transform: translateX(46px);
 }
+
+@media (max-width: 600px) {
+  .modal-content {
+    background-color: #121212;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90vw;
+  }
+}
+.container-toggle {
+  display: flex;
+  flex-wrap: wrap; /* Cho phép các phần tử bên trong chuyển sang dòng tiếp theo nếu cần */
+  gap: 10px;
+  justify-content: center;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+}
+
+.password-input {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .container-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

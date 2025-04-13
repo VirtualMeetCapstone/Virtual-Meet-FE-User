@@ -37,8 +37,8 @@ export class RoomServicesService {
   deleteRoom(id: string): any {
     return this.http.delete<any>(this.url + '/' + id);
   }
-  addRoom(room: any, iduser: any): any {
-    const body = {
+  addRoom(room: any, iduser: any, password: string): any {
+    const body: any = {
       OwnerId: iduser,
       Topic: room.topic,
       Description: room.description,
@@ -53,7 +53,10 @@ export class RoomServicesService {
           ]
         : [],
     };
-
+    if (password) {
+      body.password = password;
+    }
+    console.log(body);
     return this.http
       .post<any>(this.url, body, {
         headers: { 'Content-Type': 'application/json' },
@@ -73,11 +76,12 @@ export class RoomServicesService {
       formData
     );
   }
-  updateRoom(id: any, room: any, iduser: any): any {
+  updateRoom(id: any, room: any, iduser: any, password: any): any {
     const body = {
       OwnerId: iduser,
       Topic: room.topic,
       Description: room.description,
+      password: password,
       MaximumMembers: room.maximumMember,
       Medias: room.mediaUpload
         ? [

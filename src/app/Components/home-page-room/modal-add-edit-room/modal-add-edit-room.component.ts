@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { RoomServicesService } from '../../../services/room-service/room-services.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
@@ -17,9 +25,12 @@ export class ModalAddEditRoomComponent {
   FormAdd!: FormGroup;
   loading = false;
   isPublic = true;
+  showPasswordError = false;
+  password: string = '';
 
   togglePrivacy() {
     this.isPublic = !this.isPublic;
+    this.password = '';
   }
 
   ngOnInit(): void {
@@ -52,9 +63,9 @@ export class ModalAddEditRoomComponent {
   onAddRoom() {
     this.loading = true;
     const formValue = this.FormAdd.value;
-    formValue.mediaUpload = this.imagePreview; // Dùng link ảnh đã upload
+    formValue.mediaUpload = this.imagePreview;
 
-    this.roomService.addRoom(formValue, this.userId).subscribe(
+    this.roomService.addRoom(formValue, this.userId, this.password).subscribe(
       (res: any) => {
         console.log('Response:', res);
         if (res.id) {
@@ -77,7 +88,7 @@ export class ModalAddEditRoomComponent {
       this.imagePreview || this.roomToEdit?.medias?.[0]?.url;
 
     this.roomService
-      .updateRoom(this.roomToEdit.id, formValue, this.userId)
+      .updateRoom(this.roomToEdit.id, formValue, this.userId, this.password)
       .subscribe(
         (res: any) => {
           console.log('Response:', res);
@@ -112,5 +123,9 @@ export class ModalAddEditRoomComponent {
         }
       );
     }
+  }
+  onPasswordInput() {
+    const trimmed = (this.password || '').trim();
+    this.showPasswordError = !this.isPublic && !trimmed;
   }
 }
