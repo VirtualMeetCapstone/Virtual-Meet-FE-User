@@ -103,6 +103,13 @@ export class HomePageRoomComponent implements OnInit {
     this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
   }
   openModalEnterPassword(roomId: any) {
+    if (!this.user) {
+      this.messages.push('Need to login before join room !!!');
+      setTimeout(() => {
+        this.messages = [];
+      }, 3000);
+      return;
+    }
     this.roomPrivateToOpenModalEnterPass = roomId;
 
     this.showModalEnterPassword = true;

@@ -158,7 +158,7 @@
         <button
           type="button"
           class="btn btn-primary pl-3 pr-3"
-          [disabled]="FormAdd.invalid || (!isPublic && !password?.trim())"
+          [disabled]="FormAdd.invalid || (!isPublic && !password.trim())"
           (click)="onAddRoom()"
           *ngIf="roomToEdit == null"
         >
@@ -167,7 +167,7 @@
         <button
           type="button"
           class="btn btn-primary pl-3 pr-3"
-          [disabled]="FormAdd.invalid || (!isPublic && !password?.trim())"
+          [disabled]="FormAdd.invalid || (!isPublic && !password.trim())"
           (click)="onUpdateRoom()"
           *ngIf="roomToEdit != null"
         >
