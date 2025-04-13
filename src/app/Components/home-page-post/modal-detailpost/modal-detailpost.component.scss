@@ -214,3 +214,69 @@
   border-radius: 50%;
   margin-right: 10px;
 }
+
+.post-actions .likes,
+.post-actions .comments,
+.post-actions .share {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+.post-actions .likes i,
+.post-actions .comments i,
+.post-actions .share i {
+  margin-right: 5px;
+}
+
+.likes {
+  position: relative;
+}
+
+.reaction-panel {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background-color: #333;
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.reaction-panel button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.reaction-panel button:hover {
+  transform: scale(1.2);
+}
+
+.reaction-panel i {
+  font-size: 20px;
+  color: #fff;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.liked {
+  color: #007bff;
+}

@@ -56,9 +56,7 @@
         </div>
       </div>
       <div class="post-content">
-        <p>
-          {{ post.content }}
-        </p>
+        <p>{{ post.content }}</p>
         <div class="post-images">
           <ng-container *ngIf="post.medias.length === 1">
             <img class="single" [src]="post.medias[0].url" alt="Error" />
@@ -125,17 +123,45 @@
         </div>
       </div>
       <div class="post-actions">
-        <div class="likes">
-          <i class="fas fa-thumbs-up"> </i>
-          140 Likes
+        <div class="likes" (click)="toggleReactionPanel(post.id, $event)">
+          <i
+            class="fas fa-thumbs-up"
+            [ngClass]="{ liked: post.currentUserReaction === 'like' }"
+          ></i>
+          {{ post.likeCount || 0 }} Likes
+          <div
+            class="reaction-panel"
+            *ngIf="showReactionPanelForPostId === post.id"
+          >
+            <button (click)="setReaction(post.id, 'like', $event)" title="Like">
+              <i class="fas fa-thumbs-up"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'haha', $event)" title="Haha">
+              <i class="fas fa-laugh"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'wow', $event)" title="Wow">
+              <i class="fas fa-surprise"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'sad', $event)" title="Sad">
+              <i class="fas fa-sad-tear"></i>
+            </button>
+            <button
+              (click)="setReaction(post.id, 'angry', $event)"
+              title="Angry"
+            >
+              <i class="fas fa-angry"></i>
+            </button>
+          </div>
         </div>
         <div class="comments">
-          <i class="fas fa-comment"> </i>
+          <i class="fas fa-comment"></i>
           20 Comments
+          <!-- Replace with dynamic data if available -->
         </div>
         <div class="share">
-          <i class="fas fa-share"> </i>
+          <i class="fas fa-share"></i>
           99 Shares
+          <!-- Replace with dynamic data if available -->
         </div>
       </div>
     </div>
@@ -281,6 +307,7 @@
 <app-modal-detailpost
   *ngIf="isShowModalDetailPost"
   (closeModal)="closeModalDetailPost()"
+  (postUpdated)="updatePostInList($event)"
   [post]="post"
   [user]="user"
   [userId]="userId"

@@ -1,56 +1,26 @@
+// postservice.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
-import { Observable, tap } from 'rxjs';
 import { AuthService } from '../auth-service/auth.service';
-import { NotificationServiceService } from '../notification-service/notification-service.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PostserviceService {
-  url = `${AppConstants.API_BASE_URL_HTTPS}/posts`;
+  private url = `${AppConstants.API_BASE_URL_HTTPS}/posts`;
+  private reactUrl = `${AppConstants.API_BASE_URL_HTTPS}/posts/react`;
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      Accept: 'application/json',
-    }),
-  };
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private notificationService: NotificationServiceService
-  ) {}
-  userId = this.authService.getUser()?.id as string;
-  getPosts(top: number, skip: number): any {
-    const timestamp = Date.now();
-    return this.http.get<any>(
-      `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true&t=${timestamp}`
-    );
-  }
-  getPostsNotNeedTotalCount(top: number, skip: number): any {
-    const timestamp = Date.now();
-    return this.http.get<any>(
-      `${this.url}?Top=${top}&Skip=${skip}&t=${timestamp}`
-    );
-  }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getPostById(id: string): any {
-    return this.http.get<any>(this.url + '/' + id);
-  }
-  getComment(idPost: string): any {
-    return this.http.get<any>(
-      this.url + '/' + idPost + '/comments?OrderType=0&OrderBy=createTime'
-    );
-  }
   createPost(
     content: string,
     privacy: number,
     reactionType?: number,
     postMedia?: File[]
   ): Observable<any> {
-    const url = `${AppConstants.API_BASE_URL_HTTPS}/posts`;
     const formData = new FormData();
-    formData.append('userId', this.userId);
     formData.append('content', content);
     formData.append('privacy', privacy.toString());
 
@@ -58,50 +28,69 @@ export class PostserviceService {
       formData.append('reactionType', reactionType.toString());
     }
 
-    if (postMedia) {
+    if (postMedia && postMedia.length > 0) {
       postMedia.forEach((file, index) => {
-        formData.append(`mediaUploads`, file);
-        console.log(file);
+        formData.append(`mediaUploads[${index}]`, file);
       });
     }
 
-    return this.http.post<any>(url, formData).pipe(
-      tap(() => {
-        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
-      })
+    return this.http.post<any>(this.url, formData);
+  }
+
+  getPosts(top: number, skip: number): Observable<any> {
+    const timestamp = Date.now();
+    return this.http.get<any>(
+      `${this.url}?Top=${top}&Skip=${skip}&needtotalcount=true&t=${timestamp}`
     );
   }
-  commentPost(idUser: any, idPost: string, content: string) {
-    const body = {
-      authorId: idUser,
-      content: content,
-    };
 
-    return this.http
-      .post<any>(this.url + '/' + idPost + '/comments', body, {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .pipe(
-        tap(() => {
-          this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
-        })
-      );
+  getPostsNotNeedTotalCount(top: number, skip: number): Observable<any> {
+    const timestamp = Date.now();
+    return this.http.get<any>(
+      `${this.url}?Top=${top}&Skip=${skip}&t=${timestamp}`
+    );
   }
-  replyComment(idUser: any, idPost: string, parentId: string, content: string) {
-    const body = {
-      authorId: idUser,
-      parentId: parentId,
-      content: content,
-    };
 
-    return this.http
-      .post<any>(this.url + '/' + idPost + '/comments', body, {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .pipe(
-        tap(() => {
-          this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
-        })
-      );
+  // Assuming getPostById exists, as it’s used in your component
+  getPostById(postId: string): Observable<any> {
+    return this.http.get<any>(`${this.url}/${postId}`);
+  }
+
+  setReaction(postId: string, reactionType: number): Observable<any> {
+    const userId = this.authService.getUser()?.id;
+    const body = { postId, userId, type: reactionType };
+    return this.http.post<any>(this.reactUrl, body, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    });
+  }
+
+  getUserReactions(postId: string): Observable<any> {
+    return this.http.get<any>(`${this.url}/users-reaction/${postId}`);
+  }
+
+  getComment(postId: string): Observable<any> {
+    return this.http.get<any>(`${this.url}/${postId}/comments`);
+  }
+
+  commentPost(
+    userId: string,
+    postId: string,
+    content: string
+  ): Observable<any> {
+    const body = { authorId: userId, content };
+    return this.http.post<any>(`${this.url}/${postId}/comments`, body, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    });
+  }
+  replyComment(
+    userId: string,
+    postId: string,
+    parentId: string,
+    content: string
+  ): Observable<any> {
+    const body = { authorId: userId, parentId, content };
+    return this.http.post<any>(`${this.url}/${postId}/comments`, body, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    });
   }
 }

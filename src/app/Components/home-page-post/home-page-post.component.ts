@@ -15,7 +15,7 @@ export class HomePagePostComponent implements OnInit {
   @Output() openPostModal = new EventEmitter<string>();
 
   listPost: any[] = [];
-  totalPost: number | null = null; // Để kiểm tra khi chưa load xong
+  totalPost: number | null = null;
   pageSize: number = 9;
   skip: number = 0;
   loading: boolean = false;
@@ -26,7 +26,7 @@ export class HomePagePostComponent implements OnInit {
   isShowModalDetailPost = false;
   post: any = null;
   isLoading: boolean = false;
-  id: string = '';
+  showReactionPanelForPostId: string | null = null;
 
   constructor(
     private postService: PostserviceService,
@@ -44,12 +44,10 @@ export class HomePagePostComponent implements OnInit {
         this.authService
           .getFullInformationOfUseById(this.user.id)
           .subscribe((user: any) => {
-            console.log('userfull', user);
             this.user = user;
           });
       }
     });
-
     this.loadMorePosts();
     this.notifyService.onOpenPostModal().subscribe((postId) => {
       this.openModalDetailPost(postId);
@@ -63,27 +61,106 @@ export class HomePagePostComponent implements OnInit {
     ) {
       return;
     }
-
     this.loading = true;
-
     const apiCall =
       this.totalPost === null
         ? this.postService.getPosts(this.pageSize, this.skip)
         : this.postService.getPostsNotNeedTotalCount(this.pageSize, this.skip);
     apiCall.subscribe((data: any) => {
-      this.listPost = [...this.listPost, ...data.data];
-
+      const newPosts = data.data.map((post: any) => ({
+        ...post,
+        topReactions: [],
+        totalReactions: 0,
+        currentUserReaction: null,
+      }));
+      this.listPost = [...this.listPost, ...newPosts];
       if (this.totalPost === null) {
         this.totalPost = data.totalCount;
       }
-
       this.skip += this.pageSize;
       this.loading = false;
+      this.updateAllPostReactions();
     });
   }
 
+  toggleReactionPanel(postId: string, event: Event) {
+    event.stopPropagation();
+    this.showReactionPanelForPostId =
+      this.showReactionPanelForPostId === postId ? null : postId;
+  }
+
+  setReaction(postId: string, reactionType: string, event: Event) {
+    event.stopPropagation();
+    const reactionTypeNumber = this.mapReactionTypeToNumber(reactionType);
+    this.postService.setReaction(postId, reactionTypeNumber).subscribe(() => {
+      this.updatePostReactions(postId);
+    });
+    this.showReactionPanelForPostId = null;
+  }
+
+  updatePostReactions(postId: string) {
+    this.postService.getUserReactions(postId).subscribe((reactions: any) => {
+      const post = this.listPost.find((p) => p.id === postId);
+      if (post) {
+        post.likeCount = reactions.data ? reactions.data.length : 0;
+        const userReaction = reactions.data.find(
+          (r: any) => r.id === this.userId
+        );
+        post.currentUserReaction = userReaction
+          ? this.mapReactionNumberToType(userReaction.reactionType)
+          : null;
+        this.listPost = [...this.listPost];
+      }
+    });
+  }
+
+  updatePostInList(updatedData: any) {
+    const post = this.listPost.find((p) => p.id === updatedData.id);
+    if (post) {
+      post.likeCount = updatedData.likeCount;
+      post.currentUserReaction = updatedData.currentUserReaction;
+      this.listPost = [...this.listPost];
+    }
+  }
+
+  getReactionIcon(type: string): string {
+    const icons: { [key: string]: string } = {
+      like: 'fas fa-thumbs-up',
+      haha: 'fas fa-laugh',
+      wow: 'fas fa-surprise',
+      sad: 'fas fa-sad-tear',
+      angry: 'fas fa-angry',
+    };
+    return icons[type] || 'fas fa-thumbs-up';
+  }
+
+  updateAllPostReactions() {
+    this.listPost.forEach((post) => this.updatePostReactions(post.id));
+  }
+
+  mapReactionTypeToNumber(type: string): number {
+    const map: { [key: string]: number } = {
+      like: 0,
+      haha: 1,
+      wow: 2,
+      sad: 3,
+      angry: 4,
+    };
+    return map[type] || 0;
+  }
+
+  mapReactionNumberToType(number: number): string {
+    const map: { [key: number]: string } = {
+      0: 'like',
+      1: 'haha',
+      2: 'wow',
+      3: 'sad',
+      4: 'angry',
+    };
+    return map[number] || 'like';
+  }
+
   openModalDetailPost(postId: string) {
-    console.log('user when openmodal', this.user);
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe((data: any) => {
       this.post = data;
@@ -96,28 +173,31 @@ export class HomePagePostComponent implements OnInit {
     this.isShowModalDetailPost = false;
   }
 
-  createPost() {}
-
-  createFeeling() {}
-
-  tagFriend() {}
-
   openCreatePost() {
     const dialogRef = this.dialog.open(CreatePostModalComponent, {
       width: '500px',
-      data: {
-        id: this.userId,
-      },
+      data: { id: this.userId },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('New story added:', result);
+        console.log('New post added:', result);
       }
     });
   }
 
+  createFeeling() {}
+  tagFriend() {}
   getSafeUrl(url: any) {
-    return this.externalService.getSafeUrl(url); // Gọi từ service
+    return this.externalService.getSafeUrl(url);
+  }
+
+  // Thêm phương thức để xác định class cho post-images
+  getMediaClass(medias: any[]): string {
+    const count = medias.length;
+    if (count === 1) return 'one';
+    if (count === 2) return 'two';
+    if (count === 3) return 'three';
+    if (count >= 4) return 'four';
+    return '';
   }
 }

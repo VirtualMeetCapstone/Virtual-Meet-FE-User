@@ -1,17 +1,23 @@
-import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {HttpClient} from "@angular/common/http";
-import {PostserviceService} from "../../services/post-service/postservice.service";
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
+import { PostserviceService } from '../../services/post-service/postservice.service';
 
 interface MediaPreview {
   type: 'image' | 'video';
   url: string | ArrayBuffer | null;
 }
 
+interface PostResponse {
+  id: string;
+  content: string;
+  // Add other fields as needed
+}
+
 @Component({
   selector: 'app-create-post-modal',
   templateUrl: './create-post-modal.component.html',
-  styleUrl: './create-post-modal.component.scss'
+  styleUrl: './create-post-modal.component.scss',
 })
 export class CreatePostModalComponent {
   id: string;
@@ -24,7 +30,7 @@ export class CreatePostModalComponent {
 
   constructor(
     public dialogRef: MatDialogRef<CreatePostModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { id: string, username: string },
+    @Inject(MAT_DIALOG_DATA) public data: { id: string; username: string },
     private http: HttpClient,
     private postService: PostserviceService
   ) {
@@ -47,7 +53,7 @@ export class CreatePostModalComponent {
       reader.onload = () => {
         this.mediaPreviews.push({
           type: file.type.startsWith('video') ? 'video' : 'image',
-          url: reader.result
+          url: reader.result,
         });
       };
       reader.readAsDataURL(file);
@@ -68,23 +74,22 @@ export class CreatePostModalComponent {
     }
 
     this.isLoading = true;
-    this.postService.createPost(
-      this.newContent,
-      this.privacy,
-      undefined,
-      this.selectedFiles
-    ).subscribe({
-      next: (response) => {
-        console.log('Bài viết đã được tạo:', response);
-        this.dialogRef.close(response);
-        this.isLoading = false;
-        window.location.reload();
-      },
-      error: (error) => {
-        console.error('Lỗi khi tạo bài viết:', error);
-        this.isLoading = false;
-      }
-    });
+    this.postService
+      .createPost(this.newContent, this.privacy, undefined, this.selectedFiles)
+      .subscribe({
+        next: (response: any) => {
+          // Explicitly typed as 'any'
+          console.log('Bài viết đã được tạo:', response);
+          this.dialogRef.close(response);
+          this.isLoading = false;
+          window.location.reload();
+        },
+        error: (error: any) => {
+          // Explicitly typed as 'any'
+          console.error('Lỗi khi tạo bài viết:', error);
+          this.isLoading = false;
+        },
+      });
   }
 
   onCancel() {
