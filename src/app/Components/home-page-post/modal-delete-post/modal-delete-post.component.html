@@ -1,0 +1,33 @@
+<div class="modal">
+  <div class="modal-content">
+    <div class="title">
+      <i
+        class="fa-solid fa-x iconX d-flex justify-content-end"
+        (click)="onCloseModal()"
+        style="cursor: pointer"
+      ></i>
+
+      <h3 class="login-title" style="text-align: center">
+        Do you want to delete the post "
+        <span style="font-weight: bold">{{ post.content }}</span
+        >"
+      </h3>
+      <div class="d-flex" style="justify-content: space-evenly">
+        <button
+          type="button"
+          class="btn btn-primary pl-3 pr-3"
+          (click)="onDeletePost()"
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger pl-3 pr-3"
+          (click)="onCloseModal()"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

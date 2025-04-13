@@ -19,14 +19,27 @@ export class HomePagePostComponent implements OnInit {
   pageSize: number = 9;
   skip: number = 0;
   loading: boolean = false;
+  showModalDeletePost: boolean = false;
 
   userId: string = '';
   user: any = null;
-
+  postToDelete: string = '';
   isShowModalDetailPost = false;
   post: any = null;
   isLoading: boolean = false;
   showReactionPanelForPostId: string | null = null;
+  openedMenuPostId: number | null = null;
+
+  toggleMenu(postId: number, event: MouseEvent) {
+    event.stopPropagation(); // tránh trigger openModalDetailPost
+    this.openedMenuPostId = this.openedMenuPostId === postId ? null : postId;
+  }
+
+  reportPost(postId: number) {
+    // Xử lý report
+    console.log('Report post', postId);
+    this.openedMenuPostId = null;
+  }
 
   constructor(
     private postService: PostserviceService,
@@ -53,7 +66,20 @@ export class HomePagePostComponent implements OnInit {
       this.openModalDetailPost(postId);
     });
   }
-
+  openModalDeletePost(post: any) {
+    this.postToDelete = post;
+    this.showModalDeletePost = true;
+  }
+  closeModalDeletePost(event: any) {
+    if (!event) {
+      this.showModalDeletePost = false;
+    } else {
+      this.showModalDeletePost = false;
+      this.skip = 0;
+      this.listPost = [];
+      this.loadMorePosts();
+    }
+  }
   loadMorePosts() {
     if (
       this.loading ||

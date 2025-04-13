@@ -93,4 +93,7 @@ export class PostserviceService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     });
   }
+  deletePost(id: string): any {
+    return this.http.delete<any>(this.url + '/' + id);
+  }
 }

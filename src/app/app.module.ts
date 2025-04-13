@@ -80,6 +80,7 @@ import { ModalDeleteAccountComponent } from './Components/my-profile/modal-delet
 import { RoomVideoControlComponent } from './Components/room-component/room-video-control/room-video-control.component';
 import { UpdateVipComponent } from './Components/upgrade-vip/update-vip/update-vip.component';
 import { ModalEnterpassforroomprivateComponent } from './Components/home-page-room/modal-enterpassforroomprivate/modal-enterpassforroomprivate.component';
+import { ModalDeletePostComponent } from './Components/home-page-post/modal-delete-post/modal-delete-post.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -130,6 +131,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     RoomVideoControlComponent,
     UpdateVipComponent,
     ModalEnterpassforroomprivateComponent,
+    ModalDeletePostComponent,
   ],
   imports: [
     BrowserModule,

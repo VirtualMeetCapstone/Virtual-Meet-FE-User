@@ -54,6 +54,18 @@
           <div class="name">{{ post.user.name }}</div>
           <div class="time">{{ post.createTime }}</div>
         </div>
+        <div class="post-menu">
+          <button (click)="toggleMenu(post.id, $event)">...</button>
+          <ul class="dropdown" *ngIf="openedMenuPostId === post.id">
+            <li
+              (click)="openModalDeletePost(post); $event.stopPropagation()"
+              *ngIf="post.userId === userId"
+            >
+              Delete post
+            </li>
+            <li (click)="reportPost(post.id)">Report post</li>
+          </ul>
+        </div>
       </div>
       <div class="post-content">
         <p>{{ post.content }}</p>
@@ -315,3 +327,8 @@
 <div *ngIf="isLoading == true" class="fullscreen-spinner text-center">
   <app-loading-component></app-loading-component>
 </div>
+<app-modal-delete-post
+  (closeModal)="closeModalDeletePost($event)"
+  [post]="postToDelete"
+  *ngIf="showModalDeletePost"
+></app-modal-delete-post>

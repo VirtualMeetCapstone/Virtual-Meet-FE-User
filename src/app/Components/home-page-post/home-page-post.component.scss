@@ -412,3 +412,37 @@ app-story-list {
     transform: translateY(0);
   }
 }
+.post-menu {
+  margin-left: auto;
+  position: relative;
+  cỏlor: black;
+}
+
+.post-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.post-menu .dropdown {
+  position: absolute;
+  right: 0;
+  top: 25px;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 10;
+  list-style: none;
+  padding: 5px 0;
+  width: 150px;
+}
+
+.post-menu .dropdown li {
+  padding: 5px 15px;
+  cursor: pointer;
+  color: black;
+  text-align: center;
+}
+
+.post-menu .dropdown li:hover {
+  background-color: #eee;
+}
