@@ -158,6 +158,11 @@ export class RoomComponentComponent implements OnInit {
 
     try {
       await this.roomHubService.startConnection();
+      this.roomHubService.receiveJoinFailed((message: string) => {
+        console.log('Join failed:', message);
+        window.confirm(message);
+      });
+
       this.connectionStatus = 'Connected';
 
       this.roomHubService.onRoomStateReceived((state) => {
