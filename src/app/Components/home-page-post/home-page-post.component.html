@@ -50,9 +50,17 @@
           height="40"
           src="{{ post.user.picture.url }}"
           width="40"
+          (click)="goToProfile(post.userId); $event.stopPropagation()"
+          style="cursor: pointer"
         />
         <div>
-          <div class="name">{{ post.user.name }}</div>
+          <div
+            class="name"
+            (click)="goToProfile(post.userId); $event.stopPropagation()"
+            style="cursor: pointer"
+          >
+            {{ post.user.name }}
+          </div>
           <div class="time">{{ post.createTime }}</div>
         </div>
         <div class="post-menu">

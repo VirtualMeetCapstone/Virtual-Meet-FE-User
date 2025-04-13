@@ -101,6 +101,10 @@ body {
   font-weight: 500;
 }
 
+.post .post-header .name:hover {
+  text-decoration: underline;
+}
+
 .post .post-header .time {
   color: #888;
   font-size: 12px;

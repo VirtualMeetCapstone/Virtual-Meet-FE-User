@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { ExternalServiceService } from '../../services/external-service/external-service.service';
 import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
 import { ReactionSummaryComponent } from '../reaction-summary/reaction-summary.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page-post',
@@ -48,7 +49,8 @@ export class HomePagePostComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     private externalService: ExternalServiceService,
-    private notifyService: NotificationServiceService
+    private notifyService: NotificationServiceService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -325,5 +327,9 @@ export class HomePagePostComponent implements OnInit {
     videos.forEach((video) => {
       video.classList.remove('video-disabled'); // Xóa lớp vô hiệu hóa
     });
+  }
+
+  goToProfile(userId: string) {
+    this.router.navigate(['/my-profile', userId]); // Điều hướng tới /my-profile/{userId}
   }
 }
