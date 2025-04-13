@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reaction-summary',
@@ -11,7 +12,8 @@ export class ReactionSummaryComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private dialogRef: MatDialogRef<ReactionSummaryComponent>
+    private dialogRef: MatDialogRef<ReactionSummaryComponent>,
+    private router: Router
   ) {
     if (this.data && this.data.reactionCounts) {
       // Assert reactionCounts as an object with string keys and number values
@@ -33,6 +35,11 @@ export class ReactionSummaryComponent {
       5: 'fas fa-angry', // Angry
     };
     return icons[reactionType] || 'fas fa-thumbs-up'; // Default to Like if undefined
+  }
+
+  goToProfile(userId: string) {
+    this.router.navigate(['/my-profile', userId]); // Điều hướng tới /my-profile/{uuid}
+    this.dialogRef.close(); // Đóng dialog sau khi điều hướng
   }
 
   closeDialog() {

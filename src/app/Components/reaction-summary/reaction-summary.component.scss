@@ -32,6 +32,7 @@
     margin-bottom: 15px; /* Tăng khoảng cách giữa các mục */
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
     transition: background-color 0.2s ease; /* Hiệu ứng mượt mà */
 
     &:hover {
@@ -49,6 +50,10 @@
     span {
       flex: 1; /* Tên người dùng chiếm không gian còn lại */
       font-size: 16px;
+    }
+
+    span:hover {
+      text-decoration: underline;
     }
 
     i {
