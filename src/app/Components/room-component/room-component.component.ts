@@ -142,6 +142,10 @@ export class RoomComponentComponent implements OnInit {
 
       this.isReceiveSubtitleRegistered = true;
     }
+    this.route.queryParams.subscribe((params) => {
+      this.roomPassword = params['password'];
+      console.log('pass', this.roomPassword); // In ra mật khẩu từ queryParams
+    });
 
     this.route.paramMap.subscribe((params) => {
       const roomId = params.get('roomId');

@@ -24,6 +24,7 @@ export class HomePageRoomComponent implements OnInit {
   skip = 0;
   showModalDeleteRoom = false;
   showModalAddEditRoom = false;
+  showModalEnterPassword = false;
   roomToEdit = null;
   userList: string[] = [];
 
@@ -99,6 +100,12 @@ export class HomePageRoomComponent implements OnInit {
     }
     const timestamp = Date.now();
     this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+  }
+  openModalEnterPassword(roomId: any) {
+    this.showModalEnterPassword = true;
+  }
+  closeModalEnterPassword(event: any) {
+    this.showModalEnterPassword = false;
   }
 
   openModalDeleteRoom(room: any) {

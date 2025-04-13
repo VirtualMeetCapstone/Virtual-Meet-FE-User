@@ -6,7 +6,7 @@
 >
   {{ message }}
 </div>
-
+<button (click)="openModalEnterPassword('123')">Open</button>
 <div>
   <div class="row">
     <div class="col-12 text-center p-3">
@@ -145,3 +145,7 @@
 <button class="btn btn-primary scroll-to-top" (click)="scrollToTop()">
   <i class="fas fa-arrow-up"></i>
 </button>
+<app-modal-enterpassforroomprivate
+  *ngIf="showModalEnterPassword"
+  (closeModal)="closeModalEnterPassword($event)"
+></app-modal-enterpassforroomprivate>

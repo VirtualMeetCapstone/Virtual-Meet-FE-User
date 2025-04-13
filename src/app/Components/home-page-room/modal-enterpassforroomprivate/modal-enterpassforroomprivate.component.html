@@ -1,0 +1,43 @@
+<div class="modal">
+  <div class="modal-content">
+    <div class="title">
+      <i
+        class="fa-solid fa-x iconX d-flex justify-content-end"
+        (click)="onCloseModal()"
+        style="cursor: pointer"
+      ></i>
+
+      <h3 class="login-title" style="text-align: center">
+        Enter Room Password
+      </h3>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        placeholder="Enter password"
+        [(ngModel)]="password"
+        #passwordField="ngModel"
+      />
+      <div class="text-danger" *ngIf="!password && passwordField.dirty">
+        Password is required.
+      </div>
+      <div class="d-flex" style="justify-content: space-evenly">
+        <button
+          type="button"
+          class="btn btn-primary pl-3 pr-3"
+          [disabled]="!password"
+          (click)="joinRoom()"
+        >
+          Join
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger pl-3 pr-3"
+          (click)="onCloseModal()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
