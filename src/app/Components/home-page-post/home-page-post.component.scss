@@ -1,3 +1,4 @@
+/* Thiết lập cơ bản cho body */
 body {
   font-family: "Roboto", sans-serif;
   background-color: #000;
@@ -5,35 +6,35 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Container chính */
 .container-fluid {
   width: 90%;
   display: flex;
   justify-content: center;
   padding: 20px;
 }
-.main-content,
-.sidebar {
+
+/* Nội dung chính và thanh bên */
+.main-content {
+  flex: 2;
+  padding: 20px;
   background-color: #1c1c1c;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   margin: 10px;
 }
-.main-content {
-  flex: 2;
-  padding: 20px;
-}
+
 .sidebar {
   flex: 1;
   padding: 20px;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin: 10px;
 }
-.create-post,
-.post,
-.stories,
-.events,
-.upcoming-birthday,
-.suggested-pages {
-  margin-bottom: 20px;
-}
+
+/* Phần tạo bài post */
 .create-post textarea {
   width: 100%;
   border: none;
@@ -43,11 +44,13 @@ body {
   color: #fff;
   resize: none;
 }
+
 .create-post .actions {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 }
+
 .create-post .actions button {
   background-color: #333;
   border: none;
@@ -58,47 +61,69 @@ body {
   align-items: center;
   color: #fff;
 }
+
 .create-post .actions button i {
   margin-right: 5px;
 }
+
 .button-create-post {
   background-color: #007bff !important;
 }
+
+/* Bài post */
 .post {
   padding: 20px;
   border: 1px solid #444;
   border-radius: 8px;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
+
+.post:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 .post .post-header {
   display: flex;
   align-items: center;
 }
+
 .post .post-header img {
   border-radius: 50%;
   width: 40px;
   height: 40px;
   margin-right: 10px;
 }
+
 .post .post-header .name {
   font-weight: 500;
 }
+
 .post .post-header .time {
   color: #888;
   font-size: 12px;
 }
+
 .post .post-content {
   margin-top: 10px;
 }
-.post .post-content img {
+
+.post .post-content img,
+.post .post-content video {
   width: 100%;
   border-radius: 8px;
   margin-top: 10px;
+  object-fit: cover;
 }
+
 .post .post-actions {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 }
+
 .post .post-actions .likes,
 .post .post-actions .comments,
 .post .post-actions .share {
@@ -106,52 +131,60 @@ body {
   align-items: center;
   cursor: pointer;
 }
+
 .post .post-actions .likes i,
 .post .post-actions .comments i,
 .post .post-actions .share i {
   margin-right: 5px;
 }
-.post .comments {
-  margin-top: 10px;
-}
+
+/* Bình luận trong bài post */
 .post .comments .comment {
   display: flex;
   align-items: center;
   margin-top: 10px;
 }
+
 .post .comments .comment img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
   margin-right: 10px;
 }
+
 .post .comments .comment .comment-content {
   background-color: #333;
   padding: 10px;
   border-radius: 8px;
   flex: 1;
 }
+
 .post .comments .comment .comment-content .name {
   font-weight: 500;
 }
+
 .post .comments .comment .comment-content .time {
   color: #888;
   font-size: 12px;
 }
+
 .post .comments .comment .comment-content .text {
   margin-top: 5px;
 }
+
 .post .add-comment {
   display: flex;
   align-items: center;
   margin-top: 10px;
 }
+
 .post .add-comment img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
   margin-right: 10px;
 }
+
 .post .add-comment input {
   flex: 1;
   border: none;
@@ -160,88 +193,99 @@ body {
   background-color: #333;
   color: #fff;
 }
-.stories,
-.events,
-.upcoming-birthday,
-.suggested-pages {
-  padding: 20px;
-  border: 1px solid #444;
-  border-radius: 8px;
-}
-.stories .story,
-.events .event,
-.upcoming-birthday .birthday,
-.suggested-pages .page {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-.stories .story img,
-.events .event img,
-.upcoming-birthday .birthday img,
-.suggested-pages .page img {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-.stories .story .name,
-.events .event .name,
-.upcoming-birthday .birthday .name,
-.suggested-pages .page .name {
-  font-weight: 500;
-}
-.stories .story .time,
-.events .event .time,
-.upcoming-birthday .birthday .time,
-.suggested-pages .page .time {
-  color: #888;
-  font-size: 12px;
-}
-.stories .see-all,
-.events .see-all,
-.upcoming-birthday .see-all,
-.suggested-pages .see-all {
-  text-align: center;
-  margin-top: 10px;
-}
-.stories .see-all button,
-.events .see-all button,
-.upcoming-birthday .see-all button,
-.suggested-pages .see-all button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+
+/* Bố cục media trong bài post */
 .post-images {
   display: grid;
   gap: 5px;
   width: 100%;
+  position: relative;
 }
 
-.post-images:has(img:nth-child(1):nth-last-child(1)) {
+/* Trường hợp 1 ảnh */
+.post-images.one {
   grid-template-columns: 1fr;
 }
 
-.post-images:has(img:nth-child(2):nth-last-child(1)) {
+.post-images.one .media-item {
+  height: 400px;
+}
+
+/* Trường hợp 2 ảnh */
+.post-images.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.post-images.two .media-item {
+  height: 200px;
+}
+
+/* Trường hợp 3 ảnh trở lên */
+.post-images.three-plus {
+  grid-template-columns: 1fr 1fr; /* Bên trái 1 phần, bên phải 1 phần */
+  grid-template-rows: repeat(2, 1fr); /* 3 hàng cho ảnh bên phải */
+}
+
+/* Overlay cho ảnh thứ 4 trở đi */
+.post-images.three-plus .media-item:nth-child(4) {
+  position: relative;
+}
+
+.post-images.three-plus .media-item:nth-child(4)::after {
+  content: "+ " attr(data-more); /* Hiển thị số ảnh còn lại */
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.post-images:has(.media-item:nth-child(1):nth-last-child(1)) {
+  grid-template-columns: 1fr;
+}
+
+.post-images:has(.media-item:nth-child(2):nth-last-child(1)) {
   grid-template-columns: 1fr 1fr;
 }
 
-.post-images:has(img:nth-child(3):nth-last-child(1)) {
+.post-images:has(.media-item:nth-child(3):nth-last-child(1)) {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
 }
 
-.post-images:has(img:nth-child(3):nth-last-child(1)) img:nth-child(3) {
+.post-images:has(.media-item:nth-child(3):nth-last-child(1))
+  .media-item:nth-child(3) {
   grid-column: span 2;
 }
-.scroll-container {
-  height: 30vh; /* hoặc phù hợp */
-  overflow: auto;
+
+.post-images .media-item {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
 }
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.post-images video.media-item {
+  height: 300px;
+}
+
 .more-images {
   position: relative;
   display: inline-block;
@@ -264,25 +308,111 @@ body {
   border-radius: 8px;
 }
 
-.post:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+/* Sidebar */
+.stories,
+.events,
+.upcoming-birthday,
+.suggested-pages {
+  padding: 20px;
+  border: 1px solid #444;
+  border-radius: 8px;
 }
-.post {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+
+.stories .story,
+.events .event,
+.upcoming-birthday .birthday,
+.suggested-pages .page {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
 }
-.nav-button {
-  background-color: transparent;
+
+.stories .story img,
+.events .event img,
+.upcoming-birthday .birthday img,
+.suggested-pages .page img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.stories .story .name,
+.events .event .name,
+.upcoming-birthday .birthday .name,
+.suggested-pages .page .name {
+  font-weight: 500;
+}
+
+.stories .story .time,
+.events .event .time,
+.upcoming-birthday .birthday .time,
+.suggested-pages .page .time {
+  color: #888;
+  font-size: 12px;
+}
+
+.stories .see-all,
+.events .see-all,
+.upcoming-birthday .see-all,
+.suggested-pages .see-all {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.stories .see-all button,
+.events .see-all button,
+.upcoming-birthday .see-all button,
+.suggested-pages .see-all button {
+  background-color: #007bff;
+  color: #fff;
   border: none;
-  color: white;
-  font-size: 24px;
+  padding: 10px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.nav-button:focus {
-  outline: none;
+/* Reaction panel */
+.reaction-panel {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background-color: #333;
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
 }
+
+.reaction-panel button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.reaction-panel button:hover {
+  transform: scale(1.2);
+}
+
+.reaction-panel i {
+  font-size: 20px;
+  color: #fff;
+}
+
+.likes {
+  position: relative;
+}
+
+.liked {
+  color: #007bff;
+}
+
+/* Fullscreen spinner */
 .fullscreen-spinner {
   position: fixed;
   top: 0;
@@ -297,14 +427,60 @@ body {
   color: red;
 }
 
+/* Hỗ trợ video và ảnh */
+video.full {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+video.half {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.grid-2x2 img,
+.grid-2x2 video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.grid-3 img,
+.grid-3 video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Các thành phần khác */
+.nav-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.nav-button:focus {
+  outline: none;
+}
+
 .user-infor-detail {
   display: flex;
 }
+
 .user-name {
   margin-left: 10px;
   margin-top: 5px;
   font-weight: 500;
 }
+
 .user-info {
   display: flex;
   flex-direction: column;
@@ -330,6 +506,7 @@ app-story-list {
   width: 100%;
   max-width: 450px;
 }
+
 .row {
   display: flex;
 }
@@ -339,9 +516,10 @@ app-story-list {
   height: auto;
   object-fit: cover;
 }
+
 .full {
   width: 100%;
-  height: 300px; /* Làm ảnh lớn hơn */
+  height: 300px;
   object-fit: cover;
   margin-top: 5px;
 }
@@ -353,55 +531,13 @@ app-story-list {
   gap: 5px;
 }
 
-.grid-2x2 img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-.half {
-  width: 50%;
-  object-fit: cover;
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
 }
 
-.reaction-panel {
-  position: absolute;
-  top: -50px; // Hiển thị phía trên nút Like
-  left: 0;
-  background-color: #333;
-  border-radius: 20px;
-  padding: 5px 10px;
-  display: flex;
-  gap: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 10;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-.reaction-panel button {
-  background: none;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.reaction-panel button:hover {
-  transform: scale(1.2); // Phóng to icon khi hover
-}
-
-.reaction-panel i {
-  font-size: 20px;
-  color: #fff;
-}
-
-.likes {
-  position: relative; // Để reaction-panel định vị tương đối với nút Like
-}
-
-.liked {
-  color: #007bff; // Màu xanh khi đã thích
-}
-
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

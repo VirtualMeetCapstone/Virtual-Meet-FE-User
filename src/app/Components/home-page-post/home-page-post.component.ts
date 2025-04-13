@@ -13,7 +13,7 @@ import { NotificationServiceService } from '../../services/notification-service/
 })
 export class HomePagePostComponent implements OnInit {
   @Output() openPostModal = new EventEmitter<string>();
-
+  comments: any = [];
   listPost: any[] = [];
   totalPost: number | null = null;
   pageSize: number = 9;
@@ -192,12 +192,10 @@ export class HomePagePostComponent implements OnInit {
   }
 
   // Thêm phương thức để xác định class cho post-images
-  getMediaClass(medias: any[]): string {
-    const count = medias.length;
+  getMediaClass(count: number): string {
     if (count === 1) return 'one';
     if (count === 2) return 'two';
-    if (count === 3) return 'three';
-    if (count >= 4) return 'four';
+    if (count >= 3) return 'three-plus';
     return '';
   }
 }

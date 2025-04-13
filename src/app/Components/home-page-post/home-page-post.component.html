@@ -38,6 +38,7 @@
       <!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
       <!--      </div>-->
     </div>
+    <br />
     <div
       class="post"
       *ngFor="let post of listPost"
@@ -57,71 +58,28 @@
       </div>
       <div class="post-content">
         <p>{{ post.content }}</p>
-        <div class="post-images">
-          <ng-container *ngIf="post.medias.length === 1">
-            <img class="single" [src]="post.medias[0].url" alt="Error" />
-          </ng-container>
-
-          <ng-container *ngIf="post.medias.length === 2">
-            <img
-              class="half"
-              *ngFor="let image of post.medias"
-              [src]="image.url"
-              alt="Error"
-            />
-          </ng-container>
-
-          <ng-container *ngIf="post.medias.length === 3">
-            <div class="row">
-              <img class="half" [src]="post.medias[0].url" alt="Error" />
-              <img class="half" [src]="post.medias[1].url" alt="Error" />
-            </div>
-            <img
-              style="border-left: 3px solid #040404"
-              class="full"
-              [src]="post.medias[2].url"
-              alt="Error"
-              style="height: 100%"
-            />
-          </ng-container>
-
-          <ng-container *ngIf="post.medias.length === 4">
-            <div class="grid grid-2x2">
-              <img
-                *ngFor="let image of post.medias"
-                [src]="image.url"
-                alt="Error"
-              />
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="post.medias.length >= 5">
-            <div class="row">
-              <img class="half" [src]="post.medias[0].url" alt="Error" />
-              <img class="half" [src]="post.medias[1].url" alt="Error" />
-            </div>
-
-            <div class="grid grid-3" style="border-left: 7px solid black">
-              <img
-                *ngFor="let image of post.medias.slice(2, 4)"
-                [src]="image.url"
-                alt="Error"
-              />
-
-              <div class="more-images" *ngIf="post.medias.length > 5">
-                <img [src]="post.medias[4].url" alt="Error" />
-                <div class="overlay">+{{ post.medias.length - 5 }}</div>
-              </div>
-
-              <img
-                *ngIf="post.medias.length === 5"
-                [src]="post.medias[4].url"
-                alt="Error"
-              />
+        <div class="post-images {{ getMediaClass(post.medias.length) }}">
+          <ng-container *ngFor="let media of post.medias; let i = index">
+            <div
+              class="media-item"
+              *ngIf="i < 4"
+              [attr.data-more]="
+                i === 3 && post.medias.length > 4
+                  ? post.medias.length - 4
+                  : null
+              "
+            >
+              <img *ngIf="media.type === 1" [src]="media.url" alt="Media" />
+              <video
+                *ngIf="media.type === 2"
+                [src]="media.url"
+                controls
+              ></video>
             </div>
           </ng-container>
         </div>
       </div>
+      <br />
       <div class="post-actions">
         <div class="likes" (click)="toggleReactionPanel(post.id, $event)">
           <i
@@ -155,8 +113,7 @@
         </div>
         <div class="comments">
           <i class="fas fa-comment"></i>
-          20 Comments
-          <!-- Replace with dynamic data if available -->
+          {{ post.commentCount || 0 }} Comments
         </div>
         <div class="share">
           <i class="fas fa-share"></i>
