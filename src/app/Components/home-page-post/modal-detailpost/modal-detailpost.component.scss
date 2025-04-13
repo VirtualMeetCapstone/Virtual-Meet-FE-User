@@ -289,3 +289,150 @@
 .liked {
   color: #007bff;
 }
+
+.reaction-icons {
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+
+  i {
+    font-size: 16px;
+    margin-right: 3px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #444;
+    color: #fff;
+  }
+
+  .fa-thumbs-up {
+    color: #007bff;
+  }
+
+  .fa-heart {
+    color: #e91e63;
+  }
+
+  .fa-laugh {
+    color: #ffca28;
+  }
+
+  .fa-surprise {
+    color: #ffeb3b;
+  }
+
+  .fa-sad-tear {
+    color: #90caf9;
+  }
+
+  .fa-angry {
+    color: #f44336;
+  }
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+
+  span {
+    cursor: pointer;
+    color: #fff;
+  }
+}
+.post-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-stats .likes,
+.post-stats .comments,
+.post-stats .share {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+.post-stats .likes i,
+.post-stats .comments i,
+.post-stats .share i {
+  margin-right: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+
+.like-btn-wrapper {
+  position: relative;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  color: #606770; /* Màu mặc định */
+}
+
+.like-btn i {
+  margin-right: 5px;
+}
+
+.comment-btn,
+.share-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #606770;
+  display: flex;
+  align-items: center;
+}
+
+.comment-btn i,
+.share-btn i {
+  margin-right: 5px;
+}
+
+.reaction-panel {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background-color: #333;
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.reaction-panel button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.reaction-panel button:hover {
+  transform: scale(1.2);
+}
+
+.reaction-panel i {
+  font-size: 20px;
+  color: #fff;
+}

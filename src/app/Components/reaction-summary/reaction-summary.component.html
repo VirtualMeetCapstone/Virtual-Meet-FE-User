@@ -1,0 +1,9 @@
+<div class="reaction-summary">
+  <h4>Reactions</h4>
+  <div class="reaction-item" *ngFor="let user of data.users">
+    <img [src]="user.media.url" alt="Avatar" class="user-avatar" />
+    <span>{{ user.name }}</span>
+    <i [class]="getReactionIcon(user.reactionType)"></i>
+  </div>
+  <div class="total">Total: {{ data.reactionCounts.totalCount || 0 }}</div>
+</div>

@@ -1,7 +1,7 @@
 // postservice.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 import { AuthService } from '../auth-service/auth.service';
 
@@ -70,7 +70,33 @@ export class PostserviceService {
   }
 
   getUserReactions(postId: string): Observable<any> {
-    return this.http.get<any>(`${this.url}/users-reaction/${postId}`);
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/posts/users-reaction/${postId}?NeedTotalCount=true`;
+    return this.http.get<any>(url).pipe(
+      map((response: any) => {
+        const reactions = response.data || [];
+        const reactionCounts = {
+          like: reactions.filter((r: any) => r.reactionType === 0).length,
+          love: reactions.filter((r: any) => r.reactionType === 1).length,
+          haha: reactions.filter((r: any) => r.reactionType === 2).length,
+          wow: reactions.filter((r: any) => r.reactionType === 3).length,
+          sad: reactions.filter((r: any) => r.reactionType === 4).length,
+          angry: reactions.filter((r: any) => r.reactionType === 5).length,
+        };
+        // Tính top 3 phản ứng phổ biến nhất
+        const topReactions = Object.entries(reactionCounts)
+          .filter(([, count]) => count > 0) // Chỉ lấy những phản ứng có số lượng > 0
+          .sort((a, b) => b[1] - a[1]) // Sắp xếp giảm dần theo số lượng
+          .slice(0, 3) // Lấy 3 phản ứng đầu tiên
+          .map(([key]) => key); // Lấy tên loại phản ứng (like, haha, ...)
+
+        return {
+          data: reactions, // Danh sách người dùng đã phản ứng
+          counts: reactionCounts, // Số lượng từng loại phản ứng
+          totalCount: response.totalCount, // Tổng số phản ứng từ API
+          topReactions, // 3 phản ứng phổ biến nhất
+        };
+      })
+    );
   }
 
   getComment(postId: string): Observable<any> {
