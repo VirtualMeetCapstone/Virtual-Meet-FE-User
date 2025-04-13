@@ -20,17 +20,22 @@ export class PostserviceService {
     reactionType?: number,
     postMedia?: File[]
   ): Observable<any> {
+    const userId = this.authService.getUser()?.id;
+    if (!userId) {
+      throw new Error('User ID not found');
+    }
     const formData = new FormData();
-    formData.append('content', content);
-    formData.append('privacy', privacy.toString());
+    formData.append('UserId', userId);
+    formData.append('Content', content); // Capitalized 'C'
+    formData.append('Privacy', privacy.toString()); // Capitalized 'P'
 
     if (reactionType !== undefined) {
-      formData.append('reactionType', reactionType.toString());
+      formData.append('ReactionType', reactionType.toString()); // Assuming server expects 'ReactionType'
     }
 
     if (postMedia && postMedia.length > 0) {
-      postMedia.forEach((file, index) => {
-        formData.append(`mediaUploads[${index}]`, file);
+      postMedia.forEach((file) => {
+        formData.append('MediaUploads', file); // Corrected to 'MediaUploads' without '[]'
       });
     }
 
