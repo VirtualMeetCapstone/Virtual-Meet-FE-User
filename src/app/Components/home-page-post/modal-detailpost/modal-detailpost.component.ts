@@ -1,7 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { PostserviceService } from '../../../services/post-service/postservice.service';
 import { ExternalServiceService } from '../../../services/external-service/external-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ReactionSummaryComponent } from '../../reaction-summary/reaction-summary.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-modal-detailpost',
@@ -14,6 +24,7 @@ export class ModalDetailpostComponent implements OnInit {
   @Input() post: any = null;
   @Input() user: any = '';
   @Input() userId: any = '';
+  @ViewChild('commentInput') commentInput!: ElementRef;
 
   currentMediaIndex: number = 0;
   comments: any = [];
@@ -26,6 +37,7 @@ export class ModalDetailpostComponent implements OnInit {
   constructor(
     private postService: PostserviceService,
     private externalService: ExternalServiceService,
+    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -57,7 +69,6 @@ export class ModalDetailpostComponent implements OnInit {
     event.stopPropagation();
     this.showReactionPanel = !this.showReactionPanel;
   }
-
   // Set a reaction and update reactions
   setReaction(reactionType: string, event: Event) {
     event.stopPropagation();
@@ -75,30 +86,50 @@ export class ModalDetailpostComponent implements OnInit {
     this.postService
       .getUserReactions(this.post.id)
       .subscribe((reactions: any) => {
-        this.post.likeCount = reactions.data ? reactions.data.length : 0;
+        this.post.reactionCounts = reactions.counts;
+        this.post.topReactions = reactions.topReactions;
+        this.post.likeCount = reactions.totalCount;
+        this.post.reactionsData = reactions.data;
         const userReaction = reactions.data.find(
           (r: any) => r.id === this.userId
         );
         this.post.currentUserReaction = userReaction
           ? this.mapReactionNumberToType(userReaction.reactionType)
           : null;
-        // Notify home page of the update
         this.postUpdated.emit({
           id: this.post.id,
           likeCount: this.post.likeCount,
           currentUserReaction: this.post.currentUserReaction,
+          reactionCounts: this.post.reactionCounts,
+          topReactions: this.post.topReactions,
+          reactionsData: this.post.reactionsData,
         });
       });
+  }
+
+  openReactionSummary(event: Event) {
+    event.stopPropagation();
+    if (this.post && this.post.reactionCounts) {
+      this.dialog.open(ReactionSummaryComponent, {
+        width: '300px',
+        data: {
+          reactionCounts: this.post.reactionCounts,
+          postId: this.post.id,
+          users: this.post.reactionsData,
+        },
+      });
+    }
   }
 
   // Map reaction type to number (consistent with home page)
   mapReactionTypeToNumber(type: string): number {
     const map: { [key: string]: number } = {
       like: 0,
-      haha: 1,
-      wow: 2,
-      sad: 3,
-      angry: 4,
+      love: 1,
+      haha: 2,
+      wow: 3,
+      sad: 4,
+      angry: 5,
     };
     return map[type] || 0;
   }
@@ -107,10 +138,11 @@ export class ModalDetailpostComponent implements OnInit {
   mapReactionNumberToType(number: number): string {
     const map: { [key: number]: string } = {
       0: 'like',
-      1: 'haha',
-      2: 'wow',
-      3: 'sad',
-      4: 'angry',
+      1: 'love',
+      2: 'haha',
+      3: 'wow',
+      4: 'sad',
+      5: 'angry',
     };
     return map[number] || 'like';
   }
@@ -198,5 +230,41 @@ export class ModalDetailpostComponent implements OnInit {
 
   getSafeUrl(url: any) {
     return this.externalService.getSafeUrl(url);
+  }
+
+  getReactionColor(type: string): string {
+    const colors: { [key: string]: string } = {
+      like: '#007bff',
+      love: '#e91e63',
+      haha: '#ffca28',
+      wow: '#ffeb3b',
+      sad: '#90caf9',
+      angry: '#f44336',
+    };
+    return colors[type] || '#606770';
+  }
+
+  getReactionIcon(type: string): string {
+    const icons: { [key: string]: string } = {
+      like: 'fas fa-thumbs-up',
+      love: 'fas fa-heart',
+      haha: 'fas fa-laugh',
+      wow: 'fas fa-surprise',
+      sad: 'fas fa-sad-tear',
+      angry: 'fas fa-angry',
+    };
+    return icons[type] || 'fas fa-thumbs-up';
+  }
+
+  focusCommentInput() {
+    if (this.commentInput) {
+      this.commentInput.nativeElement.focus();
+    }
+  }
+
+  // Share post (placeholder)
+  sharePost() {
+    // Chưa có logic cụ thể, có thể thêm sau
+    console.log('Share post:', this.post.id);
   }
 }
