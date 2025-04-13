@@ -187,6 +187,7 @@ export class HomePagePostComponent implements OnInit {
   }
 
   openModalDetailPost(postId: string) {
+    this.openedMenuPostId = null;
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe((data: any) => {
       this.post = data;
