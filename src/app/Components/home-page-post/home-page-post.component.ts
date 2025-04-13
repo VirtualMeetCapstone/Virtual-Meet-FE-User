@@ -201,13 +201,16 @@ export class HomePagePostComponent implements OnInit {
     event.stopPropagation();
     const post = this.listPost.find((p) => p.id === postId);
     if (post && post.reactionCounts) {
+      console.log('Reaction Counts:', post.reactionCounts); // Kiểm tra dữ liệu
       this.dialog.open(ReactionSummaryComponent, {
-        width: '300px',
+        width: '500px',
         data: {
           reactionCounts: post.reactionCounts,
           postId,
           users: post.reactionsData, // Truyền danh sách người dùng đã phản ứng
         },
+        disableClose: false, // Cho phép đóng khi click ra ngoài
+        panelClass: 'reaction-summary-dialog', // Thêm class để tùy chỉnh CSS nếu cần
       });
     }
   }
