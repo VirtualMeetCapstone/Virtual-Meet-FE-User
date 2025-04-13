@@ -6,7 +6,6 @@
 >
   {{ message }}
 </div>
-<button (click)="openModalEnterPassword('123')">Open</button>
 <div>
   <div class="row">
     <div class="col-12 text-center p-3">
@@ -22,45 +21,48 @@
         <div class="card text-center room-card">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">{{ room.topic }}</h5>
-            <span class="badge badge-custom">Public</span>
-            <div class="dropdown">
-              <button
-                class="btn btn-secondary dropdown-toggle"
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="fas fa-cog settings"> </i>
-              </button>
-              <div class="dropdown-menu">
-                <div class="group-owner">
-                  <div style="color: black">Group Owner</div>
-                  <img
-                    src="{{ room.owner.picture.url }}"
-                    alt="Owner Avatar"
-                    class="owner-avatar"
-                    style="height: 50px; width: 50px"
-                  />
-                  <p style="color: #666">{{ room.owner.name }}</p>
-                  <p style="color: #666; line-height: 2px; font-size: 14px">
-                    Create At
-                  </p>
-                  <p style="color: #666; line-height: 2px; font-size: 14px">
-                    {{ room.createTime }}
-                  </p>
-                  <i
-                    class="fa-solid fa-trash text-danger"
-                    *ngIf="user?.id == room.ownerId"
-                    (click)="openModalDeleteRoom(room)"
-                  ></i>
-                  <i
-                    class="fas fa-pen text-primary ml-3"
-                    *ngIf="user?.id == room.ownerId"
-                    (click)="openModalEditRoom(room)"
-                  ></i>
+
+            <div class="d-flex align-items-center">
+              <div class="dropdown">
+                <button
+                  class="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="fas fa-cog settings"> </i>
+                </button>
+                <div class="dropdown-menu">
+                  <div class="group-owner">
+                    <div style="color: black">Group Owner</div>
+                    <img
+                      src="{{ room.owner.picture.url }}"
+                      alt="Owner Avatar"
+                      class="owner-avatar"
+                      style="height: 50px; width: 50px"
+                    />
+                    <p style="color: #666">{{ room.owner.name }}</p>
+                    <p style="color: #666; line-height: 2px; font-size: 14px">
+                      Create At
+                    </p>
+                    <p style="color: #666; line-height: 2px; font-size: 14px">
+                      {{ room.createTime }}
+                    </p>
+                    <i
+                      class="fa-solid fa-trash text-danger"
+                      *ngIf="user?.id == room.ownerId"
+                      (click)="openModalDeleteRoom(room)"
+                    ></i>
+                    <i
+                      class="fas fa-pen text-primary ml-3"
+                      *ngIf="user?.id == room.ownerId"
+                      (click)="openModalEditRoom(room)"
+                    ></i>
+                  </div>
                 </div>
               </div>
+              <i class="fa-solid fa-lock pl-2" *ngIf="room.privacy"></i>
             </div>
           </div>
           <div class="mb-3">
@@ -99,6 +101,14 @@
             <button
               class="btn btn-link text-white p-0"
               (click)="joinRoom(room.id)"
+              *ngIf="room.privacy == 0"
+            >
+              <i class="fas fa-phone"></i>
+            </button>
+            <button
+              class="btn btn-link text-white p-0"
+              (click)="openModalEnterPassword(room.id)"
+              *ngIf="room.privacy == 1"
             >
               <i class="fas fa-phone"></i>
             </button>
@@ -148,4 +158,5 @@
 <app-modal-enterpassforroomprivate
   *ngIf="showModalEnterPassword"
   (closeModal)="closeModalEnterPassword($event)"
+  [roomId]="roomPrivateToOpenModalEnterPass"
 ></app-modal-enterpassforroomprivate>

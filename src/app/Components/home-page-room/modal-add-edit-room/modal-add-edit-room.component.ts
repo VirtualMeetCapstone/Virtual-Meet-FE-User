@@ -51,6 +51,9 @@ export class ModalAddEditRoomComponent {
         maximumMember: new FormControl(this.roomToEdit.maximumMembers),
         mediaUpload: new FormControl(''),
       });
+      if (this.roomToEdit.privacy == 1) {
+        this.isPublic = false;
+      }
     }
   }
 
@@ -88,7 +91,13 @@ export class ModalAddEditRoomComponent {
       this.imagePreview || this.roomToEdit?.medias?.[0]?.url;
 
     this.roomService
-      .updateRoom(this.roomToEdit.id, formValue, this.userId, this.password)
+      .updateRoom(
+        this.roomToEdit.id,
+        formValue,
+        this.userId,
+        !this.isPublic,
+        this.password
+      )
       .subscribe(
         (res: any) => {
           console.log('Response:', res);

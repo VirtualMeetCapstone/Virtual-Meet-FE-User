@@ -55,6 +55,7 @@ export class RoomServicesService {
     };
     if (password) {
       body.password = password;
+      body.privacy = 1;
     }
     console.log(body);
     return this.http
@@ -76,12 +77,17 @@ export class RoomServicesService {
       formData
     );
   }
-  updateRoom(id: any, room: any, iduser: any, password: any): any {
-    const body = {
+  updateRoom(
+    id: any,
+    room: any,
+    iduser: any,
+    isPrivacy: any,
+    password: any
+  ): any {
+    const body: any = {
       OwnerId: iduser,
       Topic: room.topic,
       Description: room.description,
-      password: password,
       MaximumMembers: room.maximumMember,
       Medias: room.mediaUpload
         ? [
@@ -93,6 +99,10 @@ export class RoomServicesService {
           ]
         : [],
     };
+    if (password) {
+      body.password = password;
+    }
+    body.privacy = +isPrivacy;
 
     return this.http.patch<any>(this.url + '/' + id, body, {
       headers: { 'Content-Type': 'application/json' },

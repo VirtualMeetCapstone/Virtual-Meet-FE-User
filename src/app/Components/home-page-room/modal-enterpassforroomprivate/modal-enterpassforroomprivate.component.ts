@@ -8,16 +8,16 @@ import { Router } from '@angular/router';
 })
 export class ModalEnterpassforroomprivateComponent {
   @Output() closeModal = new EventEmitter<boolean>();
-  @Input() room: any = null;
+  @Input() roomId: string = '';
   password: string = '';
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    console.log(this.room);
+    console.log(this.roomId);
   }
   async joinRoom() {
     const timestamp = Date.now();
-    this.router.navigate(['/room', '3aa433fc-0390-444d-9e7c-929f88a07fd1'], {
+    this.router.navigate(['/room', this.roomId], {
       queryParams: { timestamp, password: this.password },
     });
   }

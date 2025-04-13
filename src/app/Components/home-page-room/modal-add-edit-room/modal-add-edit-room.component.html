@@ -137,7 +137,11 @@
               <div class="password-input" *ngIf="!isPublic">
                 <input
                   class="form-control"
-                  placeholder="Enter password for room"
+                  [placeholder]="
+                    !roomToEdit
+                      ? 'Enter password for room'
+                      : 'Enter new password room'
+                  "
                   [(ngModel)]="password"
                   [ngModelOptions]="{ standalone: true }"
                   (input)="onPasswordInput()"

@@ -27,6 +27,7 @@ export class HomePageRoomComponent implements OnInit {
   showModalEnterPassword = false;
   roomToEdit = null;
   userList: string[] = [];
+  roomPrivateToOpenModalEnterPass: string = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -102,6 +103,8 @@ export class HomePageRoomComponent implements OnInit {
     this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
   }
   openModalEnterPassword(roomId: any) {
+    this.roomPrivateToOpenModalEnterPass = roomId;
+
     this.showModalEnterPassword = true;
   }
   closeModalEnterPassword(event: any) {

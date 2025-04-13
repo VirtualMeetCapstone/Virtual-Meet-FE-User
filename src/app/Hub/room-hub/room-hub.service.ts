@@ -443,4 +443,9 @@ export class RoomHubService {
     this.connectionStateSubject.next('disconnected');
     console.log('🧹 RoomHub resources cleaned up');
   }
+  public receiveJoinFailed(callback: (message: string) => void): void {
+    this.hubConnection.off('JoinFailed');
+
+    this.hubConnection.on('JoinFailed', callback);
+  }
 }

@@ -56,7 +56,7 @@ export class RoomComponentComponent implements OnInit {
   user: any = null;
   raisedHands: string[] = [];
   private videoElement: HTMLVideoElement | null = null;
-  roomPassword: string = '11123';
+  roomPassword: string = '';
 
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
@@ -191,6 +191,7 @@ export class RoomComponentComponent implements OnInit {
       await this.displayLocalStream();
     } catch (err) {
       console.error('❌ Lỗi khởi tạo phòng:', err);
+
       this.connectionStatus = 'Connection failed';
     }
   }
