@@ -62,6 +62,7 @@ export class HomePagePostComponent implements OnInit {
       }
     });
     this.loadMorePosts();
+    this.addPlayListeners();
     this.notifyService.onOpenPostModal().subscribe((postId) => {
       this.openModalDetailPost(postId);
     });
@@ -69,6 +70,17 @@ export class HomePagePostComponent implements OnInit {
   openModalDeletePost(post: any) {
     this.postToDelete = post;
     this.showModalDeletePost = true;
+  }
+
+  addPlayListeners() {
+    const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
+    videos.forEach((video) => {
+      video.addEventListener('play', () => {
+        if (this.isShowModalDetailPost) {
+          video.pause(); // Tạm dừng video nếu modal đang mở
+        }
+      });
+    });
   }
   closeModalDeletePost(event: any) {
     if (!event) {
@@ -186,7 +198,31 @@ export class HomePagePostComponent implements OnInit {
     return map[number] || 'like';
   }
 
+  pauseAllVideos() {
+    const videos = document.querySelectorAll<HTMLVideoElement>(
+      '.main-content .post video'
+    );
+    console.log('Số lượng video tìm thấy:', videos.length);
+    videos.forEach((video, index) => {
+      if (video.readyState >= 2) {
+        video.pause();
+        console.log(`Đã tạm dừng video ${index}`);
+      } else {
+        video.addEventListener(
+          'canplay',
+          () => {
+            video.pause();
+            console.log(`Đã tạm dừng video ${index} sau khi sẵn sàng`);
+          },
+          { once: true }
+        );
+      }
+    });
+  }
+
   openModalDetailPost(postId: string) {
+    this.pauseAllVideos();
+    this.disableVideoInteraction();
     this.openedMenuPostId = null;
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe((data: any) => {
@@ -198,6 +234,7 @@ export class HomePagePostComponent implements OnInit {
 
   closeModalDetailPost() {
     this.isShowModalDetailPost = false;
+    this.enableVideoInteraction();
   }
 
   openCreatePost() {
@@ -224,5 +261,20 @@ export class HomePagePostComponent implements OnInit {
     if (count === 2) return 'two';
     if (count >= 3) return 'three-plus';
     return '';
+  }
+
+  disableVideoInteraction() {
+    const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
+    videos.forEach((video) => {
+      video.classList.add('video-disabled'); // Thêm lớp vô hiệu hóa
+      video.pause(); // Đảm bảo video được tạm dừng
+    });
+  }
+
+  enableVideoInteraction() {
+    const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
+    videos.forEach((video) => {
+      video.classList.remove('video-disabled'); // Xóa lớp vô hiệu hóa
+    });
   }
 }
