@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ModalDetailpostComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
+  @Output() postUpdated = new EventEmitter<any>(); // Emit updates to home page
   @Input() post: any = null;
   @Input() user: any = '';
   @Input() userId: any = '';
@@ -20,6 +21,7 @@ export class ModalDetailpostComponent implements OnInit {
   isLoadingComment: boolean = false;
   messages: any = [];
   isLoadingPost: boolean = false;
+  showReactionPanel: boolean = false; // Toggle reaction panel
 
   constructor(
     private postService: PostserviceService,
@@ -31,13 +33,13 @@ export class ModalDetailpostComponent implements OnInit {
   ngOnInit(): void {
     const postId = this.route.snapshot.paramMap.get('id');
     if (postId && !this.post) {
-      // Fetch post data if not provided via @Input
       this.isLoadingPost = true;
       this.postService.getPostById(postId).subscribe(
         (data: any) => {
           this.post = data;
-          this.isLoadingPost = false;
+          this.updatePostReactions(); // Fetch latest reactions
           this.getComment();
+          this.isLoadingPost = false;
         },
         (error: any) => {
           this.notifyError('Error loading post details');
@@ -45,32 +47,91 @@ export class ModalDetailpostComponent implements OnInit {
         }
       );
     } else {
-      this.getComment(); // If post is provided via @Input, just load comments
+      this.updatePostReactions(); // Refresh reactions even if post is provided
+      this.getComment();
     }
-    console.log('userfullfrommodaldetail', this.user);
-    console.log(this.userId);
   }
 
+  // Toggle reaction panel visibility
+  toggleReactionPanel(event: Event) {
+    event.stopPropagation();
+    this.showReactionPanel = !this.showReactionPanel;
+  }
+
+  // Set a reaction and update reactions
+  setReaction(reactionType: string, event: Event) {
+    event.stopPropagation();
+    const reactionTypeNumber = this.mapReactionTypeToNumber(reactionType);
+    this.postService
+      .setReaction(this.post.id, reactionTypeNumber)
+      .subscribe(() => {
+        this.updatePostReactions();
+      });
+    this.showReactionPanel = false;
+  }
+
+  // Update likeCount and currentUserReaction, then emit to home page
+  updatePostReactions() {
+    this.postService
+      .getUserReactions(this.post.id)
+      .subscribe((reactions: any) => {
+        this.post.likeCount = reactions.data ? reactions.data.length : 0;
+        const userReaction = reactions.data.find(
+          (r: any) => r.id === this.userId
+        );
+        this.post.currentUserReaction = userReaction
+          ? this.mapReactionNumberToType(userReaction.reactionType)
+          : null;
+        // Notify home page of the update
+        this.postUpdated.emit({
+          id: this.post.id,
+          likeCount: this.post.likeCount,
+          currentUserReaction: this.post.currentUserReaction,
+        });
+      });
+  }
+
+  // Map reaction type to number (consistent with home page)
+  mapReactionTypeToNumber(type: string): number {
+    const map: { [key: string]: number } = {
+      like: 0,
+      haha: 1,
+      wow: 2,
+      sad: 3,
+      angry: 4,
+    };
+    return map[type] || 0;
+  }
+
+  // Map reaction number to type (consistent with home page)
+  mapReactionNumberToType(number: number): string {
+    const map: { [key: number]: string } = {
+      0: 'like',
+      1: 'haha',
+      2: 'wow',
+      3: 'sad',
+      4: 'angry',
+    };
+    return map[number] || 'like';
+  }
+
+  // Existing methods (getComment, groupComments, etc.) remain unchanged
   getComment() {
-    if (!this.post?.id) return; // Ensure post is loaded
+    if (!this.post?.id) return;
     this.isLoadingComment = true;
     this.postService.getComment(this.post.id).subscribe((data: any) => {
       this.comments = data;
-      console.log('commtent', this.comments);
       this.groupedComments = this.groupComments(this.comments);
       this.isLoadingComment = false;
-      console.log('grouo', this.groupedComments);
     });
   }
 
   groupComments(comments: any) {
     let grouped: Record<string, any> = {};
     const commentArray = comments?.data || [];
-
     commentArray.forEach((comment: any) => {
       grouped[comment.id] = { ...comment, replies: [] };
     });
-
     let result: any = [];
     commentArray.forEach((comment: any) => {
       if (comment.parentId) {
@@ -96,7 +157,7 @@ export class ModalDetailpostComponent implements OnInit {
     this.postService
       .commentPost(this.userId, this.post.id, trimmedContent)
       .subscribe(
-        (newComment: any) => this.getComment(),
+        () => this.getComment(),
         (error: any) => this.notifyError('Error To Comment !!!')
       );
   }
@@ -110,7 +171,7 @@ export class ModalDetailpostComponent implements OnInit {
     this.postService
       .replyComment(this.userId, this.post.id, parentId, trimmedContent)
       .subscribe(
-        (newComment: any) => this.getComment(),
+        () => this.getComment(),
         (error: any) => this.notifyError('Error To Comment !!!')
       );
   }

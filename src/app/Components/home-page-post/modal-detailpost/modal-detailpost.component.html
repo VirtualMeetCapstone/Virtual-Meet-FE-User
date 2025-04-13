@@ -49,10 +49,38 @@
           <p>{{ post.content }}</p>
         </div>
         <div class="post-actions">
-          <div class="icons">
-            <i class="far fa-heart"></i>
-            <i class="far fa-comment"></i>
-            <i class="far fa-paper-plane"></i>
+          <div class="likes" (click)="toggleReactionPanel($event)">
+            <i
+              class="fas fa-thumbs-up"
+              [ngClass]="{ liked: post.currentUserReaction === 'like' }"
+            ></i>
+            {{ post.likeCount || 0 }} Likes
+            <div class="reaction-panel" *ngIf="showReactionPanel">
+              <button (click)="setReaction('like', $event)" title="Like">
+                <i class="fas fa-thumbs-up"></i>
+              </button>
+              <button (click)="setReaction('haha', $event)" title="Haha">
+                <i class="fas fa-laugh"></i>
+              </button>
+              <button (click)="setReaction('wow', $event)" title="Wow">
+                <i class="fas fa-surprise"></i>
+              </button>
+              <button (click)="setReaction('sad', $event)" title="Sad">
+                <i class="fas fa-sad-tear"></i>
+              </button>
+              <button (click)="setReaction('angry', $event)" title="Angry">
+                <i class="fas fa-angry"></i>
+              </button>
+            </div>
+          </div>
+          <div class="comments">
+            <i class="fas fa-comment"></i>
+            {{ comments?.data?.length || 0 }} Comments
+          </div>
+          <div class="share">
+            <i class="fas fa-share"></i>
+            99 Shares
+            <!-- Replace with dynamic data if available -->
           </div>
           <div class="time">7 hours ago</div>
         </div>
