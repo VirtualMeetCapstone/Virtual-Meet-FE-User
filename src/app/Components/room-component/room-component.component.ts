@@ -56,7 +56,7 @@ export class RoomComponentComponent implements OnInit {
   user: any = null;
   raisedHands: string[] = [];
   private videoElement: HTMLVideoElement | null = null;
-  roomPassword: string = '';
+  roomPassword: string = '1234';
 
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;

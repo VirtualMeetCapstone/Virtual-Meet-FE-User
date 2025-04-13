@@ -170,13 +170,11 @@
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a
               href="#"
-              (click)="
-                editProfile(); $event.preventDefault(); $event.stopPropagation()
-              "
+              (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()"
               >Edit Profile</a
             >
-
             <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
+            <a href="/vip-history" (click)="$event.stopPropagation()">Lịch sử VIP</a>
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>
