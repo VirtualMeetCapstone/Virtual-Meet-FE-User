@@ -86,6 +86,7 @@
                 *ngIf="media.type === 2"
                 [src]="media.url"
                 controls
+                (click)="$event.stopPropagation()"
               ></video>
             </div>
           </ng-container>
