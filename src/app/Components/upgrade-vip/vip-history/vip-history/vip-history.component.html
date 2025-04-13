@@ -1,0 +1,46 @@
+<div class="vip-history-container">
+  <h2>Lịch sử thanh toán VIP</h2>
+
+  <!-- Hiển thị trạng thái đang tải -->
+  <div *ngIf="isLoading" class="loading">
+    Đang tải dữ liệu...
+  </div>
+
+  <!-- Hiển thị thông báo lỗi -->
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Hiển thị bảng lịch sử thanh toán -->
+  <table *ngIf="!isLoading && !errorMessage && paymentHistory.length > 0" class="history-table">
+    <thead>
+      <tr>
+        <th>Mã đơn hàng</th>
+        <th>Gói VIP</th>
+        <th>Số tiền</th>
+        <th>Ngày tạo</th>
+        <th>Ngày hết hạn</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payment of paymentHistory">
+        <td>{{ payment.orderCode }}</td>
+        <td>{{ payment.level }}</td>
+        <td>{{ payment.amount | currency:'VND' }}</td>
+        <td>{{ payment.createdAt !== 'N/A' ? (payment.createdAt | date:'dd-MM-yyyy HH:mm') : 'N/A' }}</td>
+        <td>{{ payment.expireAt !== 'N/A' ? (payment.expireAt | date:'dd-MM-yyyy HH:mm') : 'N/A' }}</td>
+        <td>
+          <span [ngClass]="{'success': payment.isPaid, 'failed': !payment.isPaid}">
+            {{ payment.isPaid ? 'Thành công' : 'Thất bại' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Hiển thị thông báo khi không có dữ liệu -->
+  <div *ngIf="!isLoading && !errorMessage && paymentHistory.length === 0" class="no-data">
+    Không có lịch sử thanh toán nào.
+  </div>
+</div>
