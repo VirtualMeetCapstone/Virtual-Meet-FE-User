@@ -161,6 +161,7 @@ export class RoomComponentComponent implements OnInit {
       this.roomHubService.receiveJoinFailed((message: string) => {
         console.log('Join failed:', message);
         window.confirm(message);
+        window.location.href = '/';
       });
 
       this.connectionStatus = 'Connected';
