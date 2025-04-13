@@ -109,14 +109,16 @@ export class ModalDetailpostComponent implements OnInit {
 
   openReactionSummary(event: Event) {
     event.stopPropagation();
-    if (this.post && this.post.reactionCounts) {
+    if (this.dialog.openDialogs.length === 0) {
       this.dialog.open(ReactionSummaryComponent, {
-        width: '300px',
+        width: '500px', // Điều chỉnh kích thước nếu cần
         data: {
           reactionCounts: this.post.reactionCounts,
           postId: this.post.id,
           users: this.post.reactionsData,
         },
+        disableClose: false, // Cho phép đóng khi click ra ngoài
+        panelClass: 'reaction-summary-dialog', // Thêm class để tùy chỉnh CSS nếu cần
       });
     }
   }
