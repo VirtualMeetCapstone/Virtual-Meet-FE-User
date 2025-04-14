@@ -190,8 +190,22 @@ export class RoomComponentComponent implements OnInit {
         this.participantCount = count;
       });
 
-      this.rtcHub.peers$.subscribe((peers) => {
-        this.peers = peers;
+      this.rtcHub.peers$.subscribe(async (peers) => {
+        this.peers = await Promise.all(
+          peers.map(async (peer) => {
+            const isCurrentUser = peer.peerId === this.userId;
+
+            // Lấy thông tin người dùng từ backend hoặc cache
+            let userInfo = await this.loadUserInfo(peer.userName);
+
+            return {
+              ...peer,
+              userName: isCurrentUser ? 'You' : userInfo?.name || peer.userName, // Hiển thị tên hoặc "You" nếu là chính bạn
+              avatarUrl: userInfo?.picture?.url, // URL avatar nếu có
+            };
+          })
+        );
+
       });
 
       await this.displayLocalStream();
@@ -200,6 +214,16 @@ export class RoomComponentComponent implements OnInit {
 
       this.connectionStatus = 'Connection failed';
     }
+  }
+  async loadUserInfo(userId: string): Promise<any> {
+    if (this.userNameCache.has(userId)) {
+      return this.userNameCache.get(userId);
+    }
+
+    const user = await this.authService.getBackendUser(userId);
+    console.log('🔹 Backend user data:', user);
+    this.userNameCache.set(userId, user);
+    return user;
   }
 
   getVideoGridClass(): string {

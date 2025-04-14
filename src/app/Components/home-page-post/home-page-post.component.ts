@@ -5,6 +5,10 @@ import { CreatePostModalComponent } from '../create-post-modal/create-post-modal
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ExternalServiceService } from '../../services/external-service/external-service.service';
 import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
+import { ReactionSummaryComponent } from '../reaction-summary/reaction-summary.component';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-home-page-post',
@@ -27,8 +31,9 @@ export class HomePagePostComponent implements OnInit {
   isShowModalDetailPost = false;
   post: any = null;
   isLoading: boolean = false;
-  showReactionPanelForPostId: string | null = null;
   openedMenuPostId: number | null = null;
+
+  showReactionPanelForPostId: string | null = null;
 
   toggleMenu(postId: number, event: MouseEvent) {
     event.stopPropagation(); // tránh trigger openModalDetailPost
@@ -42,11 +47,13 @@ export class HomePagePostComponent implements OnInit {
   }
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private postService: PostserviceService,
     private authService: AuthService,
     private dialog: MatDialog,
     private externalService: ExternalServiceService,
-    private notifyService: NotificationServiceService
+    private notifyService: NotificationServiceService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -73,14 +80,16 @@ export class HomePagePostComponent implements OnInit {
   }
 
   addPlayListeners() {
-    const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
-    videos.forEach((video) => {
-      video.addEventListener('play', () => {
-        if (this.isShowModalDetailPost) {
-          video.pause(); // Tạm dừng video nếu modal đang mở
-        }
+    if (isPlatformBrowser(this.platformId)) {
+      const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
+      videos.forEach((video) => {
+        video.addEventListener('play', () => {
+          if (this.isShowModalDetailPost) {
+            video.pause();
+          }
+        });
       });
-    });
+    }
   }
   closeModalDeletePost(event: any) {
     if (!event) {
@@ -123,8 +132,23 @@ export class HomePagePostComponent implements OnInit {
 
   toggleReactionPanel(postId: string, event: Event) {
     event.stopPropagation();
-    this.showReactionPanelForPostId =
-      this.showReactionPanelForPostId === postId ? null : postId;
+    if (this.showReactionPanelForPostId === postId) {
+      this.showReactionPanelForPostId = null;
+    } else {
+      this.showReactionPanelForPostId = postId;
+    }
+  }
+
+  getReactionColor(type: string): string {
+    const colors: { [key: string]: string } = {
+      like: '#007bff', // blue
+      love: '#e91e63', // pink
+      haha: '#ffca28', // yellow
+      wow: '#ffeb3b', // light yellow
+      sad: '#90caf9', // light blue
+      angry: '#f44336', // red
+    };
+    return colors[type] || '#606770'; // default gray
   }
 
   setReaction(postId: string, reactionType: string, event: Event) {
@@ -140,14 +164,17 @@ export class HomePagePostComponent implements OnInit {
     this.postService.getUserReactions(postId).subscribe((reactions: any) => {
       const post = this.listPost.find((p) => p.id === postId);
       if (post) {
-        post.likeCount = reactions.data ? reactions.data.length : 0;
+        post.reactionCounts = reactions.counts; // Số lượng từng loại phản ứng
+        post.topReactions = reactions.topReactions; // 3 phản ứng phổ biến nhất
+        post.likeCount = reactions.totalCount; // Tổng số phản ứng
+        post.reactionsData = reactions.data; // Lưu danh sách người dùng để dùng trong pop-up
         const userReaction = reactions.data.find(
           (r: any) => r.id === this.userId
         );
         post.currentUserReaction = userReaction
           ? this.mapReactionNumberToType(userReaction.reactionType)
           : null;
-        this.listPost = [...this.listPost];
+        this.listPost = [...this.listPost]; // Trigger cập nhật UI
       }
     });
   }
@@ -164,6 +191,7 @@ export class HomePagePostComponent implements OnInit {
   getReactionIcon(type: string): string {
     const icons: { [key: string]: string } = {
       like: 'fas fa-thumbs-up',
+      love: 'fas fa-heart',
       haha: 'fas fa-laugh',
       wow: 'fas fa-surprise',
       sad: 'fas fa-sad-tear',
@@ -176,13 +204,32 @@ export class HomePagePostComponent implements OnInit {
     this.listPost.forEach((post) => this.updatePostReactions(post.id));
   }
 
+  openReactionSummary(postId: string, event: Event) {
+    event.stopPropagation();
+    const post = this.listPost.find((p) => p.id === postId);
+    if (post && post.reactionCounts) {
+      console.log('Reaction Counts:', post.reactionCounts); // Kiểm tra dữ liệu
+      this.dialog.open(ReactionSummaryComponent, {
+        width: '500px',
+        data: {
+          reactionCounts: post.reactionCounts,
+          postId,
+          users: post.reactionsData, // Truyền danh sách người dùng đã phản ứng
+        },
+        disableClose: false, // Cho phép đóng khi click ra ngoài
+        panelClass: 'reaction-summary-dialog', // Thêm class để tùy chỉnh CSS nếu cần
+      });
+    }
+  }
+
   mapReactionTypeToNumber(type: string): number {
     const map: { [key: string]: number } = {
       like: 0,
-      haha: 1,
-      wow: 2,
-      sad: 3,
-      angry: 4,
+      love: 1,
+      haha: 2,
+      wow: 3,
+      sad: 4,
+      angry: 5,
     };
     return map[type] || 0;
   }
@@ -190,10 +237,11 @@ export class HomePagePostComponent implements OnInit {
   mapReactionNumberToType(number: number): string {
     const map: { [key: number]: string } = {
       0: 'like',
-      1: 'haha',
-      2: 'wow',
-      3: 'sad',
-      4: 'angry',
+      1: 'love',
+      2: 'haha',
+      3: 'wow',
+      4: 'sad',
+      5: 'angry',
     };
     return map[number] || 'like';
   }
@@ -202,17 +250,14 @@ export class HomePagePostComponent implements OnInit {
     const videos = document.querySelectorAll<HTMLVideoElement>(
       '.main-content .post video'
     );
-    console.log('Số lượng video tìm thấy:', videos.length);
     videos.forEach((video, index) => {
       if (video.readyState >= 2) {
         video.pause();
-        console.log(`Đã tạm dừng video ${index}`);
       } else {
         video.addEventListener(
           'canplay',
           () => {
             video.pause();
-            console.log(`Đã tạm dừng video ${index} sau khi sẵn sàng`);
           },
           { once: true }
         );
@@ -263,6 +308,17 @@ export class HomePagePostComponent implements OnInit {
     return '';
   }
 
+  // Focus vào input comment (mở modal detail post)
+  focusCommentInput(postId: string) {
+    this.openModalDetailPost(postId); // Gọi hàm mở modal chi tiết bài post
+  }
+
+  // Share bài post
+  sharePost(postId: string) {
+    // Logic để share bài post, ví dụ: mở modal share hoặc sao chép link
+    console.log('Share post', postId);
+  }
+
   disableVideoInteraction() {
     const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
     videos.forEach((video) => {
@@ -276,5 +332,9 @@ export class HomePagePostComponent implements OnInit {
     videos.forEach((video) => {
       video.classList.remove('video-disabled'); // Xóa lớp vô hiệu hóa
     });
+  }
+
+  goToProfile(userId: string) {
+    this.router.navigate(['/my-profile', userId]); // Điều hướng tới /my-profile/{userId}
   }
 }

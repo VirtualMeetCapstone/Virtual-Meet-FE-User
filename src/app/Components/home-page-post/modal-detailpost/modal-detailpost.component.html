@@ -54,44 +54,80 @@
             <span> • Following </span>
           </div>
         </div>
+        <div class="time">7 hours ago</div>
         <div class="post-text">
           <p>{{ post.content }}</p>
         </div>
-        <div class="post-actions">
-          <div class="likes" (click)="toggleReactionPanel($event)">
-            <i
-              class="fas fa-thumbs-up"
-              [ngClass]="{ liked: post.currentUserReaction === 'like' }"
-            ></i>
-            {{ post.likeCount || 0 }} Likes
-            <div class="reaction-panel" *ngIf="showReactionPanel">
-              <button (click)="setReaction('like', $event)" title="Like">
-                <i class="fas fa-thumbs-up"></i>
-              </button>
-              <button (click)="setReaction('haha', $event)" title="Haha">
-                <i class="fas fa-laugh"></i>
-              </button>
-              <button (click)="setReaction('wow', $event)" title="Wow">
-                <i class="fas fa-surprise"></i>
-              </button>
-              <button (click)="setReaction('sad', $event)" title="Sad">
-                <i class="fas fa-sad-tear"></i>
-              </button>
-              <button (click)="setReaction('angry', $event)" title="Angry">
-                <i class="fas fa-angry"></i>
-              </button>
+        <div class="post-stats">
+          <div class="likes" (click)="openReactionSummary($event)">
+            <div class="reaction-icons" *ngIf="post.topReactions?.length > 0">
+              <ng-container *ngFor="let reaction of post.topReactions">
+                <i [class]="getReactionIcon(reaction)" [title]="reaction"></i>
+              </ng-container>
             </div>
+            <span>{{ post.likeCount || 0 }}</span>
           </div>
           <div class="comments">
             <i class="fas fa-comment"></i>
-            {{ comments?.data?.length || 0 }} Comments
+            {{ comments?.data?.length || 0 }}
           </div>
           <div class="share">
             <i class="fas fa-share"></i>
-            99 Shares
-            <!-- Replace with dynamic data if available -->
+            {{ post.shareCount || 0 }}
           </div>
-          <div class="time">7 hours ago</div>
+        </div>
+
+        <!-- Phần nút hành động (action-buttons) -->
+        <div class="action-buttons">
+          <div class="like-btn-wrapper">
+            <button
+              class="like-btn"
+              [style.color]="
+                post.currentUserReaction
+                  ? getReactionColor(post.currentUserReaction)
+                  : '#606770'
+              "
+              (click)="toggleReactionPanel($event)"
+            >
+              <i
+                [class]="getReactionIcon(post.currentUserReaction || 'like')"
+                [style.color]="'inherit'"
+              ></i>
+              {{
+                post.currentUserReaction
+                  ? (post.currentUserReaction | titlecase)
+                  : "Like"
+              }}
+            </button>
+          </div>
+          <button class="comment-btn" (click)="focusCommentInput()">
+            <i class="fas fa-comment"></i> Comment
+          </button>
+          <button class="share-btn" (click)="sharePost()">
+            <i class="fas fa-share"></i> Share
+          </button>
+        </div>
+
+        <!-- Bảng phản ứng (reaction-panel) -->
+        <div class="reaction-panel" *ngIf="showReactionPanel">
+          <button (click)="setReaction('like', $event)" title="Like">
+            <i class="fas fa-thumbs-up"></i>
+          </button>
+          <button (click)="setReaction('love', $event)" title="Love">
+            <i class="fas fa-heart"></i>
+          </button>
+          <button (click)="setReaction('haha', $event)" title="Haha">
+            <i class="fas fa-laugh"></i>
+          </button>
+          <button (click)="setReaction('wow', $event)" title="Wow">
+            <i class="fas fa-surprise"></i>
+          </button>
+          <button (click)="setReaction('sad', $event)" title="Sad">
+            <i class="fas fa-sad-tear"></i>
+          </button>
+          <button (click)="setReaction('angry', $event)" title="Angry">
+            <i class="fas fa-angry"></i>
+          </button>
         </div>
         <div class="comments-section">
           <h5>Bình luận</h5>

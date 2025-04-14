@@ -1,0 +1,15 @@
+<div class="reaction-summary-overlay" (click)="closeDialog()"></div>
+<div class="reaction-summary">
+  <button class="close-button" (click)="closeDialog()">×</button>
+  <h4>Reactions</h4>
+  <div
+    class="reaction-item"
+    *ngFor="let user of data.users"
+    (click)="goToProfile(user.id)"
+  >
+    <img [src]="user.media.url" alt="Avatar" class="user-avatar" />
+    <span>{{ user.name }}</span>
+    <i [class]="getReactionIcon(user.reactionType)"></i>
+  </div>
+  <div class="total-reactions">Total Reactions: {{ totalCount }}</div>
+</div>
