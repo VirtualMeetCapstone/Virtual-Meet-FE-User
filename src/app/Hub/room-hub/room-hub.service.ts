@@ -448,4 +448,12 @@ export class RoomHubService {
 
     this.hubConnection.on('JoinFailed', callback);
   }
+
+
+  public receiveConnectionID(callback: (connect: string) => void): void {
+    this.hubConnection.off('ConnectionId');
+
+    this.hubConnection.on('ConnectionId', callback);
+  }
+
 }
