@@ -215,7 +215,6 @@ export class AuthService {
   public async fetchUserName(username: string): Promise<string | null> {
     try {
       const user = await this.getBackendUser(username);
-      console.log('🔹 User data received:', user);
 
       if (!user || !user.name) {
         console.error(`❌ User data not found for ${username}`);

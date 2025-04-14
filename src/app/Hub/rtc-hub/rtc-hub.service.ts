@@ -31,8 +31,9 @@ export class RtcHubService {
   private originalVideoTrack: MediaStreamTrack | null = null;
   private screenTrack: any;
   private config = AppConstants.config;
+  private connectionId: string | null = null;
 
-  constructor(private roomHubService: RoomHubService, private cdr: NgZone) {
+  constructor(public roomHubService: RoomHubService, private cdr: NgZone) {
     this.setupRtcEvents();
   }
 
@@ -42,6 +43,10 @@ export class RtcHubService {
   getPeerConnection(peerId: string): RTCPeerConnection | null {
     const peer = this.peers[peerId];
     return peer?.connection || null;
+  }
+
+  public getConnectionId(): string | null {
+    return this.connectionId;
   }
 
   // Setup WebRTC-related SignalR events
@@ -138,6 +143,11 @@ export class RtcHubService {
         this.updatePeersSubject();
       }
       this.checkParticipantsAndSwitch();
+    });
+
+    this.roomHubService.receiveConnectionID((connectionId: string) => {
+      console.log('🔌 Nhận được connectionId:', connectionId);
+      this.connectionId = connectionId;
     });
   }
 
@@ -910,4 +920,5 @@ export class RtcHubService {
     }
     this.roomHubService.leaveRoom();
   }
+
 }

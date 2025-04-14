@@ -7,6 +7,8 @@ import { ExternalServiceService } from '../../services/external-service/external
 import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
 import { ReactionSummaryComponent } from '../reaction-summary/reaction-summary.component';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-home-page-post',
@@ -45,6 +47,7 @@ export class HomePagePostComponent implements OnInit {
   }
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private postService: PostserviceService,
     private authService: AuthService,
     private dialog: MatDialog,
@@ -77,14 +80,16 @@ export class HomePagePostComponent implements OnInit {
   }
 
   addPlayListeners() {
-    const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
-    videos.forEach((video) => {
-      video.addEventListener('play', () => {
-        if (this.isShowModalDetailPost) {
-          video.pause(); // Tạm dừng video nếu modal đang mở
-        }
+    if (isPlatformBrowser(this.platformId)) {
+      const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
+      videos.forEach((video) => {
+        video.addEventListener('play', () => {
+          if (this.isShowModalDetailPost) {
+            video.pause();
+          }
+        });
       });
-    });
+    }
   }
   closeModalDeletePost(event: any) {
     if (!event) {

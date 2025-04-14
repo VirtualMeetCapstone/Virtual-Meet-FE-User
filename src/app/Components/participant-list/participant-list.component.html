@@ -1,13 +1,10 @@
 <div class="chat-sidebar" [ngClass]="{'open': isParticipantsOpen}">
-
   <div class="participants-header">
     <h3>Participants</h3>
-
   </div>
   <ul class="participants-list">
     <li *ngFor="let user of participants" class="participant">
-      <img src="https://cdn2.tuoitre.vn/thumb_w/480/2022/12/17/avatar-5-16712397387431162229796.jpeg" class="avatar" alt="User Icon" />
-
+      <img [src]="user.avatarUrl || 'assets/default-avatar.jpg'" class="avatar" alt="User Icon" />
       <div class="participant-info">
         <span class="name">{{ user.name }}</span>
         <span class="status">
@@ -15,15 +12,16 @@
           <i *ngIf="!user.muted" class="pi pi-microphone"></i>
           <i *ngIf="user.cameraOff" class="pi pi-video-off camera-off"></i>
         </span>
+        <span *ngIf="user.isSelf" class="self-label">(You)</span>
       </div>
-<!--      <div class="actions" *ngIf="isHost">-->
-        <button class="btn " (click)="toggleMute(user)">
+      <div class="actions" *ngIf="isHost && !user.isSelf">
+        <button class="btn" (click)="toggleMute(user)">
           <i class="fa-solid fa-microphone-slash"></i>
         </button>
         <button class="btn kick" (click)="removeUser(user)">
           <i class="fa-solid fa-user-xmark"></i>
         </button>
-<!--      </div>-->
+      </div>
     </li>
   </ul>
 </div>
