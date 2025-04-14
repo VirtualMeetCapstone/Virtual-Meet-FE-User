@@ -21,6 +21,7 @@ export class HomePagePostComponent implements OnInit {
   pageSize: number = 9;
   skip: number = 0;
   loading: boolean = false;
+  initialLoading: boolean = true; // New flag for initial loading
   showModalDeletePost: boolean = false;
 
   userId: string = '';
@@ -34,12 +35,11 @@ export class HomePagePostComponent implements OnInit {
   showReactionPanelForPostId: string | null = null;
 
   toggleMenu(postId: number, event: MouseEvent) {
-    event.stopPropagation(); // tránh trigger openModalDetailPost
+    event.stopPropagation();
     this.openedMenuPostId = this.openedMenuPostId === postId ? null : postId;
   }
 
   reportPost(postId: number) {
-    // Xử lý report
     console.log('Report post', postId);
     this.openedMenuPostId = null;
   }
@@ -71,6 +71,7 @@ export class HomePagePostComponent implements OnInit {
       this.openModalDetailPost(postId);
     });
   }
+
   openModalDeletePost(post: any) {
     this.postToDelete = post;
     this.showModalDeletePost = true;
@@ -81,11 +82,12 @@ export class HomePagePostComponent implements OnInit {
     videos.forEach((video) => {
       video.addEventListener('play', () => {
         if (this.isShowModalDetailPost) {
-          video.pause(); // Tạm dừng video nếu modal đang mở
+          video.pause();
         }
       });
     });
   }
+
   closeModalDeletePost(event: any) {
     if (!event) {
       this.showModalDeletePost = false;
@@ -96,6 +98,7 @@ export class HomePagePostComponent implements OnInit {
       this.loadMorePosts();
     }
   }
+
   loadMorePosts() {
     if (
       this.loading ||
@@ -121,6 +124,9 @@ export class HomePagePostComponent implements OnInit {
       }
       this.skip += this.pageSize;
       this.loading = false;
+      if (this.initialLoading) {
+        this.initialLoading = false; // Turn off initial loading after first fetch
+      }
       this.updateAllPostReactions();
     });
   }
@@ -136,14 +142,14 @@ export class HomePagePostComponent implements OnInit {
 
   getReactionColor(type: string): string {
     const colors: { [key: string]: string } = {
-      like: '#007bff', // blue
-      love: '#e91e63', // pink
-      haha: '#ffca28', // yellow
-      wow: '#ffeb3b', // light yellow
-      sad: '#90caf9', // light blue
-      angry: '#f44336', // red
+      like: '#007bff',
+      love: '#e91e63',
+      haha: '#ffca28',
+      wow: '#ffeb3b',
+      sad: '#90caf9',
+      angry: '#f44336',
     };
-    return colors[type] || '#606770'; // default gray
+    return colors[type] || '#606770';
   }
 
   setReaction(postId: string, reactionType: string, event: Event) {
@@ -159,17 +165,17 @@ export class HomePagePostComponent implements OnInit {
     this.postService.getUserReactions(postId).subscribe((reactions: any) => {
       const post = this.listPost.find((p) => p.id === postId);
       if (post) {
-        post.reactionCounts = reactions.counts; // Số lượng từng loại phản ứng
-        post.topReactions = reactions.topReactions; // 3 phản ứng phổ biến nhất
-        post.likeCount = reactions.totalCount; // Tổng số phản ứng
-        post.reactionsData = reactions.data; // Lưu danh sách người dùng để dùng trong pop-up
+        post.reactionCounts = reactions.counts;
+        post.topReactions = reactions.topReactions;
+        post.likeCount = reactions.totalCount;
+        post.reactionsData = reactions.data;
         const userReaction = reactions.data.find(
           (r: any) => r.id === this.userId
         );
         post.currentUserReaction = userReaction
           ? this.mapReactionNumberToType(userReaction.reactionType)
           : null;
-        this.listPost = [...this.listPost]; // Trigger cập nhật UI
+        this.listPost = [...this.listPost];
       }
     });
   }
@@ -203,16 +209,16 @@ export class HomePagePostComponent implements OnInit {
     event.stopPropagation();
     const post = this.listPost.find((p) => p.id === postId);
     if (post && post.reactionCounts) {
-      console.log('Reaction Counts:', post.reactionCounts); // Kiểm tra dữ liệu
+      console.log('Reaction Counts:', post.reactionCounts);
       this.dialog.open(ReactionSummaryComponent, {
         width: '500px',
         data: {
           reactionCounts: post.reactionCounts,
           postId,
-          users: post.reactionsData, // Truyền danh sách người dùng đã phản ứng
+          users: post.reactionsData,
         },
-        disableClose: false, // Cho phép đóng khi click ra ngoài
-        panelClass: 'reaction-summary-dialog', // Thêm class để tùy chỉnh CSS nếu cần
+        disableClose: false,
+        panelClass: 'reaction-summary-dialog',
       });
     }
   }
@@ -295,7 +301,6 @@ export class HomePagePostComponent implements OnInit {
     return this.externalService.getSafeUrl(url);
   }
 
-  // Thêm phương thức để xác định class cho post-images
   getMediaClass(count: number): string {
     if (count === 1) return 'one';
     if (count === 2) return 'two';
@@ -303,33 +308,30 @@ export class HomePagePostComponent implements OnInit {
     return '';
   }
 
-  // Focus vào input comment (mở modal detail post)
   focusCommentInput(postId: string) {
-    this.openModalDetailPost(postId); // Gọi hàm mở modal chi tiết bài post
+    this.openModalDetailPost(postId);
   }
 
-  // Share bài post
   sharePost(postId: string) {
-    // Logic để share bài post, ví dụ: mở modal share hoặc sao chép link
     console.log('Share post', postId);
   }
 
   disableVideoInteraction() {
     const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
     videos.forEach((video) => {
-      video.classList.add('video-disabled'); // Thêm lớp vô hiệu hóa
-      video.pause(); // Đảm bảo video được tạm dừng
+      video.classList.add('video-disabled');
+      video.pause();
     });
   }
 
   enableVideoInteraction() {
     const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
     videos.forEach((video) => {
-      video.classList.remove('video-disabled'); // Xóa lớp vô hiệu hóa
+      video.classList.remove('video-disabled');
     });
   }
 
   goToProfile(userId: string) {
-    this.router.navigate(['/my-profile', userId]); // Điều hướng tới /my-profile/{userId}
+    this.router.navigate(['/my-profile', userId]);
   }
 }
