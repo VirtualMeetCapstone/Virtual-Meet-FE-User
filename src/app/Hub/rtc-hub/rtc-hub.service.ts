@@ -735,179 +735,274 @@ export class RtcHubService {
     });
   }
 
-  public async toggleVideo(): Promise<void> {
-    if (!this.roomHubService.localStream) {
-      return;
-    }
-
-    // Lật trạng thái video: nếu đang tắt thì bật, nếu bật thì tắt
-    this.roomHubService._videoEnabled = !this.roomHubService._videoEnabled;
-
-    // Lấy danh sách video tracks hiện có
-    let videoTracks = this.roomHubService.localStream.getVideoTracks();
-
-    // Nếu người dùng muốn bật video nhưng chưa có video track, yêu cầu tạo mới
-    if (this.roomHubService._videoEnabled && videoTracks.length === 0) {
-      try {
-        const newStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        const newVideoTracks = newStream.getVideoTracks();
-        newVideoTracks.forEach((track) => {
-          this.roomHubService.localStream!.addTrack(track);
-          videoTracks.push(track);
-        });
-      } catch (err) {
-        console.error('❌ Không thể lấy video track:', err);
+    public async toggleVideo(): Promise<void> {
+      if (!this.roomHubService.localStream) {
         return;
       }
+
+      // Lật trạng thái video: nếu đang tắt thì bật, nếu bật thì tắt
+      this.roomHubService._videoEnabled = !this.roomHubService._videoEnabled;
+
+      // Lấy danh sách video tracks hiện có
+      let videoTracks = this.roomHubService.localStream.getVideoTracks();
+
+      // Nếu người dùng muốn bật video nhưng chưa có video track, yêu cầu tạo mới
+      if (this.roomHubService._videoEnabled && videoTracks.length === 0) {
+        try {
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          const newVideoTracks = newStream.getVideoTracks();
+          newVideoTracks.forEach((track) => {
+            this.roomHubService.localStream!.addTrack(track);
+            videoTracks.push(track);
+          });
+        } catch (err) {
+          console.error('❌ Không thể lấy video track:', err);
+          return;
+        }
+      }
+
+      // Nếu vẫn không có video track sau khi yêu cầu, thoát hàm
+      if (videoTracks.length === 0) {
+        console.warn('❌ Không có video track để thay đổi trạng thái.');
+        return;
+      }
+
+      // Lặp qua tất cả các video tracks để bật/tắt theo trạng thái mới
+      for (const track of videoTracks) {
+        track.enabled = this.roomHubService._videoEnabled;
+
+        // Nếu đang sử dụng livekit để publish track
+        if (this.livekitRoom && this.livekitRoom.localParticipant) {
+          const publication =
+            this.livekitRoom.localParticipant.getTrackPublication(
+              track.kind === 'video'
+                ? Track.Source.Camera
+                : Track.Source.Microphone
+            );
+          if (this.roomHubService._videoEnabled) {
+            if (publication) {
+              // Nếu track đã publish, chỉ cần set track.enabled
+            } else if (this.livekitRoom.state === 'connected') {
+              try {
+                await this.livekitRoom.localParticipant.publishTrack(track);
+              } catch (err) {
+                // Xử lý lỗi nếu cần
+              }
+            }
+          } else {
+            // Nếu tắt video, có thể unpublish track nếu framework hỗ trợ
+            // (tuỳ vào API của LiveKit)
+          }
+        } else {
+          // Nếu không dùng livekit, kiểm tra và thay thế track cho RTCPeerConnection
+          const sender = this.getRTCSender(track);
+          if (this.roomHubService._videoEnabled) {
+            if (sender) {
+              try {
+                await sender.replaceTrack(track);
+              } catch (err) {
+                // Xử lý lỗi nếu cần
+              }
+            } else {
+              for (const peer of Object.values(this.peers)) {
+                if (
+                  peer.connection &&
+                  peer.connection.connectionState === 'connected'
+                ) {
+                  peer.connection.addTrack(
+                    track,
+                    this.roomHubService.localStream
+                  );
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      await this.roomHubService.sendVideoStatus(this.roomHubService._videoEnabled);
+
     }
 
-    // Nếu vẫn không có video track sau khi yêu cầu, thoát hàm
-    if (videoTracks.length === 0) {
-      console.warn('❌ Không có video track để thay đổi trạng thái.');
-      return;
-    }
+    // Bật/tắt audio
+    public async toggleAudio(): Promise<void> {
+      if (!this.roomHubService.localStream) {
+        return;
+      }
 
-    // Lặp qua tất cả các video tracks để bật/tắt theo trạng thái mới
-    for (const track of videoTracks) {
-      track.enabled = this.roomHubService._videoEnabled;
+      // Lật trạng thái audio: nếu đang tắt thì bật, nếu bật thì tắt
+      this.roomHubService._audioEnabled = !this.roomHubService._audioEnabled;
 
-      // Nếu đang sử dụng livekit để publish track
-      if (this.livekitRoom && this.livekitRoom.localParticipant) {
-        const publication =
-          this.livekitRoom.localParticipant.getTrackPublication(
-            track.kind === 'video'
-              ? Track.Source.Camera
-              : Track.Source.Microphone
-          );
-        if (this.roomHubService._videoEnabled) {
-          if (publication) {
-            // Nếu track đã publish, chỉ cần set track.enabled
-          } else if (this.livekitRoom.state === 'connected') {
-            try {
-              await this.livekitRoom.localParticipant.publishTrack(track);
-            } catch (err) {
-              // Xử lý lỗi nếu cần
+      // Lấy danh sách audio tracks hiện có
+      let audioTracks = this.roomHubService.localStream.getAudioTracks();
+
+      // Nếu người dùng muốn bật audio mà chưa có audio track, yêu cầu tạo mới
+      if (this.roomHubService._audioEnabled && audioTracks.length === 0) {
+        try {
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+          const newAudioTracks = newStream.getAudioTracks();
+          newAudioTracks.forEach((track) => {
+            this.roomHubService.localStream!.addTrack(track);
+            audioTracks.push(track);
+          });
+
+
+        } catch (err) {
+          console.error('❌ Không thể lấy audio track:', err);
+          return;
+        }
+      }
+
+      // Nếu sau khi cố gắng vẫn không có audio track thì thoát hàm
+      if (audioTracks.length === 0) {
+        console.warn('❌ Không có audio track để thay đổi trạng thái.');
+        return;
+      }
+
+      // Lặp qua tất cả các audio tracks để bật/tắt theo trạng thái mới
+      for (const track of audioTracks) {
+        track.enabled = this.roomHubService._audioEnabled;
+
+        if (this.livekitRoom && this.livekitRoom.localParticipant) {
+          const publication =
+            this.livekitRoom.localParticipant.getTrackPublication(
+              track.kind === 'audio'
+                ? Track.Source.Microphone
+                : Track.Source.Camera
+            );
+          if (this.roomHubService._audioEnabled) {
+            if (publication) {
+              // Track đã được publish, chỉ cần set track.enabled
+            } else if (this.livekitRoom.state === 'connected') {
+              try {
+                await this.livekitRoom.localParticipant.publishTrack(track);
+              } catch (err) {
+                // Xử lý lỗi im lặng, có thể thêm logic retry nếu cần
+              }
             }
           }
         } else {
-          // Nếu tắt video, có thể unpublish track nếu framework hỗ trợ
-          // (tuỳ vào API của LiveKit)
-        }
-      } else {
-        // Nếu không dùng livekit, kiểm tra và thay thế track cho RTCPeerConnection
-        const sender = this.getRTCSender(track);
-        if (this.roomHubService._videoEnabled) {
-          if (sender) {
-            try {
-              await sender.replaceTrack(track);
-            } catch (err) {
-              // Xử lý lỗi nếu cần
-            }
-          } else {
-            for (const peer of Object.values(this.peers)) {
-              if (
-                peer.connection &&
-                peer.connection.connectionState === 'connected'
-              ) {
-                peer.connection.addTrack(
-                  track,
-                  this.roomHubService.localStream
-                );
-                break;
+          const sender = this.getRTCSender(track);
+          if (this.roomHubService._audioEnabled) {
+            if (sender) {
+              try {
+                await sender.replaceTrack(track);
+              } catch (err) {
+                // Xử lý lỗi im lặng
+              }
+            } else {
+              for (const peer of Object.values(this.peers)) {
+                if (
+                  peer.connection &&
+                  peer.connection.connectionState === 'connected'
+                ) {
+                  peer.connection.addTrack(
+                    track,
+                    this.roomHubService.localStream
+                  );
+                  break;
+                }
               }
             }
           }
         }
       }
-    }
-  }
-
-  // Bật/tắt audio
-  public async toggleAudio(): Promise<void> {
-    if (!this.roomHubService.localStream) {
-      return;
+      await this.roomHubService.sendMicStatus(this.roomHubService._audioEnabled);
     }
 
-    // Lật trạng thái audio: nếu đang tắt thì bật, nếu bật thì tắt
-    this.roomHubService._audioEnabled = !this.roomHubService._audioEnabled;
-
-    // Lấy danh sách audio tracks hiện có
-    let audioTracks = this.roomHubService.localStream.getAudioTracks();
-
-    // Nếu người dùng muốn bật audio mà chưa có audio track, yêu cầu tạo mới
-    if (this.roomHubService._audioEnabled && audioTracks.length === 0) {
-      try {
-        const newStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        const newAudioTracks = newStream.getAudioTracks();
-        newAudioTracks.forEach((track) => {
-          this.roomHubService.localStream!.addTrack(track);
-          audioTracks.push(track);
-        });
-      } catch (err) {
-        console.error('❌ Không thể lấy audio track:', err);
+    public async forceMute(): Promise<void> {
+      if (!this.roomHubService.localStream) {
+        console.warn('⚠️ Không tìm thấy localStream để tắt tiếng.');
         return;
       }
-    }
 
-    // Nếu sau khi cố gắng vẫn không có audio track thì thoát hàm
-    if (audioTracks.length === 0) {
-      console.warn('❌ Không có audio track để thay đổi trạng thái.');
-      return;
-    }
+      this.roomHubService._audioEnabled = false;
 
-    // Lặp qua tất cả các audio tracks để bật/tắt theo trạng thái mới
-    for (const track of audioTracks) {
-      track.enabled = this.roomHubService._audioEnabled;
-
-      if (this.livekitRoom && this.livekitRoom.localParticipant) {
-        const publication =
-          this.livekitRoom.localParticipant.getTrackPublication(
-            track.kind === 'audio'
-              ? Track.Source.Microphone
-              : Track.Source.Camera
-          );
-        if (this.roomHubService._audioEnabled) {
-          if (publication) {
-            // Track đã được publish, chỉ cần set track.enabled
-          } else if (this.livekitRoom.state === 'connected') {
-            try {
-              await this.livekitRoom.localParticipant.publishTrack(track);
-            } catch (err) {
-              // Xử lý lỗi im lặng, có thể thêm logic retry nếu cần
-            }
-          }
-        }
-      } else {
-        const sender = this.getRTCSender(track);
-        if (this.roomHubService._audioEnabled) {
-          if (sender) {
-            try {
-              await sender.replaceTrack(track);
-            } catch (err) {
-              // Xử lý lỗi im lặng
-            }
-          } else {
-            for (const peer of Object.values(this.peers)) {
-              if (
-                peer.connection &&
-                peer.connection.connectionState === 'connected'
-              ) {
-                peer.connection.addTrack(
-                  track,
-                  this.roomHubService.localStream
-                );
-                break;
-              }
-            }
-          }
-        }
+      const audioTracks = this.roomHubService.localStream.getAudioTracks();
+      if (audioTracks.length === 0) {
+        console.warn('⚠️ Không có audio tracks để tắt.');
+        return;
       }
+
+      for (const track of audioTracks) {
+        track.enabled = false; // Tắt track
+        console.log(`🔇 Đã tắt audio track: ${track.id}`);
+      }
+      await this.roomHubService.sendMicStatus(false);
     }
-  }
+
+    public async forceCamera(): Promise<void> {
+      if (!this.roomHubService.localStream) {
+        console.warn('⚠️ Không tìm thấy localStream để tắt camera.');
+        return;
+      }
+
+      this.roomHubService._videoEnabled = false;
+
+      const videoTracks = this.roomHubService.localStream.getVideoTracks();
+      if (videoTracks.length === 0) {
+        console.warn('⚠️ Không có video tracks để tắt.');
+        return;
+      }
+
+      for (const track of videoTracks) {
+        track.enabled = false; // Tắt track video
+        console.log(`📷 Đã tắt video track: ${track.id}`);
+      }
+
+      await this.roomHubService.sendVideoStatus(false);
+    }
+
+    public async forceUnmute(): Promise<void> {
+      if (!this.roomHubService.localStream) {
+        console.warn('⚠️ Không tìm thấy localStream để bật mic.');
+        return;
+      }
+
+      this.roomHubService._audioEnabled = true;
+
+      const audioTracks = this.roomHubService.localStream.getAudioTracks();
+      if (audioTracks.length === 0) {
+        console.warn('⚠️ Không có audio tracks để bật.');
+        return;
+      }
+
+      for (const track of audioTracks) {
+        track.enabled = true;
+        console.log(`🎤 Đã bật lại audio track: ${track.id}`);
+      }
+
+      await this.roomHubService.sendMicStatus(true);
+    }
+
+    public async forceCameraOn(): Promise<void> {
+      if (!this.roomHubService.localStream) {
+        console.warn('⚠️ Không tìm thấy localStream để bật camera.');
+        return;
+      }
+
+      this.roomHubService._videoEnabled = true;
+
+      const videoTracks = this.roomHubService.localStream.getVideoTracks();
+      if (videoTracks.length === 0) {
+        console.warn('⚠️ Không có video tracks để bật.');
+        return;
+      }
+
+      for (const track of videoTracks) {
+        track.enabled = true;
+        console.log(`📸 Đã bật lại video track: ${track.id}`);
+      }
+
+      await this.roomHubService.sendVideoStatus(true);
+    }
+
+
 
   public async leaveRoom(): Promise<void> {
     if (this.usingLiveKit && this.livekitRoom) {
@@ -920,5 +1015,8 @@ export class RtcHubService {
     }
     this.roomHubService.leaveRoom();
   }
+
+
+
 
 }

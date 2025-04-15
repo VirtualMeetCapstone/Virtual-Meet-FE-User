@@ -194,14 +194,12 @@ export class RoomComponentComponent implements OnInit {
         this.peers = await Promise.all(
           peers.map(async (peer) => {
             const isCurrentUser = peer.peerId === this.userId;
-
-            // Lấy thông tin người dùng từ backend hoặc cache
             let userInfo = await this.loadUserInfo(peer.userName);
 
             return {
               ...peer,
-              userName: isCurrentUser ? 'You' : userInfo?.name || peer.userName, // Hiển thị tên hoặc "You" nếu là chính bạn
-              avatarUrl: userInfo?.picture?.url, // URL avatar nếu có
+              userName: isCurrentUser ? 'You' : userInfo?.name || peer.userName,
+              avatarUrl: userInfo?.picture?.url,
             };
           })
         );
@@ -221,7 +219,6 @@ export class RoomComponentComponent implements OnInit {
     }
 
     const user = await this.authService.getBackendUser(userId);
-    console.log('🔹 Backend user data:', user);
     this.userNameCache.set(userId, user);
     return user;
   }
@@ -263,6 +260,34 @@ export class RoomComponentComponent implements OnInit {
     this.roomHubService.onVideoSelected((roomId, videoId, time, isPaused) => {
       this._playerService.initializePlayer(videoId, time, isPaused);
     });
+
+    this.roomHubService.receiveHostMuted(async (userId: string, muted: boolean) => {
+      if (userId === this.userId) {
+        if (muted) {
+          await this.rtcHub.forceMute(); // Tắt mic
+          this.isMicOn = false; // Cập nhật trạng thái mic
+        } else {
+          this.isMicOn = true; // Cập nhật trạng thái mic
+          await this.rtcHub.forceUnmute();
+        }
+      }
+    });
+
+    this.roomHubService.receiveHostMutedVIdeo(async (userId: string, muted: boolean) => {
+      if (userId === this.userId) {
+        if (muted) {
+          await this.rtcHub.forceCamera();
+          this.isCameraOn = false;
+          console.log('📷 Bạn đã bị host tắt camera.');
+        } else {
+          this.isCameraOn = true;
+          await this.rtcHub.forceCameraOn();
+          console.log('📷 Host đã bật lại camera của bạn.');
+        }
+      }
+    });
+
+
   }
 
   // Hàm mở/đóng modal chọn hoạt động
