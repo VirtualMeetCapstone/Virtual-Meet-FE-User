@@ -49,6 +49,8 @@ export class MyProfileComponent implements OnInit {
 
   // Trạng thái follow của profile (nếu không phải của chính người dùng)
   isFollowing: boolean = false;
+  isBlocked: boolean = false;
+  isLoggedUseBlockedByUser: boolean = false;
 
   selectedTab = 0;
 
@@ -64,42 +66,49 @@ export class MyProfileComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Lấy token từ localStorage
-      this.token = localStorage.getItem('accessToken') || '';
-      if (this.token) {
-        try {
-          const decoded = decodeJwt(this.token);
-          this.loggedInUserId = decoded.id;
-        } catch (error) {
-          console.error('Lỗi khi giải mã token:', error);
-        }
-      } else {
-        console.error('Token not found, vui lòng đăng nhập lại.');
-        // Bạn có thể chuyển hướng về trang đăng nhập nếu cần
-        return;
-      }
-
-      // Đăng ký subscribe route params và gọi fetchProfile
-      this.route.params.subscribe(async (params) => {
-        this.userId = params['id'];
-        this.isOwnProfile = this.userId === this.loggedInUserId;
-        if (this.userId) {
-          await this.fetchProfile(this.userId);
-        }
-      });
-    }
-  }
-
-  async fetchProfile(id: string) {
     this.isLoading = true;
-    try {
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.token = localStorage.getItem('accessToken') || '';
       if (!this.token) {
         console.error('Token not found, vui lòng đăng nhập lại.');
         return;
       }
 
-      // Gọi API lấy thông tin profile
+      try {
+        const decoded = decodeJwt(this.token);
+        this.loggedInUserId = decoded.id;
+      } catch (error) {
+        console.error('Lỗi khi giải mã token:', error);
+        return;
+      }
+
+      const params = this.route.snapshot.params;
+      this.userId = params['id'];
+      this.isOwnProfile = this.userId === this.loggedInUserId;
+
+      // ✅ Kiểm tra block trước khi làm gì khác
+      const isBlocked = await this.checkIfBlockedByOther();
+      if (isBlocked) {
+        console.log('Bị block, chuyển trang 404');
+        window.location.href = '/404';
+        return;
+      }
+
+      // ✅ Chỉ fetch nếu không bị block
+      await this.fetchProfile(this.userId);
+    }
+  }
+
+  async fetchProfile(id: string) {
+    try {
+      if (!this.token) {
+        console.error('Token not found, vui lòng đăng nhập lại.');
+        return;
+      }
+      this.CheckUserIdBlockedByLoggedInUserOrNot();
+
+      console.log('ko cook');
       const profileResponse = await fetch(
         `${AppConstants.API_BASE_URL_HTTPS}/users/${id}`,
         {
@@ -137,6 +146,28 @@ export class MyProfileComponent implements OnInit {
       // Ép Angular cập nhật giao diện nếu cần
       this.cd.detectChanges();
     }
+  }
+  CheckUserIdBlockedByLoggedInUserOrNot() {
+    this.followUserService
+      .viewListBlockedByUser(this.loggedInUserId)
+      .subscribe((data: any) => {
+        console.log('list block', data);
+        this.isBlocked = data.some(
+          (blockedUser: any) => blockedUser.blockedByUserId === this.userId
+        );
+      });
+  }
+  checkIfBlockedByOther(): Promise<boolean> {
+    return lastValueFrom(
+      this.followUserService.ViewListPeopleBlockedUser(this.loggedInUserId)
+    ).then((data: any) => {
+      console.log('list user block Loggeduser', data);
+      const isBlocked = data.some(
+        (blockedUser: any) => blockedUser.blockedByUserId === this.userId
+      );
+      console.log('bi block', isBlocked);
+      return isBlocked;
+    });
   }
 
   // Hàm mở modal chỉnh sửa profile
@@ -188,6 +219,20 @@ export class MyProfileComponent implements OnInit {
       // Chuyển Observable thành Promise để chờ toggle hoàn thành
       await lastValueFrom(
         this.followUserService.followUser(this.userId, this.loggedInUserId)
+      );
+      // Sau khi toggle thành công, gọi lại fetchProfile để cập nhật dữ liệu
+      await this.fetchProfile(this.userId);
+      // Ép Angular cập nhật giao diện
+      this.cd.detectChanges();
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+    }
+  }
+  async toggleBlock() {
+    try {
+      // Chuyển Observable thành Promise để chờ toggle hoàn thành
+      await lastValueFrom(
+        this.followUserService.blockUser(this.userId, this.loggedInUserId)
       );
       // Sau khi toggle thành công, gọi lại fetchProfile để cập nhật dữ liệu
       await this.fetchProfile(this.userId);
