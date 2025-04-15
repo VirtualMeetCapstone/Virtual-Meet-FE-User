@@ -1,0 +1,55 @@
+<section class="avenue-messenger" [class.minimized]="isMinimized">
+  <div class="menu" *ngIf="!isMinimized">
+    <div class="button">
+      <a href="#" title="Minimize" (click)="toggleMinimize($event)">X</a>
+    </div>
+  </div>
+  <div class="agent-face" *ngIf="!isMinimized">
+    <div class="half">
+      <img
+        class="agent circle"
+        src="/assets/img/virtual-chat.png"
+        alt="ai-chat-box-icon"
+      />
+    </div>
+  </div>
+  <div class="chat" *ngIf="!isMinimized">
+    <div class="chat-title">
+      <h1>VirtualMeet</h1>
+      <h2>Assistant</h2>
+    </div>
+    <div class="messages">
+      <div class="messages-content">
+        <div
+          *ngFor="let message of messages"
+          [class.message-personal]="message.isUser"
+          class="message"
+        >
+          <div class="message-text">{{ message.text }}</div>
+          <div class="message-footer">
+            <div class="timestamp">
+              {{ message.timestamp | date : "shortTime" }}
+            </div>
+            <div class="checkmark-read">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="message-box">
+      <textarea
+        class="message-input"
+        placeholder="Type message..."
+        [(ngModel)]="userInput"
+        (keyup.enter)="sendMessage()"
+      ></textarea>
+      <button class="message-submit" (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+  <div
+    class="chat-icon-container"
+    *ngIf="isMinimized"
+    (click)="toggleMinimize($event)"
+  >
+    <img src="/assets/img/virtual-chat.png" alt="ai-chat-box-icon" />
+  </div>
+</section>

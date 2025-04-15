@@ -57,7 +57,7 @@
               (click)="onClickNotification()"
             ></i>
             <span
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              class="position-absolute top-0 left-0 start-100 translate-middle badge rounded-pill bg-danger"
             >
               {{ totalNotification }}
             </span>
@@ -170,11 +170,15 @@
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a
               href="#"
-              (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()"
+              (click)="
+                editProfile(); $event.preventDefault(); $event.stopPropagation()
+              "
               >Edit Profile</a
             >
             <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
-            <a href="/vip-history" (click)="$event.stopPropagation()">Lịch sử VIP</a>
+            <a href="/vip-history" (click)="$event.stopPropagation()"
+              >Lịch sử VIP</a
+            >
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>
