@@ -23,7 +23,7 @@ jobs:
             rm -rf node_modules package-lock.json .angular .cache dist
             npm cache clean --force
             echo "🚀 Cài đặt lại dependencies..."
-            npm install --legacy-peer-deps --prefer-offline --no-audit --progress=false --silent
+            npm install --legacy-peer-deps
 
 
       - name: Build Angular
