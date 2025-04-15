@@ -43,6 +43,9 @@
             <button class="edit-profile-button" (click)="toggleFollow()">
               {{ isFollowing ? "Đã Follow" : "Follow" }}
             </button>
+            <button class="promote-post-button" (click)="toggleBlock()">
+              {{ isBlocked ? "Đã Block" : "Block" }}
+            </button>
             <button class="share-button">
               <i class="fa-solid fa-share"></i>
             </button>

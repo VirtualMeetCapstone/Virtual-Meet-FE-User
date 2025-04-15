@@ -10,17 +10,20 @@
         <span class="status">
           <i *ngIf="user.muted" class="pi pi-microphone-slash muted"></i>
           <i *ngIf="!user.muted" class="pi pi-microphone"></i>
-          <i *ngIf="user.cameraOff" class="pi pi-video-off camera-off"></i>
         </span>
         <span *ngIf="user.isSelf" class="self-label">(You)</span>
       </div>
       <div class="actions" *ngIf="isHost && !user.isSelf">
         <button class="btn" (click)="toggleMute(user)">
-          <i class="fa-solid fa-microphone-slash"></i>
+          <i *ngIf="!user.muted" class="fa-solid fa-microphone"></i>
+          <i *ngIf="user.muted" class="fa-solid fa-microphone-slash"></i>
         </button>
-        <button class="btn kick" (click)="removeUser(user)">
-          <i class="fa-solid fa-user-xmark"></i>
+
+        <button class="btn" (click)="toggleVideo(user)">
+          <i *ngIf="user.cameraOff" class="fa-solid fa-video-slash"></i>
+          <i *ngIf="!user.cameraOff" class="fa-solid fa-video"></i>
         </button>
+
       </div>
     </li>
   </ul>

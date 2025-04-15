@@ -232,8 +232,8 @@ body {
 
 /* Trường hợp 3 ảnh trở lên */
 .post-images.three-plus {
-  grid-template-columns: 1fr 1fr; /* Bên trái 1 phần, bên phải 1 phần */
-  grid-template-rows: repeat(2, 1fr); /* 3 hàng cho ảnh bên phải */
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
 }
 
 /* Overlay cho ảnh thứ 4 trở đi */
@@ -242,12 +242,12 @@ body {
 }
 
 .video-disabled {
-  pointer-events: none; /* Ngăn tương tác */
-  opacity: 0.5; /* Tùy chọn: làm mờ video để biểu thị nó bị vô hiệu hóa */
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .post-images.three-plus .media-item:nth-child(4)::after {
-  content: "+ " attr(data-more); /* Hiển thị số ảnh còn lại */
+  content: "+ " attr(data-more);
   position: absolute;
   top: 10px;
   left: 0;
@@ -389,15 +389,15 @@ body {
 
 /* Reaction panel */
 .reaction-panel {
-  position: fixed; /* Sử dụng fixed để tránh bị ảnh hưởng bởi scroll */
-  background-color: #fff; /* Màu nền trắng giống Facebook */
-  border-radius: 25px; /* Bo tròn mạnh hơn */
-  padding: 5px; /* Khoảng cách bên trong */
+  position: fixed;
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 5px;
   display: flex;
-  gap: 8px; /* Khoảng cách giữa các nút */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
-  z-index: 1000; /* Đảm bảo panel nằm trên các phần tử khác */
-  animation: fadeIn 0.2s ease-in-out; /* Hiệu ứng xuất hiện */
+  gap: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .reaction-panel button {
@@ -438,6 +438,24 @@ body {
   align-items: center;
   z-index: 1050;
   color: red;
+}
+
+/* Loading more posts */
+.loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* No more data message */
+.no-more-data {
+  text-align: center;
+  padding: 20px;
+}
+
+.no-more-data h3 {
+  font-weight: bold;
+  color: #fff;
 }
 
 /* Hỗ trợ video và ảnh */
@@ -579,7 +597,7 @@ app-story-list {
   position: absolute;
   right: 0;
   top: 40px;
-  background: white;
+  background: rgb(169, 164, 164);
   border: 1px solid #ccc;
   z-index: 10;
   list-style: none;
@@ -587,7 +605,7 @@ app-story-list {
   width: 150px;
 }
 
-.post-menu .dropdown li {
+:post-menu .dropdown li {
   padding: 5px 15px;
   cursor: pointer;
   color: black;
@@ -595,7 +613,7 @@ app-story-list {
 }
 
 .post-menu .dropdown li:hover {
-  background-color: #eee;
+  background-color: #ad5f5f;
 }
 
 .reaction-icons {
@@ -658,7 +676,7 @@ app-story-list {
 .action-buttons button {
   background: none;
   border: none;
-  color: #606770; /* Màu chữ giống Facebook */
+  color: #606770;
   cursor: pointer;
   padding: 5px 10px;
   display: flex;
@@ -666,12 +684,7 @@ app-story-list {
 }
 
 .action-buttons button:hover {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.05
-  ); /* Hiệu ứng hover giống Facebook */
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 5px;
 }
 
@@ -680,19 +693,19 @@ app-story-list {
 }
 
 .like-btn-wrapper {
-  position: relative; /* Để reaction panel định vị tương đối với nút Like */
+  position: relative;
 }
 
 .reaction-panel {
-  position: fixed; /* Sử dụng fixed để tránh bị ảnh hưởng bởi scroll */
-  background-color: #fff; /* Màu nền trắng giống Facebook */
-  border-radius: 25px; /* Bo tròn mạnh hơn */
-  padding: 5px; /* Khoảng cách bên trong */
+  position: fixed;
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 5px;
   display: flex;
-  gap: 8px; /* Khoảng cách giữa các nút */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
-  z-index: 1000; /* Đảm bảo panel nằm trên các phần tử khác */
-  animation: fadeIn 0.2s ease-in-out; /* Hiệu ứng xuất hiện */
+  gap: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .reaction-panel button {
@@ -700,17 +713,17 @@ app-story-list {
   border: none;
   padding: 5px;
   cursor: pointer;
-  transition: transform 0.2s ease; /* Hiệu ứng phóng to */
-  border-radius: 50%; /* Bo tròn nút */
+  transition: transform 0.2s ease;
+  border-radius: 50%;
 }
 
 .reaction-panel button:hover {
-  transform: scale(1.2); /* Phóng to khi hover */
+  transform: scale(1.2);
 }
 
 .reaction-panel i {
-  font-size: 24px; /* Kích thước icon lớn hơn */
-  color: #606770; /* Màu xám giống Facebook */
+  font-size: 24px;
+  color: #606770;
 }
 
 /* Tùy chỉnh màu sắc cho từng loại reaction */

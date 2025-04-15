@@ -4,22 +4,24 @@ import { AppConstants } from '../../constant/AppConstants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomHubService {
+
   public hubConnection: signalR.HubConnection;
   public currentUser = { name: '', roomId: '' };
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
-  private urlBase = AppConstants.API_BASE_URL_HTTPS;
+  private urlBase = AppConstants.API_LOCAL_BASE_URL;
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
 
-  constructor(private router: Router, private auth: AuthService) {
+  constructor(private router: Router, private auth: AuthService,   private http: HttpClient) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.urlBase}/roomHub`, {
         withCredentials: true,
@@ -448,12 +450,111 @@ export class RoomHubService {
 
     this.hubConnection.on('JoinFailed', callback);
   }
+  public receiveHostMuted(callback: (userId: string, muted: boolean) => void): void {
+    this.hubConnection.off('HostMutedUser');
+    this.hubConnection.on('HostMutedUser', (data: { userId: string; muted: boolean }) => {
+      callback(data.userId, data.muted);
+    });
+  }
 
+  public receiveHostMutedVIdeo(callback: (userId: string, muted: boolean) => void): void {
+    this.hubConnection.off('HostMutedVideoUser');
+    this.hubConnection.on('HostMutedVideoUser', (data: { userId: string; muted: boolean }) => {
+      callback(data.userId, data.muted);
+    });
+  }
+
+
+
+  public async sendMute(targetId: string, muted: boolean): Promise<void> {
+    if (!this.currentUser.roomId) {
+      console.error('❌ Không thể gửi yêu cầu tắt/bật mic vì không có roomId.');
+      return;
+    }
+
+    try {
+      await this.hubConnection.invoke('MuteUser', this.currentUser.roomId, targetId, muted);
+      console.log(`📡 Đã gửi yêu cầu ${(muted ? "tắt" : "bật")} mic cho user: ${targetId}`);
+    } catch (error) {
+      console.error('❌ Lỗi khi gửi yêu cầu tắt/bật mic:', error);
+    }
+  }
+
+  public async sendVideoMute(targetId: string, muted: boolean): Promise<void> {
+    if (!this.currentUser.roomId) {
+      console.error('❌ Không thể gửi yêu cầu tắt/bật video vì không có roomId.');
+      return;
+    }
+
+    try {
+      await this.hubConnection.invoke('MuteVideoUser', this.currentUser.roomId, targetId, muted);
+      console.log(`📡 Đã gửi yêu cầu ${(muted ? "tắt" : "bật")} video cho user: ${targetId}`);
+    } catch (error) {
+      console.error('❌ Lỗi khi gửi yêu cầu tắt/bật video:', error);
+    }
+  }
+
+  public async sendMicStatus(isMicOn: boolean): Promise<void> {
+    if (!this.currentUser.roomId) return console.error('❌ Not in a room');
+
+    await this.hubConnection.invoke(
+      'UpdateMicStatus',
+      this.currentUser.roomId,
+      this.currentUser.name,
+      isMicOn
+    );
+
+    console.log(`🎤 Mic status sent: ${isMicOn ? 'ON' : 'OFF'}`);
+  }
+
+  public async sendVideoStatus(isVideoOn: boolean): Promise<void> {
+    if (!this.currentUser.roomId) return console.error('❌ Not in a room');
+
+    await this.hubConnection.invoke(
+      'UpdateCameraStatus',
+      this.currentUser.roomId,
+      this.currentUser.name,
+      isVideoOn
+    );
+
+    console.log(`📹 Video status sent: ${isVideoOn ? 'ON' : 'OFF'}`);
+  }
+
+  public receiveMicStatusUpdate(callback: (userId: string, isMicOn: boolean) => void): void {
+    this.hubConnection.off('ReceiveMicStatusUpdate');
+
+    this.hubConnection.on(
+      'ReceiveMicStatusUpdate',
+      (userId: string, isMicOn: boolean) => {
+        console.log(`🎤 Mic status updated for user ${userId}: ${isMicOn ? 'ON' : 'OFF'}`);
+        callback(userId, isMicOn);
+      }
+    );
+  }
+
+
+  public receiveVideoStatusUpdate(callback: (userId: string, isVideoOn: boolean) => void): void {
+    this.hubConnection.off('ReceiveCameraStatusUpdate');
+
+    this.hubConnection.on(
+      'ReceiveCameraStatusUpdate',
+      (userId: string, isVideoOn: boolean) => {
+        console.log(`📹 Video status updated for user ${userId}: ${isVideoOn ? 'ON' : 'OFF'}`);
+        callback(userId, isVideoOn);
+      }
+    );
+  }
 
   public receiveConnectionID(callback: (connect: string) => void): void {
     this.hubConnection.off('ConnectionId');
 
     this.hubConnection.on('ConnectionId', callback);
+  }
+
+
+  getRoomInfo(roomId: string): Observable<any> {
+    const url = `${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}`;
+    return this.http.get<any>(url);
   }
 
 }

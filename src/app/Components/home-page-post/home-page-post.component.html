@@ -1,200 +1,199 @@
 <div class="container-fluid">
   <div class="main-content">
-    <div class="create-post">
-      <div class="user-info">
-        <div class="grid-container">
-          <!-- Story List -->
-          <div class="story-wrapper">
-            <app-story-list></app-story-list>
-          </div>
-        </div>
-
-        <textarea
-          (click)="openCreatePost()"
-          name="content"
-          placeholder="Write something here..."
-        ></textarea>
-      </div>
-
-      <div class="actions">
-        <button (click)="openCreatePost()">
-          <i class="fas fa-photo-video"> </i>
-          Photo/Video
-        </button>
-        <button (click)="tagFriend()">
-          <i class="fas fa-user-tag"> </i>
-          Tag Friend
-        </button>
-        <button (click)="createFeeling()">
-          <i class="fas fa-smile"> </i>
-          Feeling/Activity
-        </button>
-        <button (click)="openCreatePost()" class="button-create-post">
-          <i class="fa-solid fa-plus"></i>
-          Create
-        </button>
-      </div>
-      <!--      <div class="d-flex justify-content-center mt-3">-->
-      <!--&lt;!&ndash;        <button type="button" class="btn btn-primary">Post</button>&ndash;&gt;-->
-      <!--      </div>-->
+    <!-- Initial Loading Spinner -->
+    <div *ngIf="initialLoading" class="fullscreen-spinner text-center">
+      <app-loading-component></app-loading-component>
     </div>
-    <br />
-    <div
-      class="post"
-      *ngFor="let post of listPost"
-      (click)="openModalDetailPost(post.id)"
-    >
-      <div class="post-header">
-        <img
-          alt="User profile picture"
-          height="40"
-          src="{{ post.user.picture.url }}"
-          width="40"
-          (click)="goToProfile(post.userId); $event.stopPropagation()"
-          style="cursor: pointer"
-        />
-        <div>
-          <div
-            class="name"
-            (click)="goToProfile(post.userId); $event.stopPropagation()"
-            style="cursor: pointer"
-          >
-            {{ post.user.name }}
-          </div>
-          <div class="time">{{ post.createTime }}</div>
-        </div>
-        <div class="post-menu">
-          <button (click)="toggleMenu(post.id, $event)">...</button>
-          <ul class="dropdown" *ngIf="openedMenuPostId === post.id">
-            <li
-              (click)="openModalDeletePost(post); $event.stopPropagation()"
-              *ngIf="post.userId === userId"
-            >
-              Delete post
-            </li>
-            <li (click)="reportPost(post.id)">Report post</li>
-          </ul>
-        </div>
-      </div>
-      <div class="post-content">
-        <p>{{ post.content }}</p>
-        <div class="post-images {{ getMediaClass(post.medias.length) }}">
-          <ng-container *ngFor="let media of post.medias; let i = index">
-            <div
-              class="media-item"
-              *ngIf="i < 4"
-              [attr.data-more]="
-                i === 3 && post.medias.length > 4
-                  ? post.medias.length - 4
-                  : null
-              "
-            >
-              <img *ngIf="media.type === 1" [src]="media.url" alt="Media" />
-              <video
-                *ngIf="media.type === 2"
-                [src]="media.url"
-                controls
-                (click)="$event.stopPropagation()"
-              ></video>
+
+    <!-- Content displayed after initial loading -->
+    <div *ngIf="!initialLoading">
+      <div class="create-post">
+        <div class="user-info">
+          <div class="grid-container">
+            <div class="story-wrapper">
+              <app-story-list></app-story-list>
             </div>
-          </ng-container>
+          </div>
+          <textarea
+            (click)="openCreatePost()"
+            name="content"
+            placeholder="Write something here..."
+          ></textarea>
+        </div>
+        <div class="actions">
+          <button (click)="openCreatePost()">
+            <i class="fas fa-photo-video"> </i>
+            Photo/Video
+          </button>
+          <button (click)="tagFriend()">
+            <i class="fas fa-user-tag"> </i>
+            Tag Friend
+          </button>
+          <button (click)="createFeeling()">
+            <i class="fas fa-smile"> </i>
+            Feeling/Activity
+          </button>
+          <button (click)="openCreatePost()" class="button-create-post">
+            <i class="fa-solid fa-plus"></i>
+            Create
+          </button>
         </div>
       </div>
       <br />
-      <div class="post-actions">
-        <!-- Phần hiển thị số reaction, comment, share -->
-        <div class="post-stats">
-          <div class="likes" (click)="openReactionSummary(post.id, $event)">
-            <div class="reaction-icons" *ngIf="post.topReactions?.length > 0">
-              <ng-container *ngFor="let reaction of post.topReactions">
-                <i [class]="getReactionIcon(reaction)" [title]="reaction"></i>
-              </ng-container>
+      <div
+        class="post"
+        *ngFor="let post of listPost"
+        (click)="openModalDetailPost(post.id)"
+      >
+        <div class="post-header">
+          <img
+            alt="User profile picture"
+            height="40"
+            src="{{ post.user.picture.url }}"
+            width="40"
+            (click)="goToProfile(post.userId); $event.stopPropagation()"
+            style="cursor: pointer"
+          />
+          <div>
+            <div
+              class="name"
+              (click)="goToProfile(post.userId); $event.stopPropagation()"
+              style="cursor: pointer"
+            >
+              {{ post.user.name }}
             </div>
-            <span>{{ post.likeCount || 0 }}</span>
+            <div class="time">{{ post.createTime }}</div>
           </div>
-          <div class="comments">
-            <i class="fas fa-comment"></i>
-            {{ post.commentCount || 0 }}
-          </div>
-          <div class="share">
-            <i class="fas fa-share"></i>
-            {{ post.shareCount || 0 }}
+          <div class="post-menu">
+            <button (click)="toggleMenu(post.id, $event)">...</button>
+            <ul class="dropdown" *ngIf="openedMenuPostId === post.id">
+              <li
+                (click)="openModalDeletePost(post); $event.stopPropagation()"
+                *ngIf="post.userId === userId"
+              >
+                Delete post
+              </li>
+              <li (click)="reportPost(post.id)">Report post</li>
+            </ul>
           </div>
         </div>
-
-        <!-- Phần button tương tác -->
-        <div class="action-buttons">
-          <!-- Wrapper cho nút Like và reaction panel -->
-          <div class="like-btn-wrapper">
-            <button
-              class="like-btn"
-              [style.color]="
-                post.currentUserReaction
-                  ? getReactionColor(post.currentUserReaction)
-                  : '#606770'
-              "
-              (click)="toggleReactionPanel(post.id, $event)"
-            >
-              <i
-                [class]="getReactionIcon(post.currentUserReaction || 'like')"
-                [style.color]="'inherit'"
-              ></i>
-              {{
-                post.currentUserReaction
-                  ? (post.currentUserReaction | titlecase)
-                  : "Like"
-              }}
+        <div class="post-content">
+          <p>{{ post.content }}</p>
+          <div class="post-images {{ getMediaClass(post.medias.length) }}">
+            <ng-container *ngFor="let media of post.medias; let i = index">
+              <div
+                class="media-item"
+                *ngIf="i < 4"
+                [attr.data-more]="
+                  i === 3 && post.medias.length > 4
+                    ? post.medias.length - 4
+                    : null
+                "
+              >
+                <img *ngIf="media.type === 1" [src]="media.url" alt="Media" />
+                <video
+                  *ngIf="media.type === 2"
+                  [src]="media.url"
+                  controls
+                  (click)="$event.stopPropagation()"
+                ></video>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <br />
+        <div class="post-actions">
+          <div class="post-stats">
+            <div class="likes" (click)="openReactionSummary(post.id, $event)">
+              <div class="reaction-icons" *ngIf="post.topReactions?.length > 0">
+                <ng-container *ngFor="let reaction of post.topReactions">
+                  <i [class]="getReactionIcon(reaction)" [title]="reaction"></i>
+                </ng-container>
+              </div>
+              <span>{{ post.likeCount || 0 }}</span>
+            </div>
+            <div class="comments">
+              <i class="fas fa-comment"></i>
+              {{ post.commentCount || 0 }}
+            </div>
+            <div class="share">
+              <i class="fas fa-share"></i>
+              {{ post.shareCount || 0 }}
+            </div>
+          </div>
+          <div class="action-buttons">
+            <div class="like-btn-wrapper">
+              <button
+                class="like-btn"
+                [style.color]="
+                  post.currentUserReaction
+                    ? getReactionColor(post.currentUserReaction)
+                    : '#606770'
+                "
+                (click)="toggleReactionPanel(post.id, $event)"
+              >
+                <i
+                  [class]="getReactionIcon(post.currentUserReaction || 'like')"
+                  [style.color]="'inherit'"
+                ></i>
+                {{
+                  post.currentUserReaction
+                    ? (post.currentUserReaction | titlecase)
+                    : "Like"
+                }}
+              </button>
+            </div>
+            <button class="comment-btn" (click)="focusCommentInput(post.id)">
+              <i class="fas fa-comment"></i> Comment
+            </button>
+            <button class="share-btn" (click)="sharePost(post.id)">
+              <i class="fas fa-share"></i> Share
             </button>
           </div>
-          <button class="comment-btn" (click)="focusCommentInput(post.id)">
-            <i class="fas fa-comment"></i> Comment
-          </button>
-          <button class="share-btn" (click)="sharePost(post.id)">
-            <i class="fas fa-share"></i> Share
-          </button>
-        </div>
-
-        <!-- Reaction panel -->
-        <div
-          class="reaction-panel"
-          *ngIf="showReactionPanelForPostId === post.id"
-        >
-          <button (click)="setReaction(post.id, 'like', $event)" title="Like">
-            <i class="fas fa-thumbs-up"></i>
-          </button>
-          <button (click)="setReaction(post.id, 'love', $event)" title="Love">
-            <i class="fas fa-heart"></i>
-          </button>
-          <button (click)="setReaction(post.id, 'haha', $event)" title="Haha">
-            <i class="fas fa-laugh"></i>
-          </button>
-          <button (click)="setReaction(post.id, 'wow', $event)" title="Wow">
-            <i class="fas fa-surprise"></i>
-          </button>
-          <button (click)="setReaction(post.id, 'sad', $event)" title="Sad">
-            <i class="fas fa-sad-tear"></i>
-          </button>
-          <button (click)="setReaction(post.id, 'angry', $event)" title="Angry">
-            <i class="fas fa-angry"></i>
-          </button>
+          <div
+            class="reaction-panel"
+            *ngIf="showReactionPanelForPostId === post.id"
+          >
+            <button (click)="setReaction(post.id, 'like', $event)" title="Like">
+              <i class="fas fa-thumbs-up"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'love', $event)" title="Love">
+              <i class="fas fa-heart"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'haha', $event)" title="Haha">
+              <i class="fas fa-laugh"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'wow', $event)" title="Wow">
+              <i class="fas fa-surprise"></i>
+            </button>
+            <button (click)="setReaction(post.id, 'sad', $event)" title="Sad">
+              <i class="fas fa-sad-tear"></i>
+            </button>
+            <button
+              (click)="setReaction(post.id, 'angry', $event)"
+              title="Angry"
+            >
+              <i class="fas fa-angry"></i>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      infiniteScroll
-      (scrolled)="loadMorePosts()"
-      [infiniteScrollDistance]="1"
-      [infiniteScrollThrottle]="300"
-    >
-      <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
-        Load More...
-      </h3>
-      <h3
-        style="font-weight: bold; text-align: center"
-        *ngIf="loading == false"
+      <div
+        infiniteScroll
+        (scrolled)="loadMorePosts()"
+        [infiniteScrollDistance]="1"
+        [infiniteScrollThrottle]="300"
       >
-        No more data to load
-      </h3>
+        <div *ngIf="loading" class="loading-more">
+          <app-loading-post></app-loading-post>
+        </div>
+        <div
+          *ngIf="!loading && totalPost !== null && listPost.length >= totalPost"
+          class="no-more-data"
+        >
+          <h3>No more posts to load</h3>
+        </div>
+      </div>
     </div>
   </div>
   <div class="sidebar">
