@@ -16,7 +16,7 @@ export class RoomHubService {
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
-  private urlBase = AppConstants.API_LOCAL_BASE_URL;
+  private urlBase = AppConstants.API_BASE_URL_HTTPS;
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
