@@ -83,7 +83,7 @@ export class CreatePostModalComponent {
       this.roomService.checkInput(content).subscribe({
         next: (response) => {
           console.log('Response from API:', response);
-          if (response.status || (response.badwords && response.badwords.length > 0)) {
+          if (response.status) {
             this.contentError = true; // Đánh dấu lỗi
           } else {
             this.contentError = false; // Xóa lỗi nếu hợp lệ

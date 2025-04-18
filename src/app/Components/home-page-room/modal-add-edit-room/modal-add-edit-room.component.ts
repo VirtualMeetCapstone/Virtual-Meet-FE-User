@@ -145,7 +145,7 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.roomService.checkInput(topic).subscribe({
         next: (response) => {
           console.log('Response from API:', response);
-          if (response.status || (response.badwords && response.badwords.length > 0)) {
+          if (response.status ) {
             this.FormAdd.get('topic')?.setErrors({ invalid: true });
           } else {
             this.FormAdd.get('topic')?.setErrors(null);
@@ -164,7 +164,7 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.roomService.checkInput(description).subscribe({
         next: (response) => {
           console.log('Response from API:', response);
-          if (response.status || (response.badwords && response.badwords.length > 0)) {
+          if (response.status ) {
             this.FormAdd.get('description')?.setErrors({ invalid: true });
           } else {
             this.FormAdd.get('description')?.setErrors(null);
