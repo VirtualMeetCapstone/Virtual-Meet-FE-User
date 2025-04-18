@@ -27,6 +27,7 @@
         <form [formGroup]="FormAdd">
           <div class="container">
             <div class="row">
+              <!-- Topic Input -->
               <div class="col-md-6 mb-3">
                 <label for="topic">Topic</label>
                 <input
@@ -35,17 +36,17 @@
                   id="topic"
                   formControlName="topic"
                   placeholder="Enter topic"
+                  (blur)="checkTopic(FormAdd.get('topic')?.value)"
                 />
                 <div
-                  *ngIf="
-                    FormAdd.get('topic')?.invalid &&
-                    FormAdd.get('topic')?.touched
-                  "
+                  *ngIf="FormAdd.get('topic')?.invalid && FormAdd.get('topic')?.touched"
                   class="text-danger"
                 >
-                  Topic is required.
+                  Topic contains inappropriate content or is invalid.
                 </div>
               </div>
+
+              <!-- Description Input -->
               <div class="col-md-6 mb-3">
                 <label for="description">Description</label>
                 <textarea
@@ -54,15 +55,13 @@
                   formControlName="description"
                   rows="3"
                   placeholder="Enter description"
+                  (blur)="checkDescription(FormAdd.get('description')?.value)"
                 ></textarea>
                 <div
-                  *ngIf="
-                    FormAdd.get('description')?.invalid &&
-                    FormAdd.get('description')?.touched
-                  "
+                  *ngIf="FormAdd.get('description')?.invalid && FormAdd.get('description')?.touched"
                   class="text-danger"
                 >
-                  Description is required.
+                  Description contains inappropriate content or is invalid.
                 </div>
               </div>
             </div>
