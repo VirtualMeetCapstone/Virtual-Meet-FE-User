@@ -23,6 +23,7 @@ import { Story } from '../../../models/story';
 import { TranslateService } from '@ngx-translate/core';
 import { PLATFORM_ID } from '@angular/core';
 import { HomePageRoomComponent } from '../../home-page-room/home-page-room.component';
+import {LogoServiceService} from "../../../services/logo-service/logo-service.service";
 
 @Component({
   selector: 'app-header',
@@ -60,6 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(HomePageRoomComponent, { static: false })
   homePageRoomComponent!: HomePageRoomComponent;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  logoUrl = "";
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
@@ -83,6 +85,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private notifyService: NotificationServiceService,
     private storyService: StoryService,
     private translate: TranslateService,
+    private logoService: LogoServiceService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -137,6 +140,16 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => {
         this.getAllNotification();
       });
+    this.logoService.getLogo().subscribe({
+      next: (res) => {
+        if (res?.media?.url) {
+          this.logoUrl = res.media.url;
+        }
+      },
+      error: () => {
+        console.error('Failed to load logo');
+      }
+    });
   }
 
   getAllNotification() {
