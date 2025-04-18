@@ -1,45 +1,278 @@
-.modal {
-  display: block;
+.modal-delete-wrapper {
   position: fixed;
-  z-index: 5;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  pointer-events: none;
 }
 
-.modal.show {
-  display: block; /* Hiển thị modal khi mở */
+.modal-delete-wrapper * {
+  pointer-events: auto;
 }
 
-.modal-content {
-  background-color: #121212;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 40vw;
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }
 
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.modal-delete-container {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: modalFadeIn 0.3s ease;
+  margin: 1rem; /* Thêm margin cho mobile */
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-@media (max-width: 600px) {
-  .modal-content {
-    background-color: #121212;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90vw;
+/* Giữ nguyên các style khác như trước */
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.modal-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #2d3748;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #718096;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.btn-close:hover {
+  color: #e53e3e;
+}
+
+/* Room Preview */
+.room-preview-section {
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.room-cover {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.room-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.room-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-topic {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.room-owner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.owner-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.owner-name {
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.room-stats {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.badge {
+  padding: 0.25rem 0.5rem;
+  background: #edf2f7;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #4a5568;
+}
+
+/* Warning Message */
+.warning-message {
+  padding: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  background: #fffaf0;
+  color: #dd6b20;
+}
+
+.warning-message i {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.warning-message p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+/* Action Buttons */
+.modal-actions {
+  padding: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary {
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-danger {
+  background: #e53e3e;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c53030;
+}
+/* Container chính */
+.room-preview {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+/* Container hình ảnh */
+.room-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9; /* Tỉ lệ ảnh chuẩn */
+  background: #f5f7fa;
+}
+
+/* Ảnh phòng */
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Placeholder khi không có ảnh */
+.room-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e0;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+}
+
+/* Container topic */
+.room-topic-container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* Text topic */
+.room-topic {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fullscreen-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
 }

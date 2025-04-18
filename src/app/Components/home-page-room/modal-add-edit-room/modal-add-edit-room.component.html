@@ -3,140 +3,129 @@
 </div>
 <div class="modal">
   <div class="modal-content">
-    <div class="title">
-      <i
-        class="fa-solid fa-x iconX d-flex justify-content-end"
-        style="cursor: pointer"
-        (click)="onCloseModal()"
-      ></i>
-      <h3
-        class="login-title"
-        style="text-align: center"
-        *ngIf="roomToEdit == null"
-      >
-        Do you want to add room ?
+    <div class="modal-header">
+      <h3 class="modal-title" *ngIf="roomToEdit == null">Add New Room</h3>
+      <h3 class="modal-title" *ngIf="roomToEdit != null">
+        Update Room "{{ roomToEdit.topic }}"
       </h3>
-      <h3
-        class="login-title"
-        style="text-align: center"
-        *ngIf="roomToEdit != null"
-      >
-        Do you want to update the room with the topic "{{ roomToEdit.topic }}" ?
-      </h3>
-      <div class="content">
-        <form [formGroup]="FormAdd">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="topic">Topic</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="topic"
-                  formControlName="topic"
-                  placeholder="Enter topic"
-                />
-                <div
-                  *ngIf="
-                    FormAdd.get('topic')?.invalid &&
-                    FormAdd.get('topic')?.touched
-                  "
-                  class="text-danger"
-                >
-                  Topic is required.
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="description">Description</label>
-                <textarea
-                  class="form-control"
-                  id="description"
-                  formControlName="description"
-                  rows="3"
-                  placeholder="Enter description"
-                ></textarea>
-                <div
-                  *ngIf="
-                    FormAdd.get('description')?.invalid &&
-                    FormAdd.get('description')?.touched
-                  "
-                  class="text-danger"
-                >
-                  Description is required.
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="maximumMember">Maximum Member</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="maximumMember"
-                  formControlName="maximumMember"
-                  placeholder="Enter max members"
-                />
-                <div
-                  *ngIf="
-                    FormAdd.get('maximumMember')?.invalid &&
-                    FormAdd.get('maximumMember')?.touched
-                  "
-                  class="text-danger"
-                >
-                  Maximum Member is required.
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="mediaUpload">Media Upload </label>
-                <img
-                  style="width: 100px; height: 100px"
-                  *ngIf="
-                    roomToEdit?.medias?.length > 0 &&
-                    roomToEdit.medias[0]?.url &&
-                    !imagePreview
-                  "
-                  [src]="roomToEdit.medias[0].url"
-                />
-                <img
-                  style="width: 100px; height: 100px"
-                  *ngIf="imagePreview"
-                  [src]="imagePreview"
-                />
+      <button class="close-btn" (click)="onCloseModal()">
+        <i class="fa-solid fa-x"></i>
+      </button>
+    </div>
 
-                <input
-                  type="file"
-                  class="form-control"
-                  id="mediaUpload"
-                  formControlName="mediaUpload"
-                  *ngIf="roomToEdit == null"
-                  (change)="onFileSelected($event)"
-                />
-                <input
-                  type="file"
-                  class="form-control"
-                  id="mediaUpload"
-                  formControlName="mediaUpload"
-                  *ngIf="roomToEdit != null"
-                  (change)="onFileSelected($event)"
-                />
-              </div>
+    <div class="modal-body">
+      <form [formGroup]="FormAdd">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="topic">Topic</label>
+            <input
+              type="text"
+              class="form-input"
+              id="topic"
+              formControlName="topic"
+              placeholder="Enter topic"
+            />
+            <div
+              *ngIf="
+                FormAdd.get('topic')?.invalid && FormAdd.get('topic')?.touched
+              "
+              class="error-message"
+            >
+              Topic is required.
             </div>
-            <div class="container-toggle">
-              <label class="switch">
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              class="form-input"
+              id="description"
+              formControlName="description"
+              rows="3"
+              placeholder="Enter description"
+            ></textarea>
+            <div
+              *ngIf="
+                FormAdd.get('description')?.invalid &&
+                FormAdd.get('description')?.touched
+              "
+              class="error-message"
+            >
+              Description is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="maximumMember">Maximum Members</label>
+            <input
+              type="number"
+              class="form-input"
+              id="maximumMember"
+              formControlName="maximumMember"
+              placeholder="Enter max members"
+            />
+            <div
+              *ngIf="
+                FormAdd.get('maximumMember')?.invalid &&
+                FormAdd.get('maximumMember')?.touched
+              "
+              class="error-message"
+            >
+              Maximum Member is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mediaUpload">Room Image</label>
+            <div class="image-upload">
+              <img
+                *ngIf="
+                  roomToEdit?.medias?.length > 0 &&
+                  roomToEdit.medias[0]?.url &&
+                  !imagePreview
+                "
+                [src]="roomToEdit.medias[0].url"
+                class="preview-image"
+              />
+              <img
+                *ngIf="imagePreview"
+                [src]="imagePreview"
+                class="preview-image"
+              />
+              <label class="upload-btn">
+                Choose File
                 <input
-                  type="checkbox"
-                  [checked]="isPublic"
-                  (change)="togglePrivacy()"
+                  type="file"
+                  id="mediaUpload"
+                  formControlName="mediaUpload"
+                  (change)="onFileSelected($event)"
+                  hidden
                 />
-                <span class="slider">
-                  <span class="label-text">{{
-                    isPublic ? "Public" : "Private"
-                  }}</span>
-                </span>
               </label>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <div class="privacy-row">
+              <div class="toggle-container">
+                <label class="privacy-label">Room Privacy:</label>
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    [checked]="isPublic"
+                    (change)="togglePrivacy()"
+                  />
+                  <span class="slider">
+                    <span class="label-text">{{
+                      isPublic ? "Public" : "Private"
+                    }}</span>
+                  </span>
+                </label>
+              </div>
+
               <div class="password-input" *ngIf="!isPublic">
                 <input
-                  class="form-control"
+                  class="form-input"
                   [placeholder]="
                     !roomToEdit
                       ? 'Enter password for room'
@@ -145,43 +134,32 @@
                   [(ngModel)]="password"
                   [ngModelOptions]="{ standalone: true }"
                   (input)="onPasswordInput()"
+                  type="password"
                 />
-                <div *ngIf="showPasswordError" class="text-danger">
+                <div *ngIf="showPasswordError" class="error-message">
                   Password is required.
                 </div>
               </div>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="d-flex" style="justify-content: space-evenly">
-        <button
-          type="button"
-          class="btn btn-primary pl-3 pr-3"
-          [disabled]="FormAdd.invalid || (!isPublic && !password.trim())"
-          (click)="onAddRoom()"
-          *ngIf="roomToEdit == null"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary pl-3 pr-3"
-          [disabled]="FormAdd.invalid || (!isPublic && !password.trim())"
-          (click)="onUpdateRoom()"
-          *ngIf="roomToEdit != null"
-        >
-          Update
-        </button>
+        </div>
+      </form>
+    </div>
 
-        <button
-          type="button"
-          class="btn btn-danger pl-3 pr-3"
-          (click)="onCloseModal()"
-        >
-          Cancel
-        </button>
-      </div>
+    <div class="modal-footer">
+      <button type="button" class="btn secondary-btn" (click)="onCloseModal()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn primary-btn"
+        [disabled]="
+          (FormAdd.invalid || (!isPublic && !password.trim())) && !roomToEdit
+        "
+        (click)="roomToEdit == null ? onAddRoom() : onUpdateRoom()"
+      >
+        {{ roomToEdit == null ? "Save" : "Update" }}
+      </button>
     </div>
   </div>
 </div>

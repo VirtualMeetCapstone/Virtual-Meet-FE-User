@@ -1,32 +1,44 @@
-<div class="modal">
-  <div class="modal-content">
-    <div class="title">
-      <i
-        class="fa-solid fa-x iconX d-flex justify-content-end"
-        (click)="onCloseModal()"
-        style="cursor: pointer"
-      ></i>
+<div class="modal-delete-wrapper">
+  <div class="modal-backdrop" (click)="onCloseModal()"></div>
 
-      <h3 class="login-title" style="text-align: center">
-        Do you want to delete the room with the topic
-        <span style="font-weight: bold">{{ room.topic }}</span>
-      </h3>
-      <div class="d-flex" style="justify-content: space-evenly">
-        <button
-          type="button"
-          class="btn btn-primary pl-3 pr-3"
-          (click)="onDeleteRoom()"
-        >
-          Yes
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger pl-3 pr-3"
-          (click)="onCloseModal()"
-        >
-          No
-        </button>
+  <div class="modal-delete-container">
+    <div class="modal-header">
+      <h2>
+        <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+        Delete Room
+      </h2>
+      <button class="btn-close" (click)="onCloseModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="room-preview">
+      <!-- Hình phòng với fallback -->
+      <div class="room-image-container">
+        <ng-container *ngIf="room.medias?.length; else noImage">
+          <img [src]="room.medias[0].url" alt="Room image" class="room-image" />
+        </ng-container>
+        <ng-template #noImage>
+          <div class="room-image-placeholder">
+            <i class="fa-solid fa-image"></i>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Topic -->
+      <div class="room-topic-container">
+        <h3 class="room-topic">{{ room.topic || "Untitled Room" }}</h3>
       </div>
     </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="onCloseModal()">Cancel</button>
+      <button class="btn btn-danger" (click)="onDeleteRoom()">
+        <i class="fa-solid fa-trash-can"></i> Delete
+      </button>
+    </div>
   </div>
+</div>
+<div class="fullscreen-spinner text-center" *ngIf="loading">
+  <app-loading-component></app-loading-component>
 </div>

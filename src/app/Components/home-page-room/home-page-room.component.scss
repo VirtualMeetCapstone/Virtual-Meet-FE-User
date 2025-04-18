@@ -88,7 +88,7 @@ body {
   border-radius: 1rem;
   padding: 1rem;
   width: 20rem;
-  height: 400px;
+  height: 425px;
   cursor: pointer;
 }
 .card:hover {
@@ -138,4 +138,32 @@ body {
   100% {
     transform: translateX(-100%);
   }
+}
+.btn-join-call {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px dashed #4b5563;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 400;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-join-call:hover {
+  border-color: #1e90ff;
+  background-color: rgba(30, 144, 255, 0.1);
+  box-shadow: 0 4px 10px rgba(30, 144, 255, 0.3);
+  transform: scale(1.02);
+}
+
+.btn-join-call i {
+  transition: color 0.3s ease;
+}
+
+.btn-join-call:hover i {
+  color: #1e90ff;
 }

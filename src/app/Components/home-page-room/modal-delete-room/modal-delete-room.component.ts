@@ -14,6 +14,7 @@ import { RoomServicesService } from '../../../services/room-service/room-service
   styleUrl: './modal-delete-room.component.scss',
 })
 export class ModalDeleteRoomComponent implements OnInit {
+  loading = false;
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() room: any = null;
   constructor(private roomService: RoomServicesService) {}
@@ -26,8 +27,9 @@ export class ModalDeleteRoomComponent implements OnInit {
     this.closeModal.emit(false);
   }
   onDeleteRoom() {
+    this.loading = true;
     this.roomService.deleteRoom(this.room.id).subscribe((res: any) => {
-      console.log(res);
+      this.loading = false;
       this.closeModal.emit(true);
     });
   }

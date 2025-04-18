@@ -27,7 +27,7 @@ export class ModalAddEditRoomComponent {
   isPublic = true;
   showPasswordError = false;
   password: string = '';
-
+  isUpdate: boolean = false;
   togglePrivacy() {
     this.isPublic = !this.isPublic;
     this.password = '';
@@ -36,6 +36,7 @@ export class ModalAddEditRoomComponent {
   ngOnInit(): void {
     console.log(this.userId);
     if (this.roomToEdit == null) {
+      this.isUpdate = false;
       this.FormAdd = new FormGroup({
         topic: new FormControl('', Validators.required),
         description: new FormControl('', Validators.required),
@@ -43,6 +44,7 @@ export class ModalAddEditRoomComponent {
         mediaUpload: new FormControl(''),
       });
     } else {
+      this.isUpdate = true;
       console.log('room to edit from modal', this.roomToEdit);
 
       this.FormAdd = new FormGroup({
@@ -114,16 +116,18 @@ export class ModalAddEditRoomComponent {
   }
 
   onFileSelected(event: Event) {
+    this.loading = true;
+
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      this.loading = true;
       this.roomService.uploadMedia(file).subscribe(
         (res: any) => {
+          this.loading = false;
+
           console.log('Upload thành công:', res);
           if (res.length > 0 && res[0].url) {
             this.imagePreview = res[0].url;
-            this.loading = false;
           }
         },
         (error) => {
@@ -134,6 +138,9 @@ export class ModalAddEditRoomComponent {
     }
   }
   onPasswordInput() {
+    if (this.isUpdate) {
+      return;
+    }
     const trimmed = (this.password || '').trim();
     this.showPasswordError = !this.isPublic && !trimmed;
   }

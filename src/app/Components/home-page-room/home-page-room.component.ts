@@ -139,6 +139,10 @@ export class HomePageRoomComponent implements OnInit {
       this.showModalDeleteRoom = false;
       this.showModalAddEditRoom = false;
     } else {
+      this.messages.push('Delete room successful !!!');
+      setTimeout(() => {
+        this.messages = [];
+      }, 3000);
       this.showModalDeleteRoom = false;
       this.showModalAddEditRoom = false;
       this.skip = 0;
