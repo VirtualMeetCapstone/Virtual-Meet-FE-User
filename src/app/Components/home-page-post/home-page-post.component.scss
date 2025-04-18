@@ -227,7 +227,7 @@ body {
 }
 
 .post-images.two .media-item {
-  height: 200px;
+  height: 400px;
 }
 
 /* Trường hợp 3 ảnh trở lên */
@@ -593,27 +593,29 @@ app-story-list {
   padding: 15px 3px;
 }
 
-.post-menu .dropdown {
+ul.dropdown {
   position: absolute;
-  right: 0;
-  top: 40px;
-  background: rgb(169, 164, 164);
-  border: 1px solid #ccc;
-  z-index: 10;
+  background-color: white;
   list-style: none;
-  padding: 5px 0;
-  width: 150px;
+  padding: 8px 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  z-index: 1000;
+  right: 0;
 }
 
-:post-menu .dropdown li {
-  padding: 5px 15px;
-  cursor: pointer;
+ul.dropdown li {
   color: black;
-  text-align: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.post-menu .dropdown li:hover {
-  background-color: #ad5f5f;
+ul.dropdown li:hover {
+  background-color: #f0f0f0;
 }
 
 .reaction-icons {

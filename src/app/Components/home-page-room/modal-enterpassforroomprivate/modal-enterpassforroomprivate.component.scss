@@ -1,150 +1,175 @@
-.modal {
-  display: block;
+/* Modal Styles */
+.password-modal {
   position: fixed;
-  z-index: 5;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.modal.show {
-  display: block; /* Hiển thị modal khi mở */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
 }
 
-.modal-content {
-  background-color: #121212;
-  margin: 15% auto;
+.modal-container {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.modal-header {
   padding: 20px;
-  border: 1px solid #888;
-  width: 40vw;
-}
-
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-.fullscreen-spinner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050;
-  color: red;
-}
-.switch {
+  border-bottom: 1px solid #333;
   position: relative;
-  display: inline-block;
-  width: 80px;
-  height: 34px;
 }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.modal-title {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
 }
 
-.slider {
+.close-btn {
   position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2rem;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
+  transition: color 0.2s;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
+.close-btn:hover {
+  color: #fff;
 }
 
-/* Chữ Public / Private */
-.label-text {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  font-weight: bold;
-  color: white;
+.modal-body {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #ddd;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.form-input {
   width: 100%;
-  padding: 0 10px;
+  padding: 12px 15px;
+  background-color: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s;
 }
 
-input:checked + .slider {
-  background-color: #2196f3;
+.form-input:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
 }
 
-/* Khi bật (Public), chữ căn trái */
-input:checked + .slider .label-text {
-  text-align: left;
-  padding-left: 10px;
+.form-input::placeholder {
+  color: #666;
 }
 
-/* Khi tắt (Private), chữ căn phải */
-input:not(:checked) + .slider .label-text {
-  text-align: right;
-  padding-right: 10px;
-}
-
-input:checked + .slider:before {
-  transform: translateX(46px);
-}
-
-@media (max-width: 600px) {
-  .modal-content {
-    background-color: #121212;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90vw;
-  }
-}
-.container-toggle {
-  display: flex;
-  flex-wrap: wrap; /* Cho phép các phần tử bên trong chuyển sang dòng tiếp theo nếu cần */
-  gap: 10px;
-  justify-content: center;
-}
-
-.switch {
+.error-message {
+  color: #ef233c;
+  font-size: 0.85rem;
+  margin-top: 8px;
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
-.password-input {
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #333;
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
-@media (max-width: 768px) {
-  .container-toggle {
-    flex-direction: column;
-    align-items: flex-start;
+.cancel-btn,
+.join-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.cancel-btn {
+  background-color: #333;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background-color: #444;
+}
+
+.join-btn {
+  background-color: #4361ee;
+  color: white;
+}
+
+.join-btn:hover {
+  background-color: #3a56d4;
+}
+
+.join-btn:disabled {
+  background-color: #2d2d2d;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-container {
+    max-width: 90%;
+  }
+
+  .modal-header {
+    padding: 15px;
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  .modal-footer {
+    padding: 15px;
+  }
+
+  .cancel-btn,
+  .join-btn {
+    padding: 8px 15px;
   }
 }

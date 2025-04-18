@@ -68,7 +68,11 @@
             <button (click)="toggleMenu(post.id, $event)">...</button>
             <ul class="dropdown" *ngIf="openedMenuPostId === post.id">
               <li
-                (click)="openModalDeletePost(post); $event.stopPropagation()"
+                (click)="
+                  openModalDeletePost(post);
+                  $event.stopPropagation();
+                  openedMenuPostId = null
+                "
                 *ngIf="post.userId === userId"
               >
                 Delete post

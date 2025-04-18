@@ -1,14 +1,40 @@
 <!-- Sidebar -->
 <div class="sidebar">
   <ul class="menu">
-    <li class="menu-item active">{{ 'nav-bar.MENU.href1' | translate }}</li>
-    <li class="menu-item">
-      {{ 'nav-bar.MENU.href2' | translate }} <span class="new">Mới</span>
+    <li class="menu-item active">
+      <i class="fas fa-fire"></i> {{ "nav-bar.MENU.href1" | translate }}
     </li>
-    <li class="menu-item">{{ 'nav-bar.MENU.href3' | translate }}</li>
-    <li class="menu-item">{{ 'nav-bar.MENU.href4' | translate }}</li>
-    <li class="menu-item">{{ 'nav-bar.MENU.href5' | translate }}</li>
-    <li class="menu-item">{{ 'nav-bar.MENU.href6' | translate }}</li>
-    <li class="menu-item"><a class="menu-item" style="text-decoration: none" routerLink="/about-us" >{{ 'nav-bar.MENU.href7' | translate }}</a></li>
+    <li class="menu-item">
+      <i class="fas fa-file-alt"></i>
+      <a class="menu-item" style="text-decoration: none" routerLink="/posts">
+        Posts</a
+      >
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-compass"></i>
+      {{ "nav-bar.MENU.href2" | translate }} <span class="new">Mới</span>
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-user-friends"></i>
+      {{ "nav-bar.MENU.href3" | translate }}
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-video"></i> {{ "nav-bar.MENU.href4" | translate }}
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-users"></i>{{ "nav-bar.MENU.href5" | translate }}
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-user"></i>{{ "nav-bar.MENU.href6" | translate }}
+    </li>
+    <li class="menu-item">
+      <i class="fas fa-info-circle"></i>
+      <a
+        class="menu-item"
+        style="text-decoration: none"
+        routerLink="/about-us"
+        >{{ "nav-bar.MENU.href7" | translate }}</a
+      >
+    </li>
   </ul>
 </div>

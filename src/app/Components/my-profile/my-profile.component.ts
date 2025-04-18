@@ -102,6 +102,8 @@ export class MyProfileComponent implements OnInit {
 
   async fetchProfile(id: string) {
     try {
+      this.isLoading = true;
+
       if (!this.token) {
         console.error('Token not found, vui lòng đăng nhập lại.');
         return;
