@@ -1,16 +1,13 @@
 <div class="row p-3">
   <!-- Logo Virtual Meet -->
   <div class="col-lg-4 col-md-4 col-sm-6 col-6">
-    <h3
-      style="
-        font-size: 30px;
-        font-weight: 700;
-        margin-top: 10px;
-        margin-left: 4px;
-      "
-    >
-      <a href="/" style="text-decoration: none; color: white">VIRTUAL MEET</a>
-    </h3>
+
+      <div class="logo">
+        <a class="navbar-brand brand-logo" href="index.html">
+          <img [src]="logoUrl" alt="logo" class="logo-full">
+        </a>
+      </div>
+
   </div>
 
   <!-- Ô tìm kiếm -->
@@ -57,7 +54,7 @@
               (click)="onClickNotification()"
             ></i>
             <span
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              class="position-absolute top-0 left-0 start-100 translate-middle badge rounded-pill bg-danger"
             >
               {{ totalNotification }}
             </span>
@@ -170,11 +167,15 @@
           <div *ngIf="isShowUserMenu" class="dropdown-user">
             <a
               href="#"
-              (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()"
+              (click)="
+                editProfile(); $event.preventDefault(); $event.stopPropagation()
+              "
               >Edit Profile</a
             >
             <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
-            <a href="/vip-history" (click)="$event.stopPropagation()">Lịch sử VIP</a>
+            <a href="/vip-history" (click)="$event.stopPropagation()"
+              >Lịch sử VIP</a
+            >
             <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
           </div>
         </div>

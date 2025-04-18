@@ -7,15 +7,16 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { RoomServicesService } from '../../../services/room-service/room-services.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
+import { RoomServicesService } from '../../../services/room-service/room-services.service';
+
 @Component({
   selector: 'app-modal-add-edit-room',
   templateUrl: './modal-add-edit-room.component.html',
-  styleUrl: './modal-add-edit-room.component.scss',
+  styleUrls: ['./modal-add-edit-room.component.scss'],
 })
-export class ModalAddEditRoomComponent {
+export class ModalAddEditRoomComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
   @Input() roomToEdit: any = null;
   imagePreview: string | ArrayBuffer | null = null;
@@ -143,5 +144,43 @@ export class ModalAddEditRoomComponent {
     }
     const trimmed = (this.password || '').trim();
     this.showPasswordError = !this.isPublic && !trimmed;
+  }
+
+  checkTopic(topic: string) {
+    if (topic) {
+      console.log('Checking topic:', topic);
+      this.roomService.checkInput(topic).subscribe({
+        next: (response) => {
+          console.log('Response from API:', response);
+          if (response.status ) {
+            this.FormAdd.get('topic')?.setErrors({ invalid: true });
+          } else {
+            this.FormAdd.get('topic')?.setErrors(null);
+          }
+        },
+        error: (err) => {
+          console.error('Error checking topic:', err);
+        },
+      });
+    }
+  }
+
+  checkDescription(description: string) {
+    if (description) {
+      console.log('Checking description:', description);
+      this.roomService.checkInput(description).subscribe({
+        next: (response) => {
+          console.log('Response from API:', response);
+          if (response.status ) {
+            this.FormAdd.get('description')?.setErrors({ invalid: true });
+          } else {
+            this.FormAdd.get('description')?.setErrors(null);
+          }
+        },
+        error: (err) => {
+          console.error('Error checking description:', err);
+        },
+      });
+    }
   }
 }

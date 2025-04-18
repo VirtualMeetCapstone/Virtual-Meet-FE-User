@@ -117,4 +117,13 @@ export class RoomServicesService {
       })
     );
   }
+
+  checkInput(text: string): Observable<any> {
+    const apiUrl = `${AppConstants.API_BASE_URL_HTTPS}/moderation/check`;
+    const payload = { text };
+
+    return this.http.post<any>(apiUrl, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
