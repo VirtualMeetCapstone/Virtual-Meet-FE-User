@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { RoomServicesService } from '../../services/room-service/room-services.service';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { Router } from '@angular/router';
@@ -28,6 +34,7 @@ export class HomePageRoomComponent implements OnInit {
   roomToEdit = null;
   userList: string[] = [];
   roomPrivateToOpenModalEnterPass: string = '';
+  openDropdownRoomId: number | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -74,7 +81,22 @@ export class HomePageRoomComponent implements OnInit {
       });
     });
   }
+  toggleDropdown(roomId: number) {
+    if (this.openDropdownRoomId === roomId) {
+      this.openDropdownRoomId = null;
+    } else {
+      this.openDropdownRoomId = roomId;
+    }
+  }
 
+  preventClose(event: Event) {
+    event.stopPropagation();
+  }
+
+  @HostListener('document:click')
+  closeAllDropdowns() {
+    this.openDropdownRoomId = null;
+  }
   toggleScrollButton = () => {
     const button = document.querySelector('.scroll-to-top') as HTMLElement;
     if (window.scrollY > 300) {

@@ -5,167 +5,518 @@ body {
   background-color: #f0f0f0;
 }
 
-.room-card .header .settings {
-  font-size: 18px;
-  color: #666;
+:root {
+  --primary-dark: #121212;
+  --secondary-dark: #1e1e1e;
+  --accent-color: #6c5ce7;
+  --accent-hover: #5649c0;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #2d2d2d;
+  --success-color: #00b894;
+  --danger-color: #d63031;
 }
-.scroll-container {
-  height: 30vh; /* hoặc phù hợp */
-  overflow: auto;
+
+body {
+  background-color: var(--primary-dark);
+  color: var(--text-primary);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-.dropdown-menu {
-  top: 100% !important; /* Đặt menu ở giữa */
-  transform: translateX(-60%) !important; /* Dịch chuyển để căn giữa */
-  text-align: center;
-  min-width: 120px; /* Điều chỉnh độ rộng */
+
+.room-gallery {
+  padding: 2rem;
 }
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.room-card {
+  background-color: var(--secondary-dark);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
+  height: 400px;
+  position: relative;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Room Header */
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.owner-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .owner-avatar {
-  width: 50px; /* Điều chỉnh kích thước */
-  height: 50px;
-  border-radius: 50%; /* Làm tròn */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-color);
+}
+
+.owner-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.owner-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.room-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.room-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.private-badge {
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+  display: none;
+  min-width: 200px;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-align: left;
+  list-style: none;
+  background-color: var(--secondary-dark);
+  background-clip: padding-box;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform-origin: top right;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.dropdown-wrapper.show .dropdown-menu {
   display: block;
-  margin: 5px auto; /* Canh giữa */
+  opacity: 1;
+  transform: scale(1);
 }
 
-.group-owner {
+.dropdown-content {
+  padding: 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: var(--text-primary);
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-item i {
+  width: 20px;
+  margin-right: 0.75rem;
   text-align: center;
-  padding: 10px;
-  color: black;
+  color: var(--text-secondary);
 }
 
-.join-now {
+.dropdown-item .fa-trash {
+  color: var(--danger-color);
+}
+
+.dropdown-item .fa-pen {
+  color: var(--accent-color);
+}
+
+.dropdown-item .fa-info-circle {
+  color: var(--text-secondary);
+}
+/* Room Image */
+.room-image-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.room-image-container:hover .room-image {
+  transform: scale(1.05);
+}
+
+.room-topic-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1rem;
+}
+
+.room-topic {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.room-description {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.room-description p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Room Stats */
+.room-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.members-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.members-count i {
+  color: var(--accent-color);
+}
+
+.avatar-stack {
+  display: flex;
+}
+
+.member-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary-dark);
+  margin-left: -8px;
+}
+
+.member-avatar:first-child {
+  margin-left: 0;
+}
+
+.more-members {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--primary-dark);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Khoảng cách giữa icon và chữ */
-  width: 120px; /* Chiều rộng */
-  height: 40px; /* Chiều cao */
-  background-color: #007bff; /* Màu xanh */
+  margin-left: -8px;
+  border: 2px solid var(--secondary-dark);
+}
+
+/* Join Button */
+.room-footer {
+  padding: 0 1rem 1rem;
+}
+
+.join-btn {
+  width: 100%;
+  background-color: var(--accent-color);
   color: white;
-  border-radius: 8px; /* Bo góc nhẹ */
-  cursor: pointer;
-  transition: background 0.3s;
-  font-size: 16px;
-  font-weight: bold;
   border: none;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  z-index: 1;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 90%;
 }
 
-.join-now i {
-  font-size: 18px;
+.join-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.join-now:hover {
-  background-color: #0056b3; /* Màu hover */
+.join-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
 }
 
+.join-btn:hover::before {
+  opacity: 1;
+}
+
+.join-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(108, 92, 231, 0.4);
+}
+
+.join-btn i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.join-btn:hover i {
+  transform: scale(1.1);
+}
+
+.join-btn span {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.join-btn:hover span {
+  letter-spacing: 0.5px;
+}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .room-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .room-image-container {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .room-gallery {
+    padding: 1rem;
+  }
+
+  .room-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Reset các thuộc tính gây xung đột */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  float: none; /* Quan trọng: ghi đè float nếu có */
+}
+
+.dropdown-toggle {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 0;
+  background: none;
+  border: none;
+}
+
+.dropdown-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+/* Dropdown menu với nền trắng */
+.dropdown-menu-white {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 5px);
+  min-width: 200px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  display: block !important; /* Ghi đè display */
+  float: none !important; /* Đảm bảo không bị float */
+}
+
+.dropdown-toggle:checked ~ .dropdown-menu-white {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Nội dung dropdown */
+.dropdown-content {
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  color: #333 !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-item i {
+  width: 20px;
+  margin-right: 12px;
+  font-size: 14px;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 4px 0;
+}
+
+/* Màu sắc icon */
+.text-primary {
+  color: #3498db;
+}
+.text-danger {
+  color: #e74c3c;
+}
+.text-secondary {
+  color: #95a5a6;
+}
+.dropdown-menu-white {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.dropdown-menu-white.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.scroll-container {
+  height: 500px;
+  overflow-y: auto;
+}
 .scroll-to-top {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
+  z-index: 1000;
   border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-  display: none; /* Mặc định ẩn, chỉ hiển thị khi cuộn */
-  transition: opacity 0.3s;
-}
-
-.scroll-to-top.show {
-  display: block;
-}
-
-.card {
-  background: linear-gradient(
-    to bottom,
-    rgba(103, 25, 146, 0.9),
-    rgba(53, 46, 80, 0.8)
-  );
-  border-radius: 1rem;
-  padding: 1rem;
-  width: 20rem;
-  height: 425px;
-  cursor: pointer;
-}
-.card:hover {
-  transform: translateY(-5px);
-}
-.card .room-image {
-  border-radius: 0.5rem;
-  width: 100%; /* Đảm bảo ảnh luôn phù hợp với card */
-  height: auto; /* Giữ tỷ lệ ảnh */
-  object-fit: cover; /* Cắt ảnh vừa khung mà không bị méo */
-  height: 200px; /* Giới hạn chiều cao nếu cần */
-}
-
-.badge-custom {
-  background-color: #555;
-}
-.badge-red {
-  background-color: #ff0000;
-}
-.scroll-container {
-  height: 50vh; /* hoặc phù hợp */
-  overflow: auto;
-}
-@media (min-width: 2100px) {
-  .col-lon {
-    -ms-flex: 0 0 20%;
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
-}
-.marquee {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.marquee h5 {
-  display: inline-block;
-  padding-left: 100%;
-  animation: scrollText 10s linear infinite;
-}
-
-@keyframes scrollText {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-.btn-join-call {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px dashed #4b5563;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  font-size: 1.125rem;
-  font-weight: 400;
-  background-color: transparent;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: absolute;
-  bottom: 7px;
-}
-
-.btn-join-call:hover {
-  border-color: #1e90ff;
-  background-color: rgba(30, 144, 255, 0.1);
-  box-shadow: 0 4px 10px rgba(30, 144, 255, 0.3);
-  transform: scale(1.02);
-}
-
-.btn-join-call i {
-  transition: color 0.3s ease;
-}
-
-.btn-join-call:hover i {
-  color: #1e90ff;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  text-align: center;
+  line-height: 40px;
 }

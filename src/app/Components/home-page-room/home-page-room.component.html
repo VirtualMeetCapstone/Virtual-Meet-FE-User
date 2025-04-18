@@ -12,115 +12,117 @@
       <app-story-list></app-story-list>
     </div>
   </div>
-  <div class="d-flex justify-content-center">
-    <div class="row">
-      <div
-        class="col-12 col-sm-6 col-md-4 col-lg-3 mt-4 col-lon d-flex justify-content-center"
-        *ngFor="let room of rooms"
-      >
-        <div class="card text-center room-card">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="marquee">
-              <h5 class="mb-0">{{ room.topic }}</h5>
+  <div class="room-gallery">
+    <div class="room-grid">
+      <div class="room-card" *ngFor="let room of rooms">
+        <div class="room-header">
+          <div class="owner-info">
+            <img
+              src="{{ room.owner.picture.url }}"
+              alt="Owner"
+              class="owner-avatar"
+            />
+            <div class="owner-details">
+              <span class="owner-name">{{ room.owner.name }}</span>
+              <span class="room-time">{{ room.createTime }}</span>
             </div>
+          </div>
 
-            <div class="d-flex align-items-center">
-              <div class="dropdown">
-                <button
-                  class="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i class="fas fa-cog settings"> </i>
-                </button>
-                <div class="dropdown-menu">
-                  <div class="group-owner">
-                    <div style="color: black">Group Owner</div>
-                    <img
-                      src="{{ room.owner.picture.url }}"
-                      alt="Owner Avatar"
-                      class="owner-avatar"
-                      style="height: 50px; width: 50px"
-                    />
-                    <p style="color: #666">{{ room.owner.name }}</p>
-                    <p style="color: #666; line-height: 2px; font-size: 14px">
-                      Create At
-                    </p>
-                    <p style="color: #666; line-height: 2px; font-size: 14px">
-                      {{ room.createTime }}
-                    </p>
-                    <i
-                      class="fa-solid fa-trash text-danger"
-                      *ngIf="user?.id == room.ownerId"
-                      (click)="openModalDeleteRoom(room)"
-                    ></i>
-                    <i
-                      class="fas fa-pen text-primary ml-3"
-                      *ngIf="user?.id == room.ownerId"
-                      (click)="openModalEditRoom(room)"
-                    ></i>
-                  </div>
+          <div class="room-actions">
+            <div class="dropdown-container" (click)="preventClose($event)">
+              <button class="dropdown-btn" (click)="toggleDropdown(room.id)">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+
+              <div
+                class="dropdown-menu-white"
+                [ngClass]="{ show: openDropdownRoomId === room.id }"
+              >
+                <div class="dropdown-content">
+                  <a
+                    class="dropdown-item"
+                    *ngIf="user?.id == room.ownerId"
+                    (click)="openModalEditRoom(room); preventClose($event)"
+                  >
+                    <i class="fas fa-pen text-primary"></i> Edit Room
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    *ngIf="user?.id == room.ownerId"
+                    (click)="openModalDeleteRoom(room)"
+                  >
+                    <i class="fa-solid fa-trash text-danger"></i> Delete Room
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" (click)="viewRoomDetail(room)">
+                    <i class="fas fa-info-circle text-secondary"></i>
+                    Room Details
+                  </a>
                 </div>
               </div>
-              <i class="fa-solid fa-lock pl-2" *ngIf="room.privacy"></i>
             </div>
+
+            <i class="fa-solid fa-lock private-badge" *ngIf="room.privacy"></i>
           </div>
-          <div class="mb-3" (click)="viewRoomDetail(room)">
-            <img
-              [src]="
-                room.medias.length
-                  ? room.medias[0].url
-                  : 'https://denngocson.com/wp-content/uploads/2024/10/anh-mau-trang-87BaWJLP.jpg'
-              "
-              class="img-fluid room-image"
-            />
+        </div>
+
+        <div class="room-image-container" (click)="viewRoomDetail(room)">
+          <img
+            [src]="
+              room.medias.length
+                ? room.medias[0].url
+                : 'https://denngocson.com/wp-content/uploads/2024/10/anh-mau-trang-87BaWJLP.jpg'
+            "
+            class="room-image"
+            alt="{{ room.topic }}"
+          />
+          <div class="room-topic-overlay">
+            <h3 class="room-topic">{{ room.topic }}</h3>
           </div>
-          <p class="mb-3 text-start">
+        </div>
+
+        <div class="room-description">
+          <p>
             {{
-              room.description.length > 30
-                ? (room.description | slice : 0 : 30) + "..."
+              room.description.length > 100
+                ? (room.description | slice : 0 : 100) + "..."
                 : room.description
             }}
           </p>
+        </div>
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <i class="fas fa-users mr-1"></i> 0/{{ room.maximumMembers }}
-            </div>
-            <div>
+        <div class="room-stats">
+          <div class="members-count">
+            <i class="fas fa-users"></i>
+            <span>{{ room.members.length }}/{{ room.maximumMembers }}</span>
+          </div>
+
+          <div class="members-preview">
+            <div class="avatar-stack">
               <img
-                *ngFor="let member of room.members.slice(0, 2)"
+                *ngFor="let member of room.members.slice(0, 3)"
                 [src]="member.picture"
-                class="rounded-circle member-avatar"
+                class="member-avatar"
               />
-              <span class="badge badge-red" *ngIf="room.members.length > 2"
-                >+{{ room.members.length - 2 }}</span
-              >
+              <div class="more-members" *ngIf="room.members.length > 3">
+                +{{ room.members.length - 3 }}
+              </div>
             </div>
           </div>
-          <div class="d-flex justify-content-around">
-            <button
-              class="btn-join-call"
-              type="button"
-              (click)="joinRoom(room.id)"
-              *ngIf="room.privacy == 0"
-            >
-              <i class="fas fa-phone-alt" style="color: #1e90ff"></i>
-              <span style="color: #1e90ff">Join and talk now!</span>
-            </button>
+        </div>
 
-            <button
-              class="btn-join-call"
-              type="button"
-              (click)="openModalEnterPassword(room.id)"
-              *ngIf="room.privacy == 1"
-            >
-              <i class="fas fa-phone-alt" style="color: #1e90ff"></i>
-              <span style="color: #1e90ff">Join and talk now!</span>
-            </button>
-          </div>
+        <div class="room-footer">
+          <button
+            class="join-btn"
+            (click)="
+              room.privacy == 1
+                ? openModalEnterPassword(room.id)
+                : joinRoom(room.id)
+            "
+          >
+            <i class="fas fa-phone-alt"></i>
+            <span>Join Room</span>
+          </button>
         </div>
       </div>
     </div>
