@@ -151,6 +151,8 @@ body {
   background-color: transparent;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: absolute;
+  bottom: 7px;
 }
 
 .btn-join-call:hover {
