@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { PostserviceService } from '../../services/post-service/postservice.service';
+import { RoomServicesService } from '../../services/room-service/room-services.service';
 
 interface MediaPreview {
   type: 'image' | 'video';
@@ -27,12 +28,13 @@ export class CreatePostModalComponent {
   selectedFiles: File[] = [];
   mediaPreviews: MediaPreview[] = [];
   privacy: number = 0;
+  previousContent: string = ''; // Lưu nội dung trước đó để so sánh
+  contentError: boolean = false; // Đánh dấu lỗi nội dung
 
   constructor(
     public dialogRef: MatDialogRef<CreatePostModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: string; username: string },
-    private http: HttpClient,
-    private postService: PostserviceService
+    private roomService: RoomServicesService
   ) {
     this.id = data.id;
     this.newUsername = data.username;
@@ -66,6 +68,35 @@ export class CreatePostModalComponent {
     this.mediaPreviews.splice(index, 1);
   }
 
+  /** Gọi khi người dùng rời khỏi trường nhập liệu */
+  onContentBlur(): void {
+    if (this.newContent && this.newContent !== this.previousContent) {
+      this.previousContent = this.newContent; // Cập nhật nội dung trước đó
+      this.checkContent(this.newContent);
+    }
+  }
+
+  /** Kiểm tra nội dung bài viết */
+  checkContent(content: string): void {
+    if (content) {
+      console.log('Checking content:', content);
+      this.roomService.checkInput(content).subscribe({
+        next: (response) => {
+          console.log('Response from API:', response);
+          if (response.status || (response.badwords && response.badwords.length > 0)) {
+            this.contentError = true; // Đánh dấu lỗi
+          } else {
+            this.contentError = false; // Xóa lỗi nếu hợp lệ
+          }
+        },
+        error: (err) => {
+          console.error('Error checking content:', err);
+          alert('Đã xảy ra lỗi khi kiểm tra nội dung.');
+        },
+      });
+    }
+  }
+
   /** Gửi bài viết */
   submitPost() {
     if (!this.newContent && this.selectedFiles.length === 0) {
@@ -73,23 +104,14 @@ export class CreatePostModalComponent {
       return;
     }
 
-    this.isLoading = true;
-    this.postService
-      .createPost(this.newContent, this.privacy, undefined, this.selectedFiles)
-      .subscribe({
-        next: (response: any) => {
-          // Explicitly typed as 'any'
-          console.log('Bài viết đã được tạo:', response);
-          this.dialogRef.close(response);
-          this.isLoading = false;
-          window.location.reload();
-        },
-        error: (error: any) => {
-          // Explicitly typed as 'any'
-          console.error('Lỗi khi tạo bài viết:', error);
-          this.isLoading = false;
-        },
-      });
+    if (this.contentError) {
+      alert('Nội dung bài viết chứa từ ngữ không phù hợp. Vui lòng chỉnh sửa.');
+      return;
+    }
+
+    // Gửi bài viết nếu không có lỗi
+    console.log('Submitting post:', this.newContent, this.selectedFiles);
+    // Thực hiện logic gửi bài viết tại đây
   }
 
   onCancel() {

@@ -57,8 +57,12 @@
         <textarea
           class="content-input"
           placeholder="What's on your mind?"
-          [(ngModel)]="newContent">
-        </textarea>
+          [(ngModel)]="newContent"
+          (blur)="onContentBlur()"
+        ></textarea>
+        <div *ngIf="contentError" class="text-danger">
+          Content contains inappropriate words. Please revise.
+        </div>
       </div>
     </div>
 
