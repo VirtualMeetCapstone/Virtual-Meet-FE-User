@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -22,7 +23,10 @@ export class ModalAddEditRoomComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   @Input() userId: any = null;
 
-  constructor(private roomService: RoomServicesService) {}
+  constructor(
+    private roomService: RoomServicesService,
+    private cdRef: ChangeDetectorRef
+  ) {}
   FormAdd!: FormGroup;
   loading = false;
   isPublic = true;
@@ -42,7 +46,6 @@ export class ModalAddEditRoomComponent implements OnInit {
         topic: new FormControl('', Validators.required),
         description: new FormControl('', Validators.required),
         maximumMember: new FormControl('', Validators.required),
-        mediaUpload: new FormControl(''),
       });
     } else {
       this.isUpdate = true;
@@ -52,7 +55,6 @@ export class ModalAddEditRoomComponent implements OnInit {
         topic: new FormControl(this.roomToEdit.topic, Validators.required),
         description: new FormControl(this.roomToEdit.description),
         maximumMember: new FormControl(this.roomToEdit.maximumMembers),
-        mediaUpload: new FormControl(''),
       });
       if (this.roomToEdit.privacy == 1) {
         this.isPublic = false;
@@ -118,22 +120,29 @@ export class ModalAddEditRoomComponent implements OnInit {
 
   onFileSelected(event: Event) {
     this.loading = true;
-
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.cdRef.detectChanges();
+      };
+      reader.readAsDataURL(file);
+
       this.roomService.uploadMedia(file).subscribe(
         (res: any) => {
-          this.loading = false;
-
           console.log('Upload thành công:', res);
-          if (res.length > 0 && res[0].url) {
-            this.imagePreview = res[0].url;
-          }
+          this.imagePreview = res[0].url;
+          this.loading = false;
+          this.cdRef.detectChanges();
+          console.log('imagePreview', this.imagePreview);
         },
         (error) => {
           console.error('Lỗi upload:', error);
           this.loading = false;
+          this.cdRef.detectChanges();
         }
       );
     }
@@ -152,7 +161,7 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.roomService.checkInput(topic).subscribe({
         next: (response) => {
           console.log('Response from API:', response);
-          if (response.status ) {
+          if (response.status) {
             this.FormAdd.get('topic')?.setErrors({ invalid: true });
           } else {
             this.FormAdd.get('topic')?.setErrors(null);
@@ -171,7 +180,7 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.roomService.checkInput(description).subscribe({
         next: (response) => {
           console.log('Response from API:', response);
-          if (response.status ) {
+          if (response.status) {
             this.FormAdd.get('description')?.setErrors({ invalid: true });
           } else {
             this.FormAdd.get('description')?.setErrors(null);

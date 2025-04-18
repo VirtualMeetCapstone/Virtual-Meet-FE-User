@@ -87,17 +87,12 @@
                 [src]="roomToEdit.medias[0].url"
                 class="preview-image"
               />
-              <img
-                *ngIf="imagePreview"
-                [src]="imagePreview"
-                class="preview-image"
-              />
+              <img [src]="imagePreview" class="preview-image" />
               <label class="upload-btn">
                 Choose File
                 <input
                   type="file"
                   id="mediaUpload"
-                  formControlName="mediaUpload"
                   (change)="onFileSelected($event)"
                   hidden
                 />
@@ -110,11 +105,7 @@
               <div class="toggle-container">
                 <label class="privacy-label">Room Privacy:</label>
                 <label class="switch">
-                  <input
-                    type="checkbox"
-                    [checked]="isPublic"
-                    (change)="togglePrivacy()"
-                  />
+                  <input type="checkbox" (change)="togglePrivacy()" />
                   <span class="slider">
                     <span class="label-text">{{
                       isPublic ? "Public" : "Private"
