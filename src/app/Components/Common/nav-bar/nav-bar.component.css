@@ -6,7 +6,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 30px;
+  width: 250px;
   background-color: #121212;
   display: flex;
   flex-direction: column;
@@ -14,8 +14,42 @@
   align-items: flex-start;
   position: fixed;
   z-index: 1000;
+  height: 100vh;
+  transition: transform 0.3s ease;
 }
 
+/* Khi màn hình nhỏ hơn 768px */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Nút toggle cho mobile */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1100;
+  background: #121212;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+  }
+}
+
+/* Phần còn lại của CSS giữ nguyên */
 .logo {
   font-size: 30px;
   color: #fff;
@@ -25,6 +59,8 @@
 
 .menu {
   list-style: none;
+  padding: 0;
+  width: 100%;
 }
 
 .menu-item {
@@ -33,16 +69,19 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  color: #fff;
 }
 
 .menu-item.active,
 .menu-item:hover {
   color: #ff3b3b;
 }
+
 .menu-item a {
-  text-decoration: none; /* Không có gạch chân */
-  color: inherit; /* Dùng màu chữ mặc định của thẻ li */
+  text-decoration: none;
+  color: inherit;
 }
+
 .new {
   background-color: #ff3b3b;
   color: #fff;
@@ -52,10 +91,9 @@
   margin-left: 8px;
 }
 
-/* End Sidebar  */
 .menu-item i {
   display: inline-block;
-  width: 50px; /* hoặc 24px nếu muốn rộng hơn */
+  width: 50px;
   text-align: center;
   font-size: 20px;
 }

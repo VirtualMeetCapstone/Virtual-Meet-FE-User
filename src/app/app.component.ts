@@ -22,7 +22,6 @@ export class AppComponent implements OnInit {
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-
     let lang = 'en'; // Mặc định là tiếng Anh
 
     // Kiểm tra xem đang chạy trên trình duyệt hay không

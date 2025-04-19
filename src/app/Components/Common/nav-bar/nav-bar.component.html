@@ -1,5 +1,8 @@
 <!-- Sidebar -->
-<div class="sidebar">
+<button class="sidebar-toggle" (click)="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar" [class.open]="isSidebarOpen">
   <ul class="menu">
     <li class="menu-item active">
       <i class="fas fa-fire"></i> {{ "nav-bar.MENU.href1" | translate }}
