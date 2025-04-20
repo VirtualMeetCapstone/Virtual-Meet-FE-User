@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   isHiddenSidebar = false;
   isLoggedIn = false;
   isRoomPage = false;
+  isChatPage = false;
 
   constructor(
     private authService: AuthService,
@@ -35,6 +36,7 @@ export class AppComponent implements OnInit {
     //disable header sidebar when join room
     this.router.events.subscribe(() => {
       this.isRoomPage = this.router.url.startsWith('/room');
+      this.isChatPage = this.router.url.startsWith('/chat');
     });
   }
 

@@ -12,11 +12,15 @@ import { PageNotFoundComponent } from './Components/page-not-found/page-not-foun
 import { ModalDetailpostComponent } from './Components/home-page-post/modal-detailpost/modal-detailpost.component';
 import { UpdateVipComponent } from './Components/upgrade-vip/update-vip/update-vip.component';
 import { VipHistoryComponent } from './Components/upgrade-vip/vip-history/vip-history/vip-history.component';
+import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-outside-room.component';
 
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
   { path: 'my-profile/:id', component: MyProfileComponent },
-  { path: 'my-profile/:id/news-feed-my-profile', component: NewsFeedMyProfileComponent },
+  {
+    path: 'my-profile/:id/news-feed-my-profile',
+    component: NewsFeedMyProfileComponent,
+  },
   { path: 'posts', component: HomePagePostComponent },
   { path: 'posts/:id', component: ModalDetailpostComponent },
   { path: 'room/:roomId', component: RoomComponentComponent },
@@ -24,6 +28,8 @@ const routes: Routes = [
   { path: 'about-us', component: AboutUsComponent },
   { path: 'up-vip', component: UpdateVipComponent },
   { path: 'vip-history', component: VipHistoryComponent },
+  { path: 'chat', component: ChatOutsideRoomComponent },
+
   { path: '**', component: PageNotFoundComponent },
 ];
 

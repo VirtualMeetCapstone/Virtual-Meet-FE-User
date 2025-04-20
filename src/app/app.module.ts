@@ -85,6 +85,7 @@ import { VipHistoryComponent } from './Components/upgrade-vip/vip-history/vip-hi
 import { ReactionSummaryComponent } from './Components/reaction-summary/reaction-summary.component';
 import { LoadingPostComponent } from './Components/loading-post/loading-post.component';
 import { AiChatBoxComponent } from './Components/ai-chat-box/ai-chat-box.component';
+import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-outside-room.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -140,6 +141,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     ReactionSummaryComponent,
     LoadingPostComponent,
     AiChatBoxComponent,
+    ChatOutsideRoomComponent,
   ],
   imports: [
     BrowserModule,
