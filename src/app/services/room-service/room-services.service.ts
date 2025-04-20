@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class RoomServicesService {
-  url = 'https://dev-vmeet.site/rooms';
+  url = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
 
   constructor(
     private http: HttpClient,
@@ -73,7 +73,7 @@ export class RoomServicesService {
     formData.append('medias', file);
 
     return this.http.post<{ url: string }>(
-      'https://dev-vmeet.site/medias',
+      `${AppConstants.API_BASE_URL_HTTPS}/medias`,
       formData
     );
   }
