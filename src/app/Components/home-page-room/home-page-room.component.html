@@ -135,9 +135,12 @@
   [infiniteScrollDistance]="1"
   [infiniteScrollThrottle]="300"
 >
-  <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
-    Load More...
-  </h3>
+  <div class="loader" *ngIf="loading">
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+  </div>
+
   <h3 style="font-weight: bold; text-align: center" *ngIf="loading == false">
     No more data to load
   </h3>
