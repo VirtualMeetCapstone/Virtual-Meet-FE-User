@@ -41,7 +41,7 @@ body {
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid var(--border-color);
+  border: 1px solid white;
   height: 400px;
   position: relative;
 }
@@ -521,8 +521,6 @@ body {
   line-height: 40px;
 }
 
-
-
 .join-btn {
   width: 100%;
   background-color: var(--accent-color);
@@ -575,5 +573,3 @@ body {
 .join-btn:hover span {
   letter-spacing: 0.5px;
 }
-
-

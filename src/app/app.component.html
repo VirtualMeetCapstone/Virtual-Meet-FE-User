@@ -1,3 +1,11 @@
+<!-- Overlay loading -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loader">
+    <app-loader-text></app-loader-text>
+  </div>
+</div>
+
+<!-- Page Main Content -->
 <app-header *ngIf="!(isRoomPage || isChatPage)"></app-header>
 <div class="main-container">
   <app-nav-bar *ngIf="!(isRoomPage || isChatPage)"></app-nav-bar>
