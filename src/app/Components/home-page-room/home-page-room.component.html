@@ -21,9 +21,12 @@
               src="{{ room.owner.picture.url }}"
               alt="Owner"
               class="owner-avatar"
+              (click)="goToProfile(room.ownerId)"
             />
             <div class="owner-details">
-              <span class="owner-name">{{ room.owner.name }}</span>
+              <span class="owner-name" (click)="goToProfile(room.ownerId)">{{
+                room.owner.name
+              }}</span>
               <span class="room-time">{{ room.createTime }}</span>
             </div>
           </div>

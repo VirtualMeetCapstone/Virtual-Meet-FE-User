@@ -117,6 +117,10 @@ export class HomePageRoomComponent implements OnInit {
     });
   }
 
+  goToProfile(uuid: string) {
+    this.router.navigate(['/my-profile', uuid]);
+  }
+
   async joinRoom(roomId: string) {
     if (!this.user) {
       this.messages.push('Need to login before join room !!!');

@@ -41,14 +41,16 @@ body {
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid white;
-  height: 400px;
+  border: 1px solid var(--border-color);
+  height: 420px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .room-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-8px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
 }
 
 /* Room Header */
@@ -67,11 +69,17 @@ body {
 }
 
 .owner-avatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-color);
+  border: 3px solid var(--accent-color);
+  transition: transform 0.2s ease;
+  cursor: pointer; /* Thêm để chỉ ra có thể nhấp */
+}
+
+.owner-avatar:hover {
+  transform: scale(1.1);
 }
 
 .owner-details {
@@ -80,8 +88,16 @@ body {
 }
 
 .owner-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+  cursor: pointer; /* Thêm để chỉ ra có thể nhấp */
+}
+
+.owner-name:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
 }
 
 .room-time {
