@@ -95,7 +95,7 @@ export class RoomComponentComponent implements OnInit {
   //popUP kick
   isKickPopupVisible: boolean = false;
   kickReason: string = '';
-
+  countdown: number = 5;
   ngOnDestroy() {
     this.leaveRoom();
   }
@@ -105,6 +105,15 @@ export class RoomComponentComponent implements OnInit {
         if (this.userId === userId) {
           this.kickReason = reason;
           this.isKickPopupVisible = true;
+
+          this.countdown = 5;
+
+          const countdownInterval = setInterval(() => {
+            this.countdown--;
+            if (this.countdown <= 0) {
+              clearInterval(countdownInterval);
+            }
+          }, 1000);
 
           setTimeout(() => {
             this.isKickPopupVisible = false; // Ẩn popup
