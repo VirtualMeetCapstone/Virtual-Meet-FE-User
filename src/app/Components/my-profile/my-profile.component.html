@@ -1,9 +1,10 @@
-<!-- Sidebar -->
+<!-- Loading Indicator -->
 <div *ngIf="isLoading" class="loading-container">
   <app-loading-component></app-loading-component>
 </div>
 
-<div class="video-side">
+<!-- Profile Content -->
+<div *ngIf="!isLoading" class="video-side">
   <!-- Profile Section -->
   <div class="profile-container">
     <div class="profile-header-row">
@@ -91,15 +92,15 @@
           [ngStyle]="{ left: selectedTab * 54 + 'vh' }"
         ></div>
       </div>
-      <!-- My Post  -->
+      <!-- My Post -->
       <ng-container *ngIf="selectedTab === 0">
         <app-my-post [userId]="userId"></app-my-post>
       </ng-container>
-      <!-- Room List  -->
+      <!-- Room List -->
       <ng-container *ngIf="selectedTab === 1">
         <app-room-list [userId]="userId"></app-room-list>
       </ng-container>
-      <!-- Posts Feed  -->
+      <!-- Posts Feed -->
       <ng-container *ngIf="selectedTab === 2">
         <app-posts-feed [userId]="userId"></app-posts-feed>
       </ng-container>
