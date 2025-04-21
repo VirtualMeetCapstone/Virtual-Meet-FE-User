@@ -99,10 +99,21 @@ export class RoomComponentComponent implements OnInit {
   isKickPopupVisible: boolean = false;
   kickReason: string = '';
   countdown: number = 5;
+  isSummarizeBtnVisible = true;
+  showCallSummaryModal: boolean = false;
+  callSummaryText: string = '';
+  isLoading: boolean = false;
   ngOnDestroy() {
     this.leaveRoom();
   }
   async ngOnInit() {
+    this.roomHubService.receiveSummary((summary: string) => {
+      console.log('Tóm tắt cuộc gọi nhận được:', summary);
+      this.showCallSummaryModal = true;
+      this.isLoading = false;
+      this.callSummaryText = summary.replace(/\n/g, '<br>');
+    });
+
     this.roomHubService.receiveHostKickUser(
       (userId: string, reason: string) => {
         if (this.userId === userId) {
@@ -133,25 +144,14 @@ export class RoomComponentComponent implements OnInit {
           if (!this.isSubtitlesEnabled) return;
 
           try {
-
-            this.displaySubtitle(
-              username,
-              subtitle,
-              5000,
-              false
-            );
+            this.displaySubtitle(username, subtitle, 5000, false);
 
             const targetLang = this.selectedLangTarget.split('-')[0];
             if (sourceLang !== targetLang) {
               this.translateService
                 .translate(subtitle, sourceLang, targetLang)
                 .then((translatedText) => {
-                  this.displaySubtitle(
-                   username,
-                    translatedText,
-                    10000,
-                    true
-                  );
+                  this.displaySubtitle(username, translatedText, 10000, true);
                 })
                 .catch((error) => console.error('Lỗi dịch phụ đề:', error));
             }
@@ -317,6 +317,10 @@ export class RoomComponentComponent implements OnInit {
     );
   }
 
+  closeSummaryModal() {
+    this.showCallSummaryModal = false;
+  }
+
   // Hàm mở/đóng modal chọn hoạt động
   toggleActivityModal() {
     this.isActivityModalOpen = !this.isActivityModalOpen;
@@ -381,6 +385,27 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
+  copySummary() {
+    const summaryText = document.getElementById('callSummaryText')?.innerText;
+    if (summaryText) {
+      navigator.clipboard.writeText(summaryText).then(() => {
+        alert('Đã sao chép nội dung!');
+      }).catch(err => {
+        console.error('Không thể sao chép:', err);
+      });
+    }
+  }
+
+  summarizeCall() {
+    this.roomHubService.summarizeSubtitles(this.roomId);
+    // Ẩn nút sau khi nhấn
+    this.isSummarizeBtnVisible = false;
+    this.isLoading = true;
+    // Hiện lại sau 10 giây
+    setTimeout(() => {
+      this.isSummarizeBtnVisible = true;
+    }, 10000);
+  }
   toggleVideo(): void {
     this.rtcHub.toggleVideo();
     this.isCameraOn = this.roomHubService.videoEnabled;
