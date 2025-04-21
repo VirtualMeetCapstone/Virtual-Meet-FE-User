@@ -32,6 +32,7 @@ export class ChatOutsideRoomComponent implements OnInit {
   private searchSubject = new Subject<string>();
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   searchTimeout: any;
+  isTyping: any = false;
 
   scrollToBottom(): void {
     try {
@@ -60,13 +61,43 @@ export class ChatOutsideRoomComponent implements OnInit {
         });
     }
     this.chatService.getChatHistory(this.userId).subscribe((data) => {
-      this.contacts = data;
+      this.contacts = data.map((contact: any) => ({
+        ...contact,
+        isTyping: false,
+      }));
     });
     this.chatService.messageReceived$.subscribe((message) => {
       this.showChat(this.reiceiverUser);
       this.chatService.getChatHistory(this.userId).subscribe((data) => {
-        this.contacts = data;
+        this.contacts = data.map((contact: any) => ({
+          ...contact,
+          isTyping: false,
+        }));
       });
+    });
+    this.chatService.userIsTyping$.subscribe((message) => {
+      if (message) {
+        const typingContact = this.contacts.find(
+          (c: any) => c.contactId === message.user
+        );
+        if (typingContact) {
+          typingContact.isTyping = true;
+
+          setTimeout(() => {
+            typingContact.isTyping = false;
+            this.contacts = [...this.contacts];
+          }, 5000);
+        }
+        if (
+          this.reiceiverUser &&
+          message.user == this.reiceiverUser.contactId
+        ) {
+          this.isTyping = true;
+          setTimeout(() => {
+            this.isTyping = false;
+          }, 5000);
+        }
+      }
     });
     this.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged())
@@ -81,17 +112,20 @@ export class ChatOutsideRoomComponent implements OnInit {
       this.activeView = 'contacts';
     }
   }
-  onSearchChange(searchValue: string): void {
-    this.searchSubject.next(searchValue);
+  UserTyping() {
+    if (this.reiceiverUser && this.userId) {
+      this.chatService.userIsTyping(this.userId, this.reiceiverUser.contactId);
+    }
   }
 
   searchUser(searchTerm: string) {
     this.searchService.searchUserByName(searchTerm).subscribe((data: any) => {
       this.listSearch = data;
-      console.log(this.listSearch);
     });
   }
   showChat(contact: any) {
+    this.isTyping = false;
+
     this.currentChat = contact.contactName;
     if (this.isMobile) {
       this.activeView = 'chat';
@@ -105,6 +139,8 @@ export class ChatOutsideRoomComponent implements OnInit {
     this.reiceiverUser = contact;
   }
   showChatFromSearch(contact: any) {
+    this.contentToSearch = '';
+    this.listSearch = [];
     this.currentChat = contact.name;
     if (this.isMobile) {
       this.activeView = 'chat';
@@ -120,7 +156,6 @@ export class ChatOutsideRoomComponent implements OnInit {
       contactName: contact.name,
       contactImage: contact.picture.url,
     };
-    this.contentToSearch = '';
   }
   sendPrivateChat() {
     var data = {
