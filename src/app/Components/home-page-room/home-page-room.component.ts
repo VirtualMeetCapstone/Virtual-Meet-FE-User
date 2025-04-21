@@ -14,6 +14,7 @@ import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
 import { isPlatformBrowser } from '@angular/common';
+import { LoadingService } from '../../loading.service';
 
 @Component({
   selector: 'app-home-page-room',
@@ -43,13 +44,15 @@ export class HomePageRoomComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private dialog: MatDialog,
-    private notificationService: NotificationServiceService
+    private notificationService: NotificationServiceService,
+    private loadingService: LoadingService
   ) {}
 
   user: any = null;
 
   ngOnInit(): void {
-    this.loading = true;
+    this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
+    this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', this.toggleScrollButton);
     }
@@ -110,7 +113,12 @@ export class HomePageRoomComponent implements OnInit {
     this.roomService.getRooms(12, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
+      this.loadingService.hide(); // Ẩn loading khi fetch thành công
     });
+  }
+
+  goToProfile(uuid: string) {
+    this.router.navigate(['/my-profile', uuid]);
   }
 
   async joinRoom(roomId: string) {

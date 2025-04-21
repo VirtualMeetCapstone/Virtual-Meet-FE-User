@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../auth-service/auth.service';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatOutsideRoomService {
-  url = `https://localhost:7035/api/MessagesOutsideRoom`;
-  private hubUrl = 'https://localhost:7035/chatOutsideRoomHub';
+  url = `${AppConstants.API_BASE_URL_HTTPS}/api/MessagesOutsideRoom`;
+  private hubUrl = `${AppConstants.API_BASE_URL_HTTPS}/chatOutsideRoomHub`;
   user: any = null;
   private hubConnection!: signalR.HubConnection;
   constructor(private http: HttpClient, private authService: AuthService) {

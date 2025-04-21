@@ -60,7 +60,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -7px;
 }
 
 .half {
@@ -264,6 +263,10 @@
   border-radius: 50%;
   background: #f5f5f5;
   z-index: 15;
+}
+
+.menu .button a:hover {
+  color: red;
 }
 
 .menu .button.active {

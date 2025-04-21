@@ -21,9 +21,12 @@
               src="{{ room.owner.picture.url }}"
               alt="Owner"
               class="owner-avatar"
+              (click)="goToProfile(room.ownerId)"
             />
             <div class="owner-details">
-              <span class="owner-name">{{ room.owner.name }}</span>
+              <span class="owner-name" (click)="goToProfile(room.ownerId)">{{
+                room.owner.name
+              }}</span>
               <span class="room-time">{{ room.createTime }}</span>
             </div>
           </div>
@@ -135,9 +138,12 @@
   [infiniteScrollDistance]="1"
   [infiniteScrollThrottle]="300"
 >
-  <h3 style="font-weight: bold; text-align: center" *ngIf="loading">
-    Load More...
-  </h3>
+  <div class="loader" *ngIf="loading">
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+  </div>
+
   <h3 style="font-weight: bold; text-align: center" *ngIf="loading == false">
     No more data to load
   </h3>

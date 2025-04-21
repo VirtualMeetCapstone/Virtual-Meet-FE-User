@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { UserVipService } from './services/user-vip-service/user-vip.service';
 import { AuthService } from './services/auth-service/auth.service';
+import { LoadingService } from './loading.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,12 +16,14 @@ export class AppComponent implements OnInit {
   isLoggedIn = false;
   isRoomPage = false;
   isChatPage = false;
+  isLoading = false;
 
   constructor(
     private authService: AuthService,
     private userVipService: UserVipService,
     private translate: TranslateService,
     private router: Router,
+    private loadingService: LoadingService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     let lang = 'en'; // Mặc định là tiếng Anh
@@ -29,6 +32,10 @@ export class AppComponent implements OnInit {
     if (typeof window !== 'undefined' && localStorage.getItem('language')) {
       lang = localStorage.getItem('language')!;
     }
+
+    this.loadingService.loading$.subscribe((loading) => {
+      this.isLoading = loading;
+    });
 
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
