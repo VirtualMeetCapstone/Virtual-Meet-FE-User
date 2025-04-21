@@ -16,7 +16,7 @@ export class RoomHubService {
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
-  private urlBase = AppConstants.API_BASE_URL_HTTPS;
+  private urlBase = AppConstants.API_BASE_URL_HTTPS; // Địa chỉ API của bạn.
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
@@ -465,6 +465,27 @@ export class RoomHubService {
   }
 
 
+
+  public async kickUser(targetUserId: string, reason: string): Promise<void> {
+    if (!this.currentUser.roomId) {
+        console.error('❌ Không thể kick user vì không có roomId.');
+        return;
+    }
+
+    try {
+        await this.hubConnection.invoke('KickUser', this.currentUser.roomId, targetUserId, reason);
+        console.log(`📡 Đã gửi yêu cầu kick user: ${targetUserId} với lý do: ${reason}`);
+    } catch (error) {
+        console.error('❌ Lỗi khi gửi yêu cầu kick user:', error);
+    }
+}
+
+  public receiveHostKickUser(callback: (userId: string, reason: string) => void): void {
+    this.hubConnection.off('HostKickUser');
+    this.hubConnection.on('HostKickUser', (userId: string, reason: string) => {
+      callback(userId, reason);
+    });
+  }
 
   public async sendMute(targetId: string, muted: boolean): Promise<void> {
     if (!this.currentUser.roomId) {

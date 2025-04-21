@@ -92,10 +92,27 @@ export class RoomComponentComponent implements OnInit {
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
   //end init
 
+
+  //popUP kick
+  isKickPopupVisible: boolean = false;
+  kickReason: string = '';
+
+
   ngOnDestroy() {
     this.leaveRoom();
   }
   async ngOnInit() {
+    this.roomHubService.receiveHostKickUser((userId: string, reason: string) => {
+      if (this.userId === userId) {
+        this.kickReason = reason;
+        this.isKickPopupVisible = true;
+
+        setTimeout(() => {
+          this.isKickPopupVisible = false; // Ẩn popup
+        }, 5000);
+      }
+    });
+
     // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
     if (!this.isReceiveSubtitleRegistered) {
       this.roomHubService.receiveSubtitle(

@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { RtcHubService } from '../../Hub/rtc-hub/rtc-hub.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-participant-list',
@@ -15,22 +16,36 @@ export class ParticipantListComponent implements OnInit {
   userId: string = '';
   roomOwnerId: string = '';
   userCache = new Map<string, any>();
+  selectedUser: any; // Người dùng được chọn để kick
+  isKickPopupVisible = false; // Hiển thị popup
+  selectedReason: string = ''; // Lý do được chọn
+  reasons = [
+    'Vi phạm nội quy',
+    'Gây rối trong phòng',
+    'Ngôn ngữ không phù hợp',
+    'Khác',
+  ];
+
   constructor(
     private rtcHubService: RtcHubService,
     private authService: AuthService,
     private roomHub: RoomHubService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog // Thêm MatDialog để mở hộp thoại
   ) {}
 
   ngOnInit(): void {
     this.userId = this.authService.getUser()?.id;
 
+
     if (!this.userId) {
-      console.error('❌ Không thể lấy User ID. Dừng thực hiện các hàm tiếp theo.');
+      console.error(
+        '❌ Không thể lấy User ID. Dừng thực hiện các hàm tiếp theo.'
+      );
       return;
     }
 
-    const roomId = this.rtcHubService.roomHubService.currentUser.roomId // Hoặc nơi bạn đang lưu roomId
+    const roomId = this.rtcHubService.roomHubService.currentUser.roomId; // Hoặc nơi bạn đang lưu roomId
     if (!roomId) {
       console.error('❌ Không có roomId để gọi API.');
       return;
@@ -50,9 +65,6 @@ export class ParticipantListComponent implements OnInit {
         console.error('❌ Không lấy được thông tin phòng:', err);
       },
     });
-
-
-
   }
 
   setupRoomEvents() {
@@ -64,14 +76,15 @@ export class ParticipantListComponent implements OnInit {
       }
     });
 
-
-    this.roomHub.receiveVideoStatusUpdate((userId: string, isCameraOn: boolean) => {
-      const user = this.participants.find((p) => p.id === userId);
-      if (user) {
-        user.cameraOff = !isCameraOn;
-        this.cd.detectChanges();
+    this.roomHub.receiveVideoStatusUpdate(
+      (userId: string, isCameraOn: boolean) => {
+        const user = this.participants.find((p) => p.id === userId);
+        if (user) {
+          user.cameraOff = !isCameraOn;
+          this.cd.detectChanges();
+        }
       }
-    });
+    );
 
     this.rtcHubService.peers$.subscribe(async (peers) => {
       const currentUser = this.rtcHubService.roomHubService.currentUser;
@@ -155,5 +168,37 @@ export class ParticipantListComponent implements OnInit {
   }
   removeUser(user: any) {
     this.participants = this.participants.filter((p) => p.id !== user.id);
+  }
+
+  // Mở hộp thoại chọn lý do kick
+  openKickDialog(user: any): void {
+    console.log('👤 Người dùng được chọn để kick:', user);
+    this.selectedUser = user; // Lưu thông tin người dùng được chọn
+    this.isKickPopupVisible = true; // Hiển thị popup
+  }
+
+  // Gửi yêu cầu kick user
+  kickUser(user: any, reason: string): void {
+    this.roomHub
+      .kickUser(user.userId, reason) // Gửi yêu cầu kick đến server
+      .then(() => {
+        console.log(`✅ User ${user.name} đã bị kick với lý do: ${reason}`);
+        this.removeUser(user); // Xóa user khỏi danh sách
+      })
+      .catch((err) => {
+        console.error('❌ Lỗi khi kick user:', err);
+      });
+  }
+
+  closeKickPopup(): void {
+    this.isKickPopupVisible = false; // Ẩn popup
+    this.selectedReason = ''; // Reset lý do
+  }
+
+  confirmKick(): void {
+    if (this.selectedUser && this.selectedReason) {
+      this.kickUser(this.selectedUser, this.selectedReason); // Gửi yêu cầu kick
+      this.closeKickPopup();
+    }
   }
 }
