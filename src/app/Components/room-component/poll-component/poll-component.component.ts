@@ -24,6 +24,7 @@ export class PollComponentComponent {
   isCreatingPoll = false;
   newQuestion = '';
   newOptions: string[] = ['', ''];
+  errorMessage = '';
 
   get hasVoted(): boolean {
     return this.poll?.voters.includes(this.currentUserId) || false;
@@ -31,22 +32,46 @@ export class PollComponentComponent {
 
   startCreatingPoll() {
     this.isCreatingPoll = true;
+    this.errorMessage = '';
   }
 
   addOption() {
     this.newOptions.push('');
   }
 
+  removeOption(index: number) {
+    if (this.newOptions.length > 2) {
+      this.newOptions.splice(index, 1);
+    }
+  }
+
   submitPoll() {
-    if (this.newQuestion && this.newOptions.every((opt) => opt.trim())) {
+    const trimmedQuestion = this.newQuestion.trim();
+    const trimmedOptions = this.newOptions.map((opt) => opt.trim());
+    if (
+      trimmedQuestion &&
+      trimmedOptions.length >= 2 &&
+      trimmedOptions.every((opt) => opt)
+    ) {
       this.createPoll.emit({
-        question: this.newQuestion,
-        options: this.newOptions,
+        question: trimmedQuestion,
+        options: trimmedOptions,
       });
       this.isCreatingPoll = false;
       this.newQuestion = '';
       this.newOptions = ['', ''];
+      this.errorMessage = '';
+    } else {
+      this.errorMessage =
+        'Vui lòng điền câu hỏi và ít nhất hai tùy chọn không trống.';
     }
+  }
+
+  cancelPollCreation() {
+    this.isCreatingPoll = false;
+    this.newQuestion = '';
+    this.newOptions = ['', ''];
+    this.errorMessage = '';
   }
 
   voteOption(optionId: string) {

@@ -25,8 +25,29 @@ input {
   margin: 5px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
+  color: black; /* Đảm bảo màu chữ là đen */
 }
 
 p {
   color: white;
+}
+
+.options-container {
+  max-height: 300px; /* Điều chỉnh nếu cần */
+  overflow-y: auto;
+  padding-right: 10px; /* Ngăn nội dung bị che bởi thanh cuộn */
+}
+
+/* CSS cho input câu hỏi */
+input[placeholder="Enter poll question"] {
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  min-height: 40px; /* Đảm bảo đủ chỗ cho nhiều ký tự */
+  resize: vertical; /* Cho phép kéo dãn chiều cao */
+}
+
+/* CSS cho các input option */
+input[placeholder^="Option"] {
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  min-height: 40px; /* Đảm bảo đủ chỗ cho nhiều ký tự */
+  resize: vertical; /* Cho phép kéo dãn chiều cao */
 }
