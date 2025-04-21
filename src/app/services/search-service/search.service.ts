@@ -107,7 +107,7 @@ export class SearchService {
   }
   searchUserByName(userName: string): any {
     return this.http.get<any>(
-      'https://dev-vmeet.site/' + 'users/search?userName=' + userName
+      `${AppConstants.API_BASE_URL_HTTPS}` + '/users/search?userName=' + userName
     );
   }
 }
