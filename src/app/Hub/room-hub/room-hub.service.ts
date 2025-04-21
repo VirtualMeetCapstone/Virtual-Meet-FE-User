@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 export class RoomHubService {
 
   public hubConnection: signalR.HubConnection;
-  public currentUser = { name: '', roomId: '' };
+  public currentUser = { name: '',userInfoName: '', roomId: '' };
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
@@ -37,6 +37,8 @@ export class RoomHubService {
   get participants$(): Observable<number> {
     return this.participantsSubject.asObservable();
   }
+
+
 
   get connectionState$(): Observable<string> {
     return this.connectionStateSubject.asObservable();
@@ -158,6 +160,7 @@ export class RoomHubService {
 
       // Cập nhật thông tin người dùng và tham gia phòng
       this.currentUser.name = username;
+      this.currentUser.userInfoName = (await this.auth.fetchUserName(username)) ?? '';
       this.currentUser.roomId = roomId;
       await this.hubConnection.invoke('JoinRoom', username, roomId, password);
       console.log(`✅ Joined room ${roomId} as ${username}`);
@@ -261,11 +264,12 @@ export class RoomHubService {
     subtitle: string,
     sourceLang: string
   ): Promise<void> {
-    const userName = this.currentUser.name;
+
+    console.log('userName', this.currentUser.userInfoName);
     await this.hubConnection.invoke(
       'SendSubtitle',
       this.currentUser.roomId,
-      userName,
+      this.currentUser.userInfoName,
       subtitle,
       sourceLang
     );
