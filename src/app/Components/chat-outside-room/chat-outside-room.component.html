@@ -1,0 +1,174 @@
+<div class="chat-app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div
+      class="sidebar-icon"
+      [class.active]="activeView === 'contacts'"
+      (click)="showContacts()"
+    >
+      <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="sidebar-icon">
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="sidebar-icon">
+      <i class="fas fa-phone"></i>
+    </div>
+    <div class="sidebar-icon">
+      <i class="fas fa-cog"></i>
+    </div>
+
+    <div class="user-avatar">
+      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" />
+      <span class="online-status"></span>
+    </div>
+  </div>
+
+  <!-- Mobile Header -->
+  <div class="mobile-header" *ngIf="isMobile && activeView === 'chat'">
+    <button class="back-button" (click)="showContacts()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="mobile-header-title"></div>
+  </div>
+
+  <!-- Contacts -->
+  <div class="contacts" [class.active]="!isMobile || activeView === 'contacts'">
+    <div class="contacts-header">
+      <h2>Chats</h2>
+      <div class="header-actions">
+        <button><i class="fas fa-edit"></i></button>
+        <button><i class="fas fa-ellipsis-vertical"></i></button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="contentToSearch"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search messages or contacts..."
+      />
+
+      <ul class="search-results">
+        <li
+          *ngFor="let result of listSearch"
+          (click)="showChatFromSearch(result)"
+        >
+          <img
+            [src]="result.picture.url"
+            alt="{{ result.name }}"
+            class="user-avatar-search"
+          />{{ result.name }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="contact-list">
+      <div
+        class="contact"
+        *ngFor="let contact of contacts"
+        [class.active]="currentChat === contact.contactName"
+        (click)="showChat(contact)"
+      >
+        <div class="contact-avatar">
+          <img [src]="contact.contactImage" alt="Contact" />
+          <span class="online-status" *ngIf="contact.online"></span>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">{{ contact.contactName }}</div>
+          <div class="contact-preview">{{ contact.lastMessage }}</div>
+        </div>
+        <div class="contact-meta">
+          <div class="contact-time">
+            {{ contact.lastMessageTime | date : "dd/MM/yyyy HH:mm" }}
+          </div>
+          <div class="unread-count" *ngIf="contact.unread > 0">
+            {{ contact.unread }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area" [class.active]="!isMobile || activeView === 'chat'">
+    <div class="chat-header">
+      <div class="chat-user">
+        <div class="chat-user-avatar">
+          <img
+            src="https://randomuser.me/api/portraits/men/32.jpg"
+            alt="John Doe"
+            *ngIf="currentChat === 'John Doe'"
+          />
+          <img
+            src="https://randomuser.me/api/portraits/women/65.jpg"
+            alt="Sarah Smith"
+            *ngIf="currentChat === 'Sarah Smith'"
+          />
+          <img
+            src="https://randomuser.me/api/portraits/men/75.jpg"
+            alt="Mike Johnson"
+            *ngIf="currentChat === 'Mike Johnson'"
+          />
+          <span class="online-status"></span>
+        </div>
+        <div class="chat-user-info">
+          <h3>{{ currentChat }}</h3>
+          <p>Online</p>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button><i class="fas fa-search"></i></button>
+        <button><i class="fas fa-phone"></i></button>
+        <button><i class="fas fa-video"></i></button>
+        <button><i class="fas fa-ellipsis-vertical"></i></button>
+      </div>
+    </div>
+
+    <div class="messages" #messagesContainer>
+      <div
+        class="message"
+        *ngFor="let chat of ChatDetails"
+        [ngClass]="chat.sender.id === userId ? 'sent' : 'received'"
+      >
+        <div class="message-bubble">
+          <!-- <ng-container *ngIf="!message.content.file; else fileTemplate"> -->
+          <ng-container>
+            {{ chat.content }}
+          </ng-container>
+          <ng-template #fileTemplate>
+            <div class="file-message">
+              <i class="fas fa-file"></i>
+              <div>
+                <div class="file-name">filefile</div>
+                <div class="file-size">sizesize</div>
+              </div>
+              <i class="fas fa-download"></i>
+            </div>
+          </ng-template>
+        </div>
+        <div class="message-time">
+          {{ chat.createdAt | date : "dd/MM/yyyy HH:mm" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input">
+      <div class="input-container">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          [(ngModel)]="content"
+          (keyup.enter)="sendPrivateChat()"
+        />
+        <div class="input-actions">
+          <button><i class="fas fa-paperclip"></i></button>
+          <button><i class="fas fa-face-smile"></i></button>
+          <button class="send-button" (click)="sendPrivateChat()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

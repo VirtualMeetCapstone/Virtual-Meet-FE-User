@@ -95,10 +95,37 @@ export class RoomComponentComponent implements OnInit {
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
   //end init
 
+  //popUP kick
+  isKickPopupVisible: boolean = false;
+  kickReason: string = '';
+  countdown: number = 5;
   ngOnDestroy() {
     this.leaveRoom();
   }
   async ngOnInit() {
+    this.roomHubService.receiveHostKickUser(
+      (userId: string, reason: string) => {
+        if (this.userId === userId) {
+          this.kickReason = reason;
+          this.isKickPopupVisible = true;
+
+          this.countdown = 5;
+
+          const countdownInterval = setInterval(() => {
+            this.countdown--;
+            if (this.countdown <= 0) {
+              clearInterval(countdownInterval);
+            }
+          }, 1000);
+
+          setTimeout(() => {
+            this.isKickPopupVisible = false; // Ẩn popup
+            this.roomHubService.leaveRoom();
+          }, 5000);
+        }
+      }
+    );
+
     // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
     if (!this.isReceiveSubtitleRegistered) {
       this.roomHubService.receiveSubtitle(
@@ -106,18 +133,9 @@ export class RoomComponentComponent implements OnInit {
           if (!this.isSubtitlesEnabled) return;
 
           try {
-            let displayName: string | undefined =
-              this.userNameCache.get(username);
 
-            if (!displayName) {
-              const name = await this.authService.fetchUserName(username);
-              displayName = name ?? undefined;
-              if (displayName) {
-                this.userNameCache.set(username, displayName);
-              }
-            }
             this.displaySubtitle(
-              displayName ?? username,
+              username,
               subtitle,
               5000,
               false
@@ -129,7 +147,7 @@ export class RoomComponentComponent implements OnInit {
                 .translate(subtitle, sourceLang, targetLang)
                 .then((translatedText) => {
                   this.displaySubtitle(
-                    displayName ?? username,
+                   username,
                     translatedText,
                     10000,
                     true

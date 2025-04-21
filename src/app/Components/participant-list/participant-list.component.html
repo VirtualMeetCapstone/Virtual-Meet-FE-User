@@ -24,7 +24,31 @@
           <i *ngIf="!user.cameraOff" class="fa-solid fa-video"></i>
         </button>
 
+        <!-- Nút Kick User -->
+        <button class="btn btn-danger" (click)="openKickDialog(user)">
+          <i class="fa-solid fa-user-slash"></i>
+        </button>
       </div>
     </li>
   </ul>
+</div>
+
+<div class="popup-overlay" *ngIf="isKickPopupVisible">
+  <div class="popup-container">
+    <h2>Kick User</h2>
+    <p>Bạn có chắc chắn muốn kick <strong>{{ selectedUser?.name }}</strong>?</p>
+    <div class="reason-select">
+      <label for="reason">Chọn lý do:</label>
+      <select id="reason" [(ngModel)]="selectedReason">
+        <option value="" disabled selected>Chọn lý do</option>
+        <option style="color: black;" *ngFor="let reason of reasons" [value]="reason">
+          {{ reason }}
+        </option>
+      </select>
+    </div>
+    <div class="popup-actions">
+      <button class="btn btn-cancel" (click)="closeKickPopup()">Hủy</button>
+      <button class="btn btn-confirm" [disabled]="!selectedReason" (click)="confirmKick()">Xác nhận</button>
+    </div>
+  </div>
 </div>

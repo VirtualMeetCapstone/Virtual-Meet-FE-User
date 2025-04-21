@@ -18,6 +18,7 @@ export class AiChatBoxComponent implements OnInit {
   ngOnInit() {}
 
   toggleMinimize(event: Event) {
+    event.preventDefault();
     event.stopPropagation();
     this.isMinimized = !this.isMinimized;
     if (!this.isMinimized && this.messages.length === 0) {

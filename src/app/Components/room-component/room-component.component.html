@@ -213,6 +213,14 @@
     <span>Recording</span>
   </div>
 
+  <!-- PopUp KickUser Modal -->
+  <div class="popup-overlay" *ngIf="isKickPopupVisible">
+    <div class="popup-container">
+      <h2>Bạn đã bị kick khỏi phòng</h2>
+      <p>Lý do: {{ kickReason }}</p>
+      <p>Bạn sẽ tự động rời phòng sau {{ countdown }} giây...</p>
+    </div>
+  </div>
   <!-- Recording Settings Modal -->
   <div class="modal" [class.active]="isRecordingModalOpen">
     <div class="modal-content" style="background-color: #3d3d3d">
