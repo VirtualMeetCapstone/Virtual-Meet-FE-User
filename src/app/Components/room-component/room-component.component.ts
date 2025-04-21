@@ -92,26 +92,36 @@ export class RoomComponentComponent implements OnInit {
   bubbles: { type: string; userName: string; x: number; y: number }[] = [];
   //end init
 
-
   //popUP kick
   isKickPopupVisible: boolean = false;
   kickReason: string = '';
-
-
+  countdown: number = 5;
   ngOnDestroy() {
     this.leaveRoom();
   }
   async ngOnInit() {
-    this.roomHubService.receiveHostKickUser((userId: string, reason: string) => {
-      if (this.userId === userId) {
-        this.kickReason = reason;
-        this.isKickPopupVisible = true;
+    this.roomHubService.receiveHostKickUser(
+      (userId: string, reason: string) => {
+        if (this.userId === userId) {
+          this.kickReason = reason;
+          this.isKickPopupVisible = true;
 
-        setTimeout(() => {
-          this.isKickPopupVisible = false; // Ẩn popup
-        }, 5000);
+          this.countdown = 5;
+
+          const countdownInterval = setInterval(() => {
+            this.countdown--;
+            if (this.countdown <= 0) {
+              clearInterval(countdownInterval);
+            }
+          }, 1000);
+
+          setTimeout(() => {
+            this.isKickPopupVisible = false; // Ẩn popup
+            this.roomHubService.leaveRoom();
+          }, 5000);
+        }
       }
-    });
+    );
 
     // Đăng ký sự kiện nhận phụ đề từ SignalR (chỉ 1 lần)
     if (!this.isReceiveSubtitleRegistered) {
@@ -120,18 +130,9 @@ export class RoomComponentComponent implements OnInit {
           if (!this.isSubtitlesEnabled) return;
 
           try {
-            let displayName: string | undefined =
-              this.userNameCache.get(username);
 
-            if (!displayName) {
-              const name = await this.authService.fetchUserName(username);
-              displayName = name ?? undefined;
-              if (displayName) {
-                this.userNameCache.set(username, displayName);
-              }
-            }
             this.displaySubtitle(
-              displayName ?? username,
+              username,
               subtitle,
               5000,
               false
@@ -143,7 +144,7 @@ export class RoomComponentComponent implements OnInit {
                 .translate(subtitle, sourceLang, targetLang)
                 .then((translatedText) => {
                   this.displaySubtitle(
-                    displayName ?? username,
+                   username,
                     translatedText,
                     10000,
                     true
@@ -220,7 +221,6 @@ export class RoomComponentComponent implements OnInit {
             };
           })
         );
-
       });
 
       await this.displayLocalStream();
@@ -278,33 +278,35 @@ export class RoomComponentComponent implements OnInit {
       this._playerService.initializePlayer(videoId, time, isPaused);
     });
 
-    this.roomHubService.receiveHostMuted(async (userId: string, muted: boolean) => {
-      if (userId === this.userId) {
-        if (muted) {
-          await this.rtcHub.forceMute(); // Tắt mic
-          this.isMicOn = false; // Cập nhật trạng thái mic
-        } else {
-          this.isMicOn = true; // Cập nhật trạng thái mic
-          await this.rtcHub.forceUnmute();
+    this.roomHubService.receiveHostMuted(
+      async (userId: string, muted: boolean) => {
+        if (userId === this.userId) {
+          if (muted) {
+            await this.rtcHub.forceMute(); // Tắt mic
+            this.isMicOn = false; // Cập nhật trạng thái mic
+          } else {
+            this.isMicOn = true; // Cập nhật trạng thái mic
+            await this.rtcHub.forceUnmute();
+          }
         }
       }
-    });
+    );
 
-    this.roomHubService.receiveHostMutedVIdeo(async (userId: string, muted: boolean) => {
-      if (userId === this.userId) {
-        if (muted) {
-          await this.rtcHub.forceCamera();
-          this.isCameraOn = false;
-          console.log('📷 Bạn đã bị host tắt camera.');
-        } else {
-          this.isCameraOn = true;
-          await this.rtcHub.forceCameraOn();
-          console.log('📷 Host đã bật lại camera của bạn.');
+    this.roomHubService.receiveHostMutedVIdeo(
+      async (userId: string, muted: boolean) => {
+        if (userId === this.userId) {
+          if (muted) {
+            await this.rtcHub.forceCamera();
+            this.isCameraOn = false;
+            console.log('📷 Bạn đã bị host tắt camera.');
+          } else {
+            this.isCameraOn = true;
+            await this.rtcHub.forceCameraOn();
+            console.log('📷 Host đã bật lại camera của bạn.');
+          }
         }
       }
-    });
-
-
+    );
   }
 
   // Hàm mở/đóng modal chọn hoạt động
