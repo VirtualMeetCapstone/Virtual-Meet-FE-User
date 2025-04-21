@@ -47,7 +47,7 @@
       </li>
       <li
         *ngFor="let user of userSuggestions"
-        (click)="selectSuggestion(user)"
+        [routerLink]="['/my-profile', user.id]"
         class="user-suggestion"
       >
         <img

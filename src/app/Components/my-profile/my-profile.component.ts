@@ -70,33 +70,21 @@ export class MyProfileComponent implements OnInit {
 
     if (isPlatformBrowser(this.platformId)) {
       this.token = localStorage.getItem('accessToken') || '';
-      if (!this.token) {
-        console.error('Token not found, vui lòng đăng nhập lại.');
-        return;
-      }
+      const decoded = decodeJwt(this.token);
+      this.loggedInUserId = decoded.id;
 
-      try {
-        const decoded = decodeJwt(this.token);
-        this.loggedInUserId = decoded.id;
-      } catch (error) {
-        console.error('Lỗi khi giải mã token:', error);
-        return;
-      }
+      this.route.params.subscribe(async (params) => {
+        this.userId = params['id'];
+        this.isOwnProfile = this.userId === this.loggedInUserId;
 
-      const params = this.route.snapshot.params;
-      this.userId = params['id'];
-      this.isOwnProfile = this.userId === this.loggedInUserId;
+        const isBlocked = await this.checkIfBlockedByOther();
+        if (isBlocked) {
+          window.location.href = '/404';
+          return;
+        }
 
-      // ✅ Kiểm tra block trước khi làm gì khác
-      const isBlocked = await this.checkIfBlockedByOther();
-      if (isBlocked) {
-        console.log('Bị block, chuyển trang 404');
-        window.location.href = '/404';
-        return;
-      }
-
-      // ✅ Chỉ fetch nếu không bị block
-      await this.fetchProfile(this.userId);
+        await this.fetchProfile(this.userId);
+      });
     }
   }
 
