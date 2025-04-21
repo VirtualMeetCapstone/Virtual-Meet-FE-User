@@ -65,6 +65,7 @@ export class ChatOutsideRoomComponent implements OnInit {
         ...contact,
         isTyping: false,
       }));
+      console.log(this.contacts);
     });
     this.chatService.messageReceived$.subscribe((message) => {
       this.showChat(this.reiceiverUser);
@@ -130,6 +131,17 @@ export class ChatOutsideRoomComponent implements OnInit {
     if (this.isMobile) {
       this.activeView = 'chat';
     }
+    this.chatService
+      .markRead(this.userId, contact.contactId)
+      .subscribe((data) => {
+        this.chatService.getChatHistory(this.userId).subscribe((data) => {
+          this.contacts = data.map((contact: any) => ({
+            ...contact,
+            isTyping: false,
+          }));
+          console.log(this.contacts);
+        });
+      });
     this.chatService
       .getChatWithUser(this.userId, contact.contactId)
       .subscribe((data) => {

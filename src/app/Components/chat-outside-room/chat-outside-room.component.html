@@ -19,7 +19,7 @@
     </div>
 
     <div class="user-avatar">
-      <img src="{{ user.picture.url }}" alt="User" />
+      <img src="{{ user.picture?.url }}" alt="User" />
       <span class="online-status"></span>
     </div>
   </div>
@@ -90,16 +90,25 @@
             <span *ngIf="contact.isTyping" class="typing-text"
               >{{ contact.contactName }} is typing...</span
             >
-            <span *ngIf="!contact.isTyping">{{ contact.lastMessage }} </span>
+            <span
+              *ngIf="!contact.isTyping"
+              [ngClass]="{
+                unread: contact.isRead === false,
+                read: contact.isRead === true
+              }"
+            >
+              <span *ngIf="contact.isYou">Bạn: </span>{{ contact.lastMessage }}
+            </span>
           </div>
         </div>
         <div class="contact-meta">
           <div class="contact-time">
             {{ contact.lastMessageTime | date : "dd/MM/yyyy HH:mm" }}
           </div>
-          <div class="unread-count" *ngIf="contact.unread > 0">
-            {{ contact.unread }}
-          </div>
+          <div
+            class="unread-count"
+            *ngIf="contact.isRead === false && !contact.isYou"
+          ></div>
         </div>
       </div>
     </div>

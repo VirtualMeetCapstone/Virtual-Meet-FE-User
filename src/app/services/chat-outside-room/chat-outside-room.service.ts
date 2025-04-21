@@ -51,6 +51,13 @@ export class ChatOutsideRoomService {
   getChatHistory(Userid: any) {
     return this.http.get<any>(`${this.url}/chat-history/${Userid}`);
   }
+  markRead(senderId: string, receiverId: string) {
+    return this.http.post<any>(`${this.url}/mark-last-message-as-read`, {
+      senderId: senderId,
+      receiverId: receiverId,
+    });
+  }
+
   getChatWithUser(userlogged: any, user2: any) {
     return this.http.get<any>(
       `${this.url}/private/${userlogged}/${user2}/?page=1&pageSize=50`
