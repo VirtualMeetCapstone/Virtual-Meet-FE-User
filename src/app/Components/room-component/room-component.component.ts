@@ -18,6 +18,7 @@ import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
 import { TranslateService } from '../../services/external-service/translate.service';
+import { Poll } from './poll-component/poll-component.component';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -63,6 +64,8 @@ export class RoomComponentComponent implements OnInit {
   isActivityModalOpen: boolean = false;
   isChatOpen = false;
   roomState: any; // Thêm biến lưu trạng thái
+  activePoll: Poll | null = null; // Active poll state
+  isPollOpen = false; // New state for poll sidebar
 
   //wrtc
   connectionStatus: string = 'Connecting...';
@@ -156,6 +159,11 @@ export class RoomComponentComponent implements OnInit {
       }
     });
 
+    this.roomHubService.onPollUpdated((poll) => {
+      this.activePoll = poll;
+      this.cdr.detectChanges();
+    });
+
     try {
       await this.roomHubService.startConnection();
       this.roomHubService.receiveJoinFailed((message: string) => {
@@ -203,7 +211,6 @@ export class RoomComponentComponent implements OnInit {
             };
           })
         );
-
       });
 
       await this.displayLocalStream();
@@ -261,33 +268,35 @@ export class RoomComponentComponent implements OnInit {
       this._playerService.initializePlayer(videoId, time, isPaused);
     });
 
-    this.roomHubService.receiveHostMuted(async (userId: string, muted: boolean) => {
-      if (userId === this.userId) {
-        if (muted) {
-          await this.rtcHub.forceMute(); // Tắt mic
-          this.isMicOn = false; // Cập nhật trạng thái mic
-        } else {
-          this.isMicOn = true; // Cập nhật trạng thái mic
-          await this.rtcHub.forceUnmute();
+    this.roomHubService.receiveHostMuted(
+      async (userId: string, muted: boolean) => {
+        if (userId === this.userId) {
+          if (muted) {
+            await this.rtcHub.forceMute(); // Tắt mic
+            this.isMicOn = false; // Cập nhật trạng thái mic
+          } else {
+            this.isMicOn = true; // Cập nhật trạng thái mic
+            await this.rtcHub.forceUnmute();
+          }
         }
       }
-    });
+    );
 
-    this.roomHubService.receiveHostMutedVIdeo(async (userId: string, muted: boolean) => {
-      if (userId === this.userId) {
-        if (muted) {
-          await this.rtcHub.forceCamera();
-          this.isCameraOn = false;
-          console.log('📷 Bạn đã bị host tắt camera.');
-        } else {
-          this.isCameraOn = true;
-          await this.rtcHub.forceCameraOn();
-          console.log('📷 Host đã bật lại camera của bạn.');
+    this.roomHubService.receiveHostMutedVIdeo(
+      async (userId: string, muted: boolean) => {
+        if (userId === this.userId) {
+          if (muted) {
+            await this.rtcHub.forceCamera();
+            this.isCameraOn = false;
+            console.log('📷 Bạn đã bị host tắt camera.');
+          } else {
+            this.isCameraOn = true;
+            await this.rtcHub.forceCameraOn();
+            console.log('📷 Host đã bật lại camera của bạn.');
+          }
         }
       }
-    });
-
-
+    );
   }
 
   // Hàm mở/đóng modal chọn hoạt động
@@ -340,6 +349,10 @@ export class RoomComponentComponent implements OnInit {
   toggleClose() {
     this.isChatOpen = false;
     this.isParticipantsOpen = false;
+  }
+
+  togglePoll() {
+    this.isPollOpen = !this.isPollOpen;
   }
 
   async leaveRoom() {
@@ -447,6 +460,24 @@ export class RoomComponentComponent implements OnInit {
       } catch (error) {
         console.error('❌ Lỗi khi dừng quay:', error);
       }
+    }
+  }
+
+  async onCreatePoll(event: { question: string; options: string[] }) {
+    await this.roomHubService.createPoll(
+      this.roomId,
+      event.question,
+      event.options
+    );
+  }
+
+  async onVote(optionId: string) {
+    if (this.activePoll) {
+      await this.roomHubService.voteOnPoll(
+        this.roomId,
+        this.activePoll.id,
+        optionId
+      );
     }
   }
 

@@ -48,7 +48,7 @@
     align-items: center;
 
     .video-box {
-      width: 350px; // hoặc bạn có thể dùng 70%, tùy vào độ nhỏ mong muốn
+      width: 350px;
       height: 350px;
     }
   }
@@ -65,8 +65,8 @@
     }
   }
 
-
-  &.users-5, &.users-6 {
+  &.users-5,
+  &.users-6 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
     justify-items: center;
@@ -78,7 +78,9 @@
     }
   }
 
-  &.users-7, &.users-8, &.users-9 {
+  &.users-7,
+  &.users-8,
+  &.users-9 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, auto);
     justify-items: center;
@@ -90,7 +92,9 @@
     }
   }
 
-  &.users-10, &.users-11, &.users-12 {
+  &.users-10,
+  &.users-11,
+  &.users-12 {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
     justify-items: center;
@@ -125,9 +129,7 @@
   }
 }
 
-
 .activity {
-
   position: relative;
 }
 
@@ -168,7 +170,6 @@
   background-color: #5a3d2b;
 }
 
-/* User avatar */
 .profile img,
 .user-icon img {
   width: 50px;
@@ -182,7 +183,6 @@
   align-items: center;
 }
 
-/* Tên người dùng */
 .user-name {
   position: absolute;
   bottom: 5px;
@@ -193,22 +193,18 @@
   border-radius: 3px;
 }
 
-/* Icon tắt mic */
 .mute-icon {
   position: absolute;
   bottom: 5px;
   right: 10px;
   font-size: 14px;
   color: white;
-
 }
 
-/* Controls */
 .controls {
   display: flex;
   gap: 15px;
   margin-top: 15px;
-
 }
 
 .control-btn {
@@ -230,13 +226,19 @@
 .action-btn-group {
   display: flex;
   flex-direction: row;
-
 }
 
 .chat-sidebar {
   position: absolute;
   top: 0;
   right: 1%;
+  &.open {
+    width: 300px;
+    height: 100%;
+    background: #333;
+    padding: 10px;
+    transition: width 0.3s ease;
+  }
 }
 
 .chat-box {
@@ -267,21 +269,35 @@
   margin-top: 15px;
 }
 
+.poll-btn {
+  background-color: #555;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  width: 50px;
+  height: 50px;
+  margin-top: 15px;
+  margin-left: 10px;
+}
+
 .video-call-container.modal-open {
   padding-right: 200px;
 }
 
 .youtube-container {
-  width: 80%; /* Hoặc một kích thước cụ thể như 600px */
-  max-width: 80%; /* Giới hạn chiều rộng */
-  height: auto; /* Để chiều cao tự động theo nội dung */
-  background: none; /* Bỏ nền tối để không giống overlay */
+  width: 80%;
+  max-width: 80%;
+  height: auto;
+  background: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1; /* Giảm z-index để không đè lên các phần tử khác */
-  position: relative; /* Đảm bảo nó nằm trong luồng bình thường */
-  margin: 20px auto; /* Thêm khoảng cách để không sát cạnh */
+  z-index: 1;
+  position: relative;
+  margin: 20px auto;
 }
 
 .youtube-container iframe {
@@ -306,6 +322,7 @@
   height: 60px;
   margin: 5px;
 }
+
 .activity-modal {
   position: fixed;
   top: 0;
@@ -330,7 +347,7 @@
 .activity-option {
   margin: 10px 0;
   padding: 10px;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
@@ -354,13 +371,15 @@
 .close-modal:hover {
   background: #e53935;
 }
+
 .local-video {
-  border: 2px solid #4caf50; /* Viền màu xanh lá cho video của bạn */
+  border: 2px solid #4caf50;
 }
 
 .remote-video {
-  border: 2px solid #d84141; /* Viền màu đỏ cho video remote */
+  border: 2px solid #d84141;
 }
+
 .video-box.more-users {
   display: flex;
   align-items: center;
@@ -373,7 +392,7 @@
 }
 
 .pinned {
-  display: none; /* Ẩn tất cả các video khi có user được ghim */
+  display: none;
 }
 
 .pin-btn {
@@ -421,14 +440,13 @@
   cursor: pointer;
 }
 
-
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Hiệu ứng mờ nền */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -489,7 +507,7 @@
 
 .cancel-button,
 .start-button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -509,7 +527,6 @@
 .start-button:hover {
   background-color: #45a049;
 }
-
 
 .emotion-bubbles {
   position: absolute;
@@ -541,8 +558,12 @@
   font-size: 12px;
 }
 
-.emotion-bubble.love i { color: #ff4444; }
-.emotion-bubble.haha i { color: #ffd700; }
+.emotion-bubble.love i {
+  color: #ff4444;
+}
+.emotion-bubble.haha i {
+  color: #ffd700;
+}
 
 @keyframes floatUp {
   0% {
@@ -554,7 +575,6 @@
     transform: translateY(-200px);
   }
 }
-
 
 .emotion-bubbles {
   position: absolute;
@@ -578,12 +598,24 @@
   font-size: 100px;
 }
 
-.emotion-bubble.love i { color: #ff4444; }
-.emotion-bubble.haha i { color: #ffd700; }
-.emotion-bubble.like i { color: #1877f2; }
-.emotion-bubble.wow i { color: #ff9900; }
-.emotion-bubble.sad i { color: #6699ff; }
-.emotion-bubble.angry i{ color: #ff3300; }
+.emotion-bubble.love i {
+  color: #ff4444;
+}
+.emotion-bubble.haha i {
+  color: #ffd700;
+}
+.emotion-bubble.like i {
+  color: #1877f2;
+}
+.emotion-bubble.wow i {
+  color: #ff9900;
+}
+.emotion-bubble.sad i {
+  color: #6699ff;
+}
+.emotion-bubble.angry i {
+  color: #ff3300;
+}
 
 .bubble-name {
   background: rgba(255, 255, 255, 0.8);
@@ -594,17 +626,22 @@
 }
 
 @keyframes floatUp {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-200px); }
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-200px);
+  }
 }
-
 
 .raise-hand-icon {
   position: absolute;
   top: 10px;
   left: 10px;
   font-size: 24px;
-  color: #ffcc00; /* Màu vàng nổi bật */
+  color: #ffcc00;
   background: rgba(0, 0, 0, 0.5);
   padding: 5px 10px;
   border-radius: 5px;
@@ -612,16 +649,19 @@
 }
 
 @keyframes wave {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.2); }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
 }
 
-/* Định dạng label và select để giống button */
 .language-select {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  background-color: #28a745; /* Màu xanh như button */
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 5px;
@@ -629,16 +669,14 @@
   cursor: pointer;
 }
 
-/* Khi hover */
 .language-select:hover {
   background-color: #218838;
 }
 
-/* Định dạng label */
 .language-label {
   display: block;
   text-align: center;
   font-weight: bold;
   margin-top: 10px;
-  color: black; /* Đổi màu để dễ nhìn hơn */
+  color: black;
 }
