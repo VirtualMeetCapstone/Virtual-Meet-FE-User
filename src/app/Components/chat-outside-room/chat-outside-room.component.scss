@@ -670,3 +670,82 @@
   margin-right: 15px;
   border: 1px solid #e0e0e0;
 }
+.message.user-typing .message-bubble {
+  font-style: italic;
+  color: #888;
+  background-color: #f0f0f0;
+  font-size: 14px;
+  animation: blink 1s steps(1, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.5;
+  }
+}
+/* Typing indicator styles */
+#userTypingIndicator {
+  display: block; /* Hidden by default, show when needed */
+}
+
+.typing-message {
+  margin: 10px 0;
+}
+
+.typing-bubble {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f1f1f1;
+  border-radius: 18px;
+  max-width: 80%;
+}
+
+.typing-text {
+  margin-right: 6px;
+  font-style: italic;
+  color: #606060;
+}
+
+.typing-dots {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #999;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: typing-animation 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+.typing-text {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9em;
+}

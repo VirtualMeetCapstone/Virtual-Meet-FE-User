@@ -70,4 +70,9 @@ export class ChatOutsideRoomService {
       })
     );
   }
+  userIsTyping(receiverId: string, senderId: string) {
+    return this.hubConnection
+      .invoke('UserIsTyping', receiverId, senderId)
+      .catch((err) => console.error('SendMessage Error:', err));
+  }
 }

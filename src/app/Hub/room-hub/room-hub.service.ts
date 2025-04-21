@@ -644,4 +644,15 @@ export class RoomHubService {
   onPollUpdated(callback: (poll: Poll) => void): void {
     this.hubConnection.on('PollUpdated', callback);
   }
+  public summarizeSubtitles(roomId: string): void {
+    this.hubConnection.invoke('SummarizeSubtitles', roomId)
+      .catch(err => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
+  }
+
+  public receiveSummary(callback: (summary: string) => void): void {
+    this.hubConnection.off('ReceiveSummary');
+    this.hubConnection.on('ReceiveSummary', (summary: string) => {
+      callback(summary);
+    });
+  }
 }

@@ -19,7 +19,7 @@
     </div>
 
     <div class="user-avatar">
-      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" />
+      <img src="{{ user.picture.url }}" alt="User" />
       <span class="online-status"></span>
     </div>
   </div>
@@ -45,7 +45,7 @@
       <input
         type="text"
         [(ngModel)]="contentToSearch"
-        (ngModelChange)="onSearchChange($event)"
+        (ngModelChange)="searchUser($event)"
         placeholder="Search messages or contacts..."
       />
 
@@ -56,7 +56,10 @@
         >
           <img
             [src]="result.picture.url"
-            alt="{{ result.name }}"
+            (error)="
+              result.picture.url =
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
+            "
             class="user-avatar-search"
           />{{ result.name }}
         </li>
@@ -71,12 +74,24 @@
         (click)="showChat(contact)"
       >
         <div class="contact-avatar">
-          <img [src]="contact.contactImage" alt="Contact" />
+          <img
+            [src]="contact.contactImage"
+            alt="Contact"
+            (error)="
+              contact.contactImage =
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
+            "
+          />
           <span class="online-status" *ngIf="contact.online"></span>
         </div>
         <div class="contact-info">
           <div class="contact-name">{{ contact.contactName }}</div>
-          <div class="contact-preview">{{ contact.lastMessage }}</div>
+          <div class="contact-preview">
+            <span *ngIf="contact.isTyping" class="typing-text"
+              >{{ contact.contactName }} is typing...</span
+            >
+            <span *ngIf="!contact.isTyping">{{ contact.lastMessage }} </span>
+          </div>
         </div>
         <div class="contact-meta">
           <div class="contact-time">
@@ -151,6 +166,24 @@
           {{ chat.createdAt | date : "dd/MM/yyyy HH:mm" }}
         </div>
       </div>
+      <div
+        class="typing-indicator"
+        id="userTypingIndicator"
+        *ngIf="isTyping == true"
+      >
+        <div class="message received typing-message">
+          <div class="message-bubble typing-bubble">
+            <span class="typing-text"
+              >{{ reiceiverUser?.contactName }} is typing...</span
+            >
+            <div class="typing-dots">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="message-input">
@@ -160,6 +193,7 @@
           placeholder="Type a message..."
           [(ngModel)]="content"
           (keyup.enter)="sendPrivateChat()"
+          (ngModelChange)="UserTyping()"
         />
         <div class="input-actions">
           <button><i class="fas fa-paperclip"></i></button>
