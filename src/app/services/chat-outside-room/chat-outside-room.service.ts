@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, from, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../auth-service/auth.service';
 import { AppConstants } from '../../constant/AppConstants';
@@ -64,24 +64,20 @@ export class ChatOutsideRoomService {
     );
   }
   sendPrivateMessage(data: any) {
-    return from(
-      this.hubConnection.invoke(
-        'SendPrivateMessage',
-        data.senderId,
-        data.receiverId,
-        data.content
-      )
-    ).pipe(
-      switchMap(() =>
-        this.http.post<any>(`${this.url}/send`, data)
-      ),
-      catchError((err) => {
-        console.error('SendMessage Error:', err);
-        return throwError(() => err);
+    // Return the HTTP observable
+    return this.http.post<any>(`${this.url}/send`, data).pipe(
+      tap(() => {
+        this.hubConnection
+          .invoke(
+            'SendPrivateMessage',
+            data.senderId,
+            data.receiverId,
+            data.content
+          )
+          .catch((err) => console.error('SendMessage Error:', err));
       })
     );
   }
-
   userIsTyping(receiverId: string, senderId: string) {
     return this.hubConnection
       .invoke('UserIsTyping', receiverId, senderId)
