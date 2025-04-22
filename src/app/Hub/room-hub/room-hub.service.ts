@@ -17,6 +17,8 @@ export class RoomHubService {
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
   private urlBase = AppConstants.API_BASE_URL_HTTPS; // Địa chỉ API của bạn.
+  private messagesSubject = new BehaviorSubject<any[]>([]);
+public messages$ = this.messagesSubject.asObservable();
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
@@ -88,6 +90,22 @@ export class RoomHubService {
 
   // Setup non-WebRTC SignalR events
   private setupSignalREvents(): void {
+
+    this.hubConnection.on('ReceiveMessage', (message) => {
+      console.log('🔔 New message received:', message);
+      this.updateMessages(message);
+    });
+
+    this.hubConnection.on('DeleteMessage', (messageId) => {
+      console.log('🗑 Xóa message:', messageId);
+      this.deleteMessage(messageId);
+    });
+
+    this.hubConnection.on('UpdateMessage', (message) => {
+      console.log('✏️ Cập nhật message:', message);
+      this.updateMessage(message);
+    });
+
     this.hubConnection.onclose((error) => {
       console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
@@ -105,6 +123,28 @@ export class RoomHubService {
       this.leaveRoom();
       this.cleanup();
     });
+  }
+
+  private updateMessages(message: any) {
+    const current = this.messagesSubject.value;
+    const exists = current.find((m) => m.id === message.id);
+    if (!exists) {
+      this.messagesSubject.next([...current, message]);
+    }
+  }
+
+  private deleteMessage(id: string) {
+    const updated = this.messagesSubject.value.filter((m) => m.id !== id);
+    this.messagesSubject.next(updated);
+  }
+
+  private updateMessage(message: any) {
+    const current = this.messagesSubject.value;
+    const index = current.findIndex((m) => m.id === message.id);
+    if (index !== -1) {
+      current[index] = message;
+      this.messagesSubject.next([...current]);
+    }
   }
 
   // Room management
