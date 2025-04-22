@@ -177,7 +177,8 @@ export class RoomComponentComponent implements OnInit {
       }
     });
 
-    this.roomHubService.onPollUpdated((poll) => {
+    this.roomHubService.receivePollUpdate((poll) => {
+      console.log('Poll update received:', poll);
       this.activePoll = poll;
       this.cdr.detectChanges();
     });

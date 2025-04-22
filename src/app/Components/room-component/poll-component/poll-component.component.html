@@ -1,28 +1,65 @@
 <div *ngIf="poll">
   <h3>{{ poll.question }}</h3>
+  <div class="poll-meta">
+    <span>Created by: {{ poll.createdByName }}</span>
+    <br>
+    <span>Date: {{ formattedCreatedAt }}</span>
+  </div>
   <div class="options-container">
-    <div *ngFor="let option of poll.options">
-      <button [disabled]="hasVoted" (click)="voteOption(option.id)">
+    <div
+      *ngFor="let option of poll?.options; let i = index"
+      class="poll-option"
+      [class.selected]="selectedOption === option.id"
+      (click)="voteOnPoll(option.id)">
+
+      <input
+        type="radio"
+        [(ngModel)]="selectedOption"
+        [value]="option.id"
+        [id]="'option-' + option.id"
+        name="poll"
+        hidden
+      />
+
+      <label [for]="'option-' + option.id">
         {{ option.text }} ({{ option.votes }} votes)
-      </button>
+      </label>
     </div>
   </div>
+
+
+
+  <div class="voters-section">
+    <h4>Voters:</h4>
+    <div *ngIf="poll.voterIds && poll.voterIds.length > 0" class="voters-list">
+      <div *ngFor="let voterId of poll.voterIds" class="voter-item">
+        {{ getVoterName(voterId) }}
+      </div>
+    </div>
+    <div *ngIf="!poll.voterIds || poll.voterIds.length === 0" class="no-voters">
+      No votes yet
+    </div>
+  </div>
+
   <p *ngIf="hasVoted">You have already voted.</p>
 </div>
 <div *ngIf="!poll && !isCreatingPoll">
   <p>No active poll</p>
   <button (click)="startCreatingPoll()">Create Poll</button>
 </div>
-<div *ngIf="isCreatingPoll">
-  <input [(ngModel)]="newQuestion" placeholder="Enter poll question" />
+<div *ngIf="isCreatingPoll" class="poll-creation-form">
+  <div class="question-input">
+    <input [(ngModel)]="newQuestion" placeholder="Enter poll question" />
+  </div>
+
   <div class="options-container">
-    <div *ngFor="let option of newOptions; let i = index">
+    <div *ngFor="let option of newOptions; let i = index; trackBy: trackByIndex">
       <input [(ngModel)]="newOptions[i]" placeholder="Option {{ i + 1 }}" />
-      <button *ngIf="newOptions.length > 2" (click)="removeOption(i)">
-        Remove
-      </button>
+      <button *ngIf="newOptions.length > 2" (click)="removeOption(i)">Remove</button>
     </div>
   </div>
+
+
   <button (click)="addOption()">Add Option</button>
   <button (click)="submitPoll()">Create Poll</button>
   <button (click)="cancelPollCreation()">Cancel</button>

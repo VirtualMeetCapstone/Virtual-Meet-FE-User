@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Poll } from '../../Components/room-component/poll-component/poll-component.component';
+import { UserDto } from '../../models/poll';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,10 @@ import { Poll } from '../../Components/room-component/poll-component/poll-compon
 export class RoomHubService {
   public hubConnection: signalR.HubConnection;
   public currentUser = { name: '', userInfoName: '', roomId: '' };
+  public UserDto: UserDto = {
+    id: '',
+    name: '',
+  }
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
@@ -92,22 +97,18 @@ public messages$ = this.messagesSubject.asObservable();
   private setupSignalREvents(): void {
 
     this.hubConnection.on('ReceiveMessage', (message) => {
-      console.log('🔔 New message received:', message);
       this.updateMessages(message);
     });
 
     this.hubConnection.on('DeleteMessage', (messageId) => {
-      console.log('🗑 Xóa message:', messageId);
       this.deleteMessage(messageId);
     });
 
     this.hubConnection.on('UpdateMessage', (message) => {
-      console.log('✏️ Cập nhật message:', message);
       this.updateMessage(message);
     });
 
     this.hubConnection.onclose((error) => {
-      console.log('SignalR connection closed', error);
       this.connectionStateSubject.next('disconnected');
 
       if (this.currentUser.roomId) {
@@ -204,6 +205,10 @@ public messages$ = this.messagesSubject.asObservable();
       this.currentUser.name = username;
       this.currentUser.userInfoName =
         (await this.auth.fetchUserName(username)) ?? '';
+
+        this.UserDto.id = this.currentUser.name;
+        this.UserDto.name = this.currentUser.userInfoName;
+
       this.currentUser.roomId = roomId;
       await this.hubConnection.invoke('JoinRoom', username, roomId, password);
       console.log(`✅ Joined room ${roomId} as ${username}`);
@@ -665,25 +670,45 @@ public messages$ = this.messagesSubject.asObservable();
     return this.http.get<any>(url);
   }
 
-  async createPoll(
+  public createPoll(
     roomId: string,
     question: string,
     options: string[]
-  ): Promise<void> {
-    await this.hubConnection.invoke('CreatePoll', roomId, question, options);
+  ): void {
+    console.log('[Poll] Gửi yêu cầu tạo poll:', {
+      roomId,
+      question,
+      options
+    });
+
+    this.hubConnection.invoke('CreatePoll', this.UserDto, roomId, question, options)
+      .then(() => console.log('[Poll] Tạo poll thành công'))
+      .catch(err => console.error('[Poll] Lỗi khi tạo poll:', err));
   }
 
-  async voteOnPoll(
-    roomId: string,
-    pollId: string,
-    optionId: string
-  ): Promise<void> {
-    await this.hubConnection.invoke('VoteOnPoll', roomId, pollId, optionId);
+  public voteOnPoll(roomId: string, pollId: string, optionId: string): void {
+    console.log('[Poll] Gửi vote:', {
+      user: this.UserDto,
+      roomId,
+      pollId,
+      optionId
+    });
+
+    this.hubConnection.invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
+      .then(() => console.log('[Poll] Vote thành công'))
+      .catch(err => console.error('[Poll] Lỗi khi vote poll:', err));
   }
 
-  onPollUpdated(callback: (poll: Poll) => void): void {
-    this.hubConnection.on('PollUpdated', callback);
+
+  public receivePollUpdate(callback: (poll: Poll) => void): void {
+    this.hubConnection.off('PollUpdated');
+    this.hubConnection.on('PollUpdated', (poll: Poll) => {
+      console.log('[Poll] Nhận cập nhật Poll:', poll);
+      callback(poll);
+    });
   }
+
+
   public summarizeSubtitles(roomId: string): void {
     this.hubConnection.invoke('SummarizeSubtitles', roomId)
       .catch(err => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));

@@ -51,3 +51,87 @@ input[placeholder^="Option"] {
   min-height: 40px; /* Đảm bảo đủ chỗ cho nhiều ký tự */
   resize: vertical; /* Cho phép kéo dãn chiều cao */
 }
+
+
+.poll-creation-form {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-top: 10px;
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+}
+
+.question-input input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.poll-option {
+  background-color: #1e1e1e;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+
+  label {
+    color: #ffffff;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  &:hover {
+    background-color: #2a2a2a;
+  }
+
+  &.selected {
+    border-color: #4c8ef7;
+    background-color: #2a2a2a;
+
+    label::after {
+      content: ' ✓';
+      color: #4c8ef7;
+      font-weight: bold;
+      float: right;
+    }
+  }
+}
+
+
+.poll-option {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: #2c2c2c; /* Dark background for contrast */
+  color: #f1f1f1;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.poll-option:hover {
+  background-color: #3c3c3c;
+}
+
+.poll-option input[type="radio"] {
+  margin-right: 10px;
+  accent-color: #00bcd4; /* Cyan color for the radio */
+  transform: scale(1.2);  /* Slightly larger radio button */
+}
+
+.poll-option label {
+  margin: 0;
+  font-size: 16px;
+}
+
