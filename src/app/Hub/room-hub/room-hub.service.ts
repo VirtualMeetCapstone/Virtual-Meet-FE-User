@@ -17,13 +17,13 @@ export class RoomHubService {
   public UserDto: UserDto = {
     id: '',
     name: '',
-  }
+  };
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
   private urlBase = AppConstants.API_BASE_URL_HTTPS; // Địa chỉ API của bạn.
   private messagesSubject = new BehaviorSubject<any[]>([]);
-public messages$ = this.messagesSubject.asObservable();
+  public messages$ = this.messagesSubject.asObservable();
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
@@ -95,7 +95,6 @@ public messages$ = this.messagesSubject.asObservable();
 
   // Setup non-WebRTC SignalR events
   private setupSignalREvents(): void {
-
     this.hubConnection.on('ReceiveMessage', (message) => {
       this.updateMessages(message);
     });
@@ -206,8 +205,8 @@ public messages$ = this.messagesSubject.asObservable();
       this.currentUser.userInfoName =
         (await this.auth.fetchUserName(username)) ?? '';
 
-        this.UserDto.id = this.currentUser.name;
-        this.UserDto.name = this.currentUser.userInfoName;
+      this.UserDto.id = this.currentUser.name;
+      this.UserDto.name = this.currentUser.userInfoName;
 
       this.currentUser.roomId = roomId;
       await this.hubConnection.invoke('JoinRoom', username, roomId, password);
@@ -670,20 +669,17 @@ public messages$ = this.messagesSubject.asObservable();
     return this.http.get<any>(url);
   }
 
-  public createPoll(
-    roomId: string,
-    question: string,
-    options: string[]
-  ): void {
+  public createPoll(roomId: string, question: string, options: string[]): void {
     console.log('[Poll] Gửi yêu cầu tạo poll:', {
       roomId,
       question,
-      options
+      options,
     });
 
-    this.hubConnection.invoke('CreatePoll', this.UserDto, roomId, question, options)
+    this.hubConnection
+      .invoke('CreatePoll', this.UserDto, roomId, question, options)
       .then(() => console.log('[Poll] Tạo poll thành công'))
-      .catch(err => console.error('[Poll] Lỗi khi tạo poll:', err));
+      .catch((err) => console.error('[Poll] Lỗi khi tạo poll:', err));
   }
 
   public voteOnPoll(roomId: string, pollId: string, optionId: string): void {
@@ -691,27 +687,27 @@ public messages$ = this.messagesSubject.asObservable();
       user: this.UserDto,
       roomId,
       pollId,
-      optionId
+      optionId,
     });
 
-    this.hubConnection.invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
+    this.hubConnection
+      .invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
       .then(() => console.log('[Poll] Vote thành công'))
-      .catch(err => console.error('[Poll] Lỗi khi vote poll:', err));
+      .catch((err) => console.error('[Poll] Lỗi khi vote poll:', err));
   }
 
-
-  public receivePollUpdate(callback: (poll: Poll) => void): void {
-    this.hubConnection.off('PollUpdated');
-    this.hubConnection.on('PollUpdated', (poll: Poll) => {
-      console.log('[Poll] Nhận cập nhật Poll:', poll);
-      callback(poll);
+  public receivePollUpdate(callback: (polls: Poll[]) => void): void {
+    this.hubConnection.off('PollUpdated'); // Xóa listener cũ để tránh trùng lặp
+    this.hubConnection.on('PollUpdated', (polls: Poll[]) => {
+      console.log('[Poll] Nhận cập nhật Polls:', polls);
+      callback(polls); // Gọi callback để cập nhật danh sách poll
     });
   }
-
 
   public summarizeSubtitles(roomId: string): void {
-    this.hubConnection.invoke('SummarizeSubtitles', roomId)
-      .catch(err => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
+    this.hubConnection
+      .invoke('SummarizeSubtitles', roomId)
+      .catch((err) => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
   }
 
   public receiveSummary(callback: (summary: string) => void): void {
@@ -719,5 +715,11 @@ public messages$ = this.messagesSubject.asObservable();
     this.hubConnection.on('ReceiveSummary', (summary: string) => {
       callback(summary);
     });
+  }
+
+  public getPolls(roomId: string): Observable<Poll[]> {
+    return this.http.get<Poll[]>(
+      `${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}/polls`
+    );
   }
 }

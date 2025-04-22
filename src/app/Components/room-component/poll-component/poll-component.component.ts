@@ -10,7 +10,6 @@ export interface Poll {
   createdAt: string;
   voterNames?: { [voterId: string]: string };
   voterDisplayNames?: { [userId: string]: string };
-
 }
 
 @Component({
@@ -19,7 +18,7 @@ export interface Poll {
   styleUrl: './poll-component.component.scss',
 })
 export class PollComponentComponent {
-  @Input() poll: Poll | null = null;
+  @Input() polls: Poll[] = [];
   @Input() currentUserId: string = '';
   @Output() createPoll = new EventEmitter<{
     question: string;
@@ -27,26 +26,26 @@ export class PollComponentComponent {
   }>();
   @Output() vote = new EventEmitter<string>();
   @Input() userMap: { [userId: string]: string } = {};
+  selectedPoll: Poll | null = null;
   isCreatingPoll = false;
   newQuestion = '';
   newOptions: string[] = ['', ''];
   errorMessage = '';
   selectedOption: string | undefined = undefined;
+
   get hasVoted(): boolean {
-    return this.poll?.voterIds.includes(this.currentUserId) || false;
+    return this.selectedPoll?.voterIds.includes(this.currentUserId) || false;
   }
 
   ngOnInit() {
-    if (this.poll?.voterNames?.[this.currentUserId]) {
-      this.selectedOption = this.poll.voterNames[this.currentUserId];
+    if (this.selectedPoll?.voterNames?.[this.currentUserId]) {
+      this.selectedOption = this.selectedPoll.voterNames[this.currentUserId];
     }
   }
 
-
   get formattedCreatedAt(): string {
-    if (!this.poll?.createdAt) return '';
-
-    const date = new Date(this.poll.createdAt);
+    if (!this.selectedPoll?.createdAt) return '';
+    const date = new Date(this.selectedPoll.createdAt);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   }
 
@@ -94,28 +93,26 @@ export class PollComponentComponent {
     this.errorMessage = '';
   }
 
+  selectPoll(poll: Poll) {
+    this.selectedPoll = poll;
+  }
 
   voteOnPoll(optionId: string) {
-
-      this.vote.emit(optionId);  // Emit vote change event
-      this.selectedOption = optionId;
-
+    this.vote.emit(optionId);
+    this.selectedOption = optionId;
   }
 
   getVoterName(voterId: string): string {
     if (!voterId) return 'Unknown';
-
-    // Ưu tiên lấy từ voterDisplayNames mới
-    if (this.poll?.voterDisplayNames?.[voterId]) {
-      return this.poll.voterDisplayNames[voterId];
+    if (this.selectedPoll?.voterDisplayNames?.[voterId]) {
+      return this.selectedPoll.voterDisplayNames[voterId];
     }
-
     if (this.userMap[voterId]) {
       return this.userMap[voterId];
     }
-
     return `User ${voterId.slice(0, 8)}...`;
   }
+
   trackByIndex(index: number, item: string) {
     return index;
   }

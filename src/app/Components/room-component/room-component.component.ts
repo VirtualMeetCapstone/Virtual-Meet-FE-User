@@ -58,7 +58,7 @@ export class RoomComponentComponent implements OnInit {
   raisedHands: string[] = [];
   private videoElement: HTMLVideoElement | null = null;
   roomPassword: string = '1234';
-
+  polls: Poll[] = [];
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
   isActivityModalOpen: boolean = false;
@@ -177,9 +177,14 @@ export class RoomComponentComponent implements OnInit {
       }
     });
 
-    this.roomHubService.receivePollUpdate((poll) => {
-      console.log('Poll update received:', poll);
-      this.activePoll = poll;
+    this.roomHubService.receivePollUpdate((polls) => {
+      console.log('Poll update received:', polls);
+      this.polls = polls; // Cập nhật danh sách poll
+      this.cdr.detectChanges();
+    });
+
+    this.roomHubService.getPolls(this.roomId).subscribe((polls) => {
+      this.polls = polls;
       this.cdr.detectChanges();
     });
 
@@ -389,11 +394,14 @@ export class RoomComponentComponent implements OnInit {
   copySummary() {
     const summaryText = document.getElementById('callSummaryText')?.innerText;
     if (summaryText) {
-      navigator.clipboard.writeText(summaryText).then(() => {
-        alert('Đã sao chép nội dung!');
-      }).catch(err => {
-        console.error('Không thể sao chép:', err);
-      });
+      navigator.clipboard
+        .writeText(summaryText)
+        .then(() => {
+          alert('Đã sao chép nội dung!');
+        })
+        .catch((err) => {
+          console.error('Không thể sao chép:', err);
+        });
     }
   }
 

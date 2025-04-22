@@ -1,67 +1,88 @@
-<div *ngIf="poll">
-  <h3>{{ poll.question }}</h3>
-  <div class="poll-meta">
-    <span>Created by: {{ poll.createdByName }}</span>
-    <br>
-    <span>Date: {{ formattedCreatedAt }}</span>
-  </div>
-  <div class="options-container">
+<!-- poll-component.component.html -->
+<div class="poll-container">
+  <!-- Danh sách poll -->
+  <div class="poll-list" *ngIf="polls.length > 0">
+    <h3>Các cuộc thăm dò</h3>
     <div
-      *ngFor="let option of poll?.options; let i = index"
-      class="poll-option"
-      [class.selected]="selectedOption === option.id"
-      (click)="voteOnPoll(option.id)">
-
-      <input
-        type="radio"
-        [(ngModel)]="selectedOption"
-        [value]="option.id"
-        [id]="'option-' + option.id"
-        name="poll"
-        hidden
-      />
-
-      <label [for]="'option-' + option.id">
-        {{ option.text }} ({{ option.votes }} votes)
-      </label>
+      *ngFor="let poll of polls"
+      class="poll-item"
+      (click)="selectPoll(poll)"
+      [class.selected]="selectedPoll?.id === poll.id"
+    >
+      {{ poll.question }} (Tạo bởi: {{ poll.createdByName }})
     </div>
   </div>
 
-
-
-  <div class="voters-section">
-    <h4>Voters:</h4>
-    <div *ngIf="poll.voterIds && poll.voterIds.length > 0" class="voters-list">
-      <div *ngFor="let voterId of poll.voterIds" class="voter-item">
-        {{ getVoterName(voterId) }}
+  <!-- Hiển thị chi tiết poll được chọn -->
+  <div *ngIf="selectedPoll">
+    <h3>{{ selectedPoll.question }}</h3>
+    <div class="poll-meta">
+      <span>Created by: {{ selectedPoll.createdByName }}</span
+      ><br />
+      <span>Date: {{ formattedCreatedAt }}</span>
+    </div>
+    <div class="options-container">
+      <div
+        *ngFor="let option of selectedPoll.options; let i = index"
+        class="poll-option"
+        [class.selected]="selectedPoll.voterNames?.[currentUserId] === option.id"
+        (click)="voteOnPoll(option.id)"
+      >
+        <input
+          type="radio"
+          [value]="option.id"
+          [id]="'option-' + option.id"
+          name="poll"
+          hidden
+        />
+        <label [for]="'option-' + option.id">
+          {{ option.text }} ({{ option.votes }} votes)
+        </label>
       </div>
     </div>
-    <div *ngIf="!poll.voterIds || poll.voterIds.length === 0" class="no-voters">
-      No votes yet
+
+    <div class="voters-section">
+      <h4>Voters:</h4>
+      <div
+        *ngIf="selectedPoll.voterIds && selectedPoll.voterIds.length > 0"
+        class="voters-list"
+      >
+        <div *ngFor="let voterId of selectedPoll.voterIds" class="voter-item">
+          {{ getVoterName(voterId) }}
+        </div>
+      </div>
+      <div
+        *ngIf="!selectedPoll.voterIds || selectedPoll.voterIds.length === 0"
+        class="no-voters"
+      >
+        No votes yet
+      </div>
     </div>
+
+    <p *ngIf="hasVoted">You have already voted.</p>
   </div>
 
-  <p *ngIf="hasVoted">You have already voted.</p>
-</div>
-<div *ngIf="!poll && !isCreatingPoll">
-  <p>No active poll</p>
-  <button (click)="startCreatingPoll()">Create Poll</button>
-</div>
-<div *ngIf="isCreatingPoll" class="poll-creation-form">
-  <div class="question-input">
-    <input [(ngModel)]="newQuestion" placeholder="Enter poll question" />
+  <!-- Tạo poll mới -->
+  <div *ngIf="!isCreatingPoll">
+    <button (click)="startCreatingPoll()">Create Poll</button>
   </div>
-
-  <div class="options-container">
-    <div *ngFor="let option of newOptions; let i = index; trackBy: trackByIndex">
-      <input [(ngModel)]="newOptions[i]" placeholder="Option {{ i + 1 }}" />
-      <button *ngIf="newOptions.length > 2" (click)="removeOption(i)">Remove</button>
+  <div *ngIf="isCreatingPoll" class="poll-creation-form">
+    <div class="question-input">
+      <input [(ngModel)]="newQuestion" placeholder="Enter poll question" />
     </div>
+    <div class="options-container">
+      <div
+        *ngFor="let option of newOptions; let i = index; trackBy: trackByIndex"
+      >
+        <input [(ngModel)]="newOptions[i]" placeholder="Option {{ i + 1 }}" />
+        <button *ngIf="newOptions.length > 2" (click)="removeOption(i)">
+          Remove
+        </button>
+      </div>
+    </div>
+    <button (click)="addOption()">Add Option</button>
+    <button (click)="submitPoll()">Create Poll</button>
+    <button (click)="cancelPollCreation()">Cancel</button>
+    <p *ngIf="errorMessage" style="color: red">{{ errorMessage }}</p>
   </div>
-
-
-  <button (click)="addOption()">Add Option</button>
-  <button (click)="submitPoll()">Create Poll</button>
-  <button (click)="cancelPollCreation()">Cancel</button>
-  <p *ngIf="errorMessage" style="color: red">{{ errorMessage }}</p>
 </div>
