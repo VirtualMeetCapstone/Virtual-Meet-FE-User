@@ -1,3 +1,11 @@
+<p-toast
+  [showTransformOptions]="'translateY(100%)'"
+  [showTransitionOptions]="'1000ms'"
+  [hideTransitionOptions]="'1000ms'"
+  [showTransformOptions]="'translateX(100%)'"
+  position="bottom-right"
+/>
+
 <!-- Loading Indicator -->
 <div *ngIf="isLoading" class="loading-container">
   <app-loading-component></app-loading-component>
@@ -35,7 +43,7 @@
             >
               <i class="fa-solid fa-gear"></i>
             </button>
-            <button class="share-button">
+            <button class="share-button" (click)="copyProfileLink()">
               <i class="fa-solid fa-share"></i>
             </button>
           </ng-container>
@@ -47,7 +55,7 @@
             <button class="promote-post-button" (click)="toggleBlock()">
               {{ isBlocked ? "Đã Block" : "Block" }}
             </button>
-            <button class="share-button">
+            <button class="share-button" (click)="copyProfileLink()">
               <i class="fa-solid fa-share"></i>
             </button>
           </ng-template>

@@ -88,6 +88,8 @@ import { AiChatBoxComponent } from './Components/ai-chat-box/ai-chat-box.compone
 import { PollComponentComponent } from './Components/room-component/poll-component/poll-component.component';
 import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-outside-room.component';
 import { LoaderTextComponent } from './Components/loader-text/loader-text.component';
+import { ToastModule } from 'primeng/toast';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -164,7 +166,9 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     GoogleSigninButtonModule,
     NgOptimizedImage,
     SpeedDialModule,
+    ToastModule,
     Toast,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -176,6 +180,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   providers: [
     provideClientHydration(),
     provideHttpClient(withFetch()),
+    MessageService,
 
     {
       provide: 'SocialAuthServiceConfig',

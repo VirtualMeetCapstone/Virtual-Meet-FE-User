@@ -252,6 +252,15 @@ body {
   font-size: 16px;
 }
 
+.share-button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.share-button:hover {
+  background-color: #434343;
+  transform: scale(1.05);
+}
+
 .edit-profile-button {
   background-color: #ff3b3b;
   color: #fff;
