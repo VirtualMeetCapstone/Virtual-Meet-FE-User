@@ -4,7 +4,13 @@ export interface Poll {
   id: string;
   question: string;
   options: { id: string; text: string; votes: number }[];
-  voters: string[];
+  voterIds: string[];
+  createdById: string;
+  createdByName: string;
+  createdAt: string;
+  voterNames?: { [voterId: string]: string };
+  voterDisplayNames?: { [userId: string]: string };
+
 }
 
 @Component({
@@ -20,14 +26,28 @@ export class PollComponentComponent {
     options: string[];
   }>();
   @Output() vote = new EventEmitter<string>();
-
+  @Input() userMap: { [userId: string]: string } = {};
   isCreatingPoll = false;
   newQuestion = '';
   newOptions: string[] = ['', ''];
   errorMessage = '';
-
+  selectedOption: string | undefined = undefined;
   get hasVoted(): boolean {
-    return this.poll?.voters.includes(this.currentUserId) || false;
+    return this.poll?.voterIds.includes(this.currentUserId) || false;
+  }
+
+  ngOnInit() {
+    if (this.poll?.voterNames?.[this.currentUserId]) {
+      this.selectedOption = this.poll.voterNames[this.currentUserId];
+    }
+  }
+
+
+  get formattedCreatedAt(): string {
+    if (!this.poll?.createdAt) return '';
+
+    const date = new Date(this.poll.createdAt);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   }
 
   startCreatingPoll() {
@@ -74,7 +94,29 @@ export class PollComponentComponent {
     this.errorMessage = '';
   }
 
-  voteOption(optionId: string) {
-    this.vote.emit(optionId);
+
+  voteOnPoll(optionId: string) {
+
+      this.vote.emit(optionId);  // Emit vote change event
+      this.selectedOption = optionId;
+
+  }
+
+  getVoterName(voterId: string): string {
+    if (!voterId) return 'Unknown';
+
+    // Ưu tiên lấy từ voterDisplayNames mới
+    if (this.poll?.voterDisplayNames?.[voterId]) {
+      return this.poll.voterDisplayNames[voterId];
+    }
+
+    if (this.userMap[voterId]) {
+      return this.userMap[voterId];
+    }
+
+    return `User ${voterId.slice(0, 8)}...`;
+  }
+  trackByIndex(index: number, item: string) {
+    return index;
   }
 }
