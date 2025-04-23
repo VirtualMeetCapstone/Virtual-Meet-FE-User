@@ -58,7 +58,11 @@
             <button class="share-button" (click)="copyProfileLink()">
               <i class="fa-solid fa-share"></i>
             </button>
+
           </ng-template>
+          <button *ngIf="!isOwnProfile" class="share-button" (click)="toggleReport()">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -115,3 +119,45 @@
     </div>
   </div>
 </div>
+
+<div class="report-popup" *ngIf="showReportPopup">
+  <div class="popup-content">
+    <h4 style="text-align: center">Report</h4>
+    <hr>
+
+    <div style="margin-top: 15px">
+      <label>
+        <input type="radio" name="reason" [(ngModel)]="selectedReason" value="Spam" />
+        Spam
+      </label><br />
+
+      <label>
+        <input type="radio" name="reason" [(ngModel)]="selectedReason" value="Inappropriate content" />
+        Inappropriate content
+      </label><br />
+
+      <label>
+        <input type="radio" name="reason" [(ngModel)]="selectedReason" value="Harassment" />
+        Harassment
+      </label><br />
+
+      <label>
+        <input type="radio" name="reason" [(ngModel)]="selectedReason" value="Other" />
+        Other
+      </label>
+    </div>
+
+    <textarea
+      *ngIf="selectedReason === 'Other'"
+      style="margin-top: 20px; width: 100%; height: 100px; color: black"
+      [(ngModel)]="reportReason"
+      placeholder="Please specify the reason...">
+    </textarea>
+
+    <div class="popup-actions" style="margin-top: 15px">
+      <button class="btn btn-danger" style="width: 100px; height: 30px; border: 1px solid darkgray" (click)="submitReport()">Xác nhận</button>
+      <button class="btn btn-close" style="width: 70px; height: 30px; border: 1px solid darkgray" (click)="toggleReport()">Hủy</button>
+    </div>
+  </div>
+</div>
+
