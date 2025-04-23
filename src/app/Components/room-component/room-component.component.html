@@ -111,12 +111,15 @@
     <app-room-chat *ngIf="isChatOpen"></app-room-chat>
     <app-participant-list *ngIf="isParticipantsOpen"></app-participant-list>
     <app-poll-component
-      *ngIf="isPollOpen"
-      [polls]="polls"
-      [currentUserId]="userId"
-      (createPoll)="onCreatePoll($event)"
-      (vote)="onVote($event)"
-    ></app-poll-component>
+    *ngIf="isPollOpen"
+    [polls]="polls"
+    [currentUserId]="userId"
+    (createPoll)="onCreatePoll($event)"
+    (vote)="onVote($event)"
+    (deletePoll)="onDeletePoll($event)"
+    (endPoll)="onEndPoll($event)"
+  ></app-poll-component>
+  
   </div>
   <!-- Loading -->
   <app-loading-component *ngIf="isLoading"></app-loading-component>

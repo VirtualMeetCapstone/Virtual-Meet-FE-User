@@ -668,33 +668,19 @@ export class RoomHubService {
     const url = `${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}`;
     return this.http.get<any>(url);
   }
-
   public createPoll(roomId: string, question: string, options: string[]): void {
-    console.log('[Poll] Gửi yêu cầu tạo poll:', {
-      roomId,
-      question,
-      options,
-    });
-
     this.hubConnection
       .invoke('CreatePoll', this.UserDto, roomId, question, options)
-      .then(() => console.log('[Poll] Tạo poll thành công'))
       .catch((err) => console.error('[Poll] Lỗi khi tạo poll:', err));
   }
 
   public voteOnPoll(roomId: string, pollId: string, optionId: string): void {
-    console.log('[Poll] Gửi vote:', {
-      user: this.UserDto,
-      roomId,
-      pollId,
-      optionId,
-    });
-
     this.hubConnection
       .invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
-      .then(() => console.log('[Poll] Vote thành công'))
       .catch((err) => console.error('[Poll] Lỗi khi vote poll:', err));
   }
+
+
 
   public receivePollUpdate(callback: (polls: Poll[]) => void): void {
     this.hubConnection.off('PollUpdated'); // Xóa listener cũ để tránh trùng lặp
@@ -702,6 +688,20 @@ export class RoomHubService {
       console.log('[Poll] Nhận cập nhật Polls:', polls);
       callback(polls); // Gọi callback để cập nhật danh sách poll
     });
+  }
+
+  public deletePoll(roomId: string, pollId: string): void {
+
+    this.hubConnection
+      .invoke('DeletePollFromRoom', roomId, pollId)
+      .catch((err) => console.error('[Poll] Lỗi khi xóa poll:', err));
+  }
+
+  public endPoll(roomId: string, pollId: string): void {
+
+    this.hubConnection
+      .invoke('EndPollInRoom', roomId, pollId)
+      .catch((err) => console.error('[Poll] Lỗi khi kết thúc poll:', err));
   }
 
   public summarizeSubtitles(roomId: string): void {
@@ -717,9 +717,4 @@ export class RoomHubService {
     });
   }
 
-  public getPolls(roomId: string): Observable<Poll[]> {
-    return this.http.get<Poll[]>(
-      `${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}/polls`
-    );
-  }
 }

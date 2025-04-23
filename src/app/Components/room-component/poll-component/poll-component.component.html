@@ -10,12 +10,23 @@
       [class.selected]="selectedPoll?.id === poll.id"
     >
       {{ poll.question }} (Tạo bởi: {{ poll.createdByName }})
+      <span *ngIf="!poll.isActive" class="ended-label">Đã kết thúc</span>
     </div>
   </div>
 
   <!-- Hiển thị chi tiết poll được chọn -->
   <div *ngIf="selectedPoll">
-    <h3>{{ selectedPoll.question }}</h3>
+    <div class="poll-header">
+      <h3>{{ selectedPoll.question }}</h3>
+      <div class="poll-actions" *ngIf="isCreator">
+        <button *ngIf="selectedPoll.isActive" (click)="endPollAction()" class="end-poll-btn">
+          Kết thúc
+        </button>
+        <button (click)="deletePollAction()" class="delete-poll-btn">
+          Xóa
+        </button>
+      </div>
+    </div>
     <div class="poll-meta">
       <span>Created by: {{ selectedPoll.createdByName }}</span
       ><br />
@@ -33,7 +44,7 @@
           [value]="option.id"
           [id]="'option-' + option.id"
           name="poll"
-          hidden
+          [checked]="selectedPoll.voterNames?.[currentUserId] === option.id"
         />
         <label [for]="'option-' + option.id">
           {{ option.text }} ({{ option.votes }} votes)
@@ -60,8 +71,24 @@
     </div>
 
     <p *ngIf="hasVoted">You have already voted.</p>
+    <button (click)="deselectPoll()">Ẩn chi tiết</button>
+
+  </div>
+<!-- Poll results for ended polls -->
+<div class="poll-results" *ngIf="selectedPoll && !selectedPoll.isActive && pollStatistics">
+
+  <h4>Kết quả thăm dò (Tổng: {{ pollStatistics.totalVotes }} phiếu)</h4>
+  <div *ngIf="pollStatistics.winningOption" class="winning-option">
+    <h5>Lựa chọn thắng: {{ pollStatistics.winningOption.text }} ({{ pollStatistics.winningOption.percentage }}%)</h5>
   </div>
 
+  <div *ngFor="let option of pollStatistics.options" class="result-option">
+    <div class="result-bar-container">
+      <div class="option-text">{{ option.text }} - {{ option.votes }} phiếu ({{ option.percentage }}%)</div>
+      <div class="result-bar" [style.width.%]="option.percentage"></div>
+    </div>
+  </div>
+</div>
   <!-- Tạo poll mới -->
   <div *ngIf="!isCreatingPoll">
     <button (click)="startCreatingPoll()">Create Poll</button>

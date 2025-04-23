@@ -18,7 +18,7 @@ import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
 import { TranslateService } from '../../services/external-service/translate.service';
-import { Poll } from './poll-component/poll-component.component';
+import { Poll, PollComponentComponent } from './poll-component/poll-component.component';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -33,7 +33,7 @@ export class RoomComponentComponent implements OnInit {
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
-
+  @ViewChild(PollComponentComponent) pollComponent!: PollComponentComponent;
   constructor(
     private speechService: SpeechService,
     private translateService: TranslateService,
@@ -107,6 +107,7 @@ export class RoomComponentComponent implements OnInit {
     this.leaveRoom();
   }
   async ngOnInit() {
+
     this.roomHubService.receiveSummary((summary: string) => {
       console.log('Tóm tắt cuộc gọi nhận được:', summary);
       this.showCallSummaryModal = true;
@@ -177,16 +178,22 @@ export class RoomComponentComponent implements OnInit {
       }
     });
 
-    this.roomHubService.receivePollUpdate((polls) => {
-      console.log('Poll update received:', polls);
-      this.polls = polls; // Cập nhật danh sách poll
+    this.roomHubService.receivePollUpdate((updatedPolls) => {
+      this.polls = updatedPolls;
+
+      // If we already have a selected poll, make sure it's updated
+      if (this.pollComponent && this.pollComponent.selectedPoll) {
+        const updatedSelectedPoll = updatedPolls.find(
+          poll => poll.id === this.pollComponent.selectedPoll?.id
+        );
+
+        if (updatedSelectedPoll) {
+          this.pollComponent.selectedPoll = updatedSelectedPoll;
+        }
+      }
       this.cdr.detectChanges();
     });
 
-    this.roomHubService.getPolls(this.roomId).subscribe((polls) => {
-      this.polls = polls;
-      this.cdr.detectChanges();
-    });
 
     try {
       await this.roomHubService.startConnection();
@@ -515,23 +522,40 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
-  async onCreatePoll(event: { question: string; options: string[] }) {
+  async onCreatePoll(pollData: { question: string; options: string[] }) {
     await this.roomHubService.createPoll(
       this.roomId,
-      event.question,
-      event.options
+      pollData.question,
+      pollData.options
     );
   }
 
-  async onVote(optionId: string) {
-    if (this.activePoll) {
-      await this.roomHubService.voteOnPoll(
-        this.roomId,
-        this.activePoll.id,
-        optionId
-      );
+  async onVote(voteData: { pollId: string; optionId: string }) {
+    await this.roomHubService.voteOnPoll(
+      this.roomId,
+      voteData.pollId,
+      voteData.optionId
+    );
+  }
+
+  async onDeletePoll(pollId: string) {
+    try {
+      await this.roomHubService.deletePoll(this.roomId, pollId);
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Lỗi khi xóa cuộc thăm dò:', err);
     }
   }
+
+  async onEndPoll(pollId: string) {
+    try {
+      await this.roomHubService.endPoll(this.roomId, pollId);
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Lỗi khi kết thúc cuộc thăm dò:', err);
+    }
+  }
+
 
   onEmotionSent(event: {
     type: string;
