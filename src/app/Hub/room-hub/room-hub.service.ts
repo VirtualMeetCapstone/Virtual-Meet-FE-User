@@ -219,7 +219,7 @@ export class RoomHubService {
 
       this.currentUser.roomId = roomId;
 
-      await this.hubConnection.invoke('JoinRoom', username, roomId, password);
+      await this.hubConnection.invoke('JoinRoom', username, roomId, password, true);
     } catch (err) {
       console.error('❌ Lỗi khi tham gia phòng:', err);
       throw err;
