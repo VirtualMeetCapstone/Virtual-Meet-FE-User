@@ -90,6 +90,7 @@ import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-ou
 import { LoaderTextComponent } from './Components/loader-text/loader-text.component';
 import { ToastModule } from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfirmModalComponent } from './Components/confirm-modal/confirm-modal/confirm-modal.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -148,6 +149,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     PollComponentComponent,
     ChatOutsideRoomComponent,
     LoaderTextComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     BrowserModule,

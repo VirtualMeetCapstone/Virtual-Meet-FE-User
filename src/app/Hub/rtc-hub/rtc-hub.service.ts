@@ -843,10 +843,15 @@ export class RtcHubService {
       if (this.roomHubService._audioEnabled && audioTracks.length === 0) {
         try {
           const newStream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
+            audio:  {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            },
           });
           const newAudioTracks = newStream.getAudioTracks();
           newAudioTracks.forEach((track) => {
+            track.stop();
             this.roomHubService.localStream!.addTrack(track);
             audioTracks.push(track);
           });

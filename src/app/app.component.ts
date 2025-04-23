@@ -34,17 +34,23 @@ export class AppComponent implements OnInit {
     }
 
     this.loadingService.loading$.subscribe((loading) => {
-      this.isLoading = loading;
+      setTimeout(() => {
+        this.isLoading = loading;
+      });
     });
+
 
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
     console.log(lang);
     //disable header sidebar when join room
     this.router.events.subscribe(() => {
-      this.isRoomPage = this.router.url.startsWith('/room');
-      this.isChatPage = this.router.url.startsWith('/chat');
+      setTimeout(() => {
+        this.isRoomPage = this.router.url.startsWith('/room');
+        this.isChatPage = this.router.url.startsWith('/chat');
+      });
     });
+
   }
 
   onClickSideBar() {
