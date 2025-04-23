@@ -1,0 +1,10 @@
+<!-- confirm-modal.component.html -->
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal-content">
+    <p>{{ message }}</p>
+    <div class="modal-buttons">
+      <button (click)="confirm()">OK</button>
+      <button (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>

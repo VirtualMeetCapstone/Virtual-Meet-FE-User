@@ -1,3 +1,10 @@
+<app-confirm-modal
+  [visible]="showConfirmModal"
+  [message]="confirmMessage"
+  (confirmed)="onConfirmResult($event)">
+</app-confirm-modal>
+
+
 <div
   class="video-call-container"
   [ngClass]="{ 'modal-open': isChatOpen || isParticipantsOpen }"
@@ -119,7 +126,7 @@
     (deletePoll)="onDeletePoll($event)"
     (endPoll)="onEndPoll($event)"
   ></app-poll-component>
-  
+
   </div>
   <!-- Loading -->
   <app-loading-component *ngIf="isLoading"></app-loading-component>

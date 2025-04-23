@@ -103,6 +103,12 @@ export class RoomComponentComponent implements OnInit {
   showCallSummaryModal: boolean = false;
   callSummaryText: string = '';
   isLoading: boolean = false;
+
+
+  //warning popup
+  showConfirmModal = false;
+confirmMessage = '';
+private confirmResolve: ((result: boolean) => void) | null = null;
   ngOnDestroy() {
     this.leaveRoom();
   }
@@ -217,6 +223,7 @@ export class RoomComponentComponent implements OnInit {
         }
       });
       //lay pass word tuong ung voi roomId
+      this.roomHubService.setConfirmHandler((msg) => this.showConfirm(msg));
       await this.roomHubService.joinRoom(
         this.userId,
         this.roomId,
@@ -432,7 +439,8 @@ export class RoomComponentComponent implements OnInit {
     if (stream && this.localVideo) {
       this.localVideo.nativeElement.srcObject = stream;
 
-      // Tắt mic và camera thông qua service để đồng bộ trạng thái
+      this.localVideo.nativeElement.muted = true;
+
       if (this.roomHubService.audioEnabled) {
         this.roomHubService.disableAudio();
       }
@@ -440,18 +448,14 @@ export class RoomComponentComponent implements OnInit {
         this.roomHubService.disableVideo();
       }
 
-      // Cập nhật trạng thái hiển thị
       this.isMicOn = this.roomHubService.audioEnabled;
       this.isCameraOn = this.roomHubService.videoEnabled;
-
-      // Log trạng thái để kiểm tra
-      console.log('🎤 Mic trạng thái:', this.isMicOn);
-      console.log('🎥 Camera trạng thái:', this.isCameraOn);
 
       // Buộc cập nhật UI
       this.cdr.detectChanges();
     }
   }
+
   get audioEnabled(): boolean {
     return this.roomHubService.audioEnabled;
   }
@@ -732,4 +736,31 @@ export class RoomComponentComponent implements OnInit {
     // Gọi sau khi phần tử <video> đã render
     this.displayLocalStream();
   }
+
+  async showConfirm(message: string): Promise<boolean> {
+    // Make sure any previous modal is fully closed
+    this.showConfirmModal = false;
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Now show the new modal
+    this.confirmMessage = message;
+    this.showConfirmModal = true;
+
+    return new Promise<boolean>((resolve) => {
+      this.confirmResolve = resolve;
+    });
+  }
+
+  onConfirmResult(result: boolean) {
+    this.showConfirmModal = false;
+    if (this.confirmResolve) {
+      setTimeout(() => {
+        if (this.confirmResolve) {
+          this.confirmResolve(result);
+          this.confirmResolve = null;
+        }
+      }, 50);
+    }
+  }
+
 }
