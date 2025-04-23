@@ -32,6 +32,7 @@ export class CreatePostModalComponent {
   contentError: boolean = false; // Đánh dấu lỗi nội dung
 
   constructor(
+    private postService: PostserviceService,
     public dialogRef: MatDialogRef<CreatePostModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: string; username: string },
     private roomService: RoomServicesService
@@ -111,7 +112,24 @@ export class CreatePostModalComponent {
 
     // Gửi bài viết nếu không có lỗi
     console.log('Submitting post:', this.newContent, this.selectedFiles);
-    // Thực hiện logic gửi bài viết tại đây
+    this.isLoading = true;
+    this.postService.createPost(
+      this.newContent,
+      this.privacy,
+      undefined,
+      this.selectedFiles
+    ).subscribe({
+      next: (response) => {
+        console.log('Bài viết đã được tạo:', response);
+        this.dialogRef.close(response);
+        this.isLoading = false;
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Lỗi khi tạo bài viết:', error);
+        this.isLoading = false;
+      }
+    });
   }
 
   onCancel() {
