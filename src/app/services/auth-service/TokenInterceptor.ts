@@ -5,27 +5,21 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Observable, throwError, EMPTY } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { isTokenExpired } from '../../../utils/jwt-helper';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private authService: AuthService) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!isPlatformBrowser(this.platformId)) {
-      return next.handle(req);
-    }
-
+    // ❌ Bỏ qua interceptor với các request liên quan tới auth
     const isAuthRequest =
       req.url.includes('/login') ||
       req.url.includes('/refresh-token');
@@ -36,11 +30,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
     const token = this.authService.getToken();
 
+    // ✅ Nếu không có token → gửi như guest
     if (!token) {
-      // Không có token, gửi request gốc như guest
       return next.handle(req);
     }
 
+    // ✅ Nếu token còn hạn → đính kèm Authorization
     if (!isTokenExpired(token)) {
       const authReq = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
@@ -48,17 +43,15 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(authReq);
     }
 
-    // Token hết hạn, lấy refresh token
+    // 🔄 Token hết hạn → thử refresh
     const refreshToken = this.authService.getRefreshTokenSafely();
-
     if (!refreshToken) {
       console.warn('⚠️ Token hết hạn, không có refresh token → logout');
       this.authService.logout();
-      // Thay vì gửi request gốc, trả về EMPTY để dừng request vì token đã hết hạn
-      return EMPTY;
+      return next.handle(req);
     }
 
-    // Gọi refresh token
+    // 🚀 Gọi refresh token
     return this.authService.refreshToken(refreshToken).pipe(
       tap((res) => {
         console.log('🔄 Refresh token thành công:', res);
@@ -75,8 +68,7 @@ export class TokenInterceptor implements HttpInterceptor {
       catchError((err) => {
         console.error('❌ Refresh token thất bại:', err);
         this.authService.logout();
-        // Trả về EMPTY để dừng request thay vì gửi request gốc không hợp lệ
-        return EMPTY;
+        return next.handle(req);
       })
     );
   }
