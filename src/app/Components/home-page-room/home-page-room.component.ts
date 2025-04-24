@@ -45,15 +45,18 @@ export class HomePageRoomComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     private notificationService: NotificationServiceService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private roomHubService: RoomHubService
   ) {}
 
   user: any = null;
 
-  ngOnInit(): void {
+  async ngOnInit() {
+
     this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
+      await this.roomHubService.startConnection();
       window.addEventListener('scroll', this.toggleScrollButton);
     }
     this.authService.loggedIn$.subscribe((status: boolean) => {
@@ -65,7 +68,6 @@ export class HomePageRoomComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUser();
     }
-    console.log(this.user);
     this.getRoom();
     this.roomService.refreshRoom$.subscribe(() => {
       this.messages.push('Add room successful !!!');

@@ -64,11 +64,9 @@ export class AppComponent implements OnInit {
       const userId = this.authService.getUser()?.id;
       if (userId) {
         this.userVipService.loadVipLevel(userId);
-        console.log('VIP level loaded:', this.userVipService.getVipPackageId());
       }
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
-        console.log('Chưa đăng nhập');
       }
     }
   }

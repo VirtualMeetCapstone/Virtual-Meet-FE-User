@@ -745,7 +745,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
     // Now show the new modal
     this.confirmMessage = message;
     this.showConfirmModal = true;
-
+    this.cdr.detectChanges();
     return new Promise<boolean>((resolve) => {
       this.confirmResolve = resolve;
     });
@@ -753,6 +753,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
 
   onConfirmResult(result: boolean) {
     this.showConfirmModal = false;
+
     if (this.confirmResolve) {
       setTimeout(() => {
         if (this.confirmResolve) {
@@ -761,6 +762,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
         }
       }, 50);
     }
+    this.cdr.detectChanges();
   }
 
 }

@@ -81,7 +81,6 @@ export class RoomHubService {
       this.hubConnection
         .start()
         .then(() => {
-          console.log('✅ SignalR connection established');
           this.connectionStateSubject.next('connected');
           resolve();
         })
