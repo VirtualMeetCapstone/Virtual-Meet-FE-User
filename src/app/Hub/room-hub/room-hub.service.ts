@@ -38,6 +38,7 @@ export class RoomHubService {
         withCredentials: true,
       })
       .withAutomaticReconnect()
+      .configureLogging(signalR.LogLevel.None)
       .build();
 
     // Setup non-WebRTC SignalR events
