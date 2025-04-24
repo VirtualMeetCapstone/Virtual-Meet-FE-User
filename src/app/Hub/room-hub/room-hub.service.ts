@@ -151,7 +151,8 @@ export class RoomHubService {
   public async joinRoom(
     username: string,
     roomId: string,
-    password: string = ''
+    password: string = '',
+    isVip: boolean
   ): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
 
@@ -165,7 +166,6 @@ export class RoomHubService {
       const hasCamera = devices.some((d) => d.kind === 'videoinput');
       const hasMicrophone = devices.some((d) => d.kind === 'audioinput');
 
-
       if (!hasCamera && !hasMicrophone) {
         alert('⚠️ Không phát hiện được camera hoặc micro.');
         return;
@@ -176,14 +176,14 @@ export class RoomHubService {
 
       // Ensure each modal is completely finished before showing the next one
       if (hasCamera) {
-          useVideo = await this.showConfirm('Bạn có muốn sử dụng camera không?');
+        useVideo = await this.showConfirm('Bạn có muốn sử dụng camera không?');
       }
 
       // Make sure to wait a moment before showing the next modal
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       if (hasMicrophone) {
-          useAudio = await this.showConfirm('Bạn có muốn sử dụng mic không?');
+        useAudio = await this.showConfirm('Bạn có muốn sử dụng mic không?');
       }
 
       const constraints = {
@@ -203,23 +203,31 @@ export class RoomHubService {
           : false,
       };
 
-
       // ✅ Lấy stream - Only if video or audio is enabled
       if (useVideo || useAudio) {
-        this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        this.localStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
       } else {
       }
 
       // 👤 Cập nhật người dùng và tham gia phòng
       this.currentUser.name = username;
-      this.currentUser.userInfoName = (await this.auth.fetchUserName(username)) ?? '';
+      this.currentUser.userInfoName =
+        (await this.auth.fetchUserName(username)) ?? '';
 
       this.UserDto.id = this.currentUser.name;
       this.UserDto.name = this.currentUser.userInfoName;
 
       this.currentUser.roomId = roomId;
 
-      await this.hubConnection.invoke('JoinRoom', username, roomId, password, true);
+      await this.hubConnection.invoke(
+        'JoinRoom',
+        username,
+        roomId,
+        password,
+        isVip
+      );
     } catch (err) {
       console.error('❌ Lỗi khi tham gia phòng:', err);
       throw err;
@@ -701,8 +709,6 @@ export class RoomHubService {
       .catch((err) => console.error('[Poll] Lỗi khi vote poll:', err));
   }
 
-
-
   public receivePollUpdate(callback: (polls: Poll[]) => void): void {
     this.hubConnection.off('PollUpdated'); // Xóa listener cũ để tránh trùng lặp
     this.hubConnection.on('PollUpdated', (polls: Poll[]) => {
@@ -712,14 +718,12 @@ export class RoomHubService {
   }
 
   public deletePoll(roomId: string, pollId: string): void {
-
     this.hubConnection
       .invoke('DeletePollFromRoom', roomId, pollId)
       .catch((err) => console.error('[Poll] Lỗi khi xóa poll:', err));
   }
 
   public endPoll(roomId: string, pollId: string): void {
-
     this.hubConnection
       .invoke('EndPollInRoom', roomId, pollId)
       .catch((err) => console.error('[Poll] Lỗi khi kết thúc poll:', err));
@@ -738,4 +742,10 @@ export class RoomHubService {
     });
   }
 
+  public receiveVipJoinNotification(
+    callback: (username: string) => void
+  ): void {
+    this.hubConnection.off('ReceiveVipJoinNotification'); // Xóa listener cũ để tránh trùng lặp
+    this.hubConnection.on('ReceiveVipJoinNotification', callback);
+  }
 }

@@ -1,9 +1,13 @@
 <app-confirm-modal
   [visible]="showConfirmModal"
   [message]="confirmMessage"
-  (confirmed)="onConfirmResult($event)">
+  (confirmed)="onConfirmResult($event)"
+>
 </app-confirm-modal>
 
+<div *ngIf="joinNotification" class="notification">
+  {{ joinNotification }}
+</div>
 
 <div
   class="video-call-container"
@@ -118,15 +122,14 @@
     <app-room-chat *ngIf="isChatOpen"></app-room-chat>
     <app-participant-list *ngIf="isParticipantsOpen"></app-participant-list>
     <app-poll-component
-    *ngIf="isPollOpen"
-    [polls]="polls"
-    [currentUserId]="userId"
-    (createPoll)="onCreatePoll($event)"
-    (vote)="onVote($event)"
-    (deletePoll)="onDeletePoll($event)"
-    (endPoll)="onEndPoll($event)"
-  ></app-poll-component>
-
+      *ngIf="isPollOpen"
+      [polls]="polls"
+      [currentUserId]="userId"
+      (createPoll)="onCreatePoll($event)"
+      (vote)="onVote($event)"
+      (deletePoll)="onDeletePoll($event)"
+      (endPoll)="onEndPoll($event)"
+    ></app-poll-component>
   </div>
   <!-- Loading -->
   <app-loading-component *ngIf="isLoading"></app-loading-component>
