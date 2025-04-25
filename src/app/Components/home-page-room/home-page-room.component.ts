@@ -5,16 +5,19 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { RoomServicesService } from '../../services/room-service/room-services.service';
-import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
-import { Router } from '@angular/router';
+import {RoomServicesService} from '../../services/room-service/room-services.service';
+import {RoomHubService} from '../../Hub/room-hub/room-hub.service';
+import {Router} from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import { AuthService } from '../../services/auth-service/auth.service';
-import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal.component';
-import { MatDialog } from '@angular/material/dialog';
-import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
-import { isPlatformBrowser } from '@angular/common';
-import { LoadingService } from '../../loading.service';
+import {AuthService} from '../../services/auth-service/auth.service';
+import {RoomDetailModalComponent} from '../room-detail-modal/room-detail-modal.component';
+import {MatDialog} from '@angular/material/dialog';
+import {NotificationServiceService} from '../../services/notification-service/notification-service.service';
+import {isPlatformBrowser} from '@angular/common';
+import {LoadingService} from '../../loading.service';
+import {ReportServiceService} from "../../services/report-service/report-service.service";
+import {decodeJwt} from "../../../utils/jwt-helper";
+import {Room} from "../../models/room";
 
 @Component({
   selector: 'app-home-page-room',
@@ -36,6 +39,7 @@ export class HomePageRoomComponent implements OnInit {
   userList: string[] = [];
   roomPrivateToOpenModalEnterPass: string = '';
   openDropdownRoomId: number | null = null;
+  roomId: string = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -46,13 +50,36 @@ export class HomePageRoomComponent implements OnInit {
     private dialog: MatDialog,
     private notificationService: NotificationServiceService,
     private loadingService: LoadingService,
-    private roomHubService: RoomHubService
-  ) {}
+    private roomHubService: RoomHubService,
+    private reportService: ReportServiceService
+  ) {
+  }
 
   user: any = null;
+  token: string = '';
+
+  isValidJwt(token: string): boolean {
+    try {
+      const parts = token.split('.');
+      return parts.length === 3;
+    } catch (e) {
+      return false;
+    }
+  }
 
   async ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.token = localStorage.getItem('accessToken') || '';
 
+      if (this.token && this.isValidJwt(this.token)) {
+        const decoded = decodeJwt(this.token);
+        this.loggedInUserId = decoded.id;
+      } else {
+        console.warn('Invalid or missing JWT');
+        this.loggedInUserId = '';
+      }
+
+    }
     this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
@@ -86,11 +113,15 @@ export class HomePageRoomComponent implements OnInit {
       });
     });
   }
-  toggleDropdown(roomId: number) {
+
+  toggleDropdown(roomId: number, room: Room) {
     if (this.openDropdownRoomId === roomId) {
       this.openDropdownRoomId = null;
+      this.roomId = room.id;
+
     } else {
       this.openDropdownRoomId = roomId;
+      this.roomId = room.id;
     }
   }
 
@@ -102,6 +133,7 @@ export class HomePageRoomComponent implements OnInit {
   closeAllDropdowns() {
     this.openDropdownRoomId = null;
   }
+
   toggleScrollButton = () => {
     const button = document.querySelector('.scroll-to-top') as HTMLElement;
     if (window.scrollY > 300) {
@@ -132,8 +164,9 @@ export class HomePageRoomComponent implements OnInit {
       return;
     }
     const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+    this.router.navigate(['/room', roomId], {queryParams: {timestamp}});
   }
+
   openModalEnterPassword(roomId: any) {
     if (!this.user) {
       this.messages.push('Need to login before join room !!!');
@@ -146,6 +179,7 @@ export class HomePageRoomComponent implements OnInit {
 
     this.showModalEnterPassword = true;
   }
+
   closeModalEnterPassword(event: any) {
     this.showModalEnterPassword = false;
   }
@@ -239,7 +273,7 @@ export class HomePageRoomComponent implements OnInit {
 
   viewRoomDetail(room: any) {
     const dialogRef = this.dialog.open(RoomDetailModalComponent, {
-      data: { room },
+      data: {room},
     });
     console.log('room 2', room);
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -249,7 +283,57 @@ export class HomePageRoomComponent implements OnInit {
 
   scrollToTop() {
     if (isPlatformBrowser(this.platformId)) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
   }
+
+  showReportModal = false;
+
+  // viewRoomDetail(room: any) {
+  //   // You can use this to handle room-specific logic if needed
+  //   console.log('Viewing room detail:', room);
+  //   this.showReportModal = true;
+  // }
+  reportOptions: string[] = [
+    'Problem involving someone under 18',
+    'Bullying, harassment or abuse',
+    'Suicide or self-harm',
+    'Violent, hateful or disturbing content',
+    'Selling or promoting restricted items',
+    'Adult content',
+    'Scam, fraud or false information',
+    'Intellectual property'
+  ];
+
+  selectedReportReason: string = '';
+  loggedInUserId: string = '';
+
+  submitReport() {
+    if (!this.selectedReportReason) {
+      alert('Vui lòng chọn lý do');
+      return;
+    }
+
+    let description = this.selectedReportReason;
+
+    const reportPayload = {
+      targetId: this.roomId,
+      reporterId: this.loggedInUserId,
+      reportType: 2,
+      description: description
+    };
+
+    this.reportService.sendReport(reportPayload).subscribe({
+      next: () => {
+        alert('Gửi báo cáo thành công');
+      },
+      error: (err: { error: { message: any; }; }) => {
+        console.error(err);
+        alert(err.error.message);
+      }
+    });
+
+    this.showReportModal = false;
+  }
+
 }

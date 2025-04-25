@@ -307,36 +307,53 @@ export class MyProfileComponent implements OnInit {
     this.reportReason = '';
   }
 
+
+  reportOptions: string[] = [
+    'Problem involving someone under 18',
+    'Bullying, harassment or abuse',
+    'Suicide or self-harm',
+    'Violent, hateful or disturbing content',
+    'Selling or promoting restricted items',
+    'Adult content',
+    'Scam, fraud or false information',
+    'Intellectual property'
+  ];
+
+  selectedReportReason: string = '';
+  showReportModal = false;
+
   submitReport() {
-    if (!this.selectedReason) {
+    if (!this.selectedReportReason) {
       alert('Vui lòng chọn lý do');
       return;
     }
 
-    let description = this.selectedReason === 'Other' ? this.reportReason.trim() : this.selectedReason;
-    if (this.selectedReason === 'Other' && !description) {
+    let description = this.selectedReportReason === 'Other' ? this.selectedReportReason.trim() : this.selectedReportReason;
+    if (this.selectedReportReason === 'Other' && !description) {
       alert('Vui lòng nhập mô tả');
       return;
     }
 
     const reportPayload = {
-      targetId: this.userId, // hoặc bài post tùy mục tiêu báo cáo
+      targetId: this.userId,
       reporterId: this.loggedInUserId,
-      reportType: 0, // có thể thay đổi nếu có nhiều loại báo cáo
+      reportType: 0,
       description: description
     };
 
     this.reportService.sendReport(reportPayload).subscribe({
       next: () => {
         alert('Gửi báo cáo thành công');
-        this.toggleReport(); // đóng popup
+        this.toggleReport();
       },
       error: (err) => {
         console.error(err);
         alert(err.error.message);
       }
     });
+    this.showReportModal = false;
   }
+
 
 
 }
