@@ -630,3 +630,89 @@ body {
     transform: scale(1);
   }
 }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background-color: #1c1e21;
+  color: white;
+  border-radius: 8px;
+  width: 400px;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-description {
+  font-size: 14px;
+  color: #ccc;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-description span {
+  font-size: 12px;
+  color: #999;
+}
+
+.modal-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-options li {
+  margin-bottom: 10px;
+}
+
+.modal-options button {
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  background-color: #3a3b3c;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-options button:hover {
+  background-color: #4e4f50;
+}
+.modal-options li {
+  margin-bottom: 8px;
+}
+
+.modal-options input[type="radio"] {
+  margin-right: 8px;
+}
+
+.submit-btn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
