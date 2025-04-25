@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authService.loggedIn$
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (status: boolean) => {
-        this.loggedIn = status;
+        this.loggedIn = true;
         if (status) {
           const userId = this.authService.getUser()?.id;
           if (userId) {
@@ -130,6 +130,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       const userId = this.authService.getUser()?.id;
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
+          this.loggedIn = true;
           this.user = user;
           this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
           this.cdr.markForCheck();
@@ -154,6 +155,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('Failed to load logo');
       },
     });
+    console.log('User status:2', status);
   }
 
   openModalChatChat() {
