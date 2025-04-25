@@ -171,7 +171,7 @@ export class ChatOutsideRoomComponent implements OnInit {
   }
   sendPrivateChat() {
     if (this.content.trim() === '') {
-      return; // Do not send empty messages
+      return;
     }
     var data = {
       content: this.content,

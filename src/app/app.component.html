@@ -4,23 +4,11 @@
     <app-loader-text></app-loader-text>
   </div>
 </div>
-
-<!-- Page Main Content -->
+<div class="header" *ngIf="!(isRoomPage || isChatPage)"></div>
 <app-header *ngIf="!(isRoomPage || isChatPage)"></app-header>
-<div class="main-container">
-  <app-nav-bar *ngIf="!(isRoomPage || isChatPage)"></app-nav-bar>
-  <div
-    class="container-fluid vh-100 d-flex flex-column align-items-center"
-    [ngStyle]="{ 'margin-top': !isRoomPage ? '0' : '0' }"
-  >
-    <div class="row flex-grow-1" style="width: 100%">
-      <div class="row flex-grow-1">
-        <div class="col-12">
-          <router-outlet></router-outlet>
-        </div>
-      </div>
-    </div>
-  </div>
+<div>
+  <router-outlet></router-outlet>
+
   <div class="chat-box-container">
     <app-ai-chat-box></app-ai-chat-box>
   </div>

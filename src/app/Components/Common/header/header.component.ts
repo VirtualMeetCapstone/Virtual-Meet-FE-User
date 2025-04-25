@@ -23,8 +23,10 @@ import { Story } from '../../../models/story';
 import { TranslateService } from '@ngx-translate/core';
 import { PLATFORM_ID } from '@angular/core';
 import { HomePageRoomComponent } from '../../home-page-room/home-page-room.component';
-import {LogoServiceService} from "../../../services/logo-service/logo-service.service";
-
+import { LogoServiceService } from '../../../services/logo-service/logo-service.service';
+import { Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { ChatOutsideRoomComponent } from '../../chat-outside-room/chat-outside-room.component';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -41,7 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   isShowDropdown = false;
   isShowLoginDialog = false;
   isShowNotification = false;
-  isShowUserMenu = false;
+  isShowUserMenu: boolean = false;
   isLoadingUser = true;
   user: any = null;
   loggedIn = false;
@@ -51,6 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   skip: number = 0;
   currentLanguage = 'en';
   loading = false;
+  isLoading = false;
   totalNotification: number | null = null;
 
   private destroy$ = new Subject<void>();
@@ -61,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(HomePageRoomComponent, { static: false })
   homePageRoomComponent!: HomePageRoomComponent;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  logoUrl = "";
+  logoUrl = '';
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
@@ -86,10 +89,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private storyService: StoryService,
     private translate: TranslateService,
     private logoService: LogoServiceService,
+    private overlay: Overlay,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
+    this.isLoading = true;
     if (isPlatformBrowser(this.platformId)) {
       const savedLang = localStorage.getItem('language');
       if (savedLang) {
@@ -120,6 +125,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
         this.cdr.markForCheck();
+        this.isLoading = false;
       });
 
     if (this.authService.isLoggedIn()) {
@@ -148,10 +154,27 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: () => {
         console.error('Failed to load logo');
-      }
+      },
     });
   }
 
+  openModalChatChat() {
+    const overlayRef = this.overlay.create({
+      hasBackdrop: true,
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+    });
+
+    const portal = new ComponentPortal(ChatOutsideRoomComponent);
+    const componentRef = overlayRef.attach(portal);
+
+    overlayRef.backdropClick().subscribe(() => {
+      overlayRef.detach();
+    });
+  }
   getAllNotification() {
     this.notifyService
       .getNotificationByUserId(this.userId, 1000, 0)
@@ -222,6 +245,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleUserMenu() {
     this.isShowUserMenu = !this.isShowUserMenu;
+    console.log(this.isShowUserMenu);
   }
 
   logout() {
