@@ -15,6 +15,8 @@ import { ModalGearButtonComponent } from './modal-gear-button/modal-gear-button.
 import { AppConstants } from '../../constant/AppConstants';
 import { FollowUserService } from '../../services/follow-user/follow-user.service';
 import { lastValueFrom } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import {ReportServiceService} from "../../services/report-service/report-service.service";
 
 interface Profile {
   name: string;
@@ -29,7 +31,7 @@ interface Profile {
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
-  styleUrls: ['./my-profile.component.css'],
+  styleUrls: ['./my-profile.component.scss'],
 })
 export class MyProfileComponent implements OnInit {
   isLoading = false;
@@ -44,7 +46,7 @@ export class MyProfileComponent implements OnInit {
   };
 
   // Xác định profile có phải của người dùng đăng nhập hay không
-  isOwnProfile: boolean = true;
+  isOwnProfile: boolean = false;
   loggedInUserId: string = '';
 
   // Trạng thái follow của profile (nếu không phải của chính người dùng)
@@ -62,7 +64,9 @@ export class MyProfileComponent implements OnInit {
     private dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object,
     private followUserService: FollowUserService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private messageService: MessageService,
+    private reportService: ReportServiceService
   ) {}
 
   async ngOnInit() {
@@ -236,4 +240,103 @@ export class MyProfileComponent implements OnInit {
   setTab(index: number) {
     this.selectedTab = index;
   }
+
+  async copyProfileLink() {
+    if (!this.userId) {
+      console.error('User ID is not set');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Không thể copy link: User ID không tồn tại',
+        life: 2000,
+      });
+      return;
+    }
+
+    const profileUrl = `https://fe.dev-vmeet.site/my-profile/${this.userId}`;
+
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(profileUrl);
+        this.showCopySuccessMessage();
+      } catch (err) {
+        console.error('Lỗi khi copy link: ', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Lỗi khi copy link',
+          life: 2000,
+        });
+      }
+    } else {
+      console.warn('Clipboard API not supported');
+      const textarea = document.createElement('textarea');
+      textarea.value = profileUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        this.showCopySuccessMessage();
+      } catch (err) {
+        console.error('Lỗi khi copy link bằng fallback: ', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Lỗi khi copy link',
+          life: 2000,
+        });
+      }
+      document.body.removeChild(textarea);
+    }
+  }
+
+  async showCopySuccessMessage() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Thành công',
+      life: 5000,
+    });
+  }
+  showReportPopup = false;
+  selectedReason: string = '';
+  reportReason: string = '';
+
+  toggleReport() {
+    this.showReportPopup = !this.showReportPopup;
+    this.selectedReason = '';
+    this.reportReason = '';
+  }
+
+  submitReport() {
+    if (!this.selectedReason) {
+      alert('Vui lòng chọn lý do');
+      return;
+    }
+
+    let description = this.selectedReason === 'Other' ? this.reportReason.trim() : this.selectedReason;
+    if (this.selectedReason === 'Other' && !description) {
+      alert('Vui lòng nhập mô tả');
+      return;
+    }
+
+    const reportPayload = {
+      targetId: this.userId, // hoặc bài post tùy mục tiêu báo cáo
+      reporterId: this.loggedInUserId,
+      reportType: 0, // có thể thay đổi nếu có nhiều loại báo cáo
+      description: description
+    };
+
+    this.reportService.sendReport(reportPayload).subscribe({
+      next: () => {
+        alert('Gửi báo cáo thành công');
+        this.toggleReport(); // đóng popup
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err.error.message);
+      }
+    });
+  }
+
+
 }

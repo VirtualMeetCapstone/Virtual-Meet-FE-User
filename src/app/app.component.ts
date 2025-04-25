@@ -34,17 +34,23 @@ export class AppComponent implements OnInit {
     }
 
     this.loadingService.loading$.subscribe((loading) => {
-      this.isLoading = loading;
+      setTimeout(() => {
+        this.isLoading = loading;
+      });
     });
+
 
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
     console.log(lang);
     //disable header sidebar when join room
     this.router.events.subscribe(() => {
-      this.isRoomPage = this.router.url.startsWith('/room');
-      this.isChatPage = this.router.url.startsWith('/chat');
+      setTimeout(() => {
+        this.isRoomPage = this.router.url.startsWith('/room');
+        this.isChatPage = this.router.url.startsWith('/chat');
+      });
     });
+
   }
 
   onClickSideBar() {
@@ -58,11 +64,9 @@ export class AppComponent implements OnInit {
       const userId = this.authService.getUser()?.id;
       if (userId) {
         this.userVipService.loadVipLevel(userId);
-        console.log('VIP level loaded:', this.userVipService.getVipPackageId());
       }
       if (!this.isLoggedIn) {
         this.router.navigate(['/']);
-        console.log('Chưa đăng nhập');
       }
     }
   }

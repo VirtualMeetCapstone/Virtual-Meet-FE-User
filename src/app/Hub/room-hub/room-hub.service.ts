@@ -17,17 +17,17 @@ export class RoomHubService {
   public UserDto: UserDto = {
     id: '',
     name: '',
-  }
+  };
   public _audioEnabled = true;
   public _videoEnabled = true;
   public localStream: MediaStream | null = null;
   private urlBase = AppConstants.API_BASE_URL_HTTPS; // Địa chỉ API của bạn.
   private messagesSubject = new BehaviorSubject<any[]>([]);
-public messages$ = this.messagesSubject.asObservable();
+  public messages$ = this.messagesSubject.asObservable();
   // Observable subjects for UI updates
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
-
+  private confirmHandler: ((msg: string) => Promise<boolean>) | null = null;
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -38,6 +38,7 @@ public messages$ = this.messagesSubject.asObservable();
         withCredentials: true,
       })
       .withAutomaticReconnect()
+      .configureLogging(signalR.LogLevel.None)
       .build();
 
     // Setup non-WebRTC SignalR events
@@ -81,7 +82,6 @@ public messages$ = this.messagesSubject.asObservable();
       this.hubConnection
         .start()
         .then(() => {
-          console.log('✅ SignalR connection established');
           this.connectionStateSubject.next('connected');
           resolve();
         })
@@ -95,7 +95,6 @@ public messages$ = this.messagesSubject.asObservable();
 
   // Setup non-WebRTC SignalR events
   private setupSignalREvents(): void {
-
     this.hubConnection.on('ReceiveMessage', (message) => {
       this.updateMessages(message);
     });
@@ -155,67 +154,88 @@ public messages$ = this.messagesSubject.asObservable();
     password: string = ''
   ): Promise<void> {
     if (!roomId) throw new Error('Room ID is required');
-    console.log('userName', username);
 
     if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
       await this.startConnection();
     }
 
     try {
-      // Kiểm tra các thiết bị hiện có
+      // 🎥🔊 Kiểm tra thiết bị có camera và mic
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const hasCamera = devices.some((device) => device.kind === 'videoinput');
-      const hasMicrophone = devices.some(
-        (device) => device.kind === 'audioinput'
-      );
+      const hasCamera = devices.some((d) => d.kind === 'videoinput');
+      const hasMicrophone = devices.some((d) => d.kind === 'audioinput');
 
-      // Cho phép lựa chọn nếu có cả camera và mic
-      let constraints;
 
-      if (hasCamera && hasMicrophone) {
-        const useVideo = window.confirm(
-          'Bạn có muốn sử dụng camera không? (Nhấn OK: có, Nhấn Cancel: không)'
-        );
-        const useAudio = window.confirm(
-          'Bạn có muốn sử dụng mic không? (Nhấn OK: có, Nhấn Cancel: không)'
-        );
-
-        constraints = {
-          video: useVideo
-            ? { width: { ideal: 640 }, height: { ideal: 360 } }
-            : false,
-          audio: useAudio,
-        };
-      } else if (hasCamera) {
-        constraints = {
-          video: { width: { ideal: 640 }, height: { ideal: 360 } },
-          audio: false,
-        };
-      } else if (hasMicrophone) {
-        constraints = { video: false, audio: true };
-      } else {
+      if (!hasCamera && !hasMicrophone) {
         alert('⚠️ Không phát hiện được camera hoặc micro.');
         return;
       }
 
-      // ✅ Lấy stream theo constraints cuối cùng
-      this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      let useVideo = false;
+      let useAudio = false;
 
-      // Cập nhật thông tin người dùng và tham gia phòng
+      // Ensure each modal is completely finished before showing the next one
+      if (hasCamera) {
+          useVideo = await this.showConfirm('Bạn có muốn sử dụng camera không?');
+      }
+
+      // Make sure to wait a moment before showing the next modal
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      if (hasMicrophone) {
+          useAudio = await this.showConfirm('Bạn có muốn sử dụng mic không?');
+      }
+
+      const constraints = {
+        video: useVideo
+          ? {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 },
+            }
+          : false,
+        audio: useAudio
+          ? {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            }
+          : false,
+      };
+
+
+      // ✅ Lấy stream - Only if video or audio is enabled
+      if (useVideo || useAudio) {
+        this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      } else {
+      }
+
+      // 👤 Cập nhật người dùng và tham gia phòng
       this.currentUser.name = username;
-      this.currentUser.userInfoName =
-        (await this.auth.fetchUserName(username)) ?? '';
+      this.currentUser.userInfoName = (await this.auth.fetchUserName(username)) ?? '';
 
-        this.UserDto.id = this.currentUser.name;
-        this.UserDto.name = this.currentUser.userInfoName;
+      this.UserDto.id = this.currentUser.name;
+      this.UserDto.name = this.currentUser.userInfoName;
 
       this.currentUser.roomId = roomId;
-      await this.hubConnection.invoke('JoinRoom', username, roomId, password);
-      console.log(`✅ Joined room ${roomId} as ${username}`);
+
+      await this.hubConnection.invoke('JoinRoom', username, roomId, password, true);
     } catch (err) {
-      console.error('❌ Error joining room:', err);
+      console.error('❌ Lỗi khi tham gia phòng:', err);
       throw err;
     }
+  }
+
+  setConfirmHandler(handler: (msg: string) => Promise<boolean>) {
+    this.confirmHandler = handler;
+  }
+
+  private async showConfirm(message: string): Promise<boolean> {
+    if (!this.confirmHandler) {
+      console.warn('No confirm handler set.');
+      return false;
+    }
+    return await this.confirmHandler(message);
   }
 
   async updateLocalStream(newStream: MediaStream): Promise<void> {
@@ -669,49 +689,46 @@ public messages$ = this.messagesSubject.asObservable();
     const url = `${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}`;
     return this.http.get<any>(url);
   }
-
-  public createPoll(
-    roomId: string,
-    question: string,
-    options: string[]
-  ): void {
-    console.log('[Poll] Gửi yêu cầu tạo poll:', {
-      roomId,
-      question,
-      options
-    });
-
-    this.hubConnection.invoke('CreatePoll', this.UserDto, roomId, question, options)
-      .then(() => console.log('[Poll] Tạo poll thành công'))
-      .catch(err => console.error('[Poll] Lỗi khi tạo poll:', err));
+  public createPoll(roomId: string, question: string, options: string[]): void {
+    this.hubConnection
+      .invoke('CreatePoll', this.UserDto, roomId, question, options)
+      .catch((err) => console.error('[Poll] Lỗi khi tạo poll:', err));
   }
 
   public voteOnPoll(roomId: string, pollId: string, optionId: string): void {
-    console.log('[Poll] Gửi vote:', {
-      user: this.UserDto,
-      roomId,
-      pollId,
-      optionId
-    });
-
-    this.hubConnection.invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
-      .then(() => console.log('[Poll] Vote thành công'))
-      .catch(err => console.error('[Poll] Lỗi khi vote poll:', err));
+    this.hubConnection
+      .invoke('VoteOnPoll', this.UserDto, roomId, pollId, optionId)
+      .catch((err) => console.error('[Poll] Lỗi khi vote poll:', err));
   }
 
 
-  public receivePollUpdate(callback: (poll: Poll) => void): void {
-    this.hubConnection.off('PollUpdated');
-    this.hubConnection.on('PollUpdated', (poll: Poll) => {
-      console.log('[Poll] Nhận cập nhật Poll:', poll);
-      callback(poll);
+
+  public receivePollUpdate(callback: (polls: Poll[]) => void): void {
+    this.hubConnection.off('PollUpdated'); // Xóa listener cũ để tránh trùng lặp
+    this.hubConnection.on('PollUpdated', (polls: Poll[]) => {
+      console.log('[Poll] Nhận cập nhật Polls:', polls);
+      callback(polls); // Gọi callback để cập nhật danh sách poll
     });
   }
 
+  public deletePoll(roomId: string, pollId: string): void {
+
+    this.hubConnection
+      .invoke('DeletePollFromRoom', roomId, pollId)
+      .catch((err) => console.error('[Poll] Lỗi khi xóa poll:', err));
+  }
+
+  public endPoll(roomId: string, pollId: string): void {
+
+    this.hubConnection
+      .invoke('EndPollInRoom', roomId, pollId)
+      .catch((err) => console.error('[Poll] Lỗi khi kết thúc poll:', err));
+  }
 
   public summarizeSubtitles(roomId: string): void {
-    this.hubConnection.invoke('SummarizeSubtitles', roomId)
-      .catch(err => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
+    this.hubConnection
+      .invoke('SummarizeSubtitles', roomId)
+      .catch((err) => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
   }
 
   public receiveSummary(callback: (summary: string) => void): void {
@@ -720,4 +737,5 @@ public messages$ = this.messagesSubject.asObservable();
       callback(summary);
     });
   }
+
 }

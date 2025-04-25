@@ -32,7 +32,6 @@ export class UserVipService {
       `${AppConstants.API_BASE_URL_HTTPS}/users/${userId}/vip-level`
     ).subscribe({
       next: (res) => {
-        console.log('VIP package loaded:', res);
         this.vipPackageId = res.packageId;
         this.expireAt = res.expireAt;
         localStorage.setItem(this.LOCAL_KEY, JSON.stringify(res));

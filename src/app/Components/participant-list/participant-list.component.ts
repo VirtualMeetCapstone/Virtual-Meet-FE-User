@@ -71,7 +71,8 @@ export class ParticipantListComponent implements OnInit {
     this.roomHub.receiveMicStatusUpdate((userId: string, isMicOn: boolean) => {
       const user = this.participants.find((p) => p.id === userId);
       if (user) {
-        user.muted = !isMicOn; // Nếu mic tắt (isMicOn = false), trạng thái muted = true
+        // user.muted = !isMicOn; // Nếu mic tắt (isMicOn = false), trạng thái muted = true
+        user.muted = true;
         this.cd.detectChanges();
       }
     });
@@ -80,7 +81,8 @@ export class ParticipantListComponent implements OnInit {
       (userId: string, isCameraOn: boolean) => {
         const user = this.participants.find((p) => p.id === userId);
         if (user) {
-          user.cameraOff = !isCameraOn;
+          // user.cameraOff = !isCameraOn;
+          user.cameraOff = true;
           this.cd.detectChanges();
         }
       }
@@ -151,7 +153,8 @@ export class ParticipantListComponent implements OnInit {
   }
   toggleMute(user: any) {
     if (!user.isSelf) {
-      user.muted = !user.muted;
+      user.muted =true;
+         //default  is false, can be change it to true     user.muted = !user.muted;
       this.roomHub.sendMute(user.userId, user.muted); // Gửi trạng thái mới đến server
     } else {
       console.warn('⚠️ Không thể tắt/bật mic chính mình.');
@@ -160,7 +163,8 @@ export class ParticipantListComponent implements OnInit {
 
   toggleVideo(user: any) {
     if (!user.isSelf) {
-      user.cameraOff = !user.cameraOff;
+      user.cameraOff = true;
+      //default  is false, can be change it to true   user.cameraOff = !user.cameraOff;
       this.roomHub.sendVideoMute(user.userId, user.cameraOff);
     } else {
       console.warn('⚠️ Không thể tắt/bật mic chính mình.');

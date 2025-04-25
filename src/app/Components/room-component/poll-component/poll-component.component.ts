@@ -10,8 +10,26 @@ export interface Poll {
   createdAt: string;
   voterNames?: { [voterId: string]: string };
   voterDisplayNames?: { [userId: string]: string };
-
+  isActive: boolean | null; // Added to track if poll is active or ended
+  endedAt?: string; // Added to track when poll was ended
 }
+
+export interface PollStatistics {
+  totalVotes: number;
+  winningOption?: {
+    id: string;
+    text: string;
+    votes: number;
+    percentage: number;
+  };
+  options: {
+    id: string;
+    text: string;
+    votes: number;
+    percentage: number;
+  }[];
+}
+
 
 @Component({
   selector: 'app-poll-component',
@@ -19,34 +37,39 @@ export interface Poll {
   styleUrl: './poll-component.component.scss',
 })
 export class PollComponentComponent {
-  @Input() poll: Poll | null = null;
+  @Input() polls: Poll[] = [];
   @Input() currentUserId: string = '';
   @Output() createPoll = new EventEmitter<{
     question: string;
     options: string[];
   }>();
-  @Output() vote = new EventEmitter<string>();
+  @Output() vote = new EventEmitter<{
+    pollId: string;
+    optionId: string;
+  }>();
+  @Output() deletePoll = new EventEmitter<string>(); // Emit pollId to delete
+  @Output() endPoll = new EventEmitter<string>(); // Emit pollId to end poll
   @Input() userMap: { [userId: string]: string } = {};
+  selectedPoll: Poll | null = null;
   isCreatingPoll = false;
   newQuestion = '';
   newOptions: string[] = ['', ''];
   errorMessage = '';
   selectedOption: string | undefined = undefined;
+  pollStatistics: PollStatistics | null = null;
   get hasVoted(): boolean {
-    return this.poll?.voterIds.includes(this.currentUserId) || false;
+    return this.selectedPoll?.voterIds.includes(this.currentUserId) || false;
   }
 
   ngOnInit() {
-    if (this.poll?.voterNames?.[this.currentUserId]) {
-      this.selectedOption = this.poll.voterNames[this.currentUserId];
+    if (this.selectedPoll?.voterNames?.[this.currentUserId]) {
+      this.selectedOption = this.selectedPoll.voterNames[this.currentUserId];
     }
   }
 
-
   get formattedCreatedAt(): string {
-    if (!this.poll?.createdAt) return '';
-
-    const date = new Date(this.poll.createdAt);
+    if (!this.selectedPoll?.createdAt) return '';
+    const date = new Date(this.selectedPoll.createdAt);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   }
 
@@ -94,29 +117,91 @@ export class PollComponentComponent {
     this.errorMessage = '';
   }
 
+  selectPoll(poll: Poll) {
+    this.selectedPoll = poll;
+  }
 
   voteOnPoll(optionId: string) {
-
-      this.vote.emit(optionId);  // Emit vote change event
+    // Make sure we have a selected poll
+    if (!this.selectedPoll!.isActive) return;
+    if (this.selectedPoll) {
+      this.vote.emit({
+        pollId: this.selectedPoll.id,
+        optionId: optionId
+      });
       this.selectedOption = optionId;
-
+    }
   }
 
   getVoterName(voterId: string): string {
     if (!voterId) return 'Unknown';
-
-    // Ưu tiên lấy từ voterDisplayNames mới
-    if (this.poll?.voterDisplayNames?.[voterId]) {
-      return this.poll.voterDisplayNames[voterId];
+    if (this.selectedPoll?.voterDisplayNames?.[voterId]) {
+      return this.selectedPoll.voterDisplayNames[voterId];
     }
-
     if (this.userMap[voterId]) {
       return this.userMap[voterId];
     }
-
     return `User ${voterId.slice(0, 8)}...`;
   }
+
   trackByIndex(index: number, item: string) {
     return index;
   }
+
+  deletePollAction() {
+    if (this.selectedPoll && confirm('Bạn có chắc chắn muốn xóa cuộc thăm dò này?')) {
+      this.deletePoll.emit(this.selectedPoll.id);
+      this.selectedPoll = null;
+    }
+  }
+
+  get isCreator(): boolean {
+    return this.selectedPoll?.createdById === this.currentUserId;
+  }
+  endPollAction() {
+    if (this.selectedPoll && this.selectedPoll.isActive &&
+        confirm('Bạn có chắc chắn muốn kết thúc cuộc thăm dò này?')) {
+      this.endPoll.emit(this.selectedPoll.id);
+      this.selectedPoll.isActive = false;
+      this.calculateStatistics();
+    }
+  }
+
+  calculateStatistics() {
+    if (!this.selectedPoll) return;
+
+    const totalVotes = this.selectedPoll.options.reduce((sum, option) => sum + option.votes, 0);
+
+    let winningOption = undefined;
+    if (totalVotes > 0) {
+      winningOption = [...this.selectedPoll.options].sort((a, b) => b.votes - a.votes)[0];
+    }
+
+    const optionStats = this.selectedPoll.options.map(option => {
+      const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
+      return {
+        id: option.id,
+        text: option.text,
+        votes: option.votes,
+        percentage: Math.round(percentage * 10) / 10 // Round to 1 decimal place
+      };
+    });
+
+    this.pollStatistics = {
+      totalVotes,
+      options: optionStats,
+      winningOption: winningOption ? {
+        id: winningOption.id,
+        text: winningOption.text,
+        votes: winningOption.votes,
+        percentage: totalVotes > 0 ? Math.round((winningOption.votes / totalVotes) * 1000) / 10 : 0
+      } : undefined
+    };
+  }
+
+  deselectPoll() {
+    this.selectedPoll = null;
+    this.pollStatistics = null;
+  }
+
 }

@@ -18,7 +18,7 @@ import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
 import { TranslateService } from '../../services/external-service/translate.service';
-import { Poll } from './poll-component/poll-component.component';
+import { Poll, PollComponentComponent } from './poll-component/poll-component.component';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -33,7 +33,7 @@ export class RoomComponentComponent implements OnInit {
   @ViewChild(YoutubePlayerComponent) youtubeComponent!: YoutubePlayerComponent;
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideo!: ElementRef;
-
+  @ViewChild(PollComponentComponent) pollComponent!: PollComponentComponent;
   constructor(
     private speechService: SpeechService,
     private translateService: TranslateService,
@@ -58,7 +58,7 @@ export class RoomComponentComponent implements OnInit {
   raisedHands: string[] = [];
   private videoElement: HTMLVideoElement | null = null;
   roomPassword: string = '1234';
-
+  polls: Poll[] = [];
   isYouTubeActive = false; // Trạng thái của hoạt động YouTube
   isParticipantsOpen = false;
   isActivityModalOpen: boolean = false;
@@ -103,10 +103,17 @@ export class RoomComponentComponent implements OnInit {
   showCallSummaryModal: boolean = false;
   callSummaryText: string = '';
   isLoading: boolean = false;
+
+
+  //warning popup
+  showConfirmModal = false;
+confirmMessage = '';
+private confirmResolve: ((result: boolean) => void) | null = null;
   ngOnDestroy() {
     this.leaveRoom();
   }
   async ngOnInit() {
+
     this.roomHubService.receiveSummary((summary: string) => {
       console.log('Tóm tắt cuộc gọi nhận được:', summary);
       this.showCallSummaryModal = true;
@@ -177,11 +184,22 @@ export class RoomComponentComponent implements OnInit {
       }
     });
 
-    this.roomHubService.receivePollUpdate((poll) => {
-      console.log('Poll update received:', poll);
-      this.activePoll = poll;
+    this.roomHubService.receivePollUpdate((updatedPolls) => {
+      this.polls = updatedPolls;
+
+      // If we already have a selected poll, make sure it's updated
+      if (this.pollComponent && this.pollComponent.selectedPoll) {
+        const updatedSelectedPoll = updatedPolls.find(
+          poll => poll.id === this.pollComponent.selectedPoll?.id
+        );
+
+        if (updatedSelectedPoll) {
+          this.pollComponent.selectedPoll = updatedSelectedPoll;
+        }
+      }
       this.cdr.detectChanges();
     });
+
 
     try {
       await this.roomHubService.startConnection();
@@ -205,6 +223,7 @@ export class RoomComponentComponent implements OnInit {
         }
       });
       //lay pass word tuong ung voi roomId
+      this.roomHubService.setConfirmHandler((msg) => this.showConfirm(msg));
       await this.roomHubService.joinRoom(
         this.userId,
         this.roomId,
@@ -389,11 +408,14 @@ export class RoomComponentComponent implements OnInit {
   copySummary() {
     const summaryText = document.getElementById('callSummaryText')?.innerText;
     if (summaryText) {
-      navigator.clipboard.writeText(summaryText).then(() => {
-        alert('Đã sao chép nội dung!');
-      }).catch(err => {
-        console.error('Không thể sao chép:', err);
-      });
+      navigator.clipboard
+        .writeText(summaryText)
+        .then(() => {
+          alert('Đã sao chép nội dung!');
+        })
+        .catch((err) => {
+          console.error('Không thể sao chép:', err);
+        });
     }
   }
 
@@ -417,7 +439,8 @@ export class RoomComponentComponent implements OnInit {
     if (stream && this.localVideo) {
       this.localVideo.nativeElement.srcObject = stream;
 
-      // Tắt mic và camera thông qua service để đồng bộ trạng thái
+      this.localVideo.nativeElement.muted = true;
+
       if (this.roomHubService.audioEnabled) {
         this.roomHubService.disableAudio();
       }
@@ -425,18 +448,14 @@ export class RoomComponentComponent implements OnInit {
         this.roomHubService.disableVideo();
       }
 
-      // Cập nhật trạng thái hiển thị
       this.isMicOn = this.roomHubService.audioEnabled;
       this.isCameraOn = this.roomHubService.videoEnabled;
-
-      // Log trạng thái để kiểm tra
-      console.log('🎤 Mic trạng thái:', this.isMicOn);
-      console.log('🎥 Camera trạng thái:', this.isCameraOn);
 
       // Buộc cập nhật UI
       this.cdr.detectChanges();
     }
   }
+
   get audioEnabled(): boolean {
     return this.roomHubService.audioEnabled;
   }
@@ -507,23 +526,40 @@ export class RoomComponentComponent implements OnInit {
     }
   }
 
-  async onCreatePoll(event: { question: string; options: string[] }) {
+  async onCreatePoll(pollData: { question: string; options: string[] }) {
     await this.roomHubService.createPoll(
       this.roomId,
-      event.question,
-      event.options
+      pollData.question,
+      pollData.options
     );
   }
 
-  async onVote(optionId: string) {
-    if (this.activePoll) {
-      await this.roomHubService.voteOnPoll(
-        this.roomId,
-        this.activePoll.id,
-        optionId
-      );
+  async onVote(voteData: { pollId: string; optionId: string }) {
+    await this.roomHubService.voteOnPoll(
+      this.roomId,
+      voteData.pollId,
+      voteData.optionId
+    );
+  }
+
+  async onDeletePoll(pollId: string) {
+    try {
+      await this.roomHubService.deletePoll(this.roomId, pollId);
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Lỗi khi xóa cuộc thăm dò:', err);
     }
   }
+
+  async onEndPoll(pollId: string) {
+    try {
+      await this.roomHubService.endPoll(this.roomId, pollId);
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Lỗi khi kết thúc cuộc thăm dò:', err);
+    }
+  }
+
 
   onEmotionSent(event: {
     type: string;
@@ -700,4 +736,33 @@ export class RoomComponentComponent implements OnInit {
     // Gọi sau khi phần tử <video> đã render
     this.displayLocalStream();
   }
+
+  async showConfirm(message: string): Promise<boolean> {
+    // Make sure any previous modal is fully closed
+    this.showConfirmModal = false;
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Now show the new modal
+    this.confirmMessage = message;
+    this.showConfirmModal = true;
+    this.cdr.detectChanges();
+    return new Promise<boolean>((resolve) => {
+      this.confirmResolve = resolve;
+    });
+  }
+
+  onConfirmResult(result: boolean) {
+    this.showConfirmModal = false;
+
+    if (this.confirmResolve) {
+      setTimeout(() => {
+        if (this.confirmResolve) {
+          this.confirmResolve(result);
+          this.confirmResolve = null;
+        }
+      }, 50);
+    }
+    this.cdr.detectChanges();
+  }
+
 }

@@ -8,10 +8,10 @@ import {
 } from '@angular/core';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ChatOutsideRoomService } from '../../services/chat-outside-room/chat-outside-room.service';
-import { json } from 'stream/consumers';
 import { SearchService } from '../../services/search-service/search.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 @Component({
   selector: 'app-chat-outside-room',
   templateUrl: './chat-outside-room.component.html',
@@ -45,9 +45,11 @@ export class ChatOutsideRoomComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private chatService: ChatOutsideRoomService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
     this.checkScreenSize();
     window.addEventListener('resize', () => this.checkScreenSize());
 
@@ -105,6 +107,7 @@ export class ChatOutsideRoomComponent implements OnInit {
       .subscribe((searchTerm) => {
         this.searchUser(searchTerm);
       });
+    }
   }
 
   checkScreenSize() {
