@@ -94,7 +94,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.isLoading = true;
     if (isPlatformBrowser(this.platformId)) {
       const savedLang = localStorage.getItem('language');
       if (savedLang) {
@@ -125,7 +124,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
         this.cdr.markForCheck();
-        this.isLoading = false;
       });
 
     if (this.authService.isLoggedIn()) {
