@@ -1,6 +1,265 @@
-.header {
-  width: 100%;
+/* Header Container */
+.header-container {
   background-color: #121212;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  width: 100vw;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 0;
+  height: auto;
+}
+
+/* Logo Section */
+.logo-section {
+  flex: 0 0 200px;
+}
+
+.logo-full {
+  height: 40px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-full:hover {
+  transform: scale(1.05);
+}
+
+/* Navigation Section */
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 0 30px;
+}
+
+.main-nav {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 5px 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ff3b3b;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ff3b3b;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* User Section */
+.user-section {
+  flex: 0 0 auto;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.login-btn {
+  background-color: #ff3b3b;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #e03535;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.control-icon {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.control-icon:hover {
+  color: #ff3b3b;
+}
+
+.add-room-btn {
+  background-color: #2f2f2f;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-room-btn:hover {
+  background-color: #3f3f3f;
+}
+
+/* Notification Styles */
+.notification-icon {
+  position: relative;
+}
+
+.notification-bell {
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.notification-bell:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.onNotification {
+  background-color: #ff3b3b;
+  color: white;
+}
+
+.offNotification {
+  color: #ff3b3b;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff3b3b;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  z-index: 1000;
+}
+
+.notification-dropdown-title {
+  color: white;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.notification-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+}
+
+.notification-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content p {
+  color: #fff;
+  margin: 0;
+  font-size: 14px;
+}
+
+.notification-content strong {
+  color: #ff3b3b;
+}
+
+.notification-action {
+  color: #4dabf7 !important;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
+}
+
+.notification-footer a {
+  color: #fff;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.notification-footer a:hover {
+  text-decoration: underline;
+}
+
+/* User Profile */
+.user-profile {
+  position: relative;
 }
 
 .user-avatar-container {
@@ -9,7 +268,11 @@
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid white;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2f2f2f;
 }
 
 .user-avatar {
@@ -18,207 +281,163 @@
   object-fit: cover;
 }
 
-.dropdown-user {
+.user-avatar-container i {
+  font-size: 24px;
+  color: #fff;
+}
+
+.user-dropdown {
   position: absolute;
-  top: 50px;
   right: 0;
-  background: white;
+  top: 100%;
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  min-width: 150px;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+  min-width: 180px;
   z-index: 1000;
 }
 
-.dropdown-user a {
+.user-dropdown a {
+  display: block;
+  padding: 8px 15px;
+  color: #333;
   text-decoration: none;
-  color: black;
-  padding: 8px 10px;
-  display: block;
-  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
-.dropdown-user a:hover {
-  background-color: #f1f1f1;
+.user-dropdown a:hover {
+  background-color: #f5f5f5;
 }
 
-.user-name {
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  margin-left: 10px;
-  cursor: pointer;
-}
-.user-avatar-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px; /* Đảm bảo avatar luôn có kích thước cố định */
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #fff; /* Nền trắng giống icon */
-}
-
-.loading-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  font-size: 18px;
-  color: white;
-}
-.fa-spinner {
-  margin-right: 10px;
-}
-
-.user-avatar-container img,
-.user-avatar-container i {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.menu-container {
+/* More Options */
+.more-options {
   position: relative;
-}
-
-.login-bt {
-  background-color: #ff3b3b;
   color: #fff;
-  border: none;
-  padding: 5px 25px;
-  font-size: 16px;
   cursor: pointer;
-  border-radius: 5px;
-}
-.login-bt:hover {
-  background-color: rgb(221, 54, 82);
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
-.menu-icon {
-  position: relative;
-  cursor: pointer;
+.more-options:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.dropdown-menu {
-  display: block;
-  background-color: #333;
-  border-radius: 5px;
-  padding: 10px 0;
+.options-dropdown {
   position: absolute;
-  top: 35px;
-  left: -161px;
-  width: 200px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  z-index: 3;
+  right: 0;
+  top: 100%;
+  background-color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+  min-width: 200px;
+  z-index: 1000;
 }
 
-.dropdown-menu a {
+.options-dropdown a {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 8px 15px;
   color: #fff;
   text-decoration: none;
   font-size: 14px;
+  gap: 10px;
+  transition: background-color 0.3s ease;
 }
 
-.dropdown-menu a:hover {
+.options-dropdown a:hover {
   background-color: #444;
 }
 
-.dropdown-menu a i {
-  margin-right: 10px;
-}
-/* Biểu tượng chuông */
-.notification-icon {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .header-content {
+    flex-wrap: wrap;
+  }
+
+  .nav-section {
+    order: 3;
+    width: 100%;
+    margin: 15px 0 0 0;
+  }
+
+  .logo-section {
+    flex: 1;
+    text-align: center;
+  }
+
+  .user-section {
+    flex: 0 0 auto;
+  }
 }
 
-/* Dropdown thông báo */
-.notification-wrapper {
-  display: block;
-  overflow-y: auto;
-  max-height: 100vh;
-  position: absolute;
-  top: 40px; /* Canh dưới chuông */
-  right: 0;
-  width: 420px;
-  background-color: #333;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  z-index: 3;
-  padding: 10px;
-}
-#notification-title {
-  color: white;
-  font-weight: 800;
-}
-strong {
-  color: black;
-}
-/* Hiển thị dropdown khi click */
+@media (max-width: 768px) {
+  .main-nav {
+    gap: 15px;
+  }
 
-.notification-item {
-  color: black;
+  .user-controls {
+    gap: 15px;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+  }
+
+  .notification-dropdown {
+    width: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-container {
+    padding: 0 10px;
+  }
+
+  .logo-full {
+    height: 30px;
+  }
+
+  .main-nav {
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .user-controls {
+    gap: 33px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+  }
+
+  .add-room-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .notification-dropdown {
+    width: 280px;
+    right: -50px;
+  }
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 1); /* Nền mờ để che nội dung bên dưới */
   display: flex;
-  align-items: flex-start;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Đảm bảo overlay nằm trên tất cả các thành phần khác */
 }
 
-.notification-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.notification-content p {
-  margin: 0;
-  color: white;
-}
-.onNotification {
-  color: white;
-  background-color: rgb(255, 59, 92);
-}
-.offNotification {
-  color: rgb(255, 59, 92);
-}
-.notification-bellicon {
-  padding: 5px 10px;
-}
-.notification-thread {
-  background-color: #e0e0e0;
-  color: #333;
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-size: 12px;
-  margin-right: 5px;
-}
-
-.notification-time {
-  color: #888;
-  font-size: 12px;
-}
-
-.notification-action {
-  color: #007bff !important;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.notification-footer {
+/* Kiểu cho loader */
+.loader {
   display: flex;
-  justify-content: space-between;
-  padding-top: 10px;
-}
-img.logo-full {
-  margin-top: 10px;
-  width: 250px;
-  max-width: 100%;
+  align-items: center;
+  justify-content: center;
 }

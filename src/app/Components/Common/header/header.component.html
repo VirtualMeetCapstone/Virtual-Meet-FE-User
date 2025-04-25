@@ -1,102 +1,96 @@
-<div class="row p-3">
-  <!-- Logo Virtual Meet -->
-  <div class="col-lg-4 col-md-4 col-sm-6 col-6">
-    <div class="logo">
+<div class="header-container">
+  <div class="header-content">
+    <!-- Logo Virtual Meet -->
+    <div class="logo-section">
       <a class="navbar-brand brand-logo" routerLink="/">
         <img [src]="logoUrl" alt="logo" class="logo-full" />
       </a>
     </div>
-  </div>
 
-  <!-- Ô tìm kiếm -->
-  <div class="col-lg-5 col-md-5 col-sm-4 col-4">
-    <app-search></app-search>
-  </div>
+    <!-- Navigation and Search -->
+    <div class="nav-section">
+      <nav class="main-nav">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/posts" class="nav-link">Posts</a>
+        <a href="/explore" class="nav-link">Explore</a>
+      </nav>
 
-  <!-- Khu vực menu + thông báo + user -->
-  <div class="col-lg-3 col-md-3 col-sm-5 col-5">
-    <div
-      class="menu-container d-flex align-items-center"
-      style="flex-direction: row-reverse"
-    >
-      <!-- Nếu chưa đăng nhập: Chỉ hiển thị nút Login -->
-      <div *ngIf="!loggedIn">
-        <button class="login-bt" (click)="onClickLoginDialog()">
-          <h5 style="line-height: 20px">Login</h5>
-        </button>
+      <!-- Search Box -->
+      <div class="search-container">
+        <app-search></app-search>
+      </div>
+    </div>
+
+    <!-- User Area -->
+    <div class="user-section">
+      <!-- If not logged in: Show Login button -->
+      <div *ngIf="!loggedIn" class="auth-buttons">
+        <button class="login-btn" (click)="onClickLoginDialog()">Login</button>
       </div>
 
-      <!-- Nếu đã đăng nhập: Hiển thị thông báo + profile -->
-      <div *ngIf="loggedIn" class="d-flex align-items-center">
-        <i
-          class="fa-solid fa-envelope fa-2x mr-2"
-          style="cursor: pointer"
-          [routerLink]="['/chat']"
-        ></i>
-        <div class="button d-flex justify-content-center">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            style="font-weight: bolder; background-color: #2f2f2f"
-            (click)="openModalAddRoom()"
-          >
-            <i class="fa-regular fa-plus"></i> ADD ROOM
-          </button>
+      <!-- If logged in: Show user controls -->
+      <div *ngIf="loggedIn" class="user-controls">
+        <!-- Messages -->
+        <div class="control-icon">
+          <i class="fa-solid fa-envelope fa-lg" [routerLink]="['/chat']"></i>
         </div>
-        <!-- Thông báo -->
-        <div class="notification-icon mr-3">
+
+        <!-- Add Room -->
+        <button class="add-room-btn" (click)="openModalAddRoom()">
+          <i class="fa-regular fa-plus"></i> ADD ROOM
+        </button>
+
+        <!-- Notifications -->
+        <div class="notification-icon">
           <div
-            class="notification-bellicon"
+            class="notification-bell"
             [ngClass]="
               isShowNotification ? 'onNotification' : 'offNotification'
             "
           >
             <i
-              class="fa-solid fa-bell fa-xl"
+              class="fa-solid fa-bell"
               id="notification-bell"
               (click)="onClickNotification()"
             ></i>
-            <span
-              class="position-absolute top-0 left-0 start-100 translate-middle badge rounded-pill bg-danger"
-            >
+            <span class="notification-badge">
               {{ totalNotification }}
             </span>
           </div>
 
           <div
-            class="notification-wrapper"
+            class="notification-dropdown"
             #scrollContainer
             *ngIf="isShowNotification"
           >
-            <h4 id="notification-title">
+            <h4 class="notification-dropdown-title">
               {{ "header.NOTIFICATIONS.TITLE" | translate }}
             </h4>
-            <div
-              class="notification-item"
-              *ngFor="let notification of notifications"
-            >
-              <img
-                class="notification-avatar"
-                alt="User avatar"
-                [src]="notification.actor.picture.url"
-                loading="lazy"
-              />
-              <div class="notification-content">
-                <p (click)="getNotification(notification)">
-                  <strong style="color: white">{{
-                    notification.actor.name
-                  }}</strong>
-                  {{ notification.content }}.
-                </p>
-                <p class="notification-time"></p>
-
-                <p
-                  class="notification-action"
-                  *ngIf="!notification.isRead"
-                  (click)="markAsRead(notification.id)"
-                >
-                  {{ "header.NOTIFICATIONS.MARK_AS_READ" | translate }}
-                </p>
+            <div class="notification-list">
+              <div
+                class="notification-item"
+                *ngFor="let notification of notifications"
+              >
+                <img
+                  class="notification-avatar"
+                  alt="User avatar"
+                  [src]="notification.actor.picture.url"
+                  loading="lazy"
+                />
+                <div class="notification-content">
+                  <p (click)="getNotification(notification)">
+                    <strong>{{ notification.actor.name }}</strong>
+                    {{ notification.content }}.
+                  </p>
+                  <p class="notification-time"></p>
+                  <p
+                    class="notification-action"
+                    *ngIf="!notification.isRead"
+                    (click)="markAsRead(notification.id)"
+                  >
+                    {{ "header.NOTIFICATIONS.MARK_AS_READ" | translate }}
+                  </p>
+                </div>
               </div>
             </div>
             <div
@@ -105,28 +99,12 @@
               (scrolled)="loadMoreNotification()"
               [infiniteScrollThrottle]="300"
             >
-              <h3
-                style="
-                  font-weight: lighter;
-                  font-size: 20px;
-                  text-align: center;
-                  color: black;
-                "
-                *ngIf="loading"
-              >
+              <div class="notification-loading" *ngIf="loading">
                 {{ "header.NOTIFICATIONS.LOAD_MORE" | translate }}
-              </h3>
-              <h3
-                style="
-                  font-weight: lighter;
-                  font-size: 20px;
-                  text-align: center;
-                  color: black;
-                "
-                *ngIf="!loading"
-              >
+              </div>
+              <div class="notification-loading" *ngIf="!loading">
                 {{ "header.NOTIFICATIONS.NO_MORE_DATA" | translate }}
-              </h3>
+              </div>
             </div>
             <div class="notification-footer">
               <a href="/all-notification">{{
@@ -142,8 +120,8 @@
 
         <!-- User Profile -->
         <div
-          class="user-info d-flex align-items-center position-relative"
-          (click)="toggleUserMenu()"
+          class="user-profile"
+          (click)="toggleUserMenu(); $event.stopPropagation()"
         >
           <div class="user-avatar-container">
             <div
@@ -161,13 +139,10 @@
               loading="lazy"
             />
             <ng-template #defaultAvatar>
-              <i
-                class="fa-solid fa-user-circle fa-2xl"
-                style="color: white"
-              ></i>
+              <i class="fa-solid fa-user-circle"></i>
             </ng-template>
           </div>
-          <div *ngIf="isShowUserMenu" class="dropdown-user">
+          <div *ngIf="isShowUserMenu" class="user-dropdown">
             <a
               href="#"
               (click)="
@@ -183,13 +158,13 @@
           </div>
         </div>
 
-        <div class="menu-icon">
+        <!-- More Options -->
+        <div class="more-options">
           <i
-            class="fa-solid fa-ellipsis fa-rotate-90 fa-lg"
-            style="color: white; cursor: pointer; margin-left: 15px"
-            (click)="onClickDropdown()"
+            class="fa-solid fa-ellipsis-vertical"
+            (click)="onClickDropdown(); $event.stopPropagation()"
           ></i>
-          <div class="dropdown-menu" *ngIf="isShowDropdown">
+          <div class="options-dropdown" *ngIf="isShowDropdown">
             <a href="#"
               ><i class="fas fa-home"></i>
               {{ "header.CREATOR_TOOLS" | translate }}</a
@@ -198,7 +173,6 @@
               <i class="fas fa-language"></i>
               {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
             </a>
-
             <a href="#"
               ><i class="fas fa-question-circle"></i>
               {{ "header.FEEDBACK_HELP" | translate }}</a
@@ -212,6 +186,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Modals -->
   <app-modal-add-edit-room
     *ngIf="showModalAddRoom"
     (closeModal)="closeModalAddRoom($event)"
@@ -220,6 +196,10 @@
   <app-login-modal
     [isShowLoginDialog]="isShowLoginDialog"
     (openLoginDialog)="isShowLoginDialog = $event"
-  >
-  </app-login-modal>
+  ></app-login-modal>
+</div>
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loader">
+    <app-loader-text></app-loader-text>
+  </div>
 </div>
