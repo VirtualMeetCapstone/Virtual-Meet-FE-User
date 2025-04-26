@@ -40,6 +40,7 @@ export class HomePageRoomComponent implements OnInit {
   roomPrivateToOpenModalEnterPass: string = '';
   openDropdownRoomId: number | null = null;
   roomId: string = '';
+  hasStories: boolean = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
