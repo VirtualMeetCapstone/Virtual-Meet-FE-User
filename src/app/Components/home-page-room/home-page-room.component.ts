@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   HostListener,
   Inject,
@@ -45,14 +46,14 @@ export class HomePageRoomComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private roomService: RoomServicesService,
-    private roomHub: RoomHubService,
     private router: Router,
     private authService: AuthService,
     private dialog: MatDialog,
     private notificationService: NotificationServiceService,
     private loadingService: LoadingService,
     private roomHubService: RoomHubService,
-    private reportService: ReportServiceService
+    private reportService: ReportServiceService,
+    private cdRef: ChangeDetectorRef
   ) {
   }
 
@@ -85,6 +86,11 @@ export class HomePageRoomComponent implements OnInit {
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
       await this.roomHubService.startConnection();
+      this.roomHubService.receiveRoomDeleted((roomId: string) => {
+        this.rooms = this.rooms.filter(room => room.id !== roomId);
+        this.cdRef.detectChanges();
+
+      });
       window.addEventListener('scroll', this.toggleScrollButton);
     }
     this.authService.loggedIn$.subscribe((status: boolean) => {
