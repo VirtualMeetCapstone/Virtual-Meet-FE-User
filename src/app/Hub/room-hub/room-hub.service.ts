@@ -545,6 +545,14 @@ export class RoomHubService {
     );
   }
 
+  public receiveRoomDeleted(callback: (roomId: string) => void): void {
+    this.hubConnection.off('RoomDeleted');
+    this.hubConnection.on('RoomDeleted', (roomId: string) => {
+      console.log('Room deleted:', roomId);
+      callback(roomId);
+    });
+  }
+
   public async kickUser(targetUserId: string, reason: string): Promise<void> {
     if (!this.currentUser.roomId) {
       console.error('❌ Không thể kick user vì không có roomId.');
