@@ -16,6 +16,19 @@
   <div class="room-gallery">
     <div class="room-grid">
       <div class="room-card" *ngFor="let room of rooms">
+        <div class="points_wrapper">
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+          <i class="point"></i>
+        </div>
+
         <div class="room-header">
           <div class="owner-info">
             <img
@@ -34,7 +47,10 @@
 
           <div class="room-actions">
             <div class="dropdown-container" (click)="preventClose($event)">
-              <button class="dropdown-btn" (click)="toggleDropdown(room.id, room)">
+              <button
+                class="dropdown-btn"
+                (click)="toggleDropdown(room.id, room)"
+              >
                 <i class="fas fa-ellipsis-v"></i>
               </button>
 
@@ -65,13 +81,17 @@
                   <div class="dropdown-divider"></div>
 
                   <!-- Report - Only triggers report modal -->
-                  <a class="dropdown-item"
-                     (click)="showReportModal = true; openDropdownRoomId = null; $event.stopPropagation();">
+                  <a
+                    class="dropdown-item"
+                    (click)="
+                      showReportModal = true;
+                      openDropdownRoomId = null;
+                      $event.stopPropagation()
+                    "
+                  >
                     <i class="fa-solid fa-flag"></i>
                     Report
                   </a>
-
-
                 </div>
               </div>
             </div>
@@ -186,11 +206,16 @@
   <div class="modal-box">
     <div class="modal-header">
       <h2>Report</h2>
-      <button class="close-btn" (click)="showReportModal = false">&times;</button>
+      <button class="close-btn" (click)="showReportModal = false">
+        &times;
+      </button>
     </div>
     <p class="modal-description">
       Why are you reporting this room?<br />
-      <span>If someone is in immediate danger, get help before reporting to Virtual Meet. Don’t wait.</span>
+      <span
+        >If someone is in immediate danger, get help before reporting to Virtual
+        Meet. Don’t wait.</span
+      >
     </p>
 
     <!-- Form group with radio buttons -->
@@ -210,10 +235,13 @@
         </li>
       </ul>
 
-      <button type="submit" [disabled]="!selectedReportReason" class="submit-btn">
+      <button
+        type="submit"
+        [disabled]="!selectedReportReason"
+        class="submit-btn"
+      >
         Submit Report
       </button>
     </form>
   </div>
 </div>
-
