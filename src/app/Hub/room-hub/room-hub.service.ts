@@ -739,6 +739,10 @@ export class RoomHubService {
       .catch((err) => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
   }
 
+    public sendCallSummaryMail(roomId: string, summary: string): Observable<any> {
+      return this.http.post(`/api/rooms/${roomId}/send-summary-mail`, { summary });
+    }
+
   public receiveSummary(callback: (summary: string) => void): void {
     this.hubConnection.off('ReceiveSummary');
     this.hubConnection.on('ReceiveSummary', (summary: string) => {

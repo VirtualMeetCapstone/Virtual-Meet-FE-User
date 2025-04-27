@@ -200,12 +200,18 @@
       </button>
 
       <button
-        class="control-btn"
-        (click)="summarizeCall()"
-        *ngIf="isSummarizeBtnVisible"
-      >
-        <i class="fa-solid fa-file-alt"></i>
-      </button>
+      class="control-btn"
+      (click)="onSummarizeClicked()"
+      *ngIf="isSummarizeBtnVisible && isHost"
+    >
+      <i class="fa-solid fa-file-alt"></i>
+    </button>
+
+      <app-confirm-modal
+  [visible]="confirmModalVisible"
+  [message]="'SubText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
+  (confirmed)="onConfirmSummarize($event)"
+></app-confirm-modal>
     </div>
 
     <!-- Chat & Participants Controls -->
@@ -241,7 +247,7 @@
   </div>
 
   <!-- Modal hiển thị tóm tắt -->
-  <div *ngIf="showCallSummaryModal" class="call-summary-modal">
+  <div *ngIf="showCallSummaryModal && isHost" class="call-summary-modal">
     <div class="modal-content">
       <h3 style="color: black">Tóm Tắt Cuộc Gọi</h3>
       <p
@@ -251,10 +257,12 @@
       ></p>
       <div style="display: flex; justify-content: flex-end; gap: 10px">
         <button class="close-modal" (click)="copySummary()">Sao chép</button>
+        <button class="close-modal" (click)="sendSummaryMail()">Gửi Mail</button>
         <button class="close-modal" (click)="closeSummaryModal()">Đóng</button>
       </div>
     </div>
   </div>
+
   <!-- Recording Settings Modal -->
   <div class="modal" [class.active]="isRecordingModalOpen">
     <div class="modal-content" style="background-color: #3d3d3d">
