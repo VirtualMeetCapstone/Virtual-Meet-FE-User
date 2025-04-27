@@ -25,6 +25,7 @@ body {
 
 .room-gallery {
   padding: 2rem;
+  background-image: url("/assets/img/bg-caro.jpg");
 }
 
 .room-grid {
@@ -544,6 +545,7 @@ body {
 @media (max-width: 480px) {
   .room-gallery {
     padding: 1rem;
+    background-image: url("/assets/img/bg-caro.jpg");
   }
 
   .room-grid {

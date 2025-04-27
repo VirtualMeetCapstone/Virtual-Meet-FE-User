@@ -8,7 +8,10 @@
 </div>
 <div>
   <div class="row">
-    <div class="col-12 text-center p-3">
+    <div
+      class="col-12 text-center p-3"
+      style="background-image: url('/assets/img/bg-caro.jpg')"
+    >
       <app-story-list></app-story-list>
     </div>
   </div>
@@ -168,6 +171,7 @@
   (scrolled)="loadMoreRooms()"
   [infiniteScrollDistance]="1"
   [infiniteScrollThrottle]="300"
+  style="background-image: url('/assets/img/bg-caro.jpg')"
 >
   <div class="loader" *ngIf="loading">
     <div class="ball"></div>
