@@ -1,0 +1,60 @@
+<div *ngIf="state == 'not'">
+  <button *ngIf="isHost" (click)="openSelectionQuiz()">Quiz</button>
+</div>
+<div class="modal" *ngIf="state === 'quiz-selection' && isHost">
+  <div class="modal-content">
+    <app-quiz-selection
+      [user]="user"
+      (roomSelected)="goToLobby($event)"
+      [roomId]="roomId"
+    ></app-quiz-selection>
+    <button class="close-btn" (click)="closeModal()" *ngIf="isHost">
+      Close
+    </button>
+  </div>
+</div>
+
+<!-- Lobby Modal -->
+<div class="modal" *ngIf="state === 'lobby'">
+  <div class="modal-content">
+    <app-lobby
+      [roomId]="roomId"
+      [QuizSessionId]="QuizSessionId"
+      (startQuiz)="startQuiz()"
+      (back)="backToSelection()"
+      [user]="user"
+      [topic]="topic"
+      [isHost]="isHost"
+    ></app-lobby>
+    <button class="close-btn" (click)="closeModal()" *ngIf="isHost">
+      Close
+    </button>
+  </div>
+</div>
+
+<!-- Play Quiz Modal -->
+<div class="modal" *ngIf="state === 'play-quiz'">
+  <div class="modal-content">
+    <app-play-quiz
+      [roomId]="roomId"
+      [questions]="questions"
+      [user]="user"
+      [QuizSessionId]="QuizSessionId"
+      (finish)="closeModal()"
+    ></app-play-quiz>
+    <button class="close-btn" (click)="closeModal()" *ngIf="isHost">
+      Close
+    </button>
+  </div>
+</div>
+
+<div class="modal" *ngIf="state === 'confirm'">
+  <div class="modal-content">
+    <h2 style="text-align: center">Confirmation</h2>
+    <p style="text-align: center">
+      Are You Sure You Want To Join Quiz "{{ topic }}"?
+    </p>
+    <button class="yes" (click)="confirmJoin()">Yes</button>
+    <button class="no" (click)="cancelJoin()">No</button>
+  </div>
+</div>

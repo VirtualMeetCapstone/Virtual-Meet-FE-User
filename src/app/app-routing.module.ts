@@ -13,6 +13,7 @@ import { ModalDetailpostComponent } from './Components/home-page-post/modal-deta
 import { UpdateVipComponent } from './Components/upgrade-vip/update-vip/update-vip.component';
 import { VipHistoryComponent } from './Components/upgrade-vip/vip-history/vip-history/vip-history.component';
 import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-outside-room.component';
+import { QuizComponent } from './Components/quiz/quiz.component';
 
 const routes: Routes = [
   { path: '', component: HomePageRoomComponent },
@@ -29,6 +30,8 @@ const routes: Routes = [
   { path: 'up-vip', component: UpdateVipComponent },
   { path: 'vip-history', component: VipHistoryComponent },
   { path: 'chat', component: ChatOutsideRoomComponent },
+
+  { path: 'quiz', component: QuizComponent },
 
   { path: '**', component: PageNotFoundComponent },
 ];

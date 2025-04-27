@@ -1,0 +1,76 @@
+<!-- src/app/components/quiz/quiz.component.html -->
+<div class="quiz-container">
+  <div class="quiz-in-progress" *ngIf="!quizFinished">
+    <div class="quiz-header">
+      <div class="timer">{{ timeLeft }}</div>
+      <div class="score">Score: {{ score }}</div>
+      <div class="question-number">Question 1 of 5</div>
+    </div>
+
+    <div class="question-container" *ngIf="!showAnswer">
+      <h1>{{ currentQuestion.text }}</h1>
+
+      <div class="options-grid">
+        <button
+          mat-raised-button
+          *ngFor="let option of currentQuestion.options; let i = index"
+          (click)="selectAnswer(i + 1)"
+          let
+        >
+          {{ option }}
+        </button>
+      </div>
+    </div>
+    <div class="fullscreen-effect" *ngIf="showAnswer">
+      <div class="timer">{{ timeLeft }}</div>
+
+      <h1 *ngIf="isNotCorrect" class="incorrect">INCORRECT</h1>
+      <h1 *ngIf="isCorrect" class="correct">Correct</h1>
+      <div class="score-display">Your score {{ score }}</div>
+
+      <p>The question was: {{ currentQuestion.text }}</p>
+
+      <div class="correct-answer">
+        Correct answer: {{ currentQuestion.answer }}
+      </div>
+
+      <div class="choosed-answer" *ngIf="isNotCorrect">
+        You choosed: {{ currentQuestion.choosed }}
+      </div>
+      <div class="leaderboard">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard-row">
+          <div
+            class="leaderboard-item"
+            *ngFor="let player of players; let i = index"
+          >
+            <div class="rank">
+              <span *ngIf="i === 0">🥇</span>
+              <span *ngIf="i === 1">🥈</span>
+              <span *ngIf="i === 2">🥉</span>
+              <span *ngIf="i > 2">{{ i + 1 }}</span>
+            </div>
+            <div class="name">{{ player.name }}</div>
+            <div class="score">{{ player.score }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-finished" *ngIf="quizFinished">
+    <h1>Quiz Finished!</h1>
+    <h2>Final Results</h2>
+
+    <div class="final-leaderboard">
+      <div class="podium-item" *ngFor="let player of players; let i = index">
+        <div class="podium podium-1">
+          <div class="position">{{ i + 1 }}</div>
+          <div class="name">{{ player.name }}</div>
+          <div class="score">{{ player.score }}</div>
+        </div>
+      </div>
+    </div>
+    <p>Ends in {{ timeLeft }} seconds</p>
+    <!-- Hiển thị thời gian đếm ngược -->
+  </div>
+</div>
