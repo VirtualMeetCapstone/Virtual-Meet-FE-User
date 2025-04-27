@@ -36,6 +36,8 @@ export class PlayQuizComponent {
   quizFinished = false;
   currentQuestion: any = null;
   @Input() questions: any[] = [];
+  totalQuestion: number = 0;
+  countQuestion: number = 1;
 
   // Add to QuizComponent
   constructor(
@@ -45,6 +47,7 @@ export class PlayQuizComponent {
   ) {}
 
   ngOnInit() {
+    this.totalQuestion = this.questions.length;
     console.log('Room ID:', this.questions);
     console.log('QuizSessionId from play:', this.QuizSessionId);
     this.currentQuestion = this.questions[this.currentQuestionIndex];
@@ -127,6 +130,7 @@ export class PlayQuizComponent {
 
   nextQuestion() {
     this.currentQuestionIndex++;
+    this.countQuestion++;
 
     // Kiểm tra nếu đã hết câu hỏi
     if (this.currentQuestionIndex >= this.questions.length) {

@@ -84,7 +84,7 @@ export class QuizComponent implements OnInit {
     this.state = 'lobby';
   }
   cancelJoin() {
-    this.closeModal();
+    this.closeModalForMember();
   }
 
   // Chuyển sang trạng thái play-quiz

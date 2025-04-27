@@ -4,7 +4,9 @@
     <div class="quiz-header">
       <div class="timer">{{ timeLeft }}</div>
       <div class="score">Score: {{ score }}</div>
-      <div class="question-number">Question 1 of 5</div>
+      <div class="question-number">
+        Question {{ countQuestion }} of {{ totalQuestion }}
+      </div>
     </div>
 
     <div class="question-container" *ngIf="!showAnswer">

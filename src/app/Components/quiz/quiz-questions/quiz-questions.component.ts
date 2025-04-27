@@ -87,6 +87,8 @@ export class QuizQuestionsComponent implements OnInit {
       this.quizService.addQuiz(payload).subscribe(
         (response: any) => {
           this.quizzes.push(response);
+          this.getQuizzes();
+
           this.cancelEdit();
         },
         (error) => {
@@ -156,10 +158,10 @@ export class QuizQuestionsComponent implements OnInit {
   deleteQuiz(quizId: string) {
     this.quizService.deleteQuiz(quizId).subscribe(
       () => {
-        this.quizzes = this.quizzes.filter((quiz) => quiz.quizId !== quizId);
+        this.getQuizzes();
       },
       (error) => {
-        console.error('Error deleting quiz:', error);
+        this.getQuizzes();
       }
     );
   }
@@ -169,8 +171,8 @@ export class QuizQuestionsComponent implements OnInit {
       this.fb.group({
         text: ['', Validators.required],
         options: this.fb.array(['', '', '', '']),
-        correctAnswer: [0, Validators.required],
-        points: [0, Validators.required],
+        correctAnswer: [1, Validators.required],
+        points: [1000, Validators.required],
       })
     );
   }
