@@ -58,9 +58,12 @@
             <button class="share-button" (click)="copyProfileLink()">
               <i class="fa-solid fa-share"></i>
             </button>
-
           </ng-template>
-          <button *ngIf="!isOwnProfile" class="share-button"  (click)="showReportModal = true; $event.stopPropagation();">
+          <button
+            *ngIf="!isOwnProfile"
+            class="share-button"
+            (click)="showReportModal = true; $event.stopPropagation()"
+          >
             <i class="fa-solid fa-triangle-exclamation"></i>
           </button>
         </div>
@@ -99,23 +102,19 @@
         >
           <i class="fa-solid fa-heart"></i> Posts Feed
         </div>
-        <div
-          class="underline"
-          [ngStyle]="{ left: selectedTab * 54 + 'vh' }"
-        ></div>
       </div>
-      <!-- My Post -->
-      <ng-container *ngIf="selectedTab === 0">
-        <app-my-post [userId]="userId"></app-my-post>
-      </ng-container>
-      <!-- Room List -->
-      <ng-container *ngIf="selectedTab === 1">
-        <app-room-list [userId]="userId"></app-room-list>
-      </ng-container>
-      <!-- Posts Feed -->
-      <ng-container *ngIf="selectedTab === 2">
-        <app-posts-feed [userId]="userId"></app-posts-feed>
-      </ng-container>
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <ng-container *ngIf="selectedTab === 0">
+          <app-my-post [userId]="userId"></app-my-post>
+        </ng-container>
+        <ng-container *ngIf="selectedTab === 1">
+          <app-room-list [userId]="userId"></app-room-list>
+        </ng-container>
+        <ng-container *ngIf="selectedTab === 2">
+          <app-posts-feed [userId]="userId"></app-posts-feed>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>
@@ -124,11 +123,16 @@
   <div class="modal-box">
     <div class="modal-header">
       <h2>Report</h2>
-      <button class="close-btn" (click)="showReportModal = false">&times;</button>
+      <button class="close-btn" (click)="showReportModal = false">
+        &times;
+      </button>
     </div>
     <p class="modal-description">
       Why are you reporting this account?<br />
-      <span>If someone is in immediate danger, get help before reporting to Virtual Meet. Don’t wait.</span>
+      <span
+        >If someone is in immediate danger, get help before reporting to Virtual
+        Meet. Don’t wait.</span
+      >
     </p>
 
     <!-- Form group with radio buttons -->
@@ -148,11 +152,13 @@
         </li>
       </ul>
 
-      <button type="submit" [disabled]="!selectedReportReason" class="submit-btn">
+      <button
+        type="submit"
+        [disabled]="!selectedReportReason"
+        class="submit-btn"
+      >
         Submit Report
       </button>
     </form>
   </div>
 </div>
-
-

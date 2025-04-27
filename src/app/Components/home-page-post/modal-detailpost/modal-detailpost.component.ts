@@ -68,6 +68,7 @@ export class ModalDetailpostComponent implements OnInit {
   toggleReactionPanel(event: Event) {
     event.stopPropagation();
     this.showReactionPanel = !this.showReactionPanel;
+    console.log('Reaction panel toggled:', this.showReactionPanel);
   }
   // Set a reaction and update reactions
   setReaction(reactionType: string, event: Event) {
@@ -126,7 +127,6 @@ export class ModalDetailpostComponent implements OnInit {
   // Map reaction type to number (consistent with home page)
   mapReactionTypeToNumber(type: string): number {
     const map: { [key: string]: number } = {
-      like: 0,
       love: 1,
       haha: 2,
       wow: 3,
@@ -139,7 +139,6 @@ export class ModalDetailpostComponent implements OnInit {
   // Map reaction number to type (consistent with home page)
   mapReactionNumberToType(number: number): string {
     const map: { [key: number]: string } = {
-      0: 'like',
       1: 'love',
       2: 'haha',
       3: 'wow',
@@ -236,7 +235,6 @@ export class ModalDetailpostComponent implements OnInit {
 
   getReactionColor(type: string): string {
     const colors: { [key: string]: string } = {
-      like: '#007bff',
       love: '#e91e63',
       haha: '#ffca28',
       wow: '#ffeb3b',
@@ -248,7 +246,6 @@ export class ModalDetailpostComponent implements OnInit {
 
   getReactionIcon(type: string): string {
     const icons: { [key: string]: string } = {
-      like: 'fas fa-thumbs-up',
       love: 'fas fa-heart',
       haha: 'fas fa-laugh',
       wow: 'fas fa-surprise',

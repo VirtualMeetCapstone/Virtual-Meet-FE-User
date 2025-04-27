@@ -1,12 +1,12 @@
+<!-- Initial Loading Spinner -->
+<div *ngIf="initialLoading" class="loading-overlay">
+  <div class="loader">
+    <app-loader-text></app-loader-text>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="main-content">
-    <!-- Initial Loading Spinner -->
-    <div *ngIf="initialLoading" class="loading-overlay">
-      <div class="loader">
-        <app-loader-text></app-loader-text>
-      </div>
-    </div>
-
     <!-- Content displayed after initial loading -->
     <div *ngIf="!initialLoading">
       <div class="create-post">
@@ -160,9 +160,6 @@
             class="reaction-panel"
             *ngIf="showReactionPanelForPostId === post.id"
           >
-            <button (click)="setReaction(post.id, 'like', $event)" title="Like">
-              <i class="fas fa-thumbs-up"></i>
-            </button>
             <button (click)="setReaction(post.id, 'love', $event)" title="Love">
               <i class="fas fa-heart"></i>
             </button>

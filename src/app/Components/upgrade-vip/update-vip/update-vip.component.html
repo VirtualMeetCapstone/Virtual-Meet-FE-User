@@ -4,12 +4,15 @@
   <div class="user-summary">
     <img [src]="user.avatar" class="profile-avatar" alt="Avatar người dùng" />
     <p class="username">{{ user.username }}</p>
-    <p>Trạng thái VIP:
+    <p>
+      Trạng thái VIP:
       <span *ngIf="isVip(); else notVip" class="vip-status">⭐ VIP</span>
       <ng-template #notVip><span>Thường</span></ng-template>
     </p>
-    <p *ngIf="isVip()">Hết hạn: {{ user.expireAt | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
-      </div>
+    <p *ngIf="isVip()">
+      Hết hạn: {{ user.expireAt | date : "dd-MM-yyyy HH:mm:ss" }}
+    </p>
+  </div>
 
   <div class="vip-benefits">
     <h3>Đặc quyền VIP</h3>
@@ -29,7 +32,7 @@
       [class.selected]="selectedPack === pack"
     >
       <h3>{{ pack.label }}</h3>
-      <p class="price">{{ pack.price | currency:'VND' }}</p>
+      <p class="price">{{ pack.price | currency : "VND" }}</p>
       <p>Hiệu lực: {{ pack.duration }} ngày</p>
     </div>
   </div>
@@ -39,7 +42,8 @@
     class="btn-upgrade"
     [disabled]="!selectedPack || isLoading"
     (click)="createVipPayment()"
-    *ngIf="!isVip()">
+    *ngIf="!isVip()"
+  >
     Xác nhận nâng cấp
   </button>
 
