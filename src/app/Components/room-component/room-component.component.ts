@@ -77,8 +77,10 @@ export class RoomComponentComponent implements OnInit {
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
 
+  resultModalVisible:  boolean = false;
+  resultModalMessage: string = '';
   isHost = false;
-
+  confirmSendMailVisible = false;
   isRecordingModalOpen: boolean = false;
   isRecording: boolean = false;
   recordWithAudio: boolean = true;
@@ -437,19 +439,38 @@ private confirmResolve: ((result: boolean) => void) | null = null;
     }
   }
 
-  sendSummaryMail() {
-    // Gọi service gửi mail, ví dụ:
+  private _sendSummaryMail() {
     this.roomHubService.sendCallSummaryMail(this.roomId, this.callSummaryText)
       .subscribe({
         next: () => {
-          alert('Đã gửi mail cho người tham gia.');
+          this.showResultModal('Đã gửi mail cho người tham gia.');
         },
         error: (err) => {
           console.error('Gửi mail thất bại', err);
-          alert('Gửi mail thất bại, vui lòng thử lại.');
+          this.showResultModal('Gửi mail thất bại, vui lòng thử lại.');
         }
       });
   }
+
+  showResultModal(message: string) {
+    this.resultModalMessage = message;
+    this.resultModalVisible = true;
+  }
+
+  onConfirmSendMail(confirmed: boolean) {
+    this.confirmSendMailVisible = false;
+
+    if (confirmed) {
+      this._sendSummaryMail(); // Nếu đồng ý, thì thực hiện gửi mail
+    }
+  }
+
+  confirmSendMail() {
+    this.confirmSendMailVisible = true;
+  }
+
+
+
 
   summarizeCall() {
     this.roomHubService.summarizeSubtitles(this.roomId);
@@ -529,6 +550,10 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       this.pinnedUser = peer;
       this.isPinned = true;
     }
+  }
+
+  onResultModalClosed() {
+    this.resultModalVisible = false;
   }
 
   toggleRecordingModal(): void {

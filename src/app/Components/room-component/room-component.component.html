@@ -209,10 +209,22 @@
 
       <app-confirm-modal
   [visible]="confirmModalVisible"
-  [message]="'SubText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
+  [message]="'VoiceText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
   (confirmed)="onConfirmSummarize($event)"
 ></app-confirm-modal>
     </div>
+
+    <app-confirm-modal
+  [visible]="confirmSendMailVisible"
+  [message]="'Bạn có chắc chắn muốn gửi mail tổng kết cuộc gọi này cho tất cả thành viên không?'"
+  (confirmed)="onConfirmSendMail($event)"
+></app-confirm-modal>
+
+<app-confirm-modal
+  [visible]="resultModalVisible"
+  [message]="resultModalMessage"
+  (confirmed)="onResultModalClosed()"
+></app-confirm-modal>
 
     <!-- Chat & Participants Controls -->
     <div *ngIf="!isChatOpen && !isParticipantsOpen" class="chat-sidebar">
@@ -257,7 +269,7 @@
       ></p>
       <div style="display: flex; justify-content: flex-end; gap: 10px">
         <button class="close-modal" (click)="copySummary()">Sao chép</button>
-        <button class="close-modal" (click)="sendSummaryMail()">Gửi Mail</button>
+        <button class="close-modal" (click)="confirmSendMail()">Gửi Mail</button>
         <button class="close-modal" (click)="closeSummaryModal()">Đóng</button>
       </div>
     </div>

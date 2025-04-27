@@ -4,7 +4,7 @@ import { AppConstants } from '../../constant/AppConstants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Poll } from '../../Components/room-component/poll-component/poll-component.component';
 import { UserDto } from '../../models/poll';
 
@@ -739,9 +739,14 @@ export class RoomHubService {
       .catch((err) => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
   }
 
-    public sendCallSummaryMail(roomId: string, summary: string): Observable<any> {
-      return this.http.post(`/api/rooms/${roomId}/send-summary-mail`, { summary });
-    }
+  sendCallSummaryMail(roomId: string, content: string, subject: string = 'Call Summary') {
+    const params = new HttpParams()
+      .set('subject', subject)
+      .set('content', content);
+
+    return this.http.post(`${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}/send-summary-mail`, null, { params });
+  }
+
 
   public receiveSummary(callback: (summary: string) => void): void {
     this.hubConnection.off('ReceiveSummary');
