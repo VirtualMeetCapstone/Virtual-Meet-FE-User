@@ -4,7 +4,7 @@ import { AppConstants } from '../../constant/AppConstants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Poll } from '../../Components/room-component/poll-component/poll-component.component';
 import { UserDto } from '../../models/poll';
 
@@ -545,6 +545,14 @@ export class RoomHubService {
     );
   }
 
+  public receiveRoomDeleted(callback: (roomId: string) => void): void {
+    this.hubConnection.off('RoomDeleted');
+    this.hubConnection.on('RoomDeleted', (roomId: string) => {
+      console.log('Room deleted:', roomId);
+      callback(roomId);
+    });
+  }
+
   public async kickUser(targetUserId: string, reason: string): Promise<void> {
     if (!this.currentUser.roomId) {
       console.error('❌ Không thể kick user vì không có roomId.');
@@ -730,6 +738,15 @@ export class RoomHubService {
       .invoke('SummarizeSubtitles', roomId)
       .catch((err) => console.error('Lỗi khi gửi yêu cầu tóm tắt:', err));
   }
+
+  sendCallSummaryMail(roomId: string, content: string, subject: string = 'Call Summary') {
+    const params = new HttpParams()
+      .set('subject', subject)
+      .set('content', content);
+
+    return this.http.post(`${AppConstants.API_BASE_URL_HTTPS}/rooms/${roomId}/send-summary-mail`, null, { params });
+  }
+
 
   public receiveSummary(callback: (summary: string) => void): void {
     this.hubConnection.off('ReceiveSummary');

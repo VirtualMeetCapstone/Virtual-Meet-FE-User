@@ -5,7 +5,7 @@ body.room-active {
   }
 }
 .header {
-  height: 15%;
+  height: 10%;
 }
 /* Kiểu cho overlay loading */
 .loading-overlay {
@@ -19,6 +19,7 @@ body.room-active {
   justify-content: center;
   align-items: center;
   z-index: 9999; /* Đảm bảo overlay nằm trên tất cả các thành phần khác */
+  background-image: url("/assets/img/bg-caro.jpg");
 }
 
 /* Kiểu cho loader */

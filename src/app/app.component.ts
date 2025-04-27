@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   isRoomPage = false;
   isChatPage = false;
   isLoading = false;
-
+  user: any = null;
   constructor(
     private authService: AuthService,
     private userVipService: UserVipService,
@@ -62,6 +62,7 @@ export class AppComponent implements OnInit {
       const token = localStorage.getItem('accessToken');
       this.isLoggedIn = !!token;
       const userId = this.authService.getUser()?.id;
+      this.user = this.authService.getUser();
       if (userId) {
         this.userVipService.loadVipLevel(userId);
       }

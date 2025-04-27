@@ -99,34 +99,29 @@
                   : "Like"
               }}
             </button>
+            <div class="reaction-panel" *ngIf="showReactionPanel">
+              <button (click)="setReaction('love', $event)" title="Love">
+                <i class="fas fa-heart"></i>
+              </button>
+              <button (click)="setReaction('haha', $event)" title="Haha">
+                <i class="fas fa-laugh"></i>
+              </button>
+              <button (click)="setReaction('wow', $event)" title="Wow">
+                <i class="fas fa-surprise"></i>
+              </button>
+              <button (click)="setReaction('sad', $event)" title="Sad">
+                <i class="fas fa-sad-tear"></i>
+              </button>
+              <button (click)="setReaction('angry', $event)" title="Angry">
+                <i class="fas fa-angry"></i>
+              </button>
+            </div>
           </div>
           <button class="comment-btn" (click)="focusCommentInput()">
             <i class="fas fa-comment"></i> Comment
           </button>
           <button class="share-btn" (click)="sharePost()">
             <i class="fas fa-share"></i> Share
-          </button>
-        </div>
-
-        <!-- Bảng phản ứng (reaction-panel) -->
-        <div class="reaction-panel" *ngIf="showReactionPanel">
-          <button (click)="setReaction('like', $event)" title="Like">
-            <i class="fas fa-thumbs-up"></i>
-          </button>
-          <button (click)="setReaction('love', $event)" title="Love">
-            <i class="fas fa-heart"></i>
-          </button>
-          <button (click)="setReaction('haha', $event)" title="Haha">
-            <i class="fas fa-laugh"></i>
-          </button>
-          <button (click)="setReaction('wow', $event)" title="Wow">
-            <i class="fas fa-surprise"></i>
-          </button>
-          <button (click)="setReaction('sad', $event)" title="Sad">
-            <i class="fas fa-sad-tear"></i>
-          </button>
-          <button (click)="setReaction('angry', $event)" title="Angry">
-            <i class="fas fa-angry"></i>
           </button>
         </div>
         <div class="comments-section">

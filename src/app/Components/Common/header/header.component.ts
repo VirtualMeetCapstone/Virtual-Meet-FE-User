@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authService.loggedIn$
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (status: boolean) => {
-        this.loggedIn = status;
+        this.loggedIn = true;
         if (status) {
           const userId = this.authService.getUser()?.id;
           if (userId) {
@@ -121,6 +121,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         } else {
           this.user = null;
+          this.loggedIn = false;
         }
         this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
         this.cdr.markForCheck();

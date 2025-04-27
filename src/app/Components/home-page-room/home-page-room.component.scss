@@ -25,6 +25,7 @@ body {
 
 .room-gallery {
   padding: 2rem;
+  background-image: url("/assets/img/bg-caro.jpg");
 }
 
 .room-grid {
@@ -36,21 +37,163 @@ body {
 }
 
 .room-card {
-  background-color: var(--secondary-dark);
-  border-radius: 12px;
-  overflow: hidden;
+  --border: 4px;
+  --rounded: 12px; /* Giữ nguyên giá trị hiện tại của border-radius */
+  --quantity: 10; /* Số lượng điểm sáng */
+  --h-card: 420px;
+  width: var(--w-card);
+  height: var(--h-card);
+  border-radius: var(--rounded);
+  position: relative;
+  padding: var(--border);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid white;
-  height: 420px;
-  position: relative;
+  background-color: var(--secondary-dark);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: 3px solid  midnightblue;
 }
 
 .room-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+  background-image: radial-gradient(
+      circle farthest-side at 0 100%,
+      #00ccb1,
+      transparent
+    ),
+    radial-gradient(circle farthest-side at 100% 0, #5ddcff, transparent),
+    radial-gradient(circle farthest-side at 100% 100%, #3c67e3, transparent),
+    radial-gradient(circle farthest-side at 0 0, #4e00c2, #0000);
+}
+
+.room-card::before,
+.room-card::after {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  will-change: auto;
+  --size: calc(100%);
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--rounded);
+  background-size: 400% 400%;
+  animation: bg-spin 3s linear 0s infinite normal none running;
+}
+
+.room-card::after {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.5s;
+  animation-delay: 0.5s;
+  filter: blur(24px);
+  opacity: 0.7;
+}
+
+@keyframes bg-spin {
+  25% {
+    background-position: right 20% bottom 40%;
+  }
+  75% {
+    background-position: left 45% top 20%;
+  }
+}
+
+.points_wrapper {
+  position: absolute;
+  overflow: hidden;
+  width: calc(100% - (var(--border) * 4));
+  height: calc(100% - (var(--border) * 4));
+  border-radius: calc(var(--rounded) - 4px);
+  pointer-events: none;
+  z-index: 80;
+}
+
+.points_wrapper .point {
+  --sz-point: 4px;
+  top: -8px;
+  position: absolute;
+  animation: floating-points infinite ease-in-out;
+  pointer-events: none;
+  width: var(--sz-point);
+  height: var(--sz-point);
+  background-color: #5ddcff;
+  border-radius: 9999px;
+}
+
+@keyframes floating-points {
+  0% {
+    transform: translate(0, 0);
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--h-card) / 1.75), calc(var(--h-card) / 1.5));
+  }
+}
+
+.points_wrapper .point:nth-child(1) {
+  left: 10%;
+  opacity: 1;
+  animation-duration: 2.35s;
+  animation-delay: 0.2s;
+}
+.points_wrapper .point:nth-child(2) {
+  left: 30%;
+  opacity: 0.7;
+  animation-duration: 2.5s;
+  animation-delay: 0.5s;
+}
+.points_wrapper .point:nth-child(3) {
+  left: 25%;
+  opacity: 0.8;
+  animation-duration: 2.2s;
+  animation-delay: 0.1s;
+}
+.points_wrapper .point:nth-child(4) {
+  left: 44%;
+  opacity: 0.6;
+  animation-duration: 2.05s;
+}
+.points_wrapper .point:nth-child(5) {
+  left: 50%;
+  opacity: 1;
+  animation-duration: 1.9s;
+}
+.points_wrapper .point:nth-child(6) {
+  left: 75%;
+  opacity: 0.5;
+  animation-duration: 1.5s;
+  animation-delay: 1.5s;
+}
+.points_wrapper .point:nth-child(7) {
+  left: 88%;
+  opacity: 0.9;
+  animation-duration: 2.2s;
+  animation-delay: 0.2s;
+}
+.points_wrapper .point:nth-child(8) {
+  left: 58%;
+  opacity: 0.8;
+  animation-duration: 2.25s;
+  animation-delay: 0.2s;
+}
+.points_wrapper .point:nth-child(9) {
+  left: 98%;
+  opacity: 0.6;
+  animation-duration: 2.6s;
+  animation-delay: 0.1s;
+}
+.points_wrapper .point:nth-child(10) {
+  left: 65%;
+  opacity: 1;
+  animation-duration: 2.5s;
+  animation-delay: 0.2s;
 }
 
 /* Room Header */
@@ -222,6 +365,7 @@ body {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  z-index: 9999;
 }
 
 .room-image-container:hover .room-image {
@@ -254,6 +398,12 @@ body {
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.5;
+  overflow: hidden; /* Ẩn phần văn bản tràn ra */
+  text-overflow: ellipsis; /* Thêm dấu ba chấm khi văn bản bị cắt */
+  white-space: normal; /* Cho phép xuống dòng nếu cần */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Giới hạn tối đa 3 dòng */
+  -webkit-box-orient: vertical;
 }
 
 /* Room Stats */
@@ -394,6 +544,7 @@ body {
 @media (max-width: 480px) {
   .room-gallery {
     padding: 1rem;
+    background-image: url("/assets/img/bg-caro.jpg");
   }
 
   .room-grid {
@@ -629,4 +780,90 @@ body {
   to {
     transform: scale(1);
   }
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background-color: #1c1e21;
+  color: white;
+  border-radius: 8px;
+  width: 400px;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-description {
+  font-size: 14px;
+  color: #ccc;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-description span {
+  font-size: 12px;
+  color: #999;
+}
+
+.modal-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-options li {
+  margin-bottom: 10px;
+}
+
+.modal-options button {
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  background-color: #3a3b3c;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-options button:hover {
+  background-color: #4e4f50;
+}
+.modal-options li {
+  margin-bottom: 8px;
+}
+
+.modal-options input[type="radio"] {
+  margin-right: 8px;
+}
+
+.submit-btn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 4px;
 }

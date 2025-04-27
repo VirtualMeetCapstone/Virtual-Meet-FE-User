@@ -246,7 +246,7 @@
 
 .reaction-panel {
   position: absolute;
-  top: -50px;
+  top: 0; /* Điều chỉnh để hiển thị rõ ràng hơn */
   left: 0;
   background-color: #333;
   border-radius: 20px;
@@ -254,7 +254,7 @@
   display: flex;
   gap: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 10;
+  z-index: 999; /* Tăng z-index để đảm bảo không bị che */
   animation: fadeIn 0.2s ease-in-out;
 }
 

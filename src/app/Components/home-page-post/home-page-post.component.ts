@@ -80,7 +80,7 @@ export class HomePagePostComponent implements OnInit {
     this.showModalDeletePost = true;
   }
 
- addPlayListeners() {
+  addPlayListeners() {
     const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
     videos.forEach((video) => {
       video.addEventListener('play', () => {
@@ -145,7 +145,6 @@ export class HomePagePostComponent implements OnInit {
 
   getReactionColor(type: string): string {
     const colors: { [key: string]: string } = {
-      like: '#007bff',
       love: '#e91e63',
       haha: '#ffca28',
       wow: '#ffeb3b',
@@ -194,7 +193,6 @@ export class HomePagePostComponent implements OnInit {
 
   getReactionIcon(type: string): string {
     const icons: { [key: string]: string } = {
-      like: 'fas fa-thumbs-up',
       love: 'fas fa-heart',
       haha: 'fas fa-laugh',
       wow: 'fas fa-surprise',
@@ -228,7 +226,6 @@ export class HomePagePostComponent implements OnInit {
 
   mapReactionTypeToNumber(type: string): number {
     const map: { [key: string]: number } = {
-      like: 0,
       love: 1,
       haha: 2,
       wow: 3,
@@ -240,14 +237,13 @@ export class HomePagePostComponent implements OnInit {
 
   mapReactionNumberToType(number: number): string {
     const map: { [key: number]: string } = {
-      0: 'like',
       1: 'love',
       2: 'haha',
       3: 'wow',
       4: 'sad',
       5: 'angry',
     };
-    return map[number] || 'like';
+    return map[number] || 'love';
   }
 
   pauseAllVideos() {
