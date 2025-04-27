@@ -160,9 +160,6 @@
             class="reaction-panel"
             *ngIf="showReactionPanelForPostId === post.id"
           >
-            <button (click)="setReaction(post.id, 'like', $event)" title="Like">
-              <i class="fas fa-thumbs-up"></i>
-            </button>
             <button (click)="setReaction(post.id, 'love', $event)" title="Love">
               <i class="fas fa-heart"></i>
             </button>
