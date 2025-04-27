@@ -14,7 +14,7 @@ export class QuizComponent implements OnInit {
   quiz: any = [];
   user: any = '';
   QuizSessionId: any = '';
-  isHost: boolean = false;
+  @Input() isHost: boolean = false;
   topic: string = '';
   questions: any = [];
   constructor(
@@ -27,9 +27,7 @@ export class QuizComponent implements OnInit {
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
-        if (this.user.id == '1de08109-38ae-4fea-9d64-06989c098bef') {
-          this.isHost = true; // Người dùng có ID này là host
-        }
+
         console.log('User ID:', this.user);
       }
     });

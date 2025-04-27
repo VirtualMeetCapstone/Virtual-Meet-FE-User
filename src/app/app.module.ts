@@ -99,6 +99,7 @@ import { QuizComponent } from './Components/quiz/quiz.component';
 import { LobbyComponent } from './Components/quiz/lobby/lobby.component';
 import { QuizSelectionComponent } from './Components/quiz/quiz-selection/quiz-selection.component';
 import { PlayQuizComponent } from './Components/quiz/play-quiz/play-quiz.component';
+import { QuizQuestionsComponent } from './Components/quiz/quiz-questions/quiz-questions.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -162,6 +163,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     LobbyComponent,
     QuizSelectionComponent,
     PlayQuizComponent,
+    QuizQuestionsComponent,
   ],
   imports: [
     BrowserModule,

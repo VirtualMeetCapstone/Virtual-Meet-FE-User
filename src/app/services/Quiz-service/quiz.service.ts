@@ -146,4 +146,16 @@ export class QuizService {
       .invoke('closeQuiz', roomId)
       .catch((err) => console.error('join error:', err));
   }
+
+  addQuiz(quiz: any) {
+    return this.http.post(`${this.url}/addListQuiz`, quiz);
+  }
+
+  updateQuiz(quizId: string, updatedQuiz: any) {
+    return this.http.put(`${this.url}/updateQuiz/${quizId}`, updatedQuiz);
+  }
+
+  deleteQuiz(quizId: string) {
+    return this.http.delete(`${this.url}/deleteQuiz/${quizId}`);
+  }
 }
