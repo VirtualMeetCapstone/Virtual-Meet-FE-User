@@ -107,11 +107,11 @@
           <div class="more-options">
             <i class="fa-solid fa-ellipsis-vertical" (click)="onClickDropdown(); $event.stopPropagation()"></i>
             <div class="options-dropdown" *ngIf="isShowDropdown">
-              <a href="#"><i class="fas fa-home"></i> {{ "header.CREATOR_TOOLS" | translate }}</a>
+
               <a href="#" (click)="toggleLanguage($event)">
                 <i class="fas fa-language"></i> {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
               </a>
-              <a href="#"><i class="fas fa-question-circle"></i> {{ "header.FEEDBACK_HELP" | translate }}</a>
+          
               <a href="#"><i class="fas fa-moon"></i> {{ "header.DARK_MODE" | translate }}</a>
             </div>
           </div>

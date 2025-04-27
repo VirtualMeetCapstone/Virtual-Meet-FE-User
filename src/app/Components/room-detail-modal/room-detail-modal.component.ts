@@ -15,4 +15,10 @@ export class RoomDetailModalComponent {
   closeModal() {
     this.dialogRef.close();
   }
+
+  onBackgroundClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal')) {
+      this.closeModal();
+    }
+  }
 }
