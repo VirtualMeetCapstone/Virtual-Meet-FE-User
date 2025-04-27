@@ -10,7 +10,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 cột mỗi hàng */
   gap: 10px;
-  width: 100%;
+  width: 105vw;
   margin-top: 20px;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .no-room {
-  width: 85vw;
+  width: 105vw;
   margin: 0 auto; /* Căn giữa khối theo chiều ngang */
   text-align: center;
   display: flex; /* Dùng flexbox để sắp xếp nội dung */

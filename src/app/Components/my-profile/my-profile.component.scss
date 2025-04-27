@@ -167,10 +167,6 @@ body {
   overflow: hidden;
 }
 
-/* ------------------- */
-/* CHỈNH LẠI PHẦN PROFILE */
-/* ------------------- */
-
 /* Container cho Profile */
 .profile-container {
   display: flex;
@@ -185,8 +181,6 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  width: 100%;
-  margin-left: 25rem;
 }
 
 /* Phần header chứa ảnh đại diện */
@@ -194,6 +188,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 
 .profile-pic-large {
@@ -207,11 +202,8 @@ body {
 /* Phần thông tin & hành động của profile */
 .profile-title {
   width: 100%;
-  /* max-width: 60rem; */
   text-align: center;
-  justify-items: left;
   margin-bottom: 2rem;
-  margin-left: 47.5rem;
 }
 
 .profile-info {
@@ -305,43 +297,39 @@ body {
 /* Tabs Profile */
 .profile-tabs {
   display: flex;
-  gap: 65px;
+  justify-content: space-around;
+  width: 100%;
+  position: relative;
+  padding: 0;
+  margin: 0;
   font-size: 25px;
   color: #888;
-  justify-content: space-evenly;
-  position: relative;
   cursor: pointer;
-  width: 180vh;
 }
 
 .tab {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 10px 20px;
   color: #888;
-  padding: 5px 0;
-  position: relative;
   transition: color 0.3s ease-in-out;
+  white-space: nowrap;
 }
 
 .tab.active {
   color: #fff;
-  font-weight: bold;
+  border-bottom: 2px solid #fff; /* Thay font-weight bằng border để không ảnh hưởng kích thước */
 }
 
-.underline {
-  position: absolute;
-  bottom: -4px;
-  margin-left: 18.5vh;
-  width: 32vh;
-  height: 2px;
-  background-color: #fff;
-  transition: left 0.3s ease-in-out;
+/* Tab Content */
+.tab-content {
+  width: 105vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
-
-/* ------------------- */
-/* PHẦN RESPONSIVE */
-/* ------------------- */
 
 /* Responsive cho màn hình dưới 1024px */
 @media (max-width: 1024px) {
@@ -404,11 +392,24 @@ body {
     width: 20%;
     margin: 10px 0;
   }
-
-  /* Chỉnh lại profile actions nếu cần */
   .profile-actions {
     flex-direction: column;
     gap: 8px;
+  }
+  /* Adjust profile header for better mobile layout */
+  .profile-header-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  .profile-pic-large {
+    width: 100px;
+    height: 100px;
+  }
+  .profile-info {
+    text-align: center;
+  }
+  .profile-actions {
+    justify-content: center;
   }
 }
 
@@ -439,10 +440,9 @@ body {
     width: 100%;
     padding: 10px;
   }
-  /* Điều chỉnh phần profile cho thiết bị nhỏ */
   .profile-pic-large {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
   }
   .profile-username {
     font-size: 24px;
@@ -456,10 +456,6 @@ body {
   }
   .profile-bio {
     font-size: 16px;
-  }
-  .profile-tabs {
-    gap: 10px;
-    font-size: 20px;
   }
   .profile-popup {
     top: 95px;
