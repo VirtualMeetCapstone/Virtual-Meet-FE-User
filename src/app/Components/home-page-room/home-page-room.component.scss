@@ -40,8 +40,7 @@ body {
   --border: 4px;
   --rounded: 12px; /* Giữ nguyên giá trị hiện tại của border-radius */
   --quantity: 10; /* Số lượng điểm sáng */
-  --w-card: 280px; /* Kích thước hiện tại của room-card */
-  --h-card: 420px; /* Kích thước hiện tại của room-card */
+  --h-card: 420px;
   width: var(--w-card);
   height: var(--h-card);
   border-radius: var(--rounded);
