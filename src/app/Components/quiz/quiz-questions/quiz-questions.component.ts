@@ -20,6 +20,7 @@ export class QuizQuestionsComponent implements OnInit {
   quizForm: FormGroup;
   isEditing: boolean = false;
   userId: string = '';
+  isHelpPopupOpen = false;
 
   constructor(
     private quizService: QuizService,
@@ -201,5 +202,13 @@ export class QuizQuestionsComponent implements OnInit {
   setCorrectOption(questionIndex: number, optionIndex: number) {
     const question = this.questionsArray.at(questionIndex);
     question.get('correctAnswer')?.setValue(optionIndex); // Cập nhật giá trị correctAnswer
+  }
+
+  openHelpPopup() {
+    this.isHelpPopupOpen = true;
+  }
+
+  closeHelpPopup() {
+    this.isHelpPopupOpen = false;
   }
 }
