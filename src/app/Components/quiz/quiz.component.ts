@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { QuizService } from '../../services/Quiz-service/quiz.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-quiz',
@@ -19,9 +20,11 @@ export class QuizComponent implements OnInit {
   questions: any = [];
   constructor(
     private authService: AuthService,
-    private quizServices: QuizService
+    private quizServices: QuizService,
+@Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnInit(): void {
+     if (isPlatformBrowser(this.platformId)) {
     this.state = 'not';
     this.quizServices.startConnection(this.roomId);
     this.authService.loggedIn$.subscribe((status: boolean) => {
@@ -46,6 +49,7 @@ export class QuizComponent implements OnInit {
     this.quizServices.closeQuiz$.subscribe(() => {
       this.closeModalForMember();
     });
+  }
   }
 
   // Chuyển sang trạng thái lobby
