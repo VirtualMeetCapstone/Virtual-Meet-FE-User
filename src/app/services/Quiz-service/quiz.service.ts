@@ -8,7 +8,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class QuizService {
-  private url = `https://localhost:7035`;
+  private url = `${AppConstants.API_BASE_URL_HTTPS}`;
 
   public rooms = [
     { id: 'room1', name: 'General Knowledge', players: 0 },
