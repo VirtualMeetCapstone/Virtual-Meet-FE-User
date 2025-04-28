@@ -6,19 +6,19 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import {RoomServicesService} from '../../services/room-service/room-services.service';
-import {RoomHubService} from '../../Hub/room-hub/room-hub.service';
-import {Router} from '@angular/router';
+import { RoomServicesService } from '../../services/room-service/room-services.service';
+import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
+import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import {AuthService} from '../../services/auth-service/auth.service';
-import {RoomDetailModalComponent} from '../room-detail-modal/room-detail-modal.component';
-import {MatDialog} from '@angular/material/dialog';
-import {NotificationServiceService} from '../../services/notification-service/notification-service.service';
-import {isPlatformBrowser} from '@angular/common';
-import {LoadingService} from '../../loading.service';
-import {ReportServiceService} from "../../services/report-service/report-service.service";
-import {decodeJwt} from "../../../utils/jwt-helper";
-import {Room} from "../../models/room";
+import { AuthService } from '../../services/auth-service/auth.service';
+import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationServiceService } from '../../services/notification-service/notification-service.service';
+import { isPlatformBrowser } from '@angular/common';
+import { LoadingService } from '../../loading.service';
+import { ReportServiceService } from '../../services/report-service/report-service.service';
+import { decodeJwt } from '../../../utils/jwt-helper';
+import { Room } from '../../models/room';
 
 @Component({
   selector: 'app-home-page-room',
@@ -54,8 +54,7 @@ export class HomePageRoomComponent implements OnInit {
     private roomHubService: RoomHubService,
     private reportService: ReportServiceService,
     private cdRef: ChangeDetectorRef
-  ) {
-  }
+  ) {}
 
   user: any = null;
   token: string = '';
@@ -80,16 +79,14 @@ export class HomePageRoomComponent implements OnInit {
         console.warn('Invalid or missing JWT');
         this.loggedInUserId = '';
       }
-
     }
     this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
       await this.roomHubService.startConnection();
       this.roomHubService.receiveRoomDeleted((roomId: string) => {
-        this.rooms = this.rooms.filter(room => room.id !== roomId);
+        this.rooms = this.rooms.filter((room) => room.id !== roomId);
         this.cdRef.detectChanges();
-
       });
       window.addEventListener('scroll', this.toggleScrollButton);
     }
@@ -125,7 +122,6 @@ export class HomePageRoomComponent implements OnInit {
     if (this.openDropdownRoomId === roomId) {
       this.openDropdownRoomId = null;
       this.roomId = room.id;
-
     } else {
       this.openDropdownRoomId = roomId;
       this.roomId = room.id;
@@ -171,7 +167,7 @@ export class HomePageRoomComponent implements OnInit {
       return;
     }
     const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], {queryParams: {timestamp}});
+    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
   }
 
   openModalEnterPassword(roomId: any) {
@@ -183,7 +179,6 @@ export class HomePageRoomComponent implements OnInit {
       return;
     }
     this.roomPrivateToOpenModalEnterPass = roomId;
-
     this.showModalEnterPassword = true;
   }
 
@@ -280,7 +275,7 @@ export class HomePageRoomComponent implements OnInit {
 
   viewRoomDetail(room: any) {
     const dialogRef = this.dialog.open(RoomDetailModalComponent, {
-      data: {room},
+      data: { room },
     });
     console.log('room 2', room);
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -290,7 +285,7 @@ export class HomePageRoomComponent implements OnInit {
 
   scrollToTop() {
     if (isPlatformBrowser(this.platformId)) {
-      window.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -309,7 +304,7 @@ export class HomePageRoomComponent implements OnInit {
     'Selling or promoting restricted items',
     'Adult content',
     'Scam, fraud or false information',
-    'Intellectual property'
+    'Intellectual property',
   ];
 
   selectedReportReason: string = '';
@@ -327,20 +322,19 @@ export class HomePageRoomComponent implements OnInit {
       targetId: this.roomId,
       reporterId: this.loggedInUserId,
       reportType: 2,
-      description: description
+      description: description,
     };
 
     this.reportService.sendReport(reportPayload).subscribe({
       next: () => {
         alert('Gửi báo cáo thành công');
       },
-      error: (err: { error: { message: any; }; }) => {
+      error: (err: { error: { message: any } }) => {
         console.error(err);
         alert(err.error.message);
-      }
+      },
     });
 
     this.showReportModal = false;
   }
-
 }

@@ -24,14 +24,14 @@ export class QuizSelectionComponent implements OnInit {
       });
   }
 
-  selectRoom(quiz: any, topic: any) {
+  selectRoom(quizzes: any, quiz: any) {
     const formattedQuiz = [
       {
-        quizzes: quiz,
+        quizzes: quizzes,
       },
     ];
     console.log('Selected quiz ID:', JSON.stringify(formattedQuiz, null, 2));
 
-    this.roomSelected.emit({ formattedQuiz, topic });
+    this.roomSelected.emit({ formattedQuiz, quiz });
   }
 }

@@ -49,14 +49,16 @@ export class QuizComponent implements OnInit {
   }
 
   // Chuyển sang trạng thái lobby
-  goToLobby(event: { formattedQuiz: any; topic: string }) {
+  goToLobby(event: { formattedQuiz: any; quiz: any }) {
     console.log(
       'Formatted quiz:',
       JSON.stringify(event.formattedQuiz, null, 2)
     );
-    console.log('Topic:', event.topic);
 
-    this.topic = event.topic;
+    this.topic = event.quiz.topic;
+    let formattedQuiz = event.formattedQuiz;
+    formattedQuiz.topic = event.quiz.topic;
+    formattedQuiz.quizId = event.quiz.quizId;
 
     if (this.isHost) {
       this.quizServices.addSessionQuiz(event.formattedQuiz).subscribe(
@@ -84,7 +86,7 @@ export class QuizComponent implements OnInit {
     this.state = 'lobby';
   }
   cancelJoin() {
-    this.closeModalForMember();
+    this.state = 'not';
   }
 
   // Chuyển sang trạng thái play-quiz
@@ -100,7 +102,6 @@ export class QuizComponent implements OnInit {
   closeModal() {
     this.quizServices.closeQuiz(this.roomId);
     this.state = 'not';
-    this.roomId = '';
     this.topic = '';
     this.QuizSessionId = '';
     this.quiz = [];
@@ -108,7 +109,6 @@ export class QuizComponent implements OnInit {
   }
   closeModalForMember() {
     this.state = 'not';
-    this.roomId = '';
     this.topic = '';
     this.QuizSessionId = '';
     this.quiz = [];
@@ -117,7 +117,6 @@ export class QuizComponent implements OnInit {
   // Kết thúc quiz và quay lại trạng thái ban đầu
   finishQuiz() {
     this.state = 'quiz-selection';
-    this.roomId = '';
   }
   openSelectionQuiz() {
     this.state = 'quiz-selection'; // Đóng modal và quay lại trạng thái mặc định
