@@ -1,9 +1,9 @@
 <app-confirm-modal
   [visible]="showConfirmModal"
   [message]="confirmMessage"
-  (confirmed)="onConfirmResult($event)">
+  (confirmed)="onConfirmResult($event)"
+>
 </app-confirm-modal>
-
 
 <div
   class="video-call-container"
@@ -118,15 +118,14 @@
     <app-room-chat *ngIf="isChatOpen"></app-room-chat>
     <app-participant-list *ngIf="isParticipantsOpen"></app-participant-list>
     <app-poll-component
-    *ngIf="isPollOpen"
-    [polls]="polls"
-    [currentUserId]="userId"
-    (createPoll)="onCreatePoll($event)"
-    (vote)="onVote($event)"
-    (deletePoll)="onDeletePoll($event)"
-    (endPoll)="onEndPoll($event)"
-  ></app-poll-component>
-
+      *ngIf="isPollOpen"
+      [polls]="polls"
+      [currentUserId]="userId"
+      (createPoll)="onCreatePoll($event)"
+      (vote)="onVote($event)"
+      (deletePoll)="onDeletePoll($event)"
+      (endPoll)="onEndPoll($event)"
+    ></app-poll-component>
   </div>
   <!-- Loading -->
   <app-loading-component *ngIf="isLoading"></app-loading-component>
@@ -185,6 +184,7 @@
       <button class="control-btn" (click)="togglePoll()">
         <i class="fa-solid fa-poll"></i>
       </button>
+      <app-quiz [roomId]="roomId" [isHost]="isHost"></app-quiz>
 
       <!-- Recording Button -->
       <button
@@ -200,31 +200,33 @@
       </button>
 
       <button
-      class="control-btn"
-      (click)="onSummarizeClicked()"
-      *ngIf="isSummarizeBtnVisible && isHost"
-    >
-      <i class="fa-solid fa-file-alt"></i>
-    </button>
+        class="control-btn"
+        (click)="onSummarizeClicked()"
+        *ngIf="isSummarizeBtnVisible && isHost"
+      >
+        <i class="fa-solid fa-file-alt"></i>
+      </button>
 
       <app-confirm-modal
-  [visible]="confirmModalVisible"
-  [message]="'VoiceText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
-  (confirmed)="onConfirmSummarize($event)"
-></app-confirm-modal>
+        [visible]="confirmModalVisible"
+        [message]="'VoiceText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
+        (confirmed)="onConfirmSummarize($event)"
+      ></app-confirm-modal>
     </div>
 
     <app-confirm-modal
-  [visible]="confirmSendMailVisible"
-  [message]="'Bạn có chắc chắn muốn gửi mail tổng kết cuộc gọi này cho tất cả thành viên không?'"
-  (confirmed)="onConfirmSendMail($event)"
-></app-confirm-modal>
+      [visible]="confirmSendMailVisible"
+      [message]="
+        'Bạn có chắc chắn muốn gửi mail tổng kết cuộc gọi này cho tất cả thành viên không?'
+      "
+      (confirmed)="onConfirmSendMail($event)"
+    ></app-confirm-modal>
 
-<app-confirm-modal
-  [visible]="resultModalVisible"
-  [message]="resultModalMessage"
-  (confirmed)="onResultModalClosed()"
-></app-confirm-modal>
+    <app-confirm-modal
+      [visible]="resultModalVisible"
+      [message]="resultModalMessage"
+      (confirmed)="onResultModalClosed()"
+    ></app-confirm-modal>
 
     <!-- Chat & Participants Controls -->
     <div *ngIf="!isChatOpen && !isParticipantsOpen" class="chat-sidebar">
@@ -269,7 +271,9 @@
       ></p>
       <div style="display: flex; justify-content: flex-end; gap: 10px">
         <button class="close-modal" (click)="copySummary()">Sao chép</button>
-        <button class="close-modal" (click)="confirmSendMail()">Gửi Mail</button>
+        <button class="close-modal" (click)="confirmSendMail()">
+          Gửi Mail
+        </button>
         <button class="close-modal" (click)="closeSummaryModal()">Đóng</button>
       </div>
     </div>
