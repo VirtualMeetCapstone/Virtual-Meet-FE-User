@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, tap } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuizService {
-  private url = 'https://localhost:7035';
+  private url =  `${AppConstants.API_BASE_URL_HTTPS}`;
 
   public rooms = [
     { id: 'room1', name: 'General Knowledge', players: 0 },
