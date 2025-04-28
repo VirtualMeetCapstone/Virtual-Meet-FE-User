@@ -5,11 +5,14 @@ import {
   Output,
   Input,
   EventEmitter,
+  Inject,
+  PLATFORM_ID,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, timer } from 'rxjs';
 import { AudioService } from '../../../services/Quiz-service/audio.service';
 import { QuizService } from '../../../services/Quiz-service/quiz.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-play-quiz',
@@ -43,10 +46,12 @@ export class PlayQuizComponent {
   constructor(
     private route: ActivatedRoute,
     private signalrService: QuizService,
-    private audioService: AudioService
+    private audioService: AudioService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
     this.totalQuestion = this.questions.length;
     console.log('Room ID:', this.questions);
     console.log('QuizSessionId from play:', this.QuizSessionId);
@@ -75,6 +80,7 @@ export class PlayQuizComponent {
         });
     });
     this.startTimer();
+  }
   }
   selectAnswer(index: number) {
     if (this.showCorrectAnswer) return;

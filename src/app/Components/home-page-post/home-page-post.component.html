@@ -51,7 +51,7 @@
           <img
             alt="User profile picture"
             height="40"
-            src="{{ post.user.picture.url }}"
+            src="{{ post.user.picture?.url }}"
             width="40"
             (click)="goToProfile(post.userId); $event.stopPropagation()"
             style="cursor: pointer"

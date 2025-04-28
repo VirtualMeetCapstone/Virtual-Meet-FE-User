@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
   ) {
     let lang = 'en'; // Mặc định là tiếng Anh
     if (isPlatformBrowser(this.platformId)) {
-      // Kiểm tra xem đang chạy trên trình duyệt hay không
+      // Kiểm tra xem đang chạy t rên trình duyệt hay không
       if (typeof window !== 'undefined' && localStorage.getItem('language')) {
         lang = localStorage.getItem('language')!;
       }

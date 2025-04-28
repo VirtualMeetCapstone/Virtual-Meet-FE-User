@@ -57,6 +57,7 @@ export class HomePagePostComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
     this.authService.loggedIn$.subscribe((status: boolean) => {
       if (status) {
         this.user = this.authService.getUser();
@@ -73,6 +74,7 @@ export class HomePagePostComponent implements OnInit {
     this.notifyService.onOpenPostModal().subscribe((postId) => {
       this.openModalDetailPost(postId);
     });
+  }
   }
 
   openModalDeletePost(post: any) {
