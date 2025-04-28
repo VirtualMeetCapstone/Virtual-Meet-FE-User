@@ -5,24 +5,31 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { isTokenExpired } from '../../../utils/jwt-helper';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // ❌ Bỏ qua interceptor với các request liên quan tới auth
+    if (!isPlatformBrowser(this.platformId)) {
+      return next.handle(req);
+    }
+
+    // Nếu là browser thì mới xử lý token như bình thường
     const isAuthRequest =
-      req.url.includes('/login') ||
-      req.url.includes('/refresh-token');
+      req.url.includes('/login') || req.url.includes('/refresh-token');
 
     if (isAuthRequest) {
       return next.handle(req);
@@ -30,12 +37,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
     const token = this.authService.getToken();
 
-    // ✅ Nếu không có token → gửi như guest
     if (!token) {
       return next.handle(req);
     }
 
-    // ✅ Nếu token còn hạn → đính kèm Authorization
     if (!isTokenExpired(token)) {
       const authReq = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
@@ -43,7 +48,6 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(authReq);
     }
 
-    // 🔄 Token hết hạn → thử refresh
     const refreshToken = this.authService.getRefreshTokenSafely();
     if (!refreshToken) {
       console.warn('⚠️ Token hết hạn, không có refresh token → logout');
@@ -51,7 +55,6 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // 🚀 Gọi refresh token
     return this.authService.refreshToken(refreshToken).pipe(
       tap((res) => {
         console.log('🔄 Refresh token thành công:', res);
