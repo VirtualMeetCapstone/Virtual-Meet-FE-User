@@ -60,7 +60,7 @@
 }
 
 .nav-link:hover {
-  color: #70b0e1;
+  color: #2155ff;
 }
 
 .nav-link::after {
@@ -70,7 +70,7 @@
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #70b0e1;
+  background-color: #2155ff;
   transition: width 0.3s ease;
 }
 
@@ -281,14 +281,14 @@
 .user-dropdown a {
   display: block;
   padding: 8px 15px;
-  color: #333;
+  color: #ffffff;
   text-decoration: none;
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
 
 .user-dropdown a:hover {
-  background-color: #f5f5f5;
+  background-color: #5a8eee;
 }
 
 /* More Options */

@@ -1,0 +1,127 @@
+<div class="quiz-questions-container">
+  <h1>Quiz Management</h1>
+<!-- Nút Help -->
+
+<!-- Help Popup -->
+<div class="help-popup" *ngIf="isHelpPopupOpen">
+  <div class="help-content" style="background: #333; color: white; padding: 20px; border-radius: 8px;">
+    <!-- Thêm ảnh ở đây -->
+    <img src="https://i.ibb.co/MxtLbQFy/anhUp.jpg" alt="Quiz Management Illustration" style="width: 100%; max-width: 400px; display: block; margin: 0 auto 20px auto; border-radius: 8px;"/>
+
+    <h2>Hướng dẫn sử dụng Quiz Management</h2>
+    <div class="help-scrollable" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+      <h3>📍 Mục đích sử dụng:</h3>
+      <p>Chức năng này cho phép quản lý các bộ câu hỏi (Quiz) dùng trong các phòng (Room)</p>
+
+      <h3>👤 Quyền hạn người dùng:</h3>
+      <ul>
+        <li>Tạo mới một Quiz với nhiều câu hỏi và lựa chọn.</li>
+        <li>Chỉnh sửa nội dung Quiz đã có.</li>
+        <li>Xóa các Quiz không còn cần thiết.</li>
+      </ul>
+
+      <h3>🛠️ Cách sử dụng:</h3>
+      <ol>
+        <li>Nhấn nút <b>"Add Quiz"</b> để tạo bộ Quiz mới.</li>
+        <li>Điền <b>Topic</b> (chủ đề của Quiz).</li>
+        <li>Nhấn <b>"Add Question"</b> để thêm câu hỏi.</li>
+        <li>Nhập câu hỏi, thêm các lựa chọn, đánh dấu đáp án đúng.</li>
+        <li>Thiết lập số điểm cho mỗi câu hỏi.</li>
+        <li>Nhấn <b>"Add Quiz"</b> để lưu hoặc <b>"Update Quiz"</b> để cập nhật.</li>
+        <li>Dùng nút <b>"Edit"</b> để chỉnh sửa Quiz hoặc <b>"Delete"</b> để xóa.</li>
+      </ol>
+
+      <h3>ℹ️ Ghi chú thêm:</h3>
+      <p>- Nội dung Quiz sau khi lưu sẽ được sử dụng trong các Room tương ứng để người dùng tham gia trả lời câu hỏi.</p>
+    </div>
+
+    <button type="button" (click)="closeHelpPopup()" style="margin-top: 15px;">Close</button>
+  </div>
+</div>
+
+
+
+  <!-- Nút Add Quiz -->
+   <div class="div_btn" style="display: flex; justify-content: space-around;">
+    <button type="button" style="background: midnightblue;" (click)="startAddQuiz()">Add Quiz</button>
+    <button type="button" style="background: darkorange;" (click)="openHelpPopup()">Help</button>
+   </div>
+
+  <!-- Form -->
+  <form [formGroup]="quizForm" *ngIf="isEditing">
+    <div>
+      <label for="topic">Topic</label>
+      <input id="topic" formControlName="topic" type="text" />
+    </div>
+
+    <div formArrayName="questions">
+      <div
+        *ngFor="let question of questionsArray.controls; let i = index"
+        [formGroupName]="i"
+        class="question-item"
+      >
+        <label for="text">Question {{ i + 1 }}</label>
+        <input id="text" formControlName="text" type="text" />
+
+        <label>Options</label>
+        <div formArrayName="options">
+          <div
+            *ngFor="
+              let option of getOptionsArray(question).controls;
+              let j = index
+            "
+            class="input-wrapper"
+          >
+            <input [formControlName]="j" type="text" />
+            <div class="button-group">
+              <button type="button" (click)="setCorrectOption(i, j + 1)">
+                Correct
+              </button>
+              <button type="button" (click)="removeOption(i, j)">X</button>
+            </div>
+          </div>
+          <button type="button" (click)="addOption(i)">Add Option</button>
+        </div>
+
+        <label for="correctAnswer">Correct Answer</label>
+        <input
+          id="correctAnswer"
+          formControlName="correctAnswer"
+          type="number"
+          readonly
+        />
+
+        <label for="points">Points</label>
+        <input id="points" formControlName="points" type="number" />
+
+        <button type="button" (click)="removeQuestion(i)">
+          Remove Question
+        </button>
+      </div>
+    </div>
+
+    <button type="button" (click)="addQuestion()">Add Question</button>
+
+    <!-- Nút Save Quiz -->
+    <button type="button" *ngIf="!selectedQuiz" (click)="addQuiz()">
+      Add Quiz
+    </button>
+
+    <!-- Nút Update Quiz -->
+    <button type="button" *ngIf="selectedQuiz" (click)="updateQuiz()">
+      Update Quiz
+    </button>
+
+    <button type="button" (click)="cancelEdit()">Cancel</button>
+  </form>
+
+  <!-- Quiz List -->
+  <div class="quiz-list">
+    <h2>Quiz List</h2>
+    <div *ngFor="let quiz of quizzes" class="quiz-item">
+      <h3>{{ quiz.topic }}</h3>
+      <button (click)="editQuiz(quiz)">Edit</button>
+      <button (click)="deleteQuiz(quiz.quizId)">Delete</button>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { NavbarComponent } from './Components/Common/nav-bar/nav-bar.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SpeedDialModule } from 'primeng/speeddial';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   HTTP_INTERCEPTORS,
   HttpClientModule,
@@ -91,6 +95,11 @@ import { LoaderTextComponent } from './Components/loader-text/loader-text.compon
 import { ToastModule } from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmModalComponent } from './Components/confirm-modal/confirm-modal/confirm-modal.component';
+import { QuizComponent } from './Components/quiz/quiz.component';
+import { LobbyComponent } from './Components/quiz/lobby/lobby.component';
+import { QuizSelectionComponent } from './Components/quiz/quiz-selection/quiz-selection.component';
+import { PlayQuizComponent } from './Components/quiz/play-quiz/play-quiz.component';
+import { QuizQuestionsComponent } from './Components/quiz/quiz-questions/quiz-questions.component';
 
 export function HttpLoaderFactory(_httpBackend: HttpBackend) {
   return new MultiTranslateHttpLoader(_httpBackend, ['assets/lang/']); // /i18n/core/ on angular >= v18 with the new public logic
@@ -150,6 +159,11 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     ChatOutsideRoomComponent,
     LoaderTextComponent,
     ConfirmModalComponent,
+    QuizComponent,
+    LobbyComponent,
+    QuizSelectionComponent,
+    PlayQuizComponent,
+    QuizQuestionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -178,6 +192,10 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
         deps: [HttpBackend],
       },
     }),
+    MatButtonModule,
+    MatCardModule,
+    MatListModule,
+    MatSnackBarModule,
   ],
   providers: [
     provideClientHydration(),

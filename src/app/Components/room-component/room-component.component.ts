@@ -66,7 +66,7 @@ export class RoomComponentComponent implements OnInit {
   roomState: any; // Thêm biến lưu trạng thái
   activePoll: Poll | null = null; // Active poll state
   isPollOpen = false; // New state for poll sidebar
-
+  confirmModalVisible = false; // mới thêm
   //wrtc
   connectionStatus: string = 'Connecting...';
   peerConnection!: RTCPeerConnection;
@@ -77,6 +77,10 @@ export class RoomComponentComponent implements OnInit {
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
 
+  resultModalVisible:  boolean = false;
+  resultModalMessage: string = '';
+  isHost = false;
+  confirmSendMailVisible = false;
   isRecordingModalOpen: boolean = false;
   isRecording: boolean = false;
   recordWithAudio: boolean = true;
@@ -103,7 +107,7 @@ export class RoomComponentComponent implements OnInit {
   showCallSummaryModal: boolean = false;
   callSummaryText: string = '';
   isLoading: boolean = false;
-
+  roomOwnerId: string = '';
 
   //warning popup
   showConfirmModal = false;
@@ -113,7 +117,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
     this.leaveRoom();
   }
   async ngOnInit() {
-
+    this.isHost = false;
     this.roomHubService.receiveSummary((summary: string) => {
       console.log('Tóm tắt cuộc gọi nhận được:', summary);
       this.showCallSummaryModal = true;
@@ -182,6 +186,22 @@ private confirmResolve: ((result: boolean) => void) | null = null;
         localStorage.setItem('roomId', this.roomId);
         console.log('📌 Room ID từ router:', this.roomId);
       }
+    });
+
+
+    this.roomHubService.getRoomInfo(this.roomId).subscribe({
+      next: (room) => {
+        this.roomOwnerId = room.ownerId;
+        this.isHost = this.userId === this.roomOwnerId;
+        localStorage.setItem('roomOwnerId',  this.roomOwnerId);
+        console.log('👑 Room Owner:', this.roomOwnerId);
+        console.log('🧍 Bạn có phải host?', this.isHost);
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('❌ Không lấy được thông tin phòng:', err);
+      },
     });
 
     this.roomHubService.receivePollUpdate((updatedPolls) => {
@@ -419,15 +439,60 @@ private confirmResolve: ((result: boolean) => void) | null = null;
     }
   }
 
+  private _sendSummaryMail() {
+    this.roomHubService.sendCallSummaryMail(this.roomId, this.callSummaryText)
+      .subscribe({
+        next: () => {
+          this.showResultModal('Đã gửi mail cho người tham gia.');
+        },
+        error: (err) => {
+          console.error('Gửi mail thất bại', err);
+          this.showResultModal('Gửi mail thất bại, vui lòng thử lại.');
+        }
+      });
+  }
+
+  showResultModal(message: string) {
+    this.resultModalMessage = message;
+    this.resultModalVisible = true;
+  }
+
+  onConfirmSendMail(confirmed: boolean) {
+    this.confirmSendMailVisible = false;
+
+    if (confirmed) {
+      this._sendSummaryMail(); // Nếu đồng ý, thì thực hiện gửi mail
+    }
+  }
+
+  confirmSendMail() {
+    this.confirmSendMailVisible = true;
+  }
+
+
+
+
   summarizeCall() {
     this.roomHubService.summarizeSubtitles(this.roomId);
-    // Ẩn nút sau khi nhấn
     this.isSummarizeBtnVisible = false;
     this.isLoading = true;
-    // Hiện lại sau 10 giây
+
     setTimeout(() => {
       this.isSummarizeBtnVisible = true;
     }, 10000);
+  }
+
+  onSummarizeClicked() {
+    this.confirmModalVisible = true; // mở modal
+  }
+
+  // Bắt sự kiện OK / Cancel từ modal
+  onConfirmSummarize(confirmed: boolean) {
+    this.confirmModalVisible = false;
+
+    if (confirmed) {
+      this.summarizeCall(); // Gọi hàm thực hiện nếu OK
+    }
   }
   toggleVideo(): void {
     this.rtcHub.toggleVideo();
@@ -485,6 +550,10 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       this.pinnedUser = peer;
       this.isPinned = true;
     }
+  }
+
+  onResultModalClosed() {
+    this.resultModalVisible = false;
   }
 
   toggleRecordingModal(): void {

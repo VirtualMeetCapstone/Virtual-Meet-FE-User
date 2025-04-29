@@ -1,0 +1,66 @@
+/* src/app/components/lobby/lobby.component.scss */
+.lobby-container {
+  background-color: #121212;
+  min-height: 100vh;
+  padding: 2rem;
+  color: white;
+  text-align: center;
+
+  .header {
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #ffcc00;
+    }
+
+    p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+  }
+
+  .players-list {
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+
+    h2 {
+      color: #ffcc00;
+      margin-bottom: 1rem;
+    }
+
+    mat-list {
+      background: transparent;
+      color: white;
+
+      mat-list-item {
+        border-bottom: 1px solid #333;
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  .start-button {
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      background: linear-gradient(45deg, #ffcc00, #ff9500);
+      color: #121212;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+      }
+    }
+  }
+}

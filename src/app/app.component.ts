@@ -27,30 +27,29 @@ export class AppComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     let lang = 'en'; // Mặc định là tiếng Anh
+    if (isPlatformBrowser(this.platformId)) {
+      // Kiểm tra xem đang chạy t rên trình duyệt hay không
+      if (typeof window !== 'undefined' && localStorage.getItem('language')) {
+        lang = localStorage.getItem('language')!;
+      }
 
-    // Kiểm tra xem đang chạy trên trình duyệt hay không
-    if (typeof window !== 'undefined' && localStorage.getItem('language')) {
-      lang = localStorage.getItem('language')!;
+      this.loadingService.loading$.subscribe((loading) => {
+        setTimeout(() => {
+          this.isLoading = loading;
+        });
+      });
+
+      this.translate.setDefaultLang(lang);
+      this.translate.use(lang);
+      console.log(lang);
+      //disable header sidebar when join room
+      this.router.events.subscribe(() => {
+        setTimeout(() => {
+          this.isRoomPage = this.router.url.startsWith('/room');
+          this.isChatPage = this.router.url.startsWith('/chat');
+        });
+      });
     }
-
-    this.loadingService.loading$.subscribe((loading) => {
-      setTimeout(() => {
-        this.isLoading = loading;
-      });
-    });
-
-
-    this.translate.setDefaultLang(lang);
-    this.translate.use(lang);
-    console.log(lang);
-    //disable header sidebar when join room
-    this.router.events.subscribe(() => {
-      setTimeout(() => {
-        this.isRoomPage = this.router.url.startsWith('/room');
-        this.isChatPage = this.router.url.startsWith('/chat');
-      });
-    });
-
   }
 
   onClickSideBar() {

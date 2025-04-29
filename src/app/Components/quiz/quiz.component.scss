@@ -1,0 +1,124 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden; /* Đảm bảo không có cuộn ngoài modal */
+}
+
+.modal-content {
+  background-color: transparent !important; /* Ghi đè mọi kiểu mặc định */
+
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 90%; /* Giới hạn chiều rộng tối đa */
+  height: 93%; /* Giới hạn chiều cao modal */
+  overflow-y: auto; /* Thêm cuộn dọc nếu nội dung vượt quá chiều cao */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 95%; /* Tăng chiều rộng tối đa modal trên màn hình nhỏ */
+    height: 90%; /* Giảm chiều cao modal trên màn hình nhỏ */
+    padding: 1.5rem; /* Giảm padding */
+  }
+
+  .close-btn {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    max-width: 100%; /* Chiếm toàn bộ chiều rộng */
+    height: 85%; /* Giảm chiều cao thêm trên màn hình rất nhỏ */
+    border-radius: 0; /* Loại bỏ bo góc */
+  }
+}
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-content button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button.yes {
+  background-color: #4caf50; /* Màu xanh lá */
+  color: #fff;
+}
+
+.modal-content button.no {
+  background-color: #f44336; /* Màu đỏ */
+  color: #fff;
+}
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+button {
+  background-color: #4caf50; /* Màu xanh lá */
+  color: #ffffff; /* Màu chữ trắng */
+  font-size: 1.2rem; /* Kích thước chữ lớn */
+  font-weight: bold; /* Chữ đậm */
+  padding: 0.8rem 1.5rem; /* Khoảng cách bên trong nút */
+  border: none; /* Loại bỏ viền */
+  border-radius: 8px; /* Bo góc */
+  cursor: pointer; /* Con trỏ chuột dạng pointer */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng hover */
+}
+
+button:hover {
+  background-color: #45a049; /* Màu xanh lá đậm hơn khi hover */
+  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+}
+
+button:active {
+  background-color: #388e3c; /* Màu xanh lá đậm hơn khi nhấn */
+  transform: scale(0.95); /* Thu nhỏ nhẹ khi nhấn */
+}

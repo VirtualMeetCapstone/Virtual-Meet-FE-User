@@ -1,15 +1,22 @@
 // http-auth.service.ts
-import { Injectable } from '@angular/core';
-import { AuthService } from "../app/services/auth-service/auth.service";
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { AuthService } from '../app/services/auth-service/auth.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class HttpAuthService {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   async fetchWithAuth(
     url: string,
     options: RequestInit = {}
   ): Promise<Response | null> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
     const accessToken = await this.authService.getValidAccessToken();
 
     if (!accessToken) {

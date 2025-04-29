@@ -142,6 +142,7 @@
               </ng-template>
             </div>
 
+            <<<<<<< HEAD
             <div *ngIf="isShowUserMenu" class="user-dropdown">
               <a
                 href="#"
@@ -152,39 +153,53 @@
                 "
                 >Edit Profile</a
               >
-              <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
-              <a href="/vip-history" (click)="$event.stopPropagation()"
-                >Lịch sử VIP</a
+              =======
+              <div
+                *ngIf="isShowUserMenu"
+                class="user-dropdown"
+                style="background-color: #333"
               >
-              <a href="#" (click)="logout(); $event.stopPropagation()"
-                >Logout</a
-              >
+                <a
+                  href="#"
+                  (click)="
+                    editProfile();
+                    $event.preventDefault();
+                    $event.stopPropagation()
+                  "
+                  >My Profile</a
+                >
+                <a href="/manageQuiz" (click)="$event.stopPropagation()"
+                  >Manage Quiz</a
+                >
+                >>>>>>> 9fbad016f9e1607dffdbcff7e6bfe4d12e132054
+                <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
+                <a href="/vip-history" (click)="$event.stopPropagation()"
+                  >Lịch sử VIP</a
+                >
+                <a href="#" (click)="logout(); $event.stopPropagation()"
+                  >Logout</a
+                >
+              </div>
             </div>
-          </div>
 
-          <!-- More Options -->
-          <div class="more-options">
-            <i
-              class="fa-solid fa-ellipsis-vertical"
-              (click)="onClickDropdown(); $event.stopPropagation()"
-            ></i>
-            <div class="options-dropdown" *ngIf="isShowDropdown">
-              <a href="#"
-                ><i class="fas fa-home"></i>
-                {{ "header.CREATOR_TOOLS" | translate }}</a
-              >
-              <a href="#" (click)="toggleLanguage($event)">
-                <i class="fas fa-language"></i>
-                {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
-              </a>
-              <a href="#"
-                ><i class="fas fa-question-circle"></i>
-                {{ "header.FEEDBACK_HELP" | translate }}</a
-              >
-              <a href="#"
-                ><i class="fas fa-moon"></i>
-                {{ "header.DARK_MODE" | translate }}</a
-              >
+            <!-- More Options -->
+            <div class="more-options">
+              <i
+                class="fa-solid fa-ellipsis-vertical"
+                (click)="onClickDropdown(); $event.stopPropagation()"
+              ></i>
+              <div class="options-dropdown" *ngIf="isShowDropdown">
+                <a href="#" (click)="toggleLanguage($event)">
+                  <i class="fas fa-language"></i>
+                  {{
+                    currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt"
+                  }}
+                </a>
+                <a href="#"
+                  ><i class="fas fa-moon"></i>
+                  {{ "header.DARK_MODE" | translate }}</a
+                >
+              </div>
             </div>
           </div>
         </div>

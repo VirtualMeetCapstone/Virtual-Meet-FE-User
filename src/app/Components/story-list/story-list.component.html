@@ -17,7 +17,7 @@
           watched: story.isViewed
         }"
         style="width: 90px; height: 90px; border-radius: 50%"
-        [src]="story.user.picture.url"
+        [src]="story.user.picture?.url"
         [alt]="story.name"
         class="w-full h-full object-cover"
       />

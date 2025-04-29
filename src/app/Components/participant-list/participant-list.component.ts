@@ -37,7 +37,6 @@ export class ParticipantListComponent implements OnInit {
   ngOnInit(): void {
     this.userId = this.authService.getUser()?.id;
 
-
     if (!this.userId) {
       console.error(
         '❌ Không thể lấy User ID. Dừng thực hiện các hàm tiếp theo.'
@@ -45,26 +44,13 @@ export class ParticipantListComponent implements OnInit {
       return;
     }
 
-    const roomId = this.rtcHubService.roomHubService.currentUser.roomId; // Hoặc nơi bạn đang lưu roomId
-    if (!roomId) {
-      console.error('❌ Không có roomId để gọi API.');
-      return;
-    }
+    this.roomOwnerId = localStorage.getItem('roomOwnerId') || '';
+    this.isHost = this.userId === this.roomOwnerId;
 
-    this.roomHub.getRoomInfo(roomId).subscribe({
-      next: (room) => {
-        this.roomOwnerId = room.ownerId;
-        this.isHost = this.userId === this.roomOwnerId;
+    console.log('👑 Room Owner:', this.roomOwnerId);
+    console.log('🧍 Bạn có phải host?', this.isHost);
 
-        console.log('👑 Room Owner:', this.roomOwnerId);
-        console.log('🧍 Bạn có phải host?', this.isHost);
-
-        this.setupRoomEvents(); // Đặt phần logic nhận mic/video sau khi có owner
-      },
-      error: (err) => {
-        console.error('❌ Không lấy được thông tin phòng:', err);
-      },
-    });
+    this.setupRoomEvents(); // Đặt phần logic nhận mic/video sau khi có owner
   }
 
   setupRoomEvents() {
@@ -153,8 +139,8 @@ export class ParticipantListComponent implements OnInit {
   }
   toggleMute(user: any) {
     if (!user.isSelf) {
-      user.muted =true;
-         //default  is false, can be change it to true     user.muted = !user.muted;
+      user.muted = true;
+      //default  is false, can be change it to true     user.muted = !user.muted;
       this.roomHub.sendMute(user.userId, user.muted); // Gửi trạng thái mới đến server
     } else {
       console.warn('⚠️ Không thể tắt/bật mic chính mình.');

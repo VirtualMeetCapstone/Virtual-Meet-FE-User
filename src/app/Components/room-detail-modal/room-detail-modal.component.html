@@ -1,5 +1,5 @@
-<div class="modal">
-  <div class="modal-content">
+<div class="modal" (click)="onBackgroundClick($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="title">
       <i
         class="fa-solid fa-x iconX d-flex justify-content-end"
