@@ -62,20 +62,20 @@
 
   <!-- Video khi camera BẬT -->
   <video
-    #localVideo
-    *ngIf="isCameraOn; else localAvatar"
-    autoplay
-    playsinline
-    muted>
-  </video>
+  #localVideo
+  [class.hidden]="!isCameraOn"
+  autoplay
+  playsinline
+  muted>
+</video>
 
-  <!-- Avatar khi camera TẮT -->
-  <ng-template #localAvatar>
-    <div class="profile">
-      <img  style="width: 100%; height: 100%;" [src]="getSafeUrl( user.photoUrl) || 'assets/default-avatar.jpg'"
-           class="avatar" />
-    </div>
-  </ng-template>
+<div class="profile" [class.hidden]="isCameraOn">
+  <img
+    style="width: 100%; height: 100%;"
+    [src]="getSafeUrl(user.photoUrl) || 'assets/default-avatar.jpg'"
+    class="avatar"
+  />
+</div>
 </div>
 
     <!-- Local Screen Share Preview -->
