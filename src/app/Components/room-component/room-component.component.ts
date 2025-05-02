@@ -18,7 +18,12 @@ import { Peer } from '../../models/rtc/pere';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpeechService } from '../../services/external-service/speech.service';
 import { TranslateService } from '../../services/external-service/translate.service';
-import { Poll, PollComponentComponent } from './poll-component/poll-component.component';
+import {
+  Poll,
+  PollComponentComponent,
+} from './poll-component/poll-component.component';
+import { BehaviorSubject } from 'rxjs';
+import { ExternalServiceService } from '../../services/external-service/external-service.service';
 @Component({
   selector: 'app-room-component',
   templateUrl: './room-component.component.html',
@@ -41,6 +46,7 @@ export class RoomComponentComponent implements OnInit {
     private route: ActivatedRoute,
     private _playerService: PlayerService,
     private roomHubService: RoomHubService,
+    private externalService: ExternalServiceService,
     private rtcHub: RtcHubService,
     private injector: Injector,
     private authService: AuthService,
@@ -77,7 +83,7 @@ export class RoomComponentComponent implements OnInit {
   isMicOn: boolean = true;
   isCameraOn: boolean = true;
 
-  resultModalVisible:  boolean = false;
+  resultModalVisible: boolean = false;
   resultModalMessage: string = '';
   isHost = false;
   confirmSendMailVisible = false;
@@ -111,12 +117,47 @@ export class RoomComponentComponent implements OnInit {
 
   //warning popup
   showConfirmModal = false;
-confirmMessage = '';
-private confirmResolve: ((result: boolean) => void) | null = null;
+  confirmMessage = '';
+  private confirmResolve: ((result: boolean) => void) | null = null;
   ngOnDestroy() {
     this.leaveRoom();
   }
+
+  trackByPeerId(index: number, peer: any): string {
+    return peer.peerId; // Sử dụng peerId làm định danh duy nhất
+  }
+  videoStatusMap$ = new BehaviorSubject<{ [userId: string]: boolean }>({});
   async ngOnInit() {
+    this.roomHubService.receiveVideoStatusUpdate(
+      (userId: string, isVideoOn: boolean) => {
+        console.log(
+          `📹 Video status updated for user ${userId}: ${
+            isVideoOn ? 'ON' : 'OFF'
+          }`
+        );
+
+        // Tìm peer dựa trên userId (tên người dùng từ server)
+        const matchingPeer = this.peers.find((peer) => peer.userId === userId);
+
+        if (matchingPeer) {
+          console.log(
+            `✅ Matching peer found: ${matchingPeer.peerId} for user: ${userId}`
+          );
+
+          // Cập nhật videoStatusMap bằng peerId của peer tương ứng
+          const updatedStatus = {
+            ...this.videoStatusMap$.value,
+            [matchingPeer.peerId]: isVideoOn,
+          };
+          this.videoStatusMap$.next(updatedStatus);
+
+          console.log('Updated videoStatusMap:', updatedStatus);
+          this.cdr.detectChanges();
+        } else {
+          console.warn(`⚠️ No matching peer found for user: ${userId}`);
+        }
+      }
+    );
     this.isHost = false;
     this.roomHubService.receiveSummary((summary: string) => {
       console.log('Tóm tắt cuộc gọi nhận được:', summary);
@@ -187,13 +228,12 @@ private confirmResolve: ((result: boolean) => void) | null = null;
         console.log('📌 Room ID từ router:', this.roomId);
       }
     });
-
-
+    this.user = this.authService.getUser();
     this.roomHubService.getRoomInfo(this.roomId).subscribe({
       next: (room) => {
         this.roomOwnerId = room.ownerId;
         this.isHost = this.userId === this.roomOwnerId;
-        localStorage.setItem('roomOwnerId',  this.roomOwnerId);
+        localStorage.setItem('roomOwnerId', this.roomOwnerId);
         console.log('👑 Room Owner:', this.roomOwnerId);
         console.log('🧍 Bạn có phải host?', this.isHost);
 
@@ -210,7 +250,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       // If we already have a selected poll, make sure it's updated
       if (this.pollComponent && this.pollComponent.selectedPoll) {
         const updatedSelectedPoll = updatedPolls.find(
-          poll => poll.id === this.pollComponent.selectedPoll?.id
+          (poll) => poll.id === this.pollComponent.selectedPoll?.id
         );
 
         if (updatedSelectedPoll) {
@@ -219,7 +259,6 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       }
       this.cdr.detectChanges();
     });
-
 
     try {
       await this.roomHubService.startConnection();
@@ -257,18 +296,33 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       });
 
       this.rtcHub.peers$.subscribe(async (peers) => {
+        console.log('Peers updated:', peers); // Log the updated peers array
+
         this.peers = await Promise.all(
           peers.map(async (peer) => {
             const isCurrentUser = peer.peerId === this.userId;
             let userInfo = await this.loadUserInfo(peer.userName);
 
+            console.log('Processing peer:', peer); // Log individual peer processing
+            console.log('User info loaded:', userInfo); // Log user info
+            // Khởi tạo trạng thái camera mặc định
+            const initialStatusMap = { ...this.videoStatusMap$.value };
+            this.peers.forEach((peer) => {
+              if (initialStatusMap[peer.peerId] === undefined) {
+                initialStatusMap[peer.peerId] = false; // Mặc định camera bật
+              }
+            });
+            this.videoStatusMap$.next(initialStatusMap);
             return {
               ...peer,
+              userId: peer.userName,
               userName: isCurrentUser ? 'You' : userInfo?.name || peer.userName,
               avatarUrl: userInfo?.picture?.url,
             };
           })
         );
+
+        console.log('Updated peers list:', this.peers); // Log final updated peers list
       });
 
       await this.displayLocalStream();
@@ -301,6 +355,10 @@ private confirmResolve: ((result: boolean) => void) | null = null;
   getRemainingCount() {
     const maxDisplay = 11;
     return this.peers.length > maxDisplay ? this.peers.length - maxDisplay : 0;
+  }
+
+  getSafeUrl(url: any) {
+    return this.externalService.getSafeUrl(url);
   }
 
   showJoinNotification(userName: string) {
@@ -440,7 +498,8 @@ private confirmResolve: ((result: boolean) => void) | null = null;
   }
 
   private _sendSummaryMail() {
-    this.roomHubService.sendCallSummaryMail(this.roomId, this.callSummaryText)
+    this.roomHubService
+      .sendCallSummaryMail(this.roomId, this.callSummaryText)
       .subscribe({
         next: () => {
           this.showResultModal('Đã gửi mail cho người tham gia.');
@@ -448,7 +507,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
         error: (err) => {
           console.error('Gửi mail thất bại', err);
           this.showResultModal('Gửi mail thất bại, vui lòng thử lại.');
-        }
+        },
       });
   }
 
@@ -468,9 +527,6 @@ private confirmResolve: ((result: boolean) => void) | null = null;
   confirmSendMail() {
     this.confirmSendMailVisible = true;
   }
-
-
-
 
   summarizeCall() {
     this.roomHubService.summarizeSubtitles(this.roomId);
@@ -628,7 +684,6 @@ private confirmResolve: ((result: boolean) => void) | null = null;
       console.error('Lỗi khi kết thúc cuộc thăm dò:', err);
     }
   }
-
 
   onEmotionSent(event: {
     type: string;
@@ -809,7 +864,7 @@ private confirmResolve: ((result: boolean) => void) | null = null;
   async showConfirm(message: string): Promise<boolean> {
     // Make sure any previous modal is fully closed
     this.showConfirmModal = false;
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     // Now show the new modal
     this.confirmMessage = message;
@@ -833,5 +888,4 @@ private confirmResolve: ((result: boolean) => void) | null = null;
     }
     this.cdr.detectChanges();
   }
-
 }

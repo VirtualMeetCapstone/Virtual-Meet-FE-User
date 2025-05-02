@@ -668,6 +668,7 @@ export class RoomHubService {
       }
     );
   }
+  public videoStatusMap$ = new BehaviorSubject<{ [userId: string]: boolean }>({});
 
   public receiveVideoStatusUpdate(
     callback: (userId: string, isVideoOn: boolean) => void
@@ -682,10 +683,16 @@ export class RoomHubService {
             isVideoOn ? 'ON' : 'OFF'
           }`
         );
+
+        // Cập nhật trạng thái video trong danh sách
+        const updatedMap = { ...this.videoStatusMap$.value, [this.currentUser.name]: this._videoEnabled };
+        this.videoStatusMap$.next(updatedMap);
+        // Gọi callback để cập nhật UI
         callback(userId, isVideoOn);
       }
     );
   }
+
 
   public receiveConnectionID(callback: (connect: string) => void): void {
     this.hubConnection.off('ConnectionId');
