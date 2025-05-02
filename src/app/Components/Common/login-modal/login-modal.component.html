@@ -1,28 +1,22 @@
 <div class="modal" *ngIf="isShowLoginDialog">
   <div class="modal-content">
     <div class="title">
-      <h2 class="login-title" style="text-align: center">
-        Log in to Virtual Meet
-      </h2>
+      <h2 class="login-title">Log in to Virtual Meet</h2>
       <i class="fa-solid fa-x iconX" (click)="onClickLoginDialog()"></i>
     </div>
 
-    <button class="login-button">
-      <i class="fas fa-qrcode"></i> Use QR code
-    </button>
-
     <asl-google-signin-button
       type="standard"
-      size="medium"
+      size="large"
       shape="rectangular"
       text="continue_with"
       theme="filled_black"
-      logo_alignment="center"
-      class="custom-google-button">
-    </asl-google-signin-button>
+      logo_alignment="left"
+      class="custom-google-button"
+    ></asl-google-signin-button>
 
-    <div class="login-footer">
+    <!-- <div class="login-footer">
       Don’t have an account? <a href="#">Sign up</a>
-    </div>
+    </div> -->
   </div>
 </div>
