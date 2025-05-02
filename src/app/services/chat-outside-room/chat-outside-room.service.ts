@@ -10,7 +10,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class ChatOutsideRoomService {
-  url = `${AppConstants.API_BASE_URL_HTTPS}/api/MessagesOutsideRoom`;
+  url = `https://localhost:7035/api/MessagesOutsideRoom`;
   private hubUrl = `${AppConstants.API_BASE_URL_HTTPS}/chatOutsideRoomHub`;
   user: any = null;
   private hubConnection!: signalR.HubConnection;
@@ -33,7 +33,7 @@ export class ChatOutsideRoomService {
   public userIsTyping$ = new BehaviorSubject<{
     user: string;
   } | null>(null);
-
+  public countMessageUnread$ = new BehaviorSubject<number>(0);
   private initConnection(): void {
     this.user = this.authService.getUser();
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -51,15 +51,32 @@ export class ChatOutsideRoomService {
       })
       .catch((err) => console.error('SignalR Connection Error:', err));
 
-    this.hubConnection.on('ReceivePrivateMessage', (user: string, message: string) => {
-      this.messageReceived$.next({ user, message });
-    });
+    this.hubConnection.on(
+      'ReceivePrivateMessage',
+      (user: string, message: string) => {
+        this.messageReceived$.next({ user, message });
+        this.updateUnreadMessagesCount(); // Cập nhật số lượng tin nhắn chưa đọc
+      }
+    );
 
     this.hubConnection.on('UserTyping', (user: string) => {
       this.userIsTyping$.next({ user });
     });
+    this.countUnread(this.user.id).subscribe((data) => {
+      this.countMessageUnread$.next(data);
+    });
+  }
+  countUnread(Userid: string) {
+    return this.http.get<number>(`${this.url}/GetQuantityNotRead/${Userid}`);
   }
 
+  updateUnreadMessagesCount(): void {
+    if (this.user?.id) {
+      this.countUnread(this.user.id).subscribe((count: number) => {
+        this.countMessageUnread$.next(count); // Cập nhật giá trị mới
+      });
+    }
+  }
   getChatHistory(Userid: any) {
     return this.http.get<any>(`${this.url}/chat-history/${Userid}`);
   }
@@ -82,7 +99,12 @@ export class ChatOutsideRoomService {
     return this.http.post<any>(`${this.url}/send`, data).pipe(
       tap(() => {
         this.hubConnection
-          .invoke('SendPrivateMessage', data.senderId, data.receiverId, data.content)
+          .invoke(
+            'SendPrivateMessage',
+            data.senderId,
+            data.receiverId,
+            data.content
+          )
           .catch((err) => console.error('SendMessage Error:', err));
       })
     );

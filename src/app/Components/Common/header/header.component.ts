@@ -27,6 +27,7 @@ import { LogoServiceService } from '../../../services/logo-service/logo-service.
 import { Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ChatOutsideRoomComponent } from '../../chat-outside-room/chat-outside-room.component';
+import { ChatOutsideRoomService } from '../../../services/chat-outside-room/chat-outside-room.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -58,7 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private destroy$ = new Subject<void>();
   private storiesData: Story[] = [];
-
+  countUnreadMessages: number = 0;
   notifications: Notification[] = [];
 
   @ViewChild(HomePageRoomComponent, { static: false })
@@ -90,6 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private translate: TranslateService,
     private logoService: LogoServiceService,
     private overlay: Overlay,
+    private chatOutsideRoomService: ChatOutsideRoomService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -131,6 +133,13 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       const userId = this.authService.getUser()?.id;
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
+          this.chatOutsideRoomService.countMessageUnread$.subscribe(
+            (count: number) => {
+              this.countUnreadMessages = count;
+              console.log(this.countUnreadMessages); // Cập nhật số lượng tin nhắn chưa đọc
+              this.cdr.markForCheck(); // Đảm bảo giao diện được cập nhật
+            }
+          );
           this.user = user;
           this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
           this.cdr.markForCheck();

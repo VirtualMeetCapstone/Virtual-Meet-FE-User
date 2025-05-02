@@ -1,6 +1,9 @@
 <div class="chat-app">
   <!-- Sidebar -->
   <div class="sidebar">
+    <div class="sidebar-icon">
+      <i class="fa-solid fa-house" [routerLink]="['/']"></i>
+    </div>
     <div
       class="sidebar-icon"
       [class.active]="activeView === 'contacts'"
@@ -8,9 +11,7 @@
     >
       <i class="fas fa-comment-dots"></i>
     </div>
-    <div class="sidebar-icon">
-      <i class="fas fa-users"></i>
-    </div>
+
     <div class="sidebar-icon">
       <i class="fas fa-phone"></i>
     </div>
