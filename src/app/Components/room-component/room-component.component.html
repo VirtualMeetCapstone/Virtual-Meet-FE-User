@@ -15,7 +15,7 @@
     [ngClass]="{ collapsed: isYouTubeActive }"
     [ngClass]="getVideoGridClass()"
   >
-  <div *ngFor="let peer of peers; trackBy: trackByPeerId" class="video-box">
+  <div *ngFor="let peer of peers; trackBy: trackByPeerId" class="video-box"  [ngStyle]="{'background-color': getBoxColor(peer.peerId)}">
     <video
     *ngIf="(videoStatusMap$ | async)?.[peer.peerId]; else avatarTemplate"
     [srcObject]="peer.stream"
