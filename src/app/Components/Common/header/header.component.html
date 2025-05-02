@@ -8,20 +8,17 @@
     </div>
 
     <!-- Navigation and Search -->
-
-
-      <div class="nav-links" style="display: flex; justify-content: space-between;  gap: 1rem;">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/posts" class="nav-link">Posts</a>
-        <a href="/about-us" class="nav-link">About Us</a>
-
-        <!-- <a href="/explore" class="nav-link">Explore</a> -->
-      </div>
-      <div class="search-container">
-        <app-search></app-search>
-      </div>
-
-
+    <div
+      class="nav-links"
+      style="display: flex; justify-content: space-between; gap: 2rem"
+    >
+      <a href="/" class="nav-link">Home</a>
+      <a href="/posts" class="nav-link">Posts</a>
+      <a href="/about-us" class="nav-link">About Us</a>
+    </div>
+    <div class="search-container">
+      <app-search></app-search>
+    </div>
 
     <!-- User Area -->
     <div class="user-section">
@@ -40,33 +37,64 @@
 
           <!-- Notifications -->
           <div class="notification-icon">
-            <div class="notification-bell" [ngClass]="isShowNotification ? 'onNotification' : 'offNotification'">
-              <i class="fa-solid fa-bell" id="notification-bell" (click)="onClickNotification()"></i>
+            <div
+              class="notification-bell"
+              [ngClass]="
+                isShowNotification ? 'onNotification' : 'offNotification'
+              "
+            >
+              <i
+                class="fa-solid fa-bell"
+                id="notification-bell"
+                (click)="onClickNotification()"
+              ></i>
               <span class="notification-badge">
                 {{ totalNotification }}
               </span>
             </div>
 
-            <div class="notification-dropdown" #scrollContainer *ngIf="isShowNotification">
+            <div
+              class="notification-dropdown"
+              #scrollContainer
+              *ngIf="isShowNotification"
+            >
               <h4 class="notification-dropdown-title">
                 {{ "header.NOTIFICATIONS.TITLE" | translate }}
               </h4>
               <div class="notification-list">
-                <div class="notification-item" *ngFor="let notification of notifications">
-                  <img class="notification-avatar" alt="User avatar" [src]="notification.actor.picture.url" loading="lazy" />
+                <div
+                  class="notification-item"
+                  *ngFor="let notification of notifications"
+                >
+                  <img
+                    class="notification-avatar"
+                    alt="User avatar"
+                    [src]="notification.actor.picture.url"
+                    loading="lazy"
+                  />
                   <div class="notification-content">
                     <p (click)="getNotification(notification)">
-                      <strong>{{ notification.actor.name }}</strong> {{ notification.content }}.
+                      <strong>{{ notification.actor.name }}</strong>
+                      {{ notification.content }}.
                     </p>
                     <p class="notification-time"></p>
-                    <p class="notification-action" *ngIf="!notification.isRead" (click)="markAsRead(notification.id)">
+                    <p
+                      class="notification-action"
+                      *ngIf="!notification.isRead"
+                      (click)="markAsRead(notification.id)"
+                    >
                       {{ "header.NOTIFICATIONS.MARK_AS_READ" | translate }}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div infiniteScroll [infiniteScrollContainer]="scrollContainer" (scrolled)="loadMoreNotification()" [infiniteScrollThrottle]="300">
+              <div
+                infiniteScroll
+                [infiniteScrollContainer]="scrollContainer"
+                (scrolled)="loadMoreNotification()"
+                [infiniteScrollThrottle]="300"
+              >
                 <div class="notification-loading" *ngIf="loading">
                   {{ "header.NOTIFICATIONS.LOAD_MORE" | translate }}
                 </div>
@@ -76,44 +104,86 @@
               </div>
 
               <div class="notification-footer">
-                <a href="/all-notification">{{ "header.NOTIFICATIONS.VIEW_ALL" | translate }}</a>
-                <a href="#">{{ "header.NOTIFICATIONS.MARK_AS_READ" | translate }}</a>
-                <a href="#">{{ "header.NOTIFICATIONS.SETTINGS" | translate }}</a>
+                <a href="/all-notification">{{
+                  "header.NOTIFICATIONS.VIEW_ALL" | translate
+                }}</a>
+                <a href="#">{{
+                  "header.NOTIFICATIONS.MARK_AS_READ" | translate
+                }}</a>
+                <a href="#">{{
+                  "header.NOTIFICATIONS.SETTINGS" | translate
+                }}</a>
               </div>
             </div>
           </div>
 
           <!-- User Profile -->
-          <div class="user-profile" (click)="toggleUserMenu(); $event.stopPropagation()">
+          <div
+            class="user-profile"
+            (click)="toggleUserMenu(); $event.stopPropagation()"
+          >
             <div class="user-avatar-container">
-              <div *ngIf="isLoadingUser" class="spinner-border text-light" role="status">
+              <div
+                *ngIf="isLoadingUser"
+                class="spinner-border text-light"
+                role="status"
+              >
                 <span class="visually-hidden">Loading...</span>
               </div>
-              <img *ngIf="!isLoadingUser; else defaultAvatar" [src]="getSafeUrl(user?.picture?.url)" alt="User Avatar" class="user-avatar" loading="lazy" />
+              <img
+                *ngIf="!isLoadingUser; else defaultAvatar"
+                [src]="getSafeUrl(user?.picture?.url)"
+                alt="User Avatar"
+                class="user-avatar"
+                loading="lazy"
+              />
               <ng-template #defaultAvatar>
                 <i class="fa-solid fa-user-circle"></i>
               </ng-template>
             </div>
 
-            <div *ngIf="isShowUserMenu" class="user-dropdown" style="background-color: #333;">
-              <a href="#" (click)="editProfile(); $event.preventDefault(); $event.stopPropagation()">My Profile</a>
-              <a href="/manageQuiz" (click)="$event.stopPropagation()">Manage Quiz</a>
+            <div
+              *ngIf="isShowUserMenu"
+              class="user-dropdown"
+              style="background-color: #333"
+            >
+              <a
+                href="#"
+                (click)="
+                  editProfile();
+                  $event.preventDefault();
+                  $event.stopPropagation()
+                "
+                >My Profile</a
+              >
+              <a href="/manageQuiz" (click)="$event.stopPropagation()"
+                >Manage Quiz</a
+              >
               <a href="/up-vip" (click)="$event.stopPropagation()">Up VIP</a>
-              <a href="/vip-history" (click)="$event.stopPropagation()">Lịch sử VIP</a>
-              <a href="#" (click)="logout(); $event.stopPropagation()">Logout</a>
+              <a href="/vip-history" (click)="$event.stopPropagation()"
+                >Lịch sử VIP</a
+              >
+              <a href="#" (click)="logout(); $event.stopPropagation()"
+                >Logout</a
+              >
             </div>
           </div>
 
           <!-- More Options -->
           <div class="more-options">
-            <i class="fa-solid fa-ellipsis-vertical" (click)="onClickDropdown(); $event.stopPropagation()"></i>
+            <i
+              class="fa-solid fa-ellipsis-vertical"
+              (click)="onClickDropdown(); $event.stopPropagation()"
+            ></i>
             <div class="options-dropdown" *ngIf="isShowDropdown">
-
               <a href="#" (click)="toggleLanguage($event)">
-                <i class="fas fa-language"></i> {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
+                <i class="fas fa-language"></i>
+                {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
               </a>
-
-              <a href="#"><i class="fas fa-moon"></i> {{ "header.DARK_MODE" | translate }}</a>
+              <a href="#"
+                ><i class="fas fa-moon"></i>
+                {{ "header.DARK_MODE" | translate }}</a
+              >
             </div>
           </div>
         </div>
@@ -121,19 +191,42 @@
 
       <ng-template #showLogin>
         <!-- Not logged in: Show Login button -->
-        <div class="auth-buttons">
-          <button class="login-btn" (click)="onClickLoginDialog()">Login</button>
+        <div
+          aria-label="User Login Button"
+          tabindex="0"
+          role="button"
+          class="login-button-container"
+          (click)="onClickLoginDialog()"
+        >
+          <div class="login-button-inner">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g data-name="Layer 2" id="Layer_2">
+                <path
+                  d="m15.626 11.769a6 6 0 1 0 -7.252 0 9.008 9.008 0 0 0 -5.374 8.231 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 9.008 9.008 0 0 0 -5.374-8.231zm-7.626-4.769a4 4 0 1 1 4 4 4 4 0 0 1 -4-4zm10 14h-12a1 1 0 0 1 -1-1 7 7 0 0 1 14 0 1 1 0 0 1 -1 1z"
+                ></path>
+              </g>
+            </svg>
+            <p>Log In</p>
+          </div>
         </div>
       </ng-template>
     </div>
-
   </div>
 
   <!-- Modals -->
-  <app-modal-add-edit-room *ngIf="showModalAddRoom" (closeModal)="closeModalAddRoom($event)"
-    [userId]="userId"></app-modal-add-edit-room>
-  <app-login-modal [isShowLoginDialog]="isShowLoginDialog"
-    (openLoginDialog)="isShowLoginDialog = $event"></app-login-modal>
+  <app-modal-add-edit-room
+    *ngIf="showModalAddRoom"
+    (closeModal)="closeModalAddRoom($event)"
+    [userId]="userId"
+  ></app-modal-add-edit-room>
+  <app-login-modal
+    [isShowLoginDialog]="isShowLoginDialog"
+    (openLoginDialog)="isShowLoginDialog = $event"
+  ></app-login-modal>
 </div>
 <div *ngIf="isLoading" class="loading-overlay">
   <div class="loader">

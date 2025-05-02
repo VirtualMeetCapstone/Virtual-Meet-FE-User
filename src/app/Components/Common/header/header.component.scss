@@ -25,7 +25,7 @@
 }
 
 .logo-full {
-  height: 40px;
+  height: 70px;
   width: auto;
   transition: transform 0.3s ease;
 }
@@ -87,26 +87,6 @@
 /* User Section */
 .user-section {
   flex: 0 0 auto;
-}
-
-.auth-buttons {
-  display: flex;
-  gap: 15px;
-}
-
-.login-btn {
-  background-color: #ff3b3b;
-  color: #fff;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.login-btn:hover {
-  background-color: #e03535;
 }
 
 .user-controls {
@@ -352,6 +332,54 @@
   background-color: #444;
 }
 
+/* New Login Button Styles */
+.login-button-container {
+  width: 131px;
+  height: 51px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: linear-gradient(
+    to bottom right,
+    #2e8eff 0%,
+    rgba(46, 142, 255, 0) 30%
+  );
+  background-color: rgba(46, 142, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-button-container:hover,
+.login-button-container:focus {
+  background-color: rgba(46, 142, 255, 0.7);
+  box-shadow: 0 0 10px rgba(46, 142, 255, 0.5);
+  outline: none;
+}
+
+.login-button-inner {
+  width: 127px;
+  height: 47px;
+  border-radius: 13px;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  gap: 0.5rem;
+}
+
+.login-button-inner svg {
+  width: 27px;
+  height: 27px;
+  fill: #fff;
+}
+
+.login-button-inner p {
+  margin: 0;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 992px) {
   .header-content {
@@ -422,20 +450,20 @@
     right: -50px;
   }
 }
+
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 1); /* Nền mờ để che nội dung bên dưới */
+  background: rgba(0, 0, 0, 1);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Đảm bảo overlay nằm trên tất cả các thành phần khác */
+  z-index: 9999;
 }
 
-/* Kiểu cho loader */
 .loader {
   display: flex;
   align-items: center;
