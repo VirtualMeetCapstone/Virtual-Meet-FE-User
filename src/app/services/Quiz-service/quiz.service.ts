@@ -10,11 +10,6 @@ import { AppConstants } from '../../constant/AppConstants';
 export class QuizService {
   private url = `${AppConstants.API_BASE_URL_HTTPS}`;
 
-  public rooms = [
-    { id: 'room1', name: 'General Knowledge', players: 0 },
-    { id: 'room2', name: 'Science & Technology', players: 0 },
-    { id: 'room3', name: 'History & Geography', players: 0 },
-  ];
   private hubConnection!: signalR.HubConnection;
   public quizStarted$ = new Subject<void>();
   public playerJoined$ = new Subject<void>();

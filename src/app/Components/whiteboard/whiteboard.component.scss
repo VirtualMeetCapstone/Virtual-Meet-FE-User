@@ -1,0 +1,182 @@
+/* Default styles (Desktop-first) */
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal container */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 800px;
+  height: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Modal header */
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #ffcccc;
+}
+
+/* Modal body */
+.modal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Canvas */
+canvas {
+  display: block;
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  height: auto; /* Tự động điều chỉnh chiều cao theo tỷ lệ */
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  cursor: crosshair;
+  flex: none; /* Không ép canvas co giãn theo flex */
+}
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.toolbar input[type="color"] {
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.toolbar input[type="range"] {
+  flex: 1;
+  cursor: pointer;
+}
+
+.toolbar button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toolbar button:hover {
+  background-color: #0056b3;
+}
+button.active {
+  background-color: red !important;
+  color: white;
+}
+/* Open modal button */
+.open-modal-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.open-modal-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+/* Responsive styles */
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+    height: 95%;
+    max-width: none;
+    max-height: none;
+    border-radius: 4px;
+  }
+
+  .toolbar {
+    flex-wrap: wrap; /* Các nút xuống dòng nếu không đủ chỗ */
+    gap: 5px;
+  }
+
+  .toolbar button,
+  .toolbar input[type="color"],
+  .toolbar input[type="range"] {
+    flex: none;
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+  }
+}
+
+/* Mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .modal {
+    width: 100%;
+    height: 100%;
+    border-radius: 0; /* Loại bỏ bo góc */
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .toolbar {
+    flex-direction: column; /* Đặt các nút theo cột */
+    gap: 5px;
+  }
+
+  .toolbar button,
+  .toolbar input[type="color"],
+  .toolbar input[type="range"] {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+  }
+
+  canvas {
+    border: none; /* Loại bỏ viền trên màn hình nhỏ */
+  }
+}

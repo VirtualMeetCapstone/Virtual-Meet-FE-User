@@ -21,35 +21,35 @@ export class QuizComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private quizServices: QuizService,
-@Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnInit(): void {
-     if (isPlatformBrowser(this.platformId)) {
-    this.state = 'not';
-    this.quizServices.startConnection(this.roomId);
-    this.authService.loggedIn$.subscribe((status: boolean) => {
-      if (status) {
-        this.user = this.authService.getUser();
+    if (isPlatformBrowser(this.platformId)) {
+      this.state = 'not';
+      this.quizServices.startConnection(this.roomId);
+      this.authService.loggedIn$.subscribe((status: boolean) => {
+        if (status) {
+          this.user = this.authService.getUser();
 
-        console.log('User ID:', this.user);
-      }
-    });
-    this.quizServices.quizUpdated$.subscribe((data) => {
-      this.topic = data.topic;
-      this.QuizSessionId = data.sessionQuizId;
-      this.quizServices
-        .getSessionQuiz(this.QuizSessionId)
-        .subscribe((response) => {
-          this.questions = response.quizzes[0].quizzes;
-        });
-      if (!this.isHost) {
-        this.state = 'confirm'; // Chuyển sang trạng thái lobby khi có cập nhật quiz
-      }
-    });
-    this.quizServices.closeQuiz$.subscribe(() => {
-      this.closeModalForMember();
-    });
-  }
+          console.log('User ID:', this.user);
+        }
+      });
+      this.quizServices.quizUpdated$.subscribe((data) => {
+        this.topic = data.topic;
+        this.QuizSessionId = data.sessionQuizId;
+        this.quizServices
+          .getSessionQuiz(this.QuizSessionId)
+          .subscribe((response) => {
+            this.questions = response.quizzes[0].quizzes;
+          });
+        if (!this.isHost) {
+          this.state = 'confirm'; // Chuyển sang trạng thái lobby khi có cập nhật quiz
+        }
+      });
+      this.quizServices.closeQuiz$.subscribe(() => {
+        this.closeModalForMember();
+      });
+    }
   }
 
   // Chuyển sang trạng thái lobby

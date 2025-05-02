@@ -15,21 +15,28 @@
     [ngClass]="{ collapsed: isYouTubeActive }"
     [ngClass]="getVideoGridClass()"
   >
-  <div *ngFor="let peer of peers; trackBy: trackByPeerId" class="video-box"  [ngStyle]="{'background-color': getBoxColor(peer.peerId)}">
-    <video
-    *ngIf="(videoStatusMap$ | async)?.[peer.peerId]; else avatarTemplate"
-    [srcObject]="peer.stream"
-    autoplay
-    playsinline>
-  </video>
+    <div
+      *ngFor="let peer of peers; trackBy: trackByPeerId"
+      class="video-box"
+      [ngStyle]="{ 'background-color': getBoxColor(peer.peerId) }"
+    >
+      <video
+        *ngIf="(videoStatusMap$ | async)?.[peer.peerId]; else avatarTemplate"
+        [srcObject]="peer.stream"
+        autoplay
+        playsinline
+      ></video>
 
-  <!-- Template avatar khi camera TẮT -->
-  <ng-template #avatarTemplate>
-    <div class="profile">
-      <img style="width: 100%; height: 100%;" [src]="getSafeUrl( peer.avatarUrl) || 'assets/default-avatar.jpg'" class="avatar" />
-    </div>
-  </ng-template>
-
+      <!-- Template avatar khi camera TẮT -->
+      <ng-template #avatarTemplate>
+        <div class="profile">
+          <img
+            style="width: 100%; height: 100%"
+            [src]="getSafeUrl(peer.avatarUrl) || 'assets/default-avatar.jpg'"
+            class="avatar"
+          />
+        </div>
+      </ng-template>
 
       <p class="user-name">{{ peer.userName }}</p>
       <div class="raise-hand-icon" *ngIf="raisedHands.includes(peer.userName)">
@@ -56,27 +63,27 @@
     </div>
 
     <!-- Local Video -->
-<!-- Local Video Box -->
-<div class="video-box red">
-  <p class="user-name">You</p>
+    <!-- Local Video Box -->
+    <div class="video-box red">
+      <p class="user-name">You</p>
 
-  <!-- Video khi camera BẬT -->
-  <video
-  #localVideo
-  [style.display]="isCameraOn ? 'block' : 'none'"
-  autoplay
-  playsinline
-  muted>
-</video>
+      <!-- Video khi camera BẬT -->
+      <video
+        #localVideo
+        [style.display]="isCameraOn ? 'block' : 'none'"
+        autoplay
+        playsinline
+        muted
+      ></video>
 
-<div class="profile" [style.display]="isCameraOn ? 'none' : 'flex'">
-  <img
-    style="width: 100%; height: 100%;"
-    [src]="getSafeUrl(user.photoUrl) || 'assets/default-avatar.jpg'"
-    class="avatar"
-  />
-</div>
-</div>
+      <div class="profile" [style.display]="isCameraOn ? 'none' : 'flex'">
+        <img
+          style="width: 100%; height: 100%"
+          [src]="getSafeUrl(user.photoUrl) || 'assets/default-avatar.jpg'"
+          class="avatar"
+        />
+      </div>
+    </div>
 
     <!-- Local Screen Share Preview -->
     <div class="video-box screen-share" *ngIf="isScreenSharing">
@@ -110,8 +117,8 @@
       <button class="activity-option" (click)="startYouTubeTogether()">
         YouTube Together
       </button>
-      <button class="activity-option" (click)="startWhiteboard()">
-        Whiteboard
+      <button class="activity-option">
+        <app-whiteboard [roomId]="roomId"></app-whiteboard>
       </button>
       <app-room-video-control
         (resolutionChanged)="onResolutionChanged($event)"
@@ -214,6 +221,7 @@
         <i class="fa-solid fa-poll"></i>
       </button>
       <app-quiz [roomId]="roomId" [isHost]="isHost"></app-quiz>
+      <app-whiteboard [roomId]="roomId"></app-whiteboard>
 
       <!-- Recording Button -->
       <button
