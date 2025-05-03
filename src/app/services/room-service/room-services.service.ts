@@ -103,10 +103,10 @@ export class RoomServicesService {
       body.password = password;
     }
     body.privacy = +isPrivacy;
-
-    return this.http.patch<any>(this.url + '/' + id, body, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    console.log(body);
+    // return this.http.patch<any>(this.url + '/' + id, body, {
+    //   headers: { 'Content-Type': 'application/json' },
+    // });
   }
   getRoomById(id: string): Observable<Room> {
     return this.http.get<Room>(`${this.url}/${id}`).pipe(

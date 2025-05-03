@@ -561,3 +561,75 @@ body {
   border: none;
   border-radius: 4px;
 }
+.blocked-list-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.blocked-list-button:hover {
+  background-color: #0056b3;
+}
+.modal-content {
+  background-color: #1e1e1e; /* Màu nền đen */
+  color: #ffffff; /* Màu chữ trắng */
+  padding: 20px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.blocked-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blocked-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #333333; /* Đường viền màu xám đậm */
+}
+
+.blocked-list li:last-child {
+  border-bottom: none; /* Loại bỏ đường viền cuối cùng */
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Khoảng cách giữa avatar và tên */
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Avatar hình tròn */
+  object-fit: cover;
+  border: 2px solid #444444; /* Viền avatar */
+}
+
+.blocked-list span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.unblock-btn {
+  background-color: #ff4d4d; /* Màu đỏ */
+  color: #ffffff; /* Màu chữ trắng */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.unblock-btn:hover {
+  background-color: #e60000; /* Màu đỏ đậm hơn khi hover */
+}
