@@ -159,19 +159,19 @@
                   $event.preventDefault();
                   $event.stopPropagation()
                 "
-                >My Profile</a
+                >{{ 'menu.my_profile' | translate }}</a
               >
-              <a [routerLink]="['/manageQuiz']">Manage Quiz</a>
+              <a [routerLink]="['/manageQuiz']">{{ 'menu.manage_quiz' | translate }}</a>
               <a [routerLink]="['/up-vip']" (click)="$event.stopPropagation()"
-                >Up VIP</a
+                >{{ 'menu.up_vip' | translate }}</a
               >
               <a
                 [routerLink]="['/vip-history']"
                 (click)="$event.stopPropagation()"
-                >Lịch sử VIP</a
+                >{{ 'menu.vip_history' | translate }}</a
               >
               <a href="#" (click)="logout(); $event.stopPropagation()"
-                >Logout</a
+                >{{ 'menu.logout' | translate }}</a
               >
             </div>
           </div>
@@ -180,19 +180,25 @@
           <div class="more-options">
             <i
               class="fa-solid fa-ellipsis-vertical"
-              (click)="onClickDropdown(); $event.stopPropagation()"
+              (click)="onClickDropdown(); $event.preventDefault(); $event.stopPropagation()"
             ></i>
-            <div class="options-dropdown" *ngIf="isShowDropdown">
+
+            <div
+              class="options-dropdown"
+              *ngIf="isShowDropdown"
+              (click)="$event.stopPropagation()"
+            >
               <a href="#" (click)="toggleLanguage($event)">
                 <i class="fas fa-language"></i>
-                {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
+                {{ currentLanguage === 'en' ? '🇬🇧 English' : '🇻🇳 Tiếng Việt' }}
               </a>
-              <a href="#"
-                ><i class="fas fa-moon"></i>
-                {{ "header.DARK_MODE" | translate }}</a
-              >
+              <a href="#">
+                <i class="fas fa-moon"></i>
+                {{ 'header.DARK_MODE' | translate }}
+              </a>
             </div>
           </div>
+
         </div>
       </ng-container>
 

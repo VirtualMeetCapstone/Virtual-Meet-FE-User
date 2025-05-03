@@ -28,20 +28,17 @@
         <div class="profile-actions">
           <!-- Nếu là profile của người dùng đang đăng nhập -->
           <ng-container *ngIf="isOwnProfile; else followBtn">
-            <button class="edit-profile-button" (click)="openEditProfile()">
-              Sửa hồ sơ
+            <button class="edit-profile-button" (click)="openEditProfile()">{{ 'profile.edit_profile' | translate }}
             </button>
             <button
               class="promote-post-button"
               (click)="openCreateProfileStory()"
-            >
-              Tạo tin mới
+            >{{ 'profile.create_story' | translate }}
             </button>
             <button
               class="promote-post-button"
               (click)="openBlockedListModal()"
-            >
-              Xem danh sách đã block
+            >{{ 'profile.view_blocked_list' | translate }}
             </button>
             <button
               class="settings-button"
@@ -77,9 +74,9 @@
     </div>
     <div class="profile-title">
       <div class="follow-info">
-        <span>{{ user.followingsCount }} Đang Follow</span>
-        <span>{{ user.followersCount }} Follower</span>
-        <span>{{ user.friendsCount }} Bạn Bè</span>
+        <span>{{ user.followingsCount }} {{ 'profile.following' | translate }}</span>
+        <span>{{ user.followersCount }} {{ 'profile.follower' | translate }}</span>
+        <span>{{ user.friendsCount }} {{ 'profile.friend' | translate }}</span>
       </div>
       <p class="profile-bio">{{ user.bio }}</p>
     </div>
