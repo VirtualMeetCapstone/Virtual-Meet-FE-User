@@ -3,7 +3,7 @@
 
   <div class="modal-container">
     <div class="modal-header">
-      <h3 class="modal-title">Enter Room Password</h3>
+      <h3 class="modal-title">{{ 'room_password.TITLE' | translate }}</h3>
       <button class="close-btn" (click)="onCloseModal()">
         <i class="fas fa-times"></i>
       </button>
@@ -11,7 +11,7 @@
 
     <div class="modal-body">
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">{{ 'room_password.LABEL' | translate }}</label>
         <input
           type="password"
           id="password"
@@ -21,15 +21,15 @@
           #passwordField="ngModel"
         />
         <div class="error-message" *ngIf="!password && passwordField.dirty">
-          <i class="fas fa-exclamation-circle"></i> Password is required
+          <i class="fas fa-exclamation-circle"></i> {{ 'room_password.REQUIRED' | translate }}
         </div>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="cancel-btn" (click)="onCloseModal()">Cancel</button>
+      <button class="cancel-btn" (click)="onCloseModal()">{{ 'room_password.CANCEL' | translate }}</button>
       <button class="join-btn" [disabled]="!password" (click)="joinRoom()">
-        Join Room
+        {{ 'room_password.JOIN' | translate }}
       </button>
     </div>
   </div>
