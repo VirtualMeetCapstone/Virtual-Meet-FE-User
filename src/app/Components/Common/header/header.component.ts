@@ -133,6 +133,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       const userId = this.authService.getUser()?.id;
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
+          this.chatOutsideRoomService.initConnection();
           this.chatOutsideRoomService.countMessageUnread$.subscribe(
             (count: number) => {
               this.countUnreadMessages = count;

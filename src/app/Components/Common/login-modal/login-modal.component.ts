@@ -40,6 +40,7 @@ export class LoginModalComponent implements OnInit {
         this.sendTokenToBackend(user.idToken);
         this.openLoginDialog.emit(false);
         this.customAuthService.updateLoginState(true);
+        window.location.reload();
       }
     });
   }
@@ -78,5 +79,4 @@ export class LoginModalComponent implements OnInit {
       this.openLoginDialog.emit(false);
     });
   }
-
 }

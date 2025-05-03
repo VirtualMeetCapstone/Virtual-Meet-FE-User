@@ -80,6 +80,7 @@ export class HomePageRoomComponent implements OnInit {
         this.loggedInUserId = '';
       }
     }
+    this.roomService.initConnection();
     this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
@@ -107,6 +108,9 @@ export class HomePageRoomComponent implements OnInit {
       }, 3000);
       this.skip = 0;
       this.rooms = [];
+      this.getRoom();
+    });
+    this.roomService.updateStatus$.subscribe((data) => {
       this.getRoom();
     });
     this.notificationService.roomDetail$.subscribe((roomId) => {

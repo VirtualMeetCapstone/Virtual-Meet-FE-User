@@ -1,7 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConstants } from '../../constant/AppConstants';
-import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  Subject,
+  tap,
+  throwError,
+} from 'rxjs';
+import * as signalR from '@microsoft/signalr';
+
 import { NotificationServiceService } from '../notification-service/notification-service.service';
 import { Room } from '../../models/room';
 import { Router } from '@angular/router';
@@ -9,7 +18,10 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class RoomServicesService {
+  public updateStatus$ = new BehaviorSubject<any>('');
   url = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
+  urlHub = 'https://localhost:7035/statusHub';
+  private hubConnection!: signalR.HubConnection;
 
   constructor(
     private http: HttpClient,
@@ -18,7 +30,27 @@ export class RoomServicesService {
   ) {}
   private refreshRoomSource = new Subject<void>();
   refreshRoom$ = this.refreshRoomSource.asObservable();
+  public initConnection(): void {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(this.urlHub, {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets,
+      })
+      .withAutomaticReconnect()
+      .build();
 
+    this.hubConnection
+      .start()
+      .then(() => {
+        console.log('SignalR Connected');
+      })
+      .catch((err) => {
+        console.error('SignalR Connection Error:', err);
+      });
+    this.hubConnection.on('Just updated status', (message: any) => {
+      this.updateStatus$.next(message);
+    });
+  }
   triggerRefresh() {
     this.refreshRoomSource.next();
   }
@@ -35,7 +67,13 @@ export class RoomServicesService {
   }
 
   deleteRoom(id: string): any {
-    return this.http.delete<any>(this.url + '/' + id);
+    return this.http.delete<any>(this.url + '/' + id).pipe(
+      tap(() => {
+        this.hubConnection.invoke('UpdateStatus').catch((err) => {
+          console.error('Error joining group:', err);
+        });
+      })
+    );
   }
   addRoom(room: any, iduser: any, password: string): any {
     const body: any = {
@@ -65,6 +103,9 @@ export class RoomServicesService {
       .pipe(
         tap(() => {
           this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+          this.hubConnection.invoke('UpdateStatus').catch((err) => {
+            console.error('Error joining group:', err);
+          });
         })
       );
   }
@@ -103,10 +144,18 @@ export class RoomServicesService {
       body.password = password;
     }
     body.privacy = +isPrivacy;
-    console.log(body);
-    // return this.http.patch<any>(this.url + '/' + id, body, {
-    //   headers: { 'Content-Type': 'application/json' },
-    // });
+
+    return this.http
+      .patch<any>(this.url + '/' + id, body, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .pipe(
+        tap(() => {
+          this.hubConnection.invoke('UpdateStatus').catch((err) => {
+            console.error('Error joining group:', err);
+          });
+        })
+      );
   }
   getRoomById(id: string): Observable<Room> {
     return this.http.get<Room>(`${this.url}/${id}`).pipe(

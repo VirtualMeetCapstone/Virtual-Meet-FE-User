@@ -19,11 +19,7 @@ export class ChatOutsideRoomService {
     private http: HttpClient,
     private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object // inject platformId
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.initConnection();
-    }
-  }
+  ) {}
 
   public messageReceived$ = new BehaviorSubject<{
     user: string;
@@ -34,7 +30,7 @@ export class ChatOutsideRoomService {
     user: string;
   } | null>(null);
   public countMessageUnread$ = new BehaviorSubject<number>(0);
-  private initConnection(): void {
+  public initConnection(): void {
     this.user = this.authService.getUser();
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.hubUrl)

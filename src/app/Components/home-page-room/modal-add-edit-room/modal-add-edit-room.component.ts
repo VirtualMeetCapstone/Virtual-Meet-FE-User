@@ -44,7 +44,7 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.isUpdate = false;
       this.FormAdd = new FormGroup({
         topic: new FormControl('', Validators.required),
-        description: new FormControl('', Validators.required),
+        description: new FormControl(''),
         maximumMember: new FormControl('', Validators.required),
       });
     } else {
