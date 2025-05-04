@@ -1,26 +1,26 @@
 <div class="upgrade-vip-container">
-  <h2>Nâng cấp tài khoản VIP</h2>
+  <h2>{{ "vip.TITLE" | translate }}</h2>
 
   <div class="user-summary">
     <img [src]="user.avatar" class="profile-avatar" alt="Avatar người dùng" />
     <p class="username">{{ user.username }}</p>
     <p>
-      Trạng thái VIP:
+      {{ "vip.STATUS" | translate }}:
       <span *ngIf="isVip(); else notVip" class="vip-status">⭐ VIP</span>
-      <ng-template #notVip><span>Thường</span></ng-template>
+      <ng-template #notVip><span>{{ "vip.NORMAL" | translate }}</span></ng-template>
     </p>
     <p *ngIf="isVip()">
-      Hết hạn: {{ user.expireAt | date : "dd-MM-yyyy HH:mm:ss" }}
+      {{ "vip.EXPIRE" | translate }}: {{ user.expireAt | date : "dd-MM-yyyy HH:mm:ss" }}
     </p>
   </div>
 
   <div class="vip-benefits">
-    <h3>Đặc quyền VIP</h3>
+    <h3>{{ "vip.BENEFITS_TITLE" | translate }}</h3>
     <ul>
-      <li>⭐ Truy cập độ phân giải cao (1080p, 4K)</li>
-      <li>⭐ Ưu tiên hỗ trợ khách hàng</li>
-      <li>⭐ Tăng giới hạn thành viên phòng họp</li>
-      <li>⭐ Không quảng cáo</li>
+      <li>{{ "vip.BENEFIT_HD" | translate }}</li>
+      <li>{{ "vip.BENEFIT_SUPPORT" | translate }}</li>
+      <li>{{ "vip.BENEFIT_MEMBER_LIMIT" | translate }}</li>
+      <li>{{ "vip.BENEFIT_NO_ADS" | translate }}</li>
     </ul>
   </div>
 
@@ -33,28 +33,27 @@
     >
       <h3>{{ pack.label }}</h3>
       <p class="price">{{ pack.price | currency : "VND" }}</p>
-      <p>Hiệu lực: {{ pack.duration }} ngày</p>
+      <p>{{ "vip.DURATION" | translate:{days: pack.duration} }}</p>
     </div>
   </div>
 
-  <!-- Nút xác nhận thanh toán -->
   <button
     class="btn-upgrade"
     [disabled]="!selectedPack || isLoading"
     (click)="createVipPayment()"
     *ngIf="!isVip()"
   >
-    Xác nhận nâng cấp
+    {{ "vip.CONFIRM" | translate }}
   </button>
 
-  <!-- Loading -->
   <app-loading-component *ngIf="isLoading"></app-loading-component>
 
-  <!-- Popup -->
   <div class="popup-overlay" *ngIf="showPopup">
     <div class="popup">
       <p [innerHTML]="paymentMessage"></p>
-      <button class="btn-close" (click)="closePopup()">Đóng</button>
+      <button class="btn-close" (click)="closePopup()">
+        {{ "vip.CLOSE" | translate }}
+      </button>
     </div>
   </div>
 </div>

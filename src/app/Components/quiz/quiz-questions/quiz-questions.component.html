@@ -1,56 +1,84 @@
 <div class="quiz-questions-container">
-  <h1>Quiz Management</h1>
-<!-- Nút Help -->
+  <h1>{{ "quiz_management.TITLE" | translate }}</h1>
 
-<!-- Help Popup -->
-<div class="help-popup" *ngIf="isHelpPopupOpen">
-  <div class="help-content" style="background: #333; color: white; padding: 20px; border-radius: 8px;">
-    <!-- Thêm ảnh ở đây -->
-    <img src="https://i.ibb.co/MxtLbQFy/anhUp.jpg" alt="Quiz Management Illustration" style="width: 100%; max-width: 400px; display: block; margin: 0 auto 20px auto; border-radius: 8px;"/>
+  <!-- Help Popup -->
+  <div class="help-popup" *ngIf="isHelpPopupOpen">
+    <div
+      class="help-content"
+      style="background: #333; color: white; padding: 20px; border-radius: 8px"
+    >
+      <img
+        src="https://i.ibb.co/MxtLbQFy/anhUp.jpg"
+        alt="Quiz Illustration"
+        style="
+          width: 100%;
+          max-width: 400px;
+          display: block;
+          margin: 0 auto 20px auto;
+          border-radius: 8px;
+        "
+      />
 
-    <h2>Hướng dẫn sử dụng Quiz Management</h2>
-    <div class="help-scrollable" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
-      <h3>📍 Mục đích sử dụng:</h3>
-      <p>Chức năng này cho phép quản lý các bộ câu hỏi (Quiz) dùng trong các phòng (Room)</p>
+      <h2>{{ "quiz_management.HELP_TITLE" | translate }}</h2>
+      <div
+        class="help-scrollable"
+        style="max-height: 400px; overflow-y: auto; padding-right: 10px"
+      >
+        <h3>{{ "quiz_management.HELP_PURPOSE_TITLE" | translate }}</h3>
+        <p>{{ "quiz_management.HELP_PURPOSE_DESC" | translate }}</p>
 
-      <h3>👤 Quyền hạn người dùng:</h3>
-      <ul>
-        <li>Tạo mới một Quiz với nhiều câu hỏi và lựa chọn.</li>
-        <li>Chỉnh sửa nội dung Quiz đã có.</li>
-        <li>Xóa các Quiz không còn cần thiết.</li>
-      </ul>
+        <h3>{{ "quiz_management.HELP_PERMISSIONS_TITLE" | translate }}</h3>
+        <ul>
+          <li
+            *ngFor="
+              let item of 'quiz_management.HELP_PERMISSIONS_LIST' | translate
+            "
+          >
+            {{ item }}
+          </li>
+        </ul>
 
-      <h3>🛠️ Cách sử dụng:</h3>
-      <ol>
-        <li>Nhấn nút <b>"Add Quiz"</b> để tạo bộ Quiz mới.</li>
-        <li>Điền <b>Topic</b> (chủ đề của Quiz).</li>
-        <li>Nhấn <b>"Add Question"</b> để thêm câu hỏi.</li>
-        <li>Nhập câu hỏi, thêm các lựa chọn, đánh dấu đáp án đúng.</li>
-        <li>Thiết lập số điểm cho mỗi câu hỏi.</li>
-        <li>Nhấn <b>"Add Quiz"</b> để lưu hoặc <b>"Update Quiz"</b> để cập nhật.</li>
-        <li>Dùng nút <b>"Edit"</b> để chỉnh sửa Quiz hoặc <b>"Delete"</b> để xóa.</li>
-      </ol>
+        <h3>{{ "quiz_management.HELP_USAGE_TITLE" | translate }}</h3>
+        <ol>
+          <li
+            *ngFor="let step of 'quiz_management.HELP_USAGE_STEPS' | translate"
+          >
+            {{ step }}
+          </li>
+        </ol>
 
-      <h3>ℹ️ Ghi chú thêm:</h3>
-      <p>- Nội dung Quiz sau khi lưu sẽ được sử dụng trong các Room tương ứng để người dùng tham gia trả lời câu hỏi.</p>
+        <h3>{{ "quiz_management.HELP_NOTE_TITLE" | translate }}</h3>
+        <p>{{ "quiz_management.HELP_NOTE_DESC" | translate }}</p>
+      </div>
+
+      <button type="button" (click)="closeHelpPopup()">
+        {{ "quiz_management.CLOSE" | translate }}
+      </button>
     </div>
-
-    <button type="button" (click)="closeHelpPopup()" style="margin-top: 15px;">Close</button>
   </div>
-</div>
 
+  <!-- Buttons -->
+  <div class="div_btn" style="display: flex; justify-content: space-around">
+    <button
+      type="button"
+      style="background: midnightblue"
+      (click)="startAddQuiz()"
+    >
+      {{ "quiz_management.FORM.ADD_QUIZ" | translate }}
+    </button>
+    <button
+      type="button"
+      style="background: darkorange"
+      (click)="openHelpPopup()"
+    >
+      {{ "quiz_management.HELP_BUTTON" | translate }}
+    </button>
+  </div>
 
-
-  <!-- Nút Add Quiz -->
-   <div class="div_btn" style="display: flex; justify-content: space-around;">
-    <button type="button" style="background: midnightblue;" (click)="startAddQuiz()">Add Quiz</button>
-    <button type="button" style="background: darkorange;" (click)="openHelpPopup()">Help</button>
-   </div>
-
-  <!-- Form -->
+  <!-- Quiz Form -->
   <form [formGroup]="quizForm" *ngIf="isEditing">
     <div>
-      <label for="topic">Topic</label>
+      <label for="topic">{{ "quiz_management.FORM.TOPIC" | translate }}</label>
       <input id="topic" formControlName="topic" type="text" />
     </div>
 
@@ -60,10 +88,12 @@
         [formGroupName]="i"
         class="question-item"
       >
-        <label for="text">Question {{ i + 1 }}</label>
-        <input id="text" formControlName="text" type="text" />
+        <label
+          >{{ "quiz_management.FORM.QUESTION" | translate }} {{ i + 1 }}</label
+        >
+        <input formControlName="text" type="text" />
 
-        <label>Options</label>
+        <label>{{ "quiz_management.FORM.OPTIONS" | translate }}</label>
         <div formArrayName="options">
           <div
             *ngFor="
@@ -75,53 +105,54 @@
             <input [formControlName]="j" type="text" />
             <div class="button-group">
               <button type="button" (click)="setCorrectOption(i, j + 1)">
-                Correct
+                {{ "quiz_management.CORRECT" | translate }}
               </button>
               <button type="button" (click)="removeOption(i, j)">X</button>
             </div>
           </div>
-          <button type="button" (click)="addOption(i)">Add Option</button>
+          <button type="button" (click)="addOption(i)">
+            {{ "quiz_management.FORM.ADD_OPTION" | translate }}
+          </button>
         </div>
 
-        <label for="correctAnswer">Correct Answer</label>
-        <input
-          id="correctAnswer"
-          formControlName="correctAnswer"
-          type="number"
-          readonly
-        />
+        <label>{{ "quiz_management.FORM.CORRECT_ANSWER" | translate }}</label>
+        <input formControlName="correctAnswer" type="number" readonly />
 
-        <label for="points">Points</label>
-        <input id="points" formControlName="points" type="number" />
+        <label>{{ "quiz_management.FORM.POINTS" | translate }}</label>
+        <input formControlName="points" type="number" />
 
         <button type="button" (click)="removeQuestion(i)">
-          Remove Question
+          {{ "quiz_management.FORM.REMOVE_QUESTION" | translate }}
         </button>
       </div>
     </div>
 
-    <button type="button" (click)="addQuestion()">Add Question</button>
+    <button type="button" (click)="addQuestion()">
+      {{ "quiz_management.FORM.ADD_QUESTION" | translate }}
+    </button>
 
-    <!-- Nút Save Quiz -->
     <button type="button" *ngIf="!selectedQuiz" (click)="addQuiz()">
-      Add Quiz
+      {{ "quiz_management.FORM.ADD_QUIZ" | translate }}
     </button>
-
-    <!-- Nút Update Quiz -->
     <button type="button" *ngIf="selectedQuiz" (click)="updateQuiz()">
-      Update Quiz
+      {{ "quiz_management.FORM.UPDATE_QUIZ" | translate }}
     </button>
-
-    <button type="button" (click)="cancelEdit()">Cancel</button>
+    <button type="button" (click)="cancelEdit()">
+      {{ "quiz_management.FORM.CANCEL" | translate }}
+    </button>
   </form>
 
   <!-- Quiz List -->
   <div class="quiz-list">
-    <h2>Quiz List</h2>
+    <h2>{{ "quiz_management.LIST_TITLE" | translate }}</h2>
     <div *ngFor="let quiz of quizzes" class="quiz-item">
       <h3>{{ quiz.topic }}</h3>
-      <button (click)="editQuiz(quiz)">Edit</button>
-      <button (click)="deleteQuiz(quiz.quizId)">Delete</button>
+      <button (click)="editQuiz(quiz)">
+        {{ "quiz_management.EDIT" | translate }}
+      </button>
+      <button (click)="deleteQuiz(quiz.quizId)">
+        {{ "quiz_management.DELETE" | translate }}
+      </button>
     </div>
   </div>
 </div>
