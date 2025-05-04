@@ -3,7 +3,7 @@ name: Deploy Angular to Vercel
 on:
   push:
     branches:
-      - develop
+      - head_develop
 
 jobs:
   deploy:
