@@ -38,6 +38,12 @@
               Tạo tin mới
             </button>
             <button
+              class="promote-post-button"
+              (click)="openBlockedListModal()"
+            >
+              Xem danh sách đã block
+            </button>
+            <button
               class="settings-button"
               (click)="openGearButton(); $event.stopPropagation()"
             >
@@ -160,5 +166,34 @@
         Submit Report
       </button>
     </form>
+  </div>
+</div>
+<div class="modal-backdrop" *ngIf="showBlockedListModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Blocked list</h3>
+      <button class="close-btn" (click)="closeBlockedListModal()">
+        &times;
+      </button>
+    </div>
+    <div class="modal-content">
+      <ul class="blocked-list" *ngIf="blockedUsers.length > 0 && !loadingBlock">
+        <li *ngFor="let user of blockedUsers">
+          <div class="user-info">
+            <img [src]="user.avatar" alt="Avatar" class="user-avatar" />
+            <span>{{ user.name }}</span>
+          </div>
+          <button class="unblock-btn" (click)="blockUser(user.id)">
+            Bỏ chặn
+          </button>
+        </li>
+      </ul>
+      <div style="height: 100%" *ngIf="blockedUsers.length == 0">
+        No users in the list have been blocked !
+      </div>
+      <div *ngIf="loadingBlock" class="loading-container">
+        <app-loading-component></app-loading-component>
+      </div>
+    </div>
   </div>
 </div>

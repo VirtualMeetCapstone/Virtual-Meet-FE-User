@@ -50,63 +50,65 @@ export class ChatOutsideRoomComponent implements OnInit {
   ) {}
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-    this.checkScreenSize();
-    window.addEventListener('resize', () => this.checkScreenSize());
+      this.checkScreenSize();
+      window.addEventListener('resize', () => this.checkScreenSize());
 
-    if (this.authService.isLoggedIn()) {
-      this.user = this.authService.getUser();
-      this.userId = this.user.id;
-      this.authService
-        .getFullInformationOfUseById(this.userId)
-        .subscribe((user: any) => {
-          this.user = user;
-        });
-    }
-    this.chatService.getChatHistory(this.userId).subscribe((data) => {
-      this.contacts = data.map((contact: any) => ({
-        ...contact,
-        isTyping: false,
-      }));
-      console.log(this.contacts);
-    });
-    this.chatService.messageReceived$.subscribe((message) => {
-      this.showChat(this.reiceiverUser);
+      if (this.authService.isLoggedIn()) {
+        this.user = this.authService.getUser();
+        this.userId = this.user.id;
+        this.authService
+          .getFullInformationOfUseById(this.userId)
+          .subscribe((user: any) => {
+            this.user = user;
+          });
+      }
       this.chatService.getChatHistory(this.userId).subscribe((data) => {
         this.contacts = data.map((contact: any) => ({
           ...contact,
           isTyping: false,
         }));
+        console.log(this.contacts);
       });
-    });
-    this.chatService.userIsTyping$.subscribe((message) => {
-      if (message) {
-        const typingContact = this.contacts.find(
-          (c: any) => c.contactId === message.user
-        );
-        if (typingContact) {
-          typingContact.isTyping = true;
+      this.chatService.messageReceived$.subscribe((message) => {
+        if (this.reiceiverUser) {
+          this.showChat(this.reiceiverUser);
+        }
+        this.chatService.getChatHistory(this.userId).subscribe((data) => {
+          this.contacts = data.map((contact: any) => ({
+            ...contact,
+            isTyping: false,
+          }));
+        });
+      });
+      this.chatService.userIsTyping$.subscribe((message) => {
+        if (message) {
+          const typingContact = this.contacts.find(
+            (c: any) => c.contactId === message.user
+          );
+          if (typingContact) {
+            typingContact.isTyping = true;
 
-          setTimeout(() => {
-            typingContact.isTyping = false;
-            this.contacts = [...this.contacts];
-          }, 5000);
+            setTimeout(() => {
+              typingContact.isTyping = false;
+              this.contacts = [...this.contacts];
+            }, 5000);
+          }
+          if (
+            this.reiceiverUser &&
+            message.user == this.reiceiverUser.contactId
+          ) {
+            this.isTyping = true;
+            setTimeout(() => {
+              this.isTyping = false;
+            }, 5000);
+          }
         }
-        if (
-          this.reiceiverUser &&
-          message.user == this.reiceiverUser.contactId
-        ) {
-          this.isTyping = true;
-          setTimeout(() => {
-            this.isTyping = false;
-          }, 5000);
-        }
-      }
-    });
-    this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((searchTerm) => {
-        this.searchUser(searchTerm);
       });
+      this.searchSubject
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((searchTerm) => {
+          this.searchUser(searchTerm);
+        });
     }
   }
 
@@ -124,7 +126,7 @@ export class ChatOutsideRoomComponent implements OnInit {
 
   searchUser(searchTerm: string) {
     this.searchService.searchUserByName(searchTerm).subscribe((data: any) => {
-      this.listSearch = data;
+      this.listSearch = data.filter((user: any) => user.id !== this.userId);
     });
   }
   showChat(contact: any) {

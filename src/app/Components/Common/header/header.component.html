@@ -12,16 +12,19 @@
       class="nav-links"
       style="display: flex; justify-content: space-between; gap: 2rem"
     >
-    <a [routerLink]="['/']" class="nav-link">{{ 'header.HOME' | translate }}</a>
-    <a [routerLink]="['/posts']" class="nav-link">{{ 'header.POSTS' | translate }}</a>
-    <a
-      [routerLink]="['/about-us']"
-      [routerLinkActive]="'active'"
-      class="nav-link"
-    >
-      {{ 'header.ABOUT_US' | translate }}
-    </a>
-
+      <a [routerLink]="['/']" class="nav-link">{{
+        "header.HOME" | translate
+      }}</a>
+      <a [routerLink]="['/posts']" class="nav-link">{{
+        "header.POSTS" | translate
+      }}</a>
+      <a
+        [routerLink]="['/about-us']"
+        [routerLinkActive]="'active'"
+        class="nav-link"
+      >
+        {{ "header.ABOUT_US" | translate }}
+      </a>
     </div>
     <div class="search-container">
       <app-search></app-search>
@@ -34,8 +37,8 @@
         <div class="user-controls">
           <!-- Messages -->
           <div class="control-icon">
-            <i class="fa-solid fa-envelope fa-lg" [routerLink]="['/chat']"></i>
-            <!-- <span class="badge">{{ countUnreadMessages }}</span> -->
+            <a href="/chat"> <i class="fa-solid fa-envelope fa-lg"></i> </a>
+            <span class="badge">{{ countUnreadMessages }}</span>
           </div>
           <!-- Add Room -->
           <button class="add-room-btn" (click)="openModalAddRoom()">
@@ -161,20 +164,24 @@
                   $event.preventDefault();
                   $event.stopPropagation()
                 "
-                >{{ 'menu.my_profile' | translate }}</a
+                >{{ "menu.my_profile" | translate }}</a
               >
-              <a [routerLink]="['/manageQuiz']">{{ 'menu.manage_quiz' | translate }}</a>
-              <a [routerLink]="['/up-vip']" (click)="$event.stopPropagation()"
-                >{{ 'menu.up_vip' | translate }}</a
+              <a [routerLink]="['/manageQuiz']">{{
+                "menu.manage_quiz" | translate
+              }}</a>
+              <a
+                [routerLink]="['/up-vip']"
+                (click)="$event.stopPropagation()"
+                >{{ "menu.up_vip" | translate }}</a
               >
               <a
                 [routerLink]="['/vip-history']"
                 (click)="$event.stopPropagation()"
-                >{{ 'menu.vip_history' | translate }}</a
+                >{{ "menu.vip_history" | translate }}</a
               >
-              <a href="#" (click)="logout(); $event.stopPropagation()"
-                >{{ 'menu.logout' | translate }}</a
-              >
+              <a href="#" (click)="logout(); $event.stopPropagation()">{{
+                "menu.logout" | translate
+              }}</a>
             </div>
           </div>
 
@@ -182,7 +189,11 @@
           <div class="more-options">
             <i
               class="fa-solid fa-ellipsis-vertical"
-              (click)="onClickDropdown(); $event.preventDefault(); $event.stopPropagation()"
+              (click)="
+                onClickDropdown();
+                $event.preventDefault();
+                $event.stopPropagation()
+              "
             ></i>
 
             <div
@@ -192,15 +203,14 @@
             >
               <a href="#" (click)="toggleLanguage($event)">
                 <i class="fas fa-language"></i>
-                {{ currentLanguage === 'en' ? '🇬🇧 English' : '🇻🇳 Tiếng Việt' }}
+                {{ currentLanguage === "en" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt" }}
               </a>
               <a href="#">
                 <i class="fas fa-moon"></i>
-                {{ 'header.DARK_MODE' | translate }}
+                {{ "header.DARK_MODE" | translate }}
               </a>
             </div>
           </div>
-
         </div>
       </ng-container>
 

@@ -1,6 +1,9 @@
 <div class="chat-app">
   <!-- Sidebar -->
   <div class="sidebar">
+    <div class="sidebar-icon">
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+    </div>
     <div
       class="sidebar-icon"
       [class.active]="activeView === 'contacts'"
@@ -23,7 +26,7 @@
       <span class="online-status"></span>
     </div>
   </div>
- 
+
   <!-- Mobile Header -->
   <div class="mobile-header" *ngIf="isMobile && activeView === 'chat'">
     <button class="back-button" (click)="showContacts()">

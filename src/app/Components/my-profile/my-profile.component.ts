@@ -16,7 +16,7 @@ import { AppConstants } from '../../constant/AppConstants';
 import { FollowUserService } from '../../services/follow-user/follow-user.service';
 import { lastValueFrom } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import {ReportServiceService} from "../../services/report-service/report-service.service";
+import { ReportServiceService } from '../../services/report-service/report-service.service';
 
 interface Profile {
   name: string;
@@ -48,12 +48,13 @@ export class MyProfileComponent implements OnInit {
   // Xác định profile có phải của người dùng đăng nhập hay không
   isOwnProfile: boolean = false;
   loggedInUserId: string = '';
-
+  blockedUsers: any[] = []; // Danh sách người dùng đã block
+  loadingBlock: boolean = false;
   // Trạng thái follow của profile (nếu không phải của chính người dùng)
   isFollowing: boolean = false;
   isBlocked: boolean = false;
   isLoggedUseBlockedByUser: boolean = false;
-
+  showBlockedListModal: boolean = false; // Trạng thái hiển thị modal
   selectedTab = 0;
 
   // Lưu token lấy từ localStorage
@@ -80,7 +81,7 @@ export class MyProfileComponent implements OnInit {
       this.route.params.subscribe(async (params) => {
         this.userId = params['id'];
         this.isOwnProfile = this.userId === this.loggedInUserId;
-
+        this.loadBlockedUsers();
         const isBlocked = await this.checkIfBlockedByOther();
         if (isBlocked) {
           window.location.href = '/404';
@@ -236,7 +237,16 @@ export class MyProfileComponent implements OnInit {
       console.error('Error toggling follow status:', error);
     }
   }
-
+  blockUser(userId: string) {
+    this.followUserService.blockUser(userId, this.loggedInUserId).subscribe({
+      next: (response: any) => {
+        this.loadBlockedUsers();
+      },
+      error: (err: any) => {
+        console.error('Error blocking user:', err);
+      },
+    });
+  }
   setTab(index: number) {
     this.selectedTab = index;
   }
@@ -307,7 +317,6 @@ export class MyProfileComponent implements OnInit {
     this.reportReason = '';
   }
 
-
   reportOptions: string[] = [
     'Problem involving someone under 18',
     'Bullying, harassment or abuse',
@@ -316,7 +325,7 @@ export class MyProfileComponent implements OnInit {
     'Selling or promoting restricted items',
     'Adult content',
     'Scam, fraud or false information',
-    'Intellectual property'
+    'Intellectual property',
   ];
 
   selectedReportReason: string = '';
@@ -328,7 +337,10 @@ export class MyProfileComponent implements OnInit {
       return;
     }
 
-    let description = this.selectedReportReason === 'Other' ? this.selectedReportReason.trim() : this.selectedReportReason;
+    let description =
+      this.selectedReportReason === 'Other'
+        ? this.selectedReportReason.trim()
+        : this.selectedReportReason;
     if (this.selectedReportReason === 'Other' && !description) {
       alert('Vui lòng nhập mô tả');
       return;
@@ -338,7 +350,7 @@ export class MyProfileComponent implements OnInit {
       targetId: this.userId,
       reporterId: this.loggedInUserId,
       reportType: 0,
-      description: description
+      description: description,
     };
 
     this.reportService.sendReport(reportPayload).subscribe({
@@ -349,11 +361,29 @@ export class MyProfileComponent implements OnInit {
       error: (err) => {
         console.error(err);
         alert(err.error.message);
-      }
+      },
     });
     this.showReportModal = false;
   }
 
+  openBlockedListModal(): void {
+    this.showBlockedListModal = true;
+  }
 
-
+  closeBlockedListModal(): void {
+    this.showBlockedListModal = false;
+  }
+  loadBlockedUsers(): void {
+    this.loadingBlock = true;
+    this.followUserService
+      .viewListBlockedByUser(this.userId)
+      .subscribe((data: any) => {
+        this.blockedUsers = data.map((blockedUser: any) => ({
+          id: blockedUser.blockedByUserId,
+          name: blockedUser.name,
+          avatar: blockedUser.picture?.url,
+        }));
+        this.loadingBlock = false;
+      });
+  }
 }

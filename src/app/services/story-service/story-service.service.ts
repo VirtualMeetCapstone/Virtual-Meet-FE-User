@@ -8,13 +8,16 @@ import { catchError, tap, throwError } from 'rxjs';
 import { AppConstants } from '../../constant/AppConstants';
 import { Viewer } from '../../models/viewer';
 import { Reaction } from '../../models/reaction';
-import {NotificationServiceService} from "../notification-service/notification-service.service";
+import { NotificationServiceService } from '../notification-service/notification-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoryService {
-  constructor(private http: HttpClient, private notificationService: NotificationServiceService) {}
+  constructor(
+    private http: HttpClient,
+    private notificationService: NotificationServiceService
+  ) {}
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -38,15 +41,13 @@ export class StoryService {
 
   likeStory(userId: string, storyId: string): any {
     const reactionUrl = `${AppConstants.API_BASE_URL_HTTPS}/stories/${storyId}/reactions`;
-    return this.http.post<any>(
-      reactionUrl,
-      { userId: userId },
-      this.httpOptions
-    ).pipe(
-      tap(() => {
-        this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
-      })
-    );
+    return this.http
+      .post<any>(reactionUrl, { userId: userId }, this.httpOptions)
+      .pipe(
+        tap(() => {
+          this.notificationService.triggerNotificationUpdate(); // Gửi sự kiện cập nhật thông báo
+        })
+      );
   }
 
   viewStory(userId: string, storyId: string): any {
@@ -92,5 +93,10 @@ export class StoryService {
       return this.viewedStories.has(index);
     }
     return false;
+  }
+  countUnreadMessages(Userid: string) {
+    return this.http.get<number>(
+      `${AppConstants.API_BASE_URL_HTTPS}/api/MessagesOutsideRoom/GetQuantityNotRead/${Userid}`
+    );
   }
 }

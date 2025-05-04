@@ -55,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   isLoading = false;
   totalNotification: number | null = null;
+  countUnreadMessages: number = 0;
 
   private destroy$ = new Subject<void>();
   private storiesData: Story[] = [];
@@ -115,6 +116,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
           if (userId) {
             this.idNew = userId;
             this.user = await this.authService.getBackendUser(userId);
+
             if (!this.user.id) {
               this.user.id = this.idNew;
             }
@@ -132,6 +134,11 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       if (userId) {
         this.authService.getBackendUser(userId).then((user) => {
           this.user = user;
+          this.storyService.countUnreadMessages(userId).subscribe((res) => {
+            this.countUnreadMessages = res;
+            console.log('Count unread messages:', res);
+            this.cdr.markForCheck();
+          });
           this.isLoadingUser = !(this.user?.name && this.user?.picture?.url);
           this.cdr.markForCheck();
         });
