@@ -221,7 +221,6 @@
         <i class="fa-solid fa-poll"></i>
       </button>
       <app-quiz [roomId]="roomId" [isHost]="isHost"></app-quiz>
-      <app-whiteboard [roomId]="roomId"></app-whiteboard>
 
       <!-- Recording Button -->
       <button
@@ -245,19 +244,17 @@
       </button>
 
       <app-confirm-modal
-        [visible]="confirmModalVisible"
-        [message]="'VoiceText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?'"
-        (confirmed)="onConfirmSummarize($event)"
-      ></app-confirm-modal>
-    </div>
+      [visible]="confirmModalVisible"
+      [message]="'call.SUMMARIZE_CONFIRM' | translate"
+      (confirmed)="onConfirmSummarize($event)"
+    ></app-confirm-modal>
 
     <app-confirm-modal
       [visible]="confirmSendMailVisible"
-      [message]="
-        'Bạn có chắc chắn muốn gửi mail tổng kết cuộc gọi này cho tất cả thành viên không?'
-      "
+      [message]="'call.SENDMAIL_CONFIRM' | translate"
       (confirmed)="onConfirmSendMail($event)"
     ></app-confirm-modal>
+
 
     <app-confirm-modal
       [visible]="resultModalVisible"
@@ -291,11 +288,16 @@
   <!-- PopUp KickUser Modal -->
   <div class="popup-overlay" *ngIf="isKickPopupVisible">
     <div class="popup-container">
-      <h2>Bạn đã bị kick khỏi phòng</h2>
-      <p>Lý do: {{ kickReason }}</p>
-      <p>Bạn sẽ tự động rời phòng sau {{ countdown }} giây...</p>
+      <h2>{{ 'room.KICKED.TITLE' | translate }}</h2>
+      <p>{{ 'room.KICKED.REASON' | translate }}: {{ kickReason }}</p>
+      <p>
+        {{
+          'room.KICKED.REDIRECT_NOTICE' | translate:{ countdown: countdown }
+        }}
+      </p>
     </div>
   </div>
+
 
   <!-- Modal hiển thị tóm tắt -->
   <div *ngIf="showCallSummaryModal && isHost" class="call-summary-modal">
@@ -325,14 +327,11 @@
       </div>
       <div class="modal-body">
         <div class="recording-options">
-          <h3>What do you want to record?</h3>
+          <h3>{{ "recording.TITLE" | translate }}</h3>
           <p class="description">
-            {{
-              isScreenSharing
-                ? "You will record your currently shared screen"
-                : "You will record
-            your camera video"
-            }}
+            {{ isScreenSharing
+              ? ("recording.SCREEN_DESCRIPTION" | translate)
+              : ("recording.CAMERA_DESCRIPTION" | translate) }}
           </p>
 
           <div class="option-toggle">
@@ -340,19 +339,20 @@
               <input type="checkbox" [(ngModel)]="recordWithAudio" />
               <span class="slider round"></span>
             </label>
-            <span>Include audio in recording</span>
+            <span>{{ "recording.INCLUDE_AUDIO" | translate }}</span>
           </div>
+
           <p class="info-text" style="color: #888; font-size: 13px">
-            Note: Make sure to check "Also share system audio" in the screen
-            sharing popup.
+            {{ "recording.SCREEN_NOTE" | translate }}
           </p>
 
           <p class="info-text">
             <i class="fas fa-info-circle"></i>
-            Recording will be saved to your downloads folder when complete
+            {{ "recording.SAVE_NOTE" | translate }}
           </p>
         </div>
       </div>
+
       <div class="modal-footer">
         <button class="cancel-button" (click)="toggleRecordingModal()">
           Cancel

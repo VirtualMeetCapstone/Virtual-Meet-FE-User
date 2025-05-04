@@ -12,14 +12,16 @@
       class="nav-links"
       style="display: flex; justify-content: space-between; gap: 2rem"
     >
-      <a [routerLink]="['/']" class="nav-link">Home</a>
-      <a [routerLink]="['/posts']" class="nav-link">Posts</a>
-      <a
-        [routerLink]="['/about-us']"
-        [routerLinkActive]="'active'"
-        class="nav-link"
-        >About Us</a
-      >
+    <a [routerLink]="['/']" class="nav-link">{{ 'header.HOME' | translate }}</a>
+    <a [routerLink]="['/posts']" class="nav-link">{{ 'header.POSTS' | translate }}</a>
+    <a
+      [routerLink]="['/about-us']"
+      [routerLinkActive]="'active'"
+      class="nav-link"
+    >
+      {{ 'header.ABOUT_US' | translate }}
+    </a>
+
     </div>
     <div class="search-container">
       <app-search></app-search>

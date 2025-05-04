@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 export class RoomServicesService {
   public updateStatus$ = new BehaviorSubject<any>('');
   url = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
-  urlHub = 'https://localhost:7035/statusHub';
+  urlHub = `${AppConstants.API_BASE_URL_HTTPS}/statusHub`;
   private hubConnection!: signalR.HubConnection;
 
   constructor(

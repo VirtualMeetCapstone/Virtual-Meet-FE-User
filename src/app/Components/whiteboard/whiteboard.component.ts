@@ -8,6 +8,7 @@ import {
   Input,
 } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Component({
   selector: 'app-whiteboard',
@@ -50,7 +51,7 @@ export class WhiteboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.connection) return;
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7035/whiteboardhub', {
+      .withUrl(`${AppConstants.API_BASE_URL_HTTPS}/whiteboardhub`, {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
       })

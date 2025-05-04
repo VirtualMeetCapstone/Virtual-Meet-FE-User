@@ -11,7 +11,10 @@
       "NO_MORE_DATA": "Không còn dữ liệu để tải",
       "VIEW_ALL": "Xem tất cả",
       "SETTINGS": "Cài đặt"
-    }
+    },
+    "HOME": "Trang chủ",
+    "POSTS": "Bài viết",
+    "ABOUT_US": "Về chúng tôi"
   },
   "nav-bar": {
     "MENU": {
@@ -113,9 +116,43 @@
     "DURATION": "Hiệu lực: {{days}} ngày",
     "CONFIRM": "Xác nhận nâng cấp",
     "CLOSE": "Đóng"
+  },
+  "room": {
+    "KICKED": {
+      "TITLE": "Bạn đã bị kick khỏi phòng",
+      "REASON": "Lý do",
+      "REDIRECT_NOTICE": "Bạn sẽ tự động rời phòng sau {{countdown}} giây..."
+    }
+  },
+  "recording": {
+    "TITLE": "Bạn muốn ghi lại gì?",
+    "SCREEN_DESCRIPTION": "Bạn sẽ ghi lại màn hình đang chia sẻ",
+    "CAMERA_DESCRIPTION": "Bạn sẽ ghi lại video từ camera",
+    "INCLUDE_AUDIO": "Ghi âm thanh vào bản ghi",
+    "SCREEN_NOTE": "Lưu ý: Hãy chọn \"Chia sẻ cả âm thanh hệ thống\" trong cửa sổ chia sẻ màn hình.",
+    "SAVE_NOTE": "Bản ghi sẽ được lưu vào thư mục Tải xuống khi hoàn tất"
+  },
+  "call": {
+    "SUMMARIZE_CONFIRM": "VoiceText sẽ được gửi đi để AI tóm tắt, bạn có muốn không?",
+    "SENDMAIL_CONFIRM": "Bạn có chắc chắn muốn gửi mail tổng kết cuộc gọi này cho tất cả thành viên không?"
+  },
+  "team": {
+    "heading": "Gặp gỡ nhóm sáng tạo của chúng tôi",
+    "subHeading": "Chúng tôi là Virtual Meet, một nhóm dự án gồm 5 thành viên đến từ Đại học FPT. Với niềm đam mê công nghệ và mong muốn nâng cao trải nghiệm trực tuyến, nhóm của chúng tôi đã phát triển nền tảng họp trực tuyến nhằm cung cấp không gian linh hoạt và tương tác cho người dùng. Chúng tôi tin rằng, kết hợp giữa sáng tạo và chuyên môn kỹ thuật, Virtual Meet sẽ làm cho các cuộc họp và giao tiếp trực tuyến trở nên dễ dàng và hiệu quả hơn bao giờ hết."
+  },
+  "terms": {
+    "heading": "Điều khoản sử dụng",
+    "subHeading": "Khi sử dụng Virtual Meet, bạn đồng ý với các Điều khoản sử dụng này. Vui lòng đọc kỹ.",
+    "eligibility": "Bạn phải ít nhất 13 tuổi để sử dụng nền tảng này. Nếu dưới 18 tuổi, bạn phải có sự đồng ý của người giám hộ.",
+    "account": "Để truy cập các tính năng như tạo phòng, bài viết và theo dõi bạn bè, bạn cần tạo tài khoản. Bạn có trách nhiệm duy trì bảo mật tài khoản của mình.",
+    "content": "Bạn sở hữu nội dung bạn đăng tải, nhưng khi tải lên, bạn cấp phép cho chúng tôi sử dụng nó trên nền tảng. Vui lòng tránh đăng tải bất kỳ nội dung nào vi phạm pháp luật hoặc gây hại cho người khác.",
+    "prohibitedUses": "Bạn không thể sử dụng nền tảng cho các hoạt động bất hợp pháp, quấy rối hoặc chia sẻ nội dung có hại.",
+    "termination": "Chúng tôi có thể tạm dừng hoặc chấm dứt quyền truy cập của bạn nếu bạn vi phạm các Điều khoản này.",
+    "changes": "Chúng tôi có thể cập nhật các Điều khoản này. Kiểm tra thường xuyên để nhận thông báo về các bản cập nhật.",
+    "contact": "Để có câu hỏi, liên hệ với chúng tôi tại",
+    "email": "virtualmeetinggmail.com"
+  },
+  "donate": {
+    "heading": "Đóng góp để hỗ trợ chúng tôi!"
   }
-
-
-
-
 }
