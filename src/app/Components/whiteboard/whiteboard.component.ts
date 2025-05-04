@@ -50,7 +50,7 @@ export class WhiteboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.connection) return;
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7035/whiteboardhub', {
+      .withUrl('https://dev-vmeet2.runasp.net/whiteboardhub', {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
       })

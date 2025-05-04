@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class WhiteBoardService {
-  private url = `https://localhost:7035/`;
+  private url = `https://dev-vmeet2.runasp.net/`;
 
   constructor(private http: HttpClient) {}
   addAction(roomId: string, action: any) {

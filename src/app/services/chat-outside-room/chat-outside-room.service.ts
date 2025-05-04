@@ -10,7 +10,7 @@ import { AppConstants } from '../../constant/AppConstants';
   providedIn: 'root',
 })
 export class ChatOutsideRoomService {
-  url = `https://localhost:7035/api/MessagesOutsideRoom`;
+  url = `https://dev-vmeet2.runasp.net/api/MessagesOutsideRoom`;
   private hubUrl = `${AppConstants.API_BASE_URL_HTTPS}/chatOutsideRoomHub`;
   user: any = null;
   private hubConnection!: signalR.HubConnection;
