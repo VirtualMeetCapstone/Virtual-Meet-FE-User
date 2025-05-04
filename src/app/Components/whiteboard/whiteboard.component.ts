@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   Component,
   OnInit,
@@ -6,6 +7,8 @@ import {
   AfterViewInit,
   OnDestroy,
   Input,
+  Inject,
+  PLATFORM_ID,
 } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 
@@ -29,13 +32,18 @@ export class WhiteboardComponent implements OnInit, AfterViewInit, OnDestroy {
   color = '#000000';
   lineWidth = 5;
   isModalOpen = false;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    this.initializeSignalR();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeSignalR();
+    }
   }
 
   ngAfterViewInit(): void {
-    this.initializeCanvas();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeCanvas();
+    }
   }
 
   ngOnDestroy(): void {
@@ -50,7 +58,7 @@ export class WhiteboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.connection) return;
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7035/whiteboardhub', {
+      .withUrl('https://dev-vmeet2.runasp.net/whiteboardhub', {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
       })
