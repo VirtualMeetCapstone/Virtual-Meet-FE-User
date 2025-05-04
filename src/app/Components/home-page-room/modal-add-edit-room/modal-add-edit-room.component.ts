@@ -92,8 +92,8 @@ export class ModalAddEditRoomComponent implements OnInit {
   onUpdateRoom() {
     this.loading = true;
     const formValue = this.FormAdd.value;
-    formValue.mediaUpload =
-      this.imagePreview || this.roomToEdit?.medias?.[0]?.url;
+
+    formValue.mediaUpload = this.imagePreview;
 
     this.roomService
       .updateRoom(

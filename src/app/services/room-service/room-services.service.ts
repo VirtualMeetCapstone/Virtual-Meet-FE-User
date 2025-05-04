@@ -89,16 +89,16 @@ export class RoomServicesService {
       Topic: room.topic,
       Description: room.description,
       MaximumMembers: room.maximumMember,
-      Medias: room.mediaUpload
-        ? [
-            {
-              url: room.mediaUpload,
-              type: 0,
-              thumbnailUrl: '',
-            },
-          ]
-        : [],
     };
+    if (room.mediaUpload) {
+      body.Medias = [
+        {
+          url: room.mediaUpload,
+          type: 0,
+          thumbnailUrl: '',
+        },
+      ];
+    }
     if (password) {
       body.password = password;
     }
