@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   Component,
   OnInit,
@@ -6,6 +7,8 @@ import {
   AfterViewInit,
   OnDestroy,
   Input,
+  PLATFORM_ID,
+  Inject,
 } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 
@@ -29,13 +32,18 @@ export class WhiteboardComponent implements OnInit, AfterViewInit, OnDestroy {
   color = '#000000';
   lineWidth = 5;
   isModalOpen = false;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
     this.initializeSignalR();
+    }
   }
 
   ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
     this.initializeCanvas();
+    }
   }
 
   ngOnDestroy(): void {
