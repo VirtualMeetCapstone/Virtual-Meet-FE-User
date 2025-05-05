@@ -25,7 +25,7 @@ export class RtcHubService {
   private livekitRoom!: Room;
   private liveKitUrl = AppConstants.API_WSS_LIVE_KIT;
   private liveKitToken = '';
-  private maxMeshParticipants = 4;
+  private maxMeshParticipants = 0;
   private usingLiveKit = false;
 
   private originalVideoTrack: MediaStreamTrack | null = null;
@@ -52,28 +52,30 @@ export class RtcHubService {
   // Setup WebRTC-related SignalR events
   private setupRtcEvents(): void {
     const hubConnection = this.roomHubService.getConnection();
-    if (this.usingLiveKit) {
-      console.log('dung live kit');
-      return;
-    }
+    // if (this.usingLiveKit) {
+    //   console.log('dung live kit');
+    //   return;
+    // }
 
     hubConnection.on('ExistingPeers', (peerList: any[]) => {
       peerList.forEach((peer) => {
         this.createPeerConnection(peer.peerId, peer.userName, true);
-        hubConnection
-          .invoke('RequestStream', peer.peerId)
-          .catch((err) => console.error('❌ Error requesting stream:', err));
+        if (!this.usingLiveKit) {
+          hubConnection
+            .invoke('RequestStream', peer.peerId)
+            .catch((err) => console.error('❌ Error requesting stream:', err));
+        }
       });
       this.checkParticipantsAndSwitch();
     });
 
     hubConnection.on('NewPeer', (peerId: string, peerName: string) => {
-      if (this.usingLiveKit) return;
       this.createPeerConnection(peerId, peerName, false);
       this.checkParticipantsAndSwitch();
     });
 
     hubConnection.on('ReceiveStreamRequest', (requesterPeerId: string) => {
+      if (this.usingLiveKit) return;
       console.log(`📩 Nhận yêu cầu stream từ: ${requesterPeerId}`);
       this.sendStreamToPeer(requesterPeerId);
     });
@@ -81,6 +83,7 @@ export class RtcHubService {
     hubConnection.on(
       'ReceiveOffer',
       async (peerId: string, peerName: string, offer: string) => {
+        if (this.usingLiveKit) return;
         try {
           let peer =
             this.peers[peerId] ||
@@ -105,6 +108,7 @@ export class RtcHubService {
     hubConnection.on(
       'ReceiveAnswer',
       async (peerId: string, answer: string) => {
+        if (this.usingLiveKit) return;
         try {
           const peer = this.peers[peerId];
           if (peer?.connection) {
@@ -121,6 +125,7 @@ export class RtcHubService {
     hubConnection.on(
       'ReceiveCandidate',
       async (peerId: string, candidate: string) => {
+        if (this.usingLiveKit) return;
         try {
           const peer = this.peers[peerId];
           if (peer?.connection) {
@@ -135,10 +140,11 @@ export class RtcHubService {
     );
 
     hubConnection.on('PeerDisconnected', (peerId: string) => {
-      if (this.usingLiveKit) return;
       const peer = this.peers[peerId];
-      if (peer?.connection) {
-        peer.connection.close();
+      if (peer) {
+        if (peer.connection) {
+          peer.connection.close();
+        }
         delete this.peers[peerId];
         this.updatePeersSubject();
       }

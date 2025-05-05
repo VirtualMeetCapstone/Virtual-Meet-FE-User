@@ -263,7 +263,7 @@ export class RoomHubService {
 
   public async fetchLiveKitToken(): Promise<string> {
     try {
-      const name = await this.auth.fetchUserName(this.currentUser.name);
+      // const name = await this.auth.fetchUserName(this.currentUser.name);
       const response = await fetch(`${this.urlBase}/livekit/token`, {
         method: 'POST',
         headers: {
@@ -271,7 +271,7 @@ export class RoomHubService {
         },
         body: JSON.stringify({
           roomName: this.currentUser.roomId,
-          participantName: name,
+          participantName: this.currentUser.name,
         }),
       });
 
