@@ -85,7 +85,7 @@ export class ParticipantListComponent implements OnInit {
 
       const isSelfIncluded = peers.some(
         (peer) =>
-          peer.peerId === thisConnectionId || peer.userName === currentUser.name
+          peer.peerId === thisConnectionId || peer.userId === currentUser.name
       );
 
       const fullPeers = [
@@ -105,7 +105,7 @@ export class ParticipantListComponent implements OnInit {
         fullPeers.map(async (peer) => {
           const isCurrentUser =
             peer.peerId === thisConnectionId || peer.userName === this.userId;
-
+          console.log('👤 Peer:', peer, isCurrentUser);
           let userInfo = await this.loadUserInfo(peer.userName);
 
           return {
@@ -115,7 +115,7 @@ export class ParticipantListComponent implements OnInit {
             muted: true,
             cameraOff: true,
             isSelf: isCurrentUser,
-            userId: peer.userName,
+            userId: peer.userId,
           };
         })
       );

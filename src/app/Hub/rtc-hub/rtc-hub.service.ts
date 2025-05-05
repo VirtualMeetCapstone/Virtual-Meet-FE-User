@@ -175,7 +175,7 @@ export class RtcHubService {
     initiator: boolean
   ): Peer {
     if (this.usingLiveKit) {
-      const peer: Peer = { peerId, userName: peerName };
+      const peer: Peer = { peerId, userName: peerName , userId: peerName};
       this.peers[peerId] = peer;
       this.updatePeersSubject();
       return peer;
