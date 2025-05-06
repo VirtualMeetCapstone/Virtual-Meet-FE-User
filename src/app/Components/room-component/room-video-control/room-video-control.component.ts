@@ -50,8 +50,9 @@ export class RoomVideoControlComponent implements OnInit {
   }
 
   private getUserVipLevel(): 'free' | 'vip' {
-    return  "vip" // Lấy trạng thái VIP từ UserVipService
+    return this.userVipService.isVip() ? 'vip' : 'free';
   }
+
 
   async onResolutionChange() {
     if (this.selectedResolution.isVip && !this.isVipUser) {

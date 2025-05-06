@@ -6,6 +6,12 @@
 >
   {{ message }}
 </div>
+<app-confirm-modal
+[visible]="showSuccessModal"
+[message]="successMessage"
+(confirmed)="showSuccessModal = false">
+</app-confirm-modal>
+
 <div>
   <div class="row">
     <div
@@ -44,7 +50,10 @@
               <span class="owner-name" (click)="goToProfile(room.ownerId)">{{
                 room.owner.name
               }}</span>
-              <span class="room-time">{{ room.createTime }}</span>
+          <span class="room-time">
+            {{ ticksToDate(room.createTime) | date: 'dd/MM/yy HH:mm' }}
+          </span>
+
             </div>
           </div>
 
@@ -248,4 +257,5 @@
       </button>
     </form>
   </div>
+
 </div>

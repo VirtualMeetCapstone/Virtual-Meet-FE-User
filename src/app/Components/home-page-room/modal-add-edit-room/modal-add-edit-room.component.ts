@@ -11,6 +11,7 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { RoomServicesService } from '../../../services/room-service/room-services.service';
+import { UserVipService } from '../../../services/user-vip-service/user-vip.service';
 
 @Component({
   selector: 'app-modal-add-edit-room',
@@ -25,7 +26,8 @@ export class ModalAddEditRoomComponent implements OnInit {
 
   constructor(
     private roomService: RoomServicesService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private userVipService: UserVipService
   ) {}
   FormAdd!: FormGroup;
   loading = false;
@@ -39,28 +41,33 @@ export class ModalAddEditRoomComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.userId);
+    const isVip = this.userVipService.isVip(); // hoặc this.userService.currentUser?.isVip
+
+    const maxMemberValidators = [Validators.required, Validators.min(1)];
+    if (!isVip) {
+      maxMemberValidators.push(Validators.max(10));
+    }
+
     if (this.roomToEdit == null) {
       this.isUpdate = false;
       this.FormAdd = new FormGroup({
         topic: new FormControl('', Validators.required),
         description: new FormControl('', Validators.required),
-        maximumMember: new FormControl('', Validators.required),
+        maximumMember: new FormControl('', maxMemberValidators),
       });
     } else {
       this.isUpdate = true;
-      console.log('room to edit from modal', this.roomToEdit);
-
       this.FormAdd = new FormGroup({
         topic: new FormControl(this.roomToEdit.topic, Validators.required),
         description: new FormControl(this.roomToEdit.description),
-        maximumMember: new FormControl(this.roomToEdit.maximumMembers),
+        maximumMember: new FormControl(this.roomToEdit.maximumMembers, maxMemberValidators),
       });
       if (this.roomToEdit.privacy == 1) {
         this.isPublic = false;
       }
     }
   }
+
 
   onCloseModal() {
     this.closeModal.emit(false);
@@ -69,6 +76,13 @@ export class ModalAddEditRoomComponent implements OnInit {
   }
   onDeleteRoom() {}
   onAddRoom() {
+    const isVip = this.userVipService.isVip();
+if (!isVip && this.FormAdd.value.maximumMember > 10) {
+  this.FormAdd.get('maximumMember')?.setErrors({ maxExceeded: true });
+  this.loading = false;
+  return;
+}
+
     this.loading = true;
     const formValue = this.FormAdd.value;
     formValue.mediaUpload = this.imagePreview;

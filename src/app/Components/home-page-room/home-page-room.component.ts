@@ -19,6 +19,8 @@ import { LoadingService } from '../../loading.service';
 import { ReportServiceService } from '../../services/report-service/report-service.service';
 import { decodeJwt } from '../../../utils/jwt-helper';
 import { Room } from '../../models/room';
+import { HttpClient } from '@angular/common/http';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Component({
   selector: 'app-home-page-room',
@@ -42,7 +44,7 @@ export class HomePageRoomComponent implements OnInit {
   openDropdownRoomId: number | null = null;
   roomId: string = '';
   hasStories: boolean = false;
-
+  private apiUrl = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private roomService: RoomServicesService,
@@ -53,7 +55,8 @@ export class HomePageRoomComponent implements OnInit {
     private loadingService: LoadingService,
     private roomHubService: RoomHubService,
     private reportService: ReportServiceService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private http: HttpClient,
   ) {}
 
   user: any = null;
@@ -160,15 +163,42 @@ export class HomePageRoomComponent implements OnInit {
 
   async joinRoom(roomId: string) {
     if (!this.user) {
-      this.messages.push('Need to login before join room !!!');
-      setTimeout(() => {
-        this.messages = [];
-      }, 3000);
+      this.messages.push('Need to login before joining room!');
+      setTimeout(() => (this.messages = []), 3000);
       return;
     }
-    const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+
+    try {
+      const info = await this.http
+        .get<{ roomId: string; currentCount: number; maxCount: number }>(
+          `${this.apiUrl}/${roomId}/member-info`
+        )
+        .toPromise();
+
+      if (!info) {
+        this.messages.push('Failed to retrieve room info.');
+      } else if (info.currentCount >= info.maxCount) {
+        this.messages.push('Room is full, please try later!');
+      } else {
+        const timestamp = Date.now();
+        this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+        return;
+      }
+    } catch (error) {
+      console.error('Failed to get member info', error);
+      this.messages.push('Error checking room info.');
+    }
+
+    setTimeout(() => (this.messages = []), 3000);
   }
+
+  ticksToDate(ticks: number): Date {
+    const ticksSinceEpoch = ticks - 621355968000000000; // ticks đến 1970-01-01
+    const milliseconds = ticksSinceEpoch / 10000; // convert to ms
+    return new Date(milliseconds);
+  }
+
+
 
   openModalEnterPassword(roomId: any) {
     if (!this.user) {
@@ -309,32 +339,36 @@ export class HomePageRoomComponent implements OnInit {
 
   selectedReportReason: string = '';
   loggedInUserId: string = '';
+  showSuccessModal = false;
+  successMessage = '';
 
   submitReport() {
     if (!this.selectedReportReason) {
-      alert('Vui lòng chọn lý do');
+      this.successMessage = 'Please select a reason';
+      this.showSuccessModal = true;
       return;
     }
-
-    let description = this.selectedReportReason;
 
     const reportPayload = {
       targetId: this.roomId,
       reporterId: this.loggedInUserId,
       reportType: 2,
-      description: description,
+      description: this.selectedReportReason,
     };
 
     this.reportService.sendReport(reportPayload).subscribe({
       next: () => {
-        alert('Gửi báo cáo thành công');
+        this.successMessage = 'Report submitted successfully';
+        this.showSuccessModal = true;
       },
       error: (err: { error: { message: any } }) => {
         console.error(err);
-        alert(err.error.message);
+        this.successMessage = err.error.message || 'Đã có lỗi xảy ra';
+        this.showSuccessModal = true;
       },
     });
 
     this.showReportModal = false;
   }
+
 }

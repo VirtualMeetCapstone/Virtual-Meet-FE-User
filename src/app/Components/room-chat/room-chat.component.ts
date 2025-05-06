@@ -6,6 +6,7 @@ import { RoomHubService } from '../../Hub/room-hub/room-hub.service';
 import { ChatServicesService } from '../../services/chat-services/chat-services.service';
 import { SpeechService } from '../../services/external-service/speech.service';
 import { TranslateService } from '../../services/external-service/translate.service';
+import { UserVipService } from '../../services/user-vip-service/user-vip.service';
 
 @Component({
   selector: 'app-room-chat',
@@ -32,7 +33,8 @@ export class RoomChatComponent implements OnInit {
     private chatService: ChatServicesService,
     private speechService: SpeechService,
     private translateService: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public userVipService: UserVipService
   ) {}
 
   private isEventRegistered = false; // ✅ Tránh lặp sự kiện
@@ -97,7 +99,15 @@ export class RoomChatComponent implements OnInit {
 
   //start voice chat
   startVoiceRecognition() {
+
+    if (!this.userVipService.canUseVoice()) {
+      alert('Bạn đã hết lượt thử 🎤. Nâng cấp VIP để sử dụng không giới hạn!');
+      return;
+    }
+
+    this.userVipService.useVoiceTry();
     this.isListening = true;
+    
     this.speechService.startListening(async (recognizedText: string) => {
       this.newMessage = recognizedText;
 
