@@ -60,14 +60,16 @@ export class ModalAddEditRoomComponent implements OnInit {
       this.FormAdd = new FormGroup({
         topic: new FormControl(this.roomToEdit.topic, Validators.required),
         description: new FormControl(this.roomToEdit.description),
-        maximumMember: new FormControl(this.roomToEdit.maximumMembers, maxMemberValidators),
+        maximumMember: new FormControl(
+          this.roomToEdit.maximumMembers,
+          maxMemberValidators
+        ),
       });
       if (this.roomToEdit.privacy == 1) {
         this.isPublic = false;
       }
     }
   }
-
 
   onCloseModal() {
     this.closeModal.emit(false);
@@ -77,11 +79,11 @@ export class ModalAddEditRoomComponent implements OnInit {
   onDeleteRoom() {}
   onAddRoom() {
     const isVip = this.userVipService.isVip();
-if (!isVip && this.FormAdd.value.maximumMember > 10) {
-  this.FormAdd.get('maximumMember')?.setErrors({ maxExceeded: true });
-  this.loading = false;
-  return;
-}
+    if (!isVip && this.FormAdd.value.maximumMember > 10) {
+      this.FormAdd.get('maximumMember')?.setErrors({ maxExceeded: true });
+      this.loading = false;
+      return;
+    }
 
     this.loading = true;
     const formValue = this.FormAdd.value;

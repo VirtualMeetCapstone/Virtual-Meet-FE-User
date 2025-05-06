@@ -106,10 +106,6 @@ export class HomePageRoomComponent implements OnInit {
     }
     this.getRoom();
     this.roomService.refreshRoom$.subscribe(() => {
-      this.messages.push('Add room successful !!!');
-      setTimeout(() => {
-        this.messages = [];
-      }, 3000);
       this.skip = 0;
       this.rooms = [];
       this.getRoom();
@@ -258,10 +254,12 @@ export class HomePageRoomComponent implements OnInit {
       this.showModalDeleteRoom = false;
       this.showModalAddEditRoom = false;
     } else {
-      this.messages.push('Delete room successful !!!');
-      setTimeout(() => {
-        this.messages = [];
-      }, 3000);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Delete room successful !!!',
+        timer: 3000,
+      });
       this.showModalDeleteRoom = false;
       this.showModalAddEditRoom = false;
       this.skip = 0;
@@ -279,20 +277,24 @@ export class HomePageRoomComponent implements OnInit {
       if (this.roomToEdit == null) {
         this.showModalDeleteRoom = false;
         this.showModalAddEditRoom = false;
-        this.messages.push('Add room successful !!!');
-        setTimeout(() => {
-          this.messages = [];
-        }, 3000);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Add room successful !!!',
+          timer: 3000,
+        });
         this.skip = 0;
         this.rooms = [];
         this.getRoom();
       } else {
         this.showModalDeleteRoom = false;
         this.showModalAddEditRoom = false;
-        this.messages.push('Update room successful !!!');
-        setTimeout(() => {
-          this.messages = [];
-        }, 3000);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Edit room successful !!!',
+          timer: 3000,
+        });
         this.skip = 0;
         this.rooms = [];
         this.getRoom();
@@ -319,6 +321,7 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   openModalAddRoom() {
+    this.roomToEdit = null;
     this.showModalAddEditRoom = true;
   }
 
