@@ -9,6 +9,7 @@ import { ReactionSummaryComponent } from '../reaction-summary/reaction-summary.c
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home-page-post',
@@ -58,23 +59,23 @@ export class HomePagePostComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-    this.authService.loggedIn$.subscribe((status: boolean) => {
-      if (status) {
-        this.user = this.authService.getUser();
-        this.userId = this.user.id;
-        this.authService
-          .getFullInformationOfUseById(this.user.id)
-          .subscribe((user: any) => {
-            this.user = user;
-          });
-      }
-    });
-    this.loadMorePosts();
-    this.addPlayListeners();
-    this.notifyService.onOpenPostModal().subscribe((postId) => {
-      this.openModalDetailPost(postId);
-    });
-  }
+      this.authService.loggedIn$.subscribe((status: boolean) => {
+        if (status) {
+          this.user = this.authService.getUser();
+          this.userId = this.user.id;
+          this.authService
+            .getFullInformationOfUseById(this.user.id)
+            .subscribe((user: any) => {
+              this.user = user;
+            });
+        }
+      });
+      this.loadMorePosts();
+      this.addPlayListeners();
+      this.notifyService.onOpenPostModal().subscribe((postId) => {
+        this.openModalDetailPost(postId);
+      });
+    }
   }
 
   openModalDeletePost(post: any) {
@@ -158,6 +159,9 @@ export class HomePagePostComponent implements OnInit {
 
   setReaction(postId: string, reactionType: string, event: Event) {
     event.stopPropagation();
+    if (!this.checkLoginAndAlert('like this post')) {
+      return;
+    }
     const reactionTypeNumber = this.mapReactionTypeToNumber(reactionType);
     this.postService.setReaction(postId, reactionTypeNumber).subscribe(() => {
       this.updatePostReactions(postId);
@@ -268,6 +272,9 @@ export class HomePagePostComponent implements OnInit {
   }
 
   openModalDetailPost(postId: string) {
+    if (!this.checkLoginAndAlert('open a detail post')) {
+      return;
+    }
     this.pauseAllVideos();
     this.disableVideoInteraction();
     this.openedMenuPostId = null;
@@ -285,6 +292,9 @@ export class HomePagePostComponent implements OnInit {
   }
 
   openCreatePost() {
+    if (!this.checkLoginAndAlert('create a post')) {
+      return;
+    }
     const dialogRef = this.dialog.open(CreatePostModalComponent, {
       width: '500px',
       data: { id: this.userId },
@@ -310,6 +320,9 @@ export class HomePagePostComponent implements OnInit {
   }
 
   focusCommentInput(postId: string) {
+    if (!this.checkLoginAndAlert('comment on this post')) {
+      return;
+    }
     this.openModalDetailPost(postId);
   }
 
@@ -334,5 +347,18 @@ export class HomePagePostComponent implements OnInit {
 
   goToProfile(userId: string) {
     this.router.navigate(['/my-profile', userId]);
+  }
+
+  private checkLoginAndAlert(action: string): boolean {
+    if (!this.user) {
+      Swal.fire({
+        title: 'Error',
+        text: `You need to log in to ${action}.`,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+      return false;
+    }
+    return true;
   }
 }

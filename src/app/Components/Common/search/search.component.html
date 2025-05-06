@@ -1,4 +1,16 @@
-<div class="input-container" (click)="onInputClick()" style="height: 44px;">
+<p-toast key="customToast">
+  <ng-template let-message pTemplate="message">
+    <div class="p-toast-message-content">
+      <p-button
+        type="button"
+        pRipple
+        label="{{ message.summary }}"
+        severity="danger"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-toast>
+<div class="input-container" (click)="onInputClick()" style="height: 44px">
   <input
     type="text"
     name="text"

@@ -12,6 +12,8 @@ import {
   Post,
 } from '../../../services/search-service/search.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth-service/auth.service';
+import Swal from 'sweetalert2';
 
 interface User {
   id: string;
@@ -55,7 +57,11 @@ export class SearchComponent {
   private searchSubject = new Subject<string>();
   recognition: any;
 
-  constructor(private searchService: SearchService, private router: Router) {
+  constructor(
+    private searchService: SearchService,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.searchSubject
       .pipe(
         debounceTime(300),
@@ -166,26 +172,33 @@ export class SearchComponent {
   selectSuggestion(suggestion: string | User | Room | Post): void {
     if (typeof suggestion === 'string') {
       this.searchQuery = suggestion;
-      // Reset selected objects when a plain text suggestion is chosen
       this.selectedUser = null;
       this.selectedRoom = null;
       this.selectedPost = null;
     } else if (isUser(suggestion)) {
-      // It's a User
       this.searchQuery = suggestion.name;
       this.selectedUser = suggestion;
       this.router.navigate(['/my-profile', suggestion.id]);
     } else if (isPost(suggestion)) {
-      // It's a Post (using the "content" property for display)
       this.searchQuery = suggestion.content;
       this.selectedPost = suggestion;
       this.router.navigate(['/posts', suggestion.id]);
     } else {
-      // Otherwise, it's a Room
-      this.searchQuery = suggestion.name;
-      this.selectedRoom = suggestion;
-      this.router.navigate(['/room', suggestion.id], {
-        queryParams: { timestamp: Date.now() },
+      this.authService.getValidAccessToken().then((token) => {
+        if (token) {
+          this.searchQuery = suggestion.name;
+          this.selectedRoom = suggestion;
+          this.router.navigate(['/room', suggestion.id], {
+            queryParams: { timestamp: Date.now() },
+          });
+        } else {
+          Swal.fire({
+            title: 'Please log in',
+            text: 'You need to log in to perform this action.',
+            icon: 'error',
+            confirmButtonText: 'Close',
+          });
+        }
       });
     }
     this.showSuggestions = false;

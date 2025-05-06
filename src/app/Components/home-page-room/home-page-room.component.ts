@@ -19,6 +19,7 @@ import { LoadingService } from '../../loading.service';
 import { ReportServiceService } from '../../services/report-service/report-service.service';
 import { decodeJwt } from '../../../utils/jwt-helper';
 import { Room } from '../../models/room';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home-page-room',
@@ -155,15 +156,25 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   goToProfile(uuid: string) {
+    if (!this.user) {
+      this.showErrorAlert();
+      return;
+    }
     this.router.navigate(['/my-profile', uuid]);
+  }
+
+  showErrorAlert() {
+    Swal.fire({
+      title: 'Please log in',
+      text: 'You need to log in to perform this action.',
+      icon: 'error',
+      confirmButtonText: 'Close',
+    });
   }
 
   async joinRoom(roomId: string) {
     if (!this.user) {
-      this.messages.push('Need to login before join room !!!');
-      setTimeout(() => {
-        this.messages = [];
-      }, 3000);
+      this.showErrorAlert();
       return;
     }
     const timestamp = Date.now();
@@ -172,10 +183,7 @@ export class HomePageRoomComponent implements OnInit {
 
   openModalEnterPassword(roomId: any) {
     if (!this.user) {
-      this.messages.push('Need to login before join room !!!');
-      setTimeout(() => {
-        this.messages = [];
-      }, 3000);
+      this.showErrorAlert();
       return;
     }
     this.roomPrivateToOpenModalEnterPass = roomId;
