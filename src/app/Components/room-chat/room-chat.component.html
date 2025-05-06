@@ -13,23 +13,46 @@
       </div>
     </div>
   </div>
-
+  <!-- Hiển thị số lượt dùng thử còn lại -->
+  <span *ngIf="!userVipService.isVip()" class="trial-info" style="color: #000000;">
+    🎤 Lượt dùng còn: {{ userVipService.getRemainingTries() }}
+  </span>
   <div class="chat-input">
     <textarea class="text" [(ngModel)]="newMessage" placeholder="Type a message..."
       (keydown.enter)="sendMessage($event)">
 </textarea>
 
-    <!-- Nút voice chat -->
-    <select [(ngModel)]="selectedLanguage" class="selectOp" [title]="'room_chat.LANGUAGE_SELECT' | translate">
-      <option value="vi-VN">🇻🇳</option>
-      <option value="en-US">🇺🇸</option>
-    </select>
+<div class="vip-feature">
+  <select
+  [(ngModel)]="selectedLanguage"
+  class="selectOp"
+  [title]="'room_chat.LANGUAGE_SELECT' | translate"
+ >
+  <option value="vi-VN">🇻🇳</option>
+  <option value="en-US">🇺🇸</option>
+</select>
+</div>
 
-    <button (mousedown)="startVoiceRecognition()" (mouseup)="stopVoiceRecognition()"
-      (mouseleave)="stopVoiceRecognition()" (touchstart)="startVoiceRecognition()" (touchend)="stopVoiceRecognition()"
-      [disabled]="isListening" title="Nhấn giữ và nói">
-      {{ isListening ? ('room_chat.LISTENING' | translate) : "🎤" }}
-    </button>
+<!-- Voice chat: cho phép dùng nếu là VIP hoặc còn lượt thử -->
+<div class="vip-feature">
+  <button
+    (mousedown)="startVoiceRecognition()"
+    (mouseup)="stopVoiceRecognition()"
+    (mouseleave)="stopVoiceRecognition()"
+    (touchstart)="startVoiceRecognition()"
+    (touchend)="stopVoiceRecognition()"
+    [disabled]="isListening || !userVipService.canUseVoice()"
+    [title]="!userVipService.canUseVoice() ? 'Hết lượt thử. Chỉ dành cho tài khoản VIP' : 'Nhấn giữ và nói'"
+  >
+    {{ isListening ? ('room_chat.LISTENING' | translate) : "🎤" }}
+  </button>
+
+  <!-- Biểu tượng VIP nếu không phải VIP -->
+  <span *ngIf="!userVipService.isVip()" class="vip-icon" title="Tính năng nâng cao cho VIP">👑</span>
+
+
+</div>
+
 
   </div>
 </div>
