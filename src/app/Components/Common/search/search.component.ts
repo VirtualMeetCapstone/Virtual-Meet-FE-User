@@ -180,9 +180,22 @@ export class SearchComponent {
       this.selectedUser = suggestion;
       this.router.navigate(['/my-profile', suggestion.id]);
     } else if (isPost(suggestion)) {
-      this.searchQuery = suggestion.content;
-      this.selectedPost = suggestion;
-      this.router.navigate(['/posts', suggestion.id]);
+      this.authService.getValidAccessToken().then((token) => {
+        if (token) {
+          this.searchQuery = suggestion.content;
+          this.selectedPost = suggestion;
+          this.router.navigate(['/posts', suggestion.id], {
+            queryParams: { timestamp: Date.now() },
+          });
+        } else {
+          Swal.fire({
+            title: 'Please log in',
+            text: 'You need to log in to perform this action.',
+            icon: 'error',
+            confirmButtonText: 'Close',
+          });
+        }
+      });
     } else {
       this.authService.getValidAccessToken().then((token) => {
         if (token) {

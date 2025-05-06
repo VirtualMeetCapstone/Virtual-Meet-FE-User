@@ -27,6 +27,7 @@ import { LogoServiceService } from '../../../services/logo-service/logo-service.
 import { Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ChatOutsideRoomComponent } from '../../chat-outside-room/chat-outside-room.component';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -374,10 +375,15 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!event) {
       this.showModalAddRoom = false;
     } else {
-      if (this.router.url !== '/')
-        (globalThis as any).alert('Add room successful !!!!');
+      // Khi event là true, hiển thị thông báo thành công
+      this.showModalAddRoom = false;
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Add room successful !!!',
+        timer: 3000,
+      });
     }
-    this.showModalAddRoom = false;
   }
   toggleMobileMenu() {
     this.isShowMobileMenu = !this.isShowMobileMenu;

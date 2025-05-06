@@ -2,7 +2,7 @@
   <div class="header-content">
     <!-- Logo Virtual Meet -->
     <div class="logo-section">
-      <a class="navbar-brand brand-logo" routerLink="/">
+      <a class="navbar-brand brand-logo" routerLink="/rooms">
         <img [src]="logoUrl" alt="logo" class="logo-full" />
       </a>
     </div>
@@ -12,11 +12,8 @@
       class="nav-links"
       style="display: flex; justify-content: space-between; gap: 2rem"
     >
-      <a [routerLink]="['/']" class="nav-link">{{
-        "header.HOME" | translate
-      }}</a>
       <a [routerLink]="['rooms']" class="nav-link">{{
-        "header.ROOMS" | translate
+        "header.HOME" | translate
       }}</a>
       <a [routerLink]="['/posts']" class="nav-link">{{
         "header.POSTS" | translate

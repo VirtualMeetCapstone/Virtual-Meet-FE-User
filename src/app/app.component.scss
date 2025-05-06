@@ -28,3 +28,7 @@ body.room-active {
   align-items: center;
   justify-content: center;
 }
+
+.swal2-z-index-fix {
+  z-index: 9999 !important;
+}
