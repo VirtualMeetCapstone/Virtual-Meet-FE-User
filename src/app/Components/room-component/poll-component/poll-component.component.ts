@@ -57,6 +57,8 @@ export class PollComponentComponent {
   errorMessage = '';
   selectedOption: string | undefined = undefined;
   pollStatistics: PollStatistics | null = null;
+  showConfirmModal = false;
+
   get hasVoted(): boolean {
     return this.selectedPoll?.voterIds.includes(this.currentUserId) || false;
   }
@@ -159,13 +161,20 @@ export class PollComponentComponent {
     return this.selectedPoll?.createdById === this.currentUserId;
   }
   endPollAction() {
-    if (this.selectedPoll && this.selectedPoll.isActive &&
-        confirm('Bạn có chắc chắn muốn kết thúc cuộc thăm dò này?')) {
-      this.endPoll.emit(this.selectedPoll.id);
-      this.selectedPoll.isActive = false;
+    if (this.selectedPoll && this.selectedPoll.isActive) {
+      this.showConfirmModal = true;
+    }
+  }
+
+  onConfirmEndPoll(confirmed: boolean) {
+    this.showConfirmModal = false;
+    if (confirmed) {
+      this.endPoll.emit(this.selectedPoll!.id);
+      this.selectedPoll!.isActive = false;
       this.calculateStatistics();
     }
   }
+
 
   calculateStatistics() {
     if (!this.selectedPoll) return;

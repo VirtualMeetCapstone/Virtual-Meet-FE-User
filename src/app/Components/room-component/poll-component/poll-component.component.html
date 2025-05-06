@@ -112,4 +112,10 @@
     <button (click)="cancelPollCreation()">Cancel</button>
     <p *ngIf="errorMessage" style="color: red">{{ errorMessage }}</p>
   </div>
+  <app-confirm-modal
+  [visible]="showConfirmModal"
+  [message]="'Bạn có chắc chắn muốn kết thúc cuộc thăm dò này?'"
+  (confirmed)="onConfirmEndPoll($event)">
+</app-confirm-modal>
+
 </div>
