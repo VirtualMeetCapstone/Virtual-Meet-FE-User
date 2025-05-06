@@ -12,6 +12,9 @@
     <p *ngIf="isVip()">
       {{ "vip.EXPIRE" | translate }}: {{ user.expireAt | date : "dd-MM-yyyy HH:mm:ss" }}
     </p>
+    <p *ngIf="!isVip()">
+      {{ "vip.REMAINING_TRIES" | translate }}: {{ userVipService.getRemainingTries() }}
+    </p>
   </div>
 
   <div class="vip-benefits">

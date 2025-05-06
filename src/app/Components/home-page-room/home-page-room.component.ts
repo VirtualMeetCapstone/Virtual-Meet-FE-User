@@ -20,6 +20,8 @@ import { ReportServiceService } from '../../services/report-service/report-servi
 import { decodeJwt } from '../../../utils/jwt-helper';
 import { Room } from '../../models/room';
 import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
+import { AppConstants } from '../../constant/AppConstants';
 
 @Component({
   selector: 'app-home-page-room',
@@ -43,6 +45,7 @@ export class HomePageRoomComponent implements OnInit {
   openDropdownRoomId: number | null = null;
   roomId: string = '';
   hasStories: boolean = false;
+  private apiUrl = `${AppConstants.API_BASE_URL_HTTPS}/rooms`;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -54,11 +57,13 @@ export class HomePageRoomComponent implements OnInit {
     private loadingService: LoadingService,
     private roomHubService: RoomHubService,
     private reportService: ReportServiceService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
   user: any = null;
   token: string = '';
+  loggedInUserId: string = '';
 
   isValidJwt(token: string): boolean {
     try {
@@ -72,7 +77,6 @@ export class HomePageRoomComponent implements OnInit {
   async ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.token = localStorage.getItem('accessToken') || '';
-
       if (this.token && this.isValidJwt(this.token)) {
         const decoded = decodeJwt(this.token);
         this.loggedInUserId = decoded.id;
@@ -81,7 +85,7 @@ export class HomePageRoomComponent implements OnInit {
         this.loggedInUserId = '';
       }
     }
-    this.loadingService.show(); // Hiển thị loading khi bắt đầu fetch
+    this.loadingService.show();
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
       await this.roomHubService.startConnection();
@@ -151,7 +155,7 @@ export class HomePageRoomComponent implements OnInit {
     this.roomService.getRooms(12, 0).subscribe((room: any) => {
       this.rooms = room.data;
       this.totalRooms = room.totalCount;
-      this.loadingService.hide(); // Ẩn loading khi fetch thành công
+      this.loadingService.hide();
     });
   }
 
@@ -177,8 +181,47 @@ export class HomePageRoomComponent implements OnInit {
       this.showErrorAlert();
       return;
     }
-    const timestamp = Date.now();
-    this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+
+    try {
+      const info = await this.http
+        .get<{ roomId: string; currentCount: number; maxCount: number }>(
+          `${this.apiUrl}/${roomId}/member-info`
+        )
+        .toPromise();
+
+      if (!info) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to retrieve room info.',
+          icon: 'error',
+          confirmButtonText: 'Close',
+        });
+      } else if (info.currentCount >= info.maxCount) {
+        Swal.fire({
+          title: 'Room Full',
+          text: 'Room is full, please try later!',
+          icon: 'warning',
+          confirmButtonText: 'Close',
+        });
+      } else {
+        const timestamp = Date.now();
+        this.router.navigate(['/room', roomId], { queryParams: { timestamp } });
+      }
+    } catch (error) {
+      console.error('Failed to get member info', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Error checking room info.',
+        icon: 'error',
+        confirmButtonText: 'Close',
+      });
+    }
+  }
+
+  ticksToDate(ticks: number): Date {
+    const ticksSinceEpoch = ticks - 621355968000000000;
+    const milliseconds = ticksSinceEpoch / 10000;
+    return new Date(milliseconds);
   }
 
   openModalEnterPassword(roomId: any) {
@@ -238,7 +281,7 @@ export class HomePageRoomComponent implements OnInit {
         this.showModalAddEditRoom = false;
         this.messages.push('Add room successful !!!');
         setTimeout(() => {
-          this.messages = []; // Ẩn sau 3 giây
+          this.messages = [];
         }, 3000);
         this.skip = 0;
         this.rooms = [];
@@ -248,7 +291,7 @@ export class HomePageRoomComponent implements OnInit {
         this.showModalAddEditRoom = false;
         this.messages.push('Update room successful !!!');
         setTimeout(() => {
-          this.messages = []; // Ẩn sau 3 giây
+          this.messages = [];
         }, 3000);
         this.skip = 0;
         this.rooms = [];
@@ -260,7 +303,6 @@ export class HomePageRoomComponent implements OnInit {
 
   loadMoreRooms() {
     this.loading = true;
-
     if (this.rooms.length >= this.totalRooms) {
       this.loading = false;
       return;
@@ -270,7 +312,6 @@ export class HomePageRoomComponent implements OnInit {
       .getRoomsNotNeedCount(this.pageSize, this.skip)
       .subscribe((room: any) => {
         this.rooms = [...this.rooms, ...room.data];
-
         if (this.rooms.length >= this.totalRooms) {
           this.loading = false;
         }
@@ -298,12 +339,6 @@ export class HomePageRoomComponent implements OnInit {
   }
 
   showReportModal = false;
-
-  // viewRoomDetail(room: any) {
-  //   // You can use this to handle room-specific logic if needed
-  //   console.log('Viewing room detail:', room);
-  //   this.showReportModal = true;
-  // }
   reportOptions: string[] = [
     'Problem involving someone under 18',
     'Bullying, harassment or abuse',
@@ -316,30 +351,32 @@ export class HomePageRoomComponent implements OnInit {
   ];
 
   selectedReportReason: string = '';
-  loggedInUserId: string = '';
+  showSuccessModal = false;
+  successMessage = '';
 
   submitReport() {
     if (!this.selectedReportReason) {
-      alert('Vui lòng chọn lý do');
+      this.successMessage = 'Please select a reason';
+      this.showSuccessModal = true;
       return;
     }
-
-    let description = this.selectedReportReason;
 
     const reportPayload = {
       targetId: this.roomId,
       reporterId: this.loggedInUserId,
       reportType: 2,
-      description: description,
+      description: this.selectedReportReason,
     };
 
     this.reportService.sendReport(reportPayload).subscribe({
       next: () => {
-        alert('Gửi báo cáo thành công');
+        this.successMessage = 'Report submitted successfully';
+        this.showSuccessModal = true;
       },
       error: (err: { error: { message: any } }) => {
         console.error(err);
-        alert(err.error.message);
+        this.successMessage = err.error.message || 'Đã có lỗi xảy ra';
+        this.showSuccessModal = true;
       },
     });
 

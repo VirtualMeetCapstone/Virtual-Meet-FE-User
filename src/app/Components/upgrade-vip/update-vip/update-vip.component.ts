@@ -33,12 +33,12 @@ export class UpdateVipComponent implements OnInit {
   isLoading: boolean = false;
 
   constructor(
-    private userVipService: UserVipService,
+    public userVipService: UserVipService,
     private auth: AuthService,
     private httpAuthService: HttpAuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {

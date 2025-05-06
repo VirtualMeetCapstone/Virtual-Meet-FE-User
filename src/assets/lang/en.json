@@ -88,7 +88,6 @@
     "CORRECT": "Correct",
     "CLOSE": "Close"
   },
-
   "loading": "LOADING...",
   "profile": {
     "following": "Following",
@@ -117,7 +116,8 @@
     "BENEFIT_NO_ADS": "⭐ No advertisements",
     "DURATION": "Valid for: {{days}} days",
     "CONFIRM": "Confirm Upgrade",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "REMAINING_TRIES": "Remaining Voice Trials"
   },
   "room": {
     "KICKED": {

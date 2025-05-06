@@ -116,7 +116,8 @@
     "BENEFIT_NO_ADS": "⭐ Không quảng cáo",
     "DURATION": "Hiệu lực: {{days}} ngày",
     "CONFIRM": "Xác nhận nâng cấp",
-    "CLOSE": "Đóng"
+    "CLOSE": "Đóng",
+    "REMAINING_TRIES": "Lượt thử còn lại"
   },
   "room": {
     "KICKED": {
