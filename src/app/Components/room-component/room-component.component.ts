@@ -889,17 +889,19 @@ export class RoomComponentComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-readonly GOOGLE_MEET_COLORS = [
-  '#fbbc04', // Vàng
-  '#34a853', // Xanh lá
-  '#4285f4', // Xanh dương
-  '#7b1fa2', // Tím
-  '#4dd0e1', // Cyan
-  '#81c784'  // Xanh ngọc
-];
+  readonly GOOGLE_MEET_COLORS = [
+    '#fbbc04', // Vàng
+    '#34a853', // Xanh lá
+    '#4285f4', // Xanh dương
+    '#7b1fa2', // Tím
+    '#4dd0e1', // Cyan
+    '#81c784', // Xanh ngọc
+  ];
 
-getBoxColor(userId: string): string {
-  const hash = userId.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
-  return this.GOOGLE_MEET_COLORS[hash % this.GOOGLE_MEET_COLORS.length];
-}
+  getBoxColor(userId: string): string {
+    const hash = userId
+      .split('')
+      .reduce((acc, char) => char.charCodeAt(0) + acc, 0);
+    return this.GOOGLE_MEET_COLORS[hash % this.GOOGLE_MEET_COLORS.length];
+  }
 }

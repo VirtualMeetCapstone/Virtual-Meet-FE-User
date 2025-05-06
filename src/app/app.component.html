@@ -4,11 +4,10 @@
     <app-loader-text></app-loader-text>
   </div>
 </div>
-<div class="header" *ngIf="!(isRoomPage || isChatPage)"></div>
-<app-header *ngIf="!(isRoomPage || isChatPage)"></app-header>
+<div class="header" *ngIf="isRouteLoaded && !(isHomePage || isRoomPage || isChatPage)"></div>
+<app-header *ngIf="isRouteLoaded && !(isHomePage || isRoomPage || isChatPage)"></app-header>
 <div>
   <router-outlet></router-outlet>
-
   <div class="chat-box-container">
     <app-ai-chat-box></app-ai-chat-box>
   </div>

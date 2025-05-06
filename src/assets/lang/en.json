@@ -5,7 +5,7 @@
     "FEEDBACK_HELP": "Feedback and help",
     "DARK_MODE": "Dark mode",
     "NOTIFICATIONS": {
-      "TITLE" :"Notifications",
+      "TITLE": "Notifications",
       "MARK_AS_READ": "Mark as read",
       "LOAD_MORE": "Load More...",
       "NO_MORE_DATA": "No more data to load",
@@ -13,6 +13,7 @@
       "SETTINGS": "Settings"
     },
     "HOME": "Home",
+    "ROOMS": "Room",
     "POSTS": "Posts",
     "ABOUT_US": "About Us"
   },
@@ -26,8 +27,7 @@
       "href6": "Profile",
       "href7": "About Us"
     }
-  }
-  ,
+  },
   "room_chat": {
     "TITLE": "Room Chat",
     "PLACEHOLDER": "Type a message...",
@@ -38,90 +38,88 @@
     "PRESS_TO_TALK": "Press and hold to talk"
   },
   "room_password": {
-  "TITLE": "Enter Room Password",
-  "LABEL": "Password",
-  "PLACEHOLDER": "Enter password",
-  "REQUIRED": "Password is required",
-  "CANCEL": "Cancel",
-  "JOIN": "Join Room"
-},
-"quiz_management": {
-  "TITLE": "Quiz Management",
-  "HELP_BUTTON": "Help",
-  "HELP_TITLE": "How to use Quiz Management",
-  "HELP_PURPOSE_TITLE": "📍 Purpose",
-  "HELP_PURPOSE_DESC": "This function allows you to manage quizzes used in rooms.",
-  "HELP_PERMISSIONS_TITLE": "👤 User Permissions",
-  "HELP_PERMISSIONS_LIST": [
-    "Create new quizzes with multiple questions and options.",
-    "Edit existing quizzes.",
-    "Delete unnecessary quizzes."
-  ],
-  "HELP_USAGE_TITLE": "🛠️ How to use",
-  "HELP_USAGE_STEPS": [
-    "Click \"Add Quiz\" to create a new quiz.",
-    "Enter the topic (subject) of the quiz.",
-    "Click \"Add Question\" to insert questions.",
-    "Enter the question, options, and mark the correct answer.",
-    "Assign points to each question.",
-    "Click \"Add Quiz\" to save or \"Update Quiz\" to update.",
-    "Use the \"Edit\" button to edit or \"Delete\" to remove the quiz."
-  ],
-  "HELP_NOTE_TITLE": "ℹ️ Notes",
-  "HELP_NOTE_DESC": "Quizzes will be used in corresponding rooms for users to answer.",
-  "FORM": {
-    "TOPIC": "Topic",
-    "QUESTION": "Question",
-    "OPTIONS": "Options",
-    "CORRECT_ANSWER": "Correct Answer",
-    "POINTS": "Points",
-    "ADD_OPTION": "Add Option",
-    "REMOVE_QUESTION": "Remove Question",
-    "ADD_QUESTION": "Add Question",
-    "ADD_QUIZ": "Add Quiz",
-    "UPDATE_QUIZ": "Update Quiz",
-    "CANCEL": "Cancel"
+    "TITLE": "Enter Room Password",
+    "LABEL": "Password",
+    "PLACEHOLDER": "Enter password",
+    "REQUIRED": "Password is required",
+    "CANCEL": "Cancel",
+    "JOIN": "Join Room"
   },
-  "LIST_TITLE": "Quiz List",
-  "EDIT": "Edit",
-  "DELETE": "Delete",
-  "CORRECT": "Correct",
-  "CLOSE": "Close"
-},
-
- "loading": "LOADING...",
- "profile": {
-  "following": "Following",
-  "follower": "Follower",
-  "friend": "Friend",
-  "edit_profile": "Edit Profile",
-  "create_story": "Create Story",
-  "view_blocked_list": "View Blocked List"
-},
-"menu": {
-  "my_profile": "My Profile",
-  "manage_quiz": "Manage Quiz",
-  "up_vip": "Up VIP",
-  "vip_history": "VIP History",
-  "logout": "Logout"
-},
-"vip": {
-  "TITLE": "Upgrade to VIP",
-  "STATUS": "VIP Status",
-  "NORMAL": "Regular",
-  "EXPIRE": "Expires at",
-  "BENEFITS_TITLE": "VIP Benefits",
-  "BENEFIT_HD": "⭐ Access high resolution (1080p, 4K)",
-  "BENEFIT_SUPPORT": "⭐ Priority customer support",
-  "BENEFIT_MEMBER_LIMIT": "⭐ Increased room member limit",
-  "BENEFIT_NO_ADS": "⭐ No advertisements",
-  "DURATION": "Valid for: {{days}} days",
-  "CONFIRM": "Confirm Upgrade",
-  "CLOSE": "Close",
-  "REMAINING_TRIES": "Remaining Voice Trials"
-
-},
-"room": {
+  "quiz_management": {
+    "TITLE": "Quiz Management",
+    "HELP_BUTTON": "Help",
+    "HELP_TITLE": "How to use Quiz Management",
+    "HELP_PURPOSE_TITLE": "📍 Purpose",
+    "HELP_PURPOSE_DESC": "This function allows you to manage quizzes used in rooms.",
+    "HELP_PERMISSIONS_TITLE": "👤 User Permissions",
+    "HELP_PERMISSIONS_LIST": [
+      "Create new quizzes with multiple questions and options.",
+      "Edit existing quizzes.",
+      "Delete unnecessary quizzes."
+    ],
+    "HELP_USAGE_TITLE": "🛠️ How to use",
+    "HELP_USAGE_STEPS": [
+      "Click \"Add Quiz\" to create a new quiz.",
+      "Enter the topic (subject) of the quiz.",
+      "Click \"Add Question\" to insert questions.",
+      "Enter the question, options, and mark the correct answer.",
+      "Assign points to each question.",
+      "Click \"Add Quiz\" to save or \"Update Quiz\" to update.",
+      "Use the \"Edit\" button to edit or \"Delete\" to remove the quiz."
+    ],
+    "HELP_NOTE_TITLE": "ℹ️ Notes",
+    "HELP_NOTE_DESC": "Quizzes will be used in corresponding rooms for users to answer.",
+    "FORM": {
+      "TOPIC": "Topic",
+      "QUESTION": "Question",
+      "OPTIONS": "Options",
+      "CORRECT_ANSWER": "Correct Answer",
+      "POINTS": "Points",
+      "ADD_OPTION": "Add Option",
+      "REMOVE_QUESTION": "Remove Question",
+      "ADD_QUESTION": "Add Question",
+      "ADD_QUIZ": "Add Quiz",
+      "UPDATE_QUIZ": "Update Quiz",
+      "CANCEL": "Cancel"
+    },
+    "LIST_TITLE": "Quiz List",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "CORRECT": "Correct",
+    "CLOSE": "Close"
+  },
+  "loading": "LOADING...",
+  "profile": {
+    "following": "Following",
+    "follower": "Follower",
+    "friend": "Friend",
+    "edit_profile": "Edit Profile",
+    "create_story": "Create Story",
+    "view_blocked_list": "View Blocked List"
+  },
+  "menu": {
+    "my_profile": "My Profile",
+    "manage_quiz": "Manage Quiz",
+    "up_vip": "Up VIP",
+    "vip_history": "VIP History",
+    "logout": "Logout"
+  },
+  "vip": {
+    "TITLE": "Upgrade to VIP",
+    "STATUS": "VIP Status",
+    "NORMAL": "Regular",
+    "EXPIRE": "Expires at",
+    "BENEFITS_TITLE": "VIP Benefits",
+    "BENEFIT_HD": "⭐ Access high resolution (1080p, 4K)",
+    "BENEFIT_SUPPORT": "⭐ Priority customer support",
+    "BENEFIT_MEMBER_LIMIT": "⭐ Increased room member limit",
+    "BENEFIT_NO_ADS": "⭐ No advertisements",
+    "DURATION": "Valid for: {{days}} days",
+    "CONFIRM": "Confirm Upgrade",
+    "CLOSE": "Close",
+    "REMAINING_TRIES": "Remaining Voice Trials"
+  },
+  "room": {
     "KICKED": {
       "TITLE": "You have been kicked from the room",
       "REASON": "Reason",
@@ -159,9 +157,4 @@
   "donate": {
     "heading": "Donate to support us!"
   }
-
-
-
-
-
 }

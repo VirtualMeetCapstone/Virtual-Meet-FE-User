@@ -15,10 +15,12 @@ import { VipHistoryComponent } from './Components/upgrade-vip/vip-history/vip-hi
 import { ChatOutsideRoomComponent } from './Components/chat-outside-room/chat-outside-room.component';
 import { QuizQuestionsComponent } from './Components/quiz/quiz-questions/quiz-questions.component';
 import { WhiteboardComponent } from './Components/whiteboard/whiteboard.component';
+import { LandingPageComponent } from './Components/landing-page/landing-page.component';
 
 const routes: Routes = [
-  { path: '', component: HomePageRoomComponent },
+  { path: '', component: LandingPageComponent },
   { path: 'my-profile/:id', component: MyProfileComponent },
+  { path: 'rooms', component: HomePageRoomComponent },
   {
     path: 'my-profile/:id/news-feed-my-profile',
     component: NewsFeedMyProfileComponent,

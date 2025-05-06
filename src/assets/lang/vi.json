@@ -13,6 +13,7 @@
       "SETTINGS": "Cài đặt"
     },
     "HOME": "Trang chủ",
+    "ROOMS": "Phòng họp",
     "POSTS": "Bài viết",
     "ABOUT_US": "Về chúng tôi"
   },
@@ -37,73 +38,73 @@
     "PRESS_TO_TALK": "Nhấn giữ để nói"
   },
   "room_password": {
-  "TITLE": "Nhập mật khẩu phòng",
-  "LABEL": "Mật khẩu",
-  "PLACEHOLDER": "Nhập mật khẩu",
-  "REQUIRED": "Mật khẩu là bắt buộc",
-  "CANCEL": "Hủy",
-  "JOIN": "Vào phòng"
-},
-"quiz_management": {
-  "TITLE": "Quản lý Quiz",
-  "HELP_BUTTON": "Hướng dẫn",
-  "HELP_TITLE": "Hướng dẫn sử dụng Quiz Management",
-  "HELP_PURPOSE_TITLE": "📍 Mục đích sử dụng",
-  "HELP_PURPOSE_DESC": "Chức năng này cho phép quản lý các bộ câu hỏi (Quiz) dùng trong các phòng (Room).",
-  "HELP_PERMISSIONS_TITLE": "👤 Quyền hạn người dùng",
-  "HELP_PERMISSIONS_LIST": [
-    "Tạo mới một Quiz với nhiều câu hỏi và lựa chọn.",
-    "Chỉnh sửa nội dung Quiz đã có.",
-    "Xóa các Quiz không còn cần thiết."
-  ],
-  "HELP_USAGE_TITLE": "🛠️ Cách sử dụng",
-  "HELP_USAGE_STEPS": [
-    "Nhấn nút \"Add Quiz\" để tạo bộ Quiz mới.",
-    "Điền chủ đề (Topic) của Quiz.",
-    "Nhấn \"Add Question\" để thêm câu hỏi.",
-    "Nhập câu hỏi, thêm các lựa chọn, đánh dấu đáp án đúng.",
-    "Thiết lập số điểm cho mỗi câu hỏi.",
-    "Nhấn \"Add Quiz\" để lưu hoặc \"Update Quiz\" để cập nhật.",
-    "Dùng nút \"Edit\" để chỉnh sửa hoặc \"Delete\" để xóa."
-  ],
-  "HELP_NOTE_TITLE": "ℹ️ Ghi chú thêm",
-  "HELP_NOTE_DESC": "Nội dung Quiz sau khi lưu sẽ được sử dụng trong các Room để người dùng tham gia trả lời câu hỏi.",
-  "FORM": {
-    "TOPIC": "Chủ đề",
-    "QUESTION": "Câu hỏi",
-    "OPTIONS": "Lựa chọn",
-    "CORRECT_ANSWER": "Đáp án đúng",
-    "POINTS": "Điểm",
-    "ADD_OPTION": "Thêm lựa chọn",
-    "REMOVE_QUESTION": "Xóa câu hỏi",
-    "ADD_QUESTION": "Thêm câu hỏi",
-    "ADD_QUIZ": "Tạo Quiz",
-    "UPDATE_QUIZ": "Cập nhật Quiz",
-    "CANCEL": "Hủy"
+    "TITLE": "Nhập mật khẩu phòng",
+    "LABEL": "Mật khẩu",
+    "PLACEHOLDER": "Nhập mật khẩu",
+    "REQUIRED": "Mật khẩu là bắt buộc",
+    "CANCEL": "Hủy",
+    "JOIN": "Vào phòng"
   },
-  "LIST_TITLE": "Danh sách Quiz",
-  "EDIT": "Chỉnh sửa",
-  "DELETE": "Xóa",
-  "CORRECT": "Đúng",
-  "CLOSE": "Đóng"
-},
+  "quiz_management": {
+    "TITLE": "Quản lý Quiz",
+    "HELP_BUTTON": "Hướng dẫn",
+    "HELP_TITLE": "Hướng dẫn sử dụng Quiz Management",
+    "HELP_PURPOSE_TITLE": "📍 Mục đích sử dụng",
+    "HELP_PURPOSE_DESC": "Chức năng này cho phép quản lý các bộ câu hỏi (Quiz) dùng trong các phòng (Room).",
+    "HELP_PERMISSIONS_TITLE": "👤 Quyền hạn người dùng",
+    "HELP_PERMISSIONS_LIST": [
+      "Tạo mới một Quiz với nhiều câu hỏi và lựa chọn.",
+      "Chỉnh sửa nội dung Quiz đã có.",
+      "Xóa các Quiz không còn cần thiết."
+    ],
+    "HELP_USAGE_TITLE": "🛠️ Cách sử dụng",
+    "HELP_USAGE_STEPS": [
+      "Nhấn nút \"Add Quiz\" để tạo bộ Quiz mới.",
+      "Điền chủ đề (Topic) của Quiz.",
+      "Nhấn \"Add Question\" để thêm câu hỏi.",
+      "Nhập câu hỏi, thêm các lựa chọn, đánh dấu đáp án đúng.",
+      "Thiết lập số điểm cho mỗi câu hỏi.",
+      "Nhấn \"Add Quiz\" để lưu hoặc \"Update Quiz\" để cập nhật.",
+      "Dùng nút \"Edit\" để chỉnh sửa hoặc \"Delete\" để xóa."
+    ],
+    "HELP_NOTE_TITLE": "ℹ️ Ghi chú thêm",
+    "HELP_NOTE_DESC": "Nội dung Quiz sau khi lưu sẽ được sử dụng trong các Room để người dùng tham gia trả lời câu hỏi.",
+    "FORM": {
+      "TOPIC": "Chủ đề",
+      "QUESTION": "Câu hỏi",
+      "OPTIONS": "Lựa chọn",
+      "CORRECT_ANSWER": "Đáp án đúng",
+      "POINTS": "Điểm",
+      "ADD_OPTION": "Thêm lựa chọn",
+      "REMOVE_QUESTION": "Xóa câu hỏi",
+      "ADD_QUESTION": "Thêm câu hỏi",
+      "ADD_QUIZ": "Tạo Quiz",
+      "UPDATE_QUIZ": "Cập nhật Quiz",
+      "CANCEL": "Hủy"
+    },
+    "LIST_TITLE": "Danh sách Quiz",
+    "EDIT": "Chỉnh sửa",
+    "DELETE": "Xóa",
+    "CORRECT": "Đúng",
+    "CLOSE": "Đóng"
+  },
   "loading": "ĐANG TẢI...",
   "profile": {
-  "following": "Đang Follow",
-  "follower": "Follower",
-  "friend": "Bạn Bè",
-  "edit_profile": "Sửa hồ sơ",
-  "create_story": "Tạo tin mới",
-  "view_blocked_list": "Xem danh sách đã block"
-},
-"menu": {
-  "my_profile": "Trang cá nhân",
-  "manage_quiz": "Quản lý Quiz",
-  "up_vip": "Nâng VIP",
-  "vip_history": "Lịch sử VIP",
-  "logout": "Đăng xuất"
-},
-"vip": {
+    "following": "Đang Follow",
+    "follower": "Follower",
+    "friend": "Bạn Bè",
+    "edit_profile": "Sửa hồ sơ",
+    "create_story": "Tạo tin mới",
+    "view_blocked_list": "Xem danh sách đã block"
+  },
+  "menu": {
+    "my_profile": "Trang cá nhân",
+    "manage_quiz": "Quản lý Quiz",
+    "up_vip": "Nâng VIP",
+    "vip_history": "Lịch sử VIP",
+    "logout": "Đăng xuất"
+  },
+  "vip": {
     "TITLE": "Nâng cấp tài khoản VIP",
     "STATUS": "Trạng thái VIP",
     "NORMAL": "Thường",
