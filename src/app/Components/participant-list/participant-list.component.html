@@ -36,19 +36,20 @@
 <div class="popup-overlay" *ngIf="isKickPopupVisible">
   <div class="popup-container">
     <h2>Kick User</h2>
-    <p>Bạn có chắc chắn muốn kick <strong>{{ selectedUser?.name }}</strong>?</p>
+    <p>Are you sure you want to kick <strong style="color: black;">{{ selectedUser?.name }}</strong>?</p>
     <div class="reason-select">
-      <label for="reason">Chọn lý do:</label>
+      <label for="reason">Select a reason:</label>
       <select id="reason" [(ngModel)]="selectedReason">
-        <option value="" disabled selected>Chọn lý do</option>
+        <option value="" disabled selected>Select a reason</option>
         <option style="color: black;" *ngFor="let reason of reasons" [value]="reason">
           {{ reason }}
         </option>
       </select>
     </div>
     <div class="popup-actions">
-      <button class="btn btn-cancel" (click)="closeKickPopup()">Hủy</button>
-      <button class="btn btn-confirm" [disabled]="!selectedReason" (click)="confirmKick()">Xác nhận</button>
+      <button class="btn btn-cancel" (click)="closeKickPopup()">Cancel</button>
+      <button class="btn btn-confirm" [disabled]="!selectedReason" (click)="confirmKick()">Confirm</button>
     </div>
   </div>
 </div>
+

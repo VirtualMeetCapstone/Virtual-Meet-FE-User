@@ -117,7 +117,8 @@
     "DURATION": "Hiệu lực: {{days}} ngày",
     "CONFIRM": "Xác nhận nâng cấp",
     "CLOSE": "Đóng",
-    "REMAINING_TRIES": "Lượt thử còn lại"
+    "REMAINING_TRIES": "Lượt thử còn lại",
+    "BENEFIT_UNLIMITED_FEATURES": "⭐ Sử dụng không giới hạn tất cả tính năng (dịch thuật, trò chuyện giọng nói,...)"
   },
   "room": {
     "KICKED": {
