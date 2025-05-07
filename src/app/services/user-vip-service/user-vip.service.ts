@@ -10,7 +10,7 @@ export class UserVipService {
   private isBrowser: boolean;
   private vipPackageId: number = 0;
   private expireAt?: string;
-  private remainingVoiceTries: number = 5;
+  private remainingVoiceTries: number = 10;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
