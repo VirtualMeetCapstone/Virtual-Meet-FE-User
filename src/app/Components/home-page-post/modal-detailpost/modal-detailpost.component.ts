@@ -63,7 +63,11 @@ export class ModalDetailpostComponent implements OnInit {
       this.getComment();
     }
   }
-
+  ticksToDate(ticks: number): Date {
+    const ticksSinceEpoch = ticks - 621355968000000000;
+    const milliseconds = ticksSinceEpoch / 10000;
+    return new Date(milliseconds);
+  }
   // Toggle reaction panel visibility
   toggleReactionPanel(event: Event) {
     event.stopPropagation();
@@ -156,6 +160,7 @@ export class ModalDetailpostComponent implements OnInit {
       this.comments = data;
       this.groupedComments = this.groupComments(this.comments);
       this.isLoadingComment = false;
+      console.log(this.groupedComments);
     });
   }
 
