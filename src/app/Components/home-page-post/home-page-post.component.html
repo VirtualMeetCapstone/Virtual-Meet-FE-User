@@ -64,7 +64,9 @@
             >
               {{ post.user.name }}
             </div>
-            <div class="time">{{ post.createTime }}</div>
+            <div class="time">
+              {{ ticksToDate(post.createTime) | date : "dd/MM/yy HH:mm" }}
+            </div>
           </div>
           <div class="post-menu">
             <button (click)="toggleMenu(post.id, $event)">...</button>

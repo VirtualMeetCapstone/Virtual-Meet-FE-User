@@ -20,12 +20,13 @@
       class="video-box"
       [ngStyle]="{ 'background-color': getBoxColor(peer.peerId) }"
     >
-      <video
-        *ngIf="(videoStatusMap$ | async)?.[peer.peerId]; else avatarTemplate"
-        [srcObject]="peer.stream"
-        autoplay
-        playsinline
-      ></video>
+    <video
+    [srcObject]="peer.stream"
+    autoplay
+    playsinline
+    [style.display]="(videoStatusMap$ | async)?.[peer.peerId] ? 'block' : 'none'"
+  ></video>
+
 
       <!-- Template avatar khi camera TẮT -->
       <ng-template #avatarTemplate>
@@ -79,7 +80,7 @@
       <div class="profile" [style.display]="isCameraOn ? 'none' : 'flex'">
         <img
           style="width: 100%; height: 100%"
-          [src]="getSafeUrl(user.photoUrl) || 'assets/default-avatar.jpg'"
+          [src]="(user.picture.url) || 'assets/default-avatar.jpg'"
           class="avatar"
         />
       </div>

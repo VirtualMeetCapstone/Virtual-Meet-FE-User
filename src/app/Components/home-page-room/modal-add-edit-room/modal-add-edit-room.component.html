@@ -19,51 +19,66 @@
           <div class="form-group">
             <label for="topic">Topic</label>
             <input
-            type="text"
-            class="form-input"
-            id="topic"
-            formControlName="topic"
-            placeholder="Enter topic"
-            (blur)="checkTopic(FormAdd.get('topic')?.value)"
-          />
+              type="text"
+              class="form-input"
+              id="topic"
+              formControlName="topic"
+              placeholder="Enter topic"
+              (blur)="checkTopic(FormAdd.get('topic')?.value)"
+            />
 
-          <div
-          *ngIf="FormAdd.get('topic')?.errors && FormAdd.get('topic')?.touched"
-          class="error-message"
-        >
-          <div *ngIf="FormAdd.get('topic')?.errors?.['required']" class="error-message">
-            Topic is required.
-          </div>
-          <div *ngIf="FormAdd.get('topic')?.errors?.['invalid']" class="error-message">
-            Topic violates the rules. Please use appropriate content.
-          </div>
-        </div>
-
+            <div
+              *ngIf="
+                FormAdd.get('topic')?.errors && FormAdd.get('topic')?.touched
+              "
+              class="error-message"
+            >
+              <div
+                *ngIf="FormAdd.get('topic')?.errors?.['required']"
+                class="error-message"
+              >
+                Topic is required.
+              </div>
+              <div
+                *ngIf="FormAdd.get('topic')?.errors?.['invalid']"
+                class="error-message"
+              >
+                Topic violates the rules. Please use appropriate content.
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
             <label for="description">Description</label>
             <textarea
-            class="form-input"
-            id="description"
-            formControlName="description"
-            rows="3"
-            placeholder="Enter description"
-            (blur)="checkDescription(FormAdd.get('description')?.value)"
-          ></textarea>
+              class="form-input"
+              id="description"
+              formControlName="description"
+              rows="3"
+              placeholder="Enter description"
+              (blur)="checkDescription(FormAdd.get('description')?.value)"
+            ></textarea>
 
-          <div
-          *ngIf="FormAdd.get('description')?.errors && FormAdd.get('description')?.touched"
-          class="error-message"
-        >
-          <div *ngIf="FormAdd.get('description')?.errors?.['required']" class="error-message">
-            Description is required.
-          </div>
-          <div *ngIf="FormAdd.get('description')?.errors?.['invalid']" class="error-message">
-            Description violates the rules. Please revise it.
-          </div>
-        </div>
-
+            <div
+              *ngIf="
+                FormAdd.get('description')?.errors &&
+                FormAdd.get('description')?.touched
+              "
+              class="error-message"
+            >
+              <div
+                *ngIf="FormAdd.get('description')?.errors?.['required']"
+                class="error-message"
+              >
+                Description is required.
+              </div>
+              <div
+                *ngIf="FormAdd.get('description')?.errors?.['invalid']"
+                class="error-message"
+              >
+                Description violates the rules. Please revise it.
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -84,10 +99,12 @@
             >
               Maximum Member is required.
             </div>
-            <div *ngIf="FormAdd.get('maximumMember')?.errors?.['max']">
+            <div
+              class="error-message"
+              *ngIf="FormAdd.get('maximumMember')?.errors?.['max']"
+            >
               Maximum allowed for free user is 10.
             </div>
-
           </div>
 
           <div class="form-group">

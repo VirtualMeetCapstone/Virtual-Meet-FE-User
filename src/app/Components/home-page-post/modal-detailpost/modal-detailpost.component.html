@@ -54,7 +54,9 @@
             <span> • Following </span>
           </div>
         </div>
-        <div class="time">7 hours ago</div>
+        <div class="time">
+          {{ ticksToDate(post.createTime) | date : "dd/MM/yy HH:mm" }}
+        </div>
         <div class="post-text">
           <p>{{ post.content }}</p>
         </div>
