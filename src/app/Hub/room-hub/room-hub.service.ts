@@ -28,6 +28,7 @@ export class RoomHubService {
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
   private confirmHandler: ((msg: string) => Promise<boolean>) | null = null;
+  private roomListHubConnection!: signalR.HubConnection;
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -40,6 +41,7 @@ export class RoomHubService {
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.None)
       .build();
+
 
     // Setup non-WebRTC SignalR events
     this.setupSignalREvents();
@@ -556,6 +558,15 @@ export class RoomHubService {
       callback(roomId);
     });
   }
+
+  public receiveRoomCreated(callback: (room: any) => void): void {
+    this.roomListHubConnection.off('RoomCreated');
+    this.roomListHubConnection.on('RoomCreated', (room: any) => {
+      console.log('📌 New room created:', room);
+      callback(room);
+    });
+  }
+
 
   public async kickUser(targetUserId: string, reason: string): Promise<void> {
     if (!this.currentUser.roomId) {
