@@ -160,7 +160,6 @@ export class ModalDetailpostComponent implements OnInit {
       this.comments = data;
       this.groupedComments = this.groupComments(this.comments);
       this.isLoadingComment = false;
-      console.log(this.groupedComments);
     });
   }
 
