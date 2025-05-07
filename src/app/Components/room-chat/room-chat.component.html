@@ -15,7 +15,7 @@
   </div>
   <!-- Hiển thị số lượt dùng thử còn lại -->
   <span *ngIf="!userVipService.isVip()" class="trial-info" style="color: #000000;">
-    🎤 Lượt dùng còn: {{ userVipService.getRemainingTries() }}
+    🎤 Remaining uses: {{ userVipService.getRemainingTries() }}
   </span>
   <div class="chat-input">
     <textarea class="text" [(ngModel)]="newMessage" placeholder="Type a message..."
