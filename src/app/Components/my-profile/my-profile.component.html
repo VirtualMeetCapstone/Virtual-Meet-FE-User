@@ -197,3 +197,8 @@
     </div>
   </div>
 </div>
+<app-confirm-modal
+  [visible]="showSuccessModal"
+  [message]="successMessage"
+  (confirmed)="showSuccessModal = false">
+</app-confirm-modal>
