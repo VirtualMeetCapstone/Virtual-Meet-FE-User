@@ -31,10 +31,10 @@
           *ngIf="FormAdd.get('topic')?.errors && FormAdd.get('topic')?.touched"
           class="error-message"
         >
-          <div *ngIf="FormAdd.get('topic')?.errors?.['required']">
+          <div *ngIf="FormAdd.get('topic')?.errors?.['required']" class="error-message">
             Topic is required.
           </div>
-          <div *ngIf="FormAdd.get('topic')?.errors?.['invalid']">
+          <div *ngIf="FormAdd.get('topic')?.errors?.['invalid']" class="error-message">
             Topic violates the rules. Please use appropriate content.
           </div>
         </div>
@@ -56,10 +56,10 @@
           *ngIf="FormAdd.get('description')?.errors && FormAdd.get('description')?.touched"
           class="error-message"
         >
-          <div *ngIf="FormAdd.get('description')?.errors?.['required']">
+          <div *ngIf="FormAdd.get('description')?.errors?.['required']" class="error-message">
             Description is required.
           </div>
-          <div *ngIf="FormAdd.get('description')?.errors?.['invalid']">
+          <div *ngIf="FormAdd.get('description')?.errors?.['invalid']" class="error-message">
             Description violates the rules. Please revise it.
           </div>
         </div>
