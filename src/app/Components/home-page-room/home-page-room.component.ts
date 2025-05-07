@@ -22,6 +22,7 @@ import { Room } from '../../models/room';
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
 import { AppConstants } from '../../constant/AppConstants';
+import { RoomListHubService } from '../../Hub/room-hub/room-list-hub';
 
 @Component({
   selector: 'app-home-page-room',
@@ -58,7 +59,8 @@ export class HomePageRoomComponent implements OnInit {
     private roomHubService: RoomHubService,
     private reportService: ReportServiceService,
     private cdRef: ChangeDetectorRef,
-    private http: HttpClient
+    private http: HttpClient,
+    private roomListService: RoomListHubService,
   ) {}
 
   user: any = null;
@@ -89,6 +91,18 @@ export class HomePageRoomComponent implements OnInit {
     this.getRoom();
     if (isPlatformBrowser(this.platformId)) {
       await this.roomHubService.startConnection();
+      await this.roomListService.startConnection();
+      this.roomListService.receiveRoomCreated((room: any) => {
+        this.rooms.unshift(room);
+        this.getRoom();
+        this.cdRef.detectChanges();
+      });
+
+      this.roomListService.receiveRoomDeleted((roomId: string) => {
+        this.rooms = this.rooms.filter((room) => room.id !== roomId);
+        this.cdRef.detectChanges();
+      });
+
       this.roomHubService.receiveRoomDeleted((roomId: string) => {
         this.rooms = this.rooms.filter((room) => room.id !== roomId);
         this.cdRef.detectChanges();
