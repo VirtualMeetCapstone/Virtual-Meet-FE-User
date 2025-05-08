@@ -187,9 +187,9 @@ export class RoomHubService {
       const constraints = {
         video: useVideo
           ? {
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-              frameRate: { ideal: 30 },
+            width: { ideal: 854 },
+    height: { ideal: 480 },
+    frameRate: { ideal: 20 }
             }
           : false,
         audio: useAudio
