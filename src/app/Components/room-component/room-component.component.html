@@ -90,21 +90,23 @@
       </button>
       <app-room-video-control (resolutionChanged)="onResolutionChanged($event)"></app-room-video-control>
       <!-- Chọn ngôn ngữ -->
-      <label class="language-label" for="languageSelect">Phụ đề:</label>
+      <label class="language-label" for="languageSelect">Subtitles:</label>
       <select id="languageSelect" class="language-select" (change)="changeLanguage($event)">
         <option value="vi-VN" [selected]="selectedLangTarget === 'vi-VN'">
-          Tiếng Việt
+          Vietnamese
         </option>
         <option value="en-US" [selected]="selectedLangTarget === 'en-US'">
-          Tiếng Anh
+          English
         </option>
       </select>
 
+
       <!-- Nút bật/tắt phụ đề -->
       <button class="activity-option" (click)="toggleSubtitles()">
-        {{ isSubtitlesEnabled ? "Tắt Phụ Đề" : "Bật Phụ Đề" }}
+        {{ isSubtitlesEnabled ? "Turn Off Subtitles" : "Turn On Subtitles" }}
       </button>
-      <button class="close-modal" (click)="closeAllModals()">Đóng</button>
+      <button class="close-modal" (click)="closeAllModals()">Close</button>
+
     </div>
   </div>
 
@@ -221,14 +223,12 @@
     <!-- Modal hiển thị tóm tắt -->
     <div *ngIf="showCallSummaryModal && isHost" class="call-summary-modal">
       <div class="modal-content">
-        <h3 style="color: black">Tóm Tắt Cuộc Gọi</h3>
+        <h3 style="color: black">Call Summary</h3>
         <p [innerHTML]="callSummaryText" id="callSummaryText" style="color: black"></p>
         <div style="display: flex; justify-content: flex-end; gap: 10px">
-          <button class="close-modal" (click)="copySummary()">Sao chép</button>
-          <button class="close-modal" (click)="confirmSendMail()">
-            Gửi Mail
-          </button>
-          <button class="close-modal" (click)="closeSummaryModal()">Đóng</button>
+          <button class="close-modal" (click)="copySummary()">Copy</button>
+          <button class="close-modal" (click)="confirmSendMail()">Send Mail</button>
+          <button class="close-modal" (click)="closeSummaryModal()">Close</button>
         </div>
       </div>
     </div>
