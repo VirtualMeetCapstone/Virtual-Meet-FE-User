@@ -505,14 +505,15 @@ export class RoomComponentComponent implements OnInit {
       .sendCallSummaryMail(this.roomId, this.callSummaryText)
       .subscribe({
         next: () => {
-          this.showResultModal('Đã gửi mail cho người tham gia.');
+          this.showResultModal('Email has been sent to participants.');
         },
         error: (err) => {
-          console.error('Gửi mail thất bại', err);
-          this.showResultModal('Gửi mail thất bại, vui lòng thử lại.');
+          console.error('Failed to send email', err);
+          this.showResultModal('Failed to send email. Please try again.');
         },
       });
   }
+
 
   showResultModal(message: string) {
     this.resultModalMessage = message;

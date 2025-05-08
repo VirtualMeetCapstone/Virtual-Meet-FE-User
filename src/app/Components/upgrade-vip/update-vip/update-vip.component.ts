@@ -90,7 +90,7 @@ export class UpdateVipComponent implements OnInit {
       }
 
       if (status === 'PAID' || params['cancel'] === 'false') {
-        this.paymentMessage = `Thanh toán thành công! Mã đơn hàng: ${orderId}, Tổng tiền: ${totalAmount} VND. <br> Reload sau 5 giây!`;
+        this.paymentMessage = `Payment successful! Order ID: ${orderId}, Total amount: ${totalAmount} VND. <br> Reloading in 5 seconds!`;
         console.log('Thanh toán thành công! Mã đơn hàng:', orderId, 'Tổng tiền:', totalAmount, 'VND.');
 
         try {

@@ -11,16 +11,6 @@
     >
       <i class="fas fa-comment-dots"></i>
     </div>
-    <div class="sidebar-icon">
-      <i class="fas fa-users"></i>
-    </div>
-    <div class="sidebar-icon">
-      <i class="fas fa-phone"></i>
-    </div>
-    <div class="sidebar-icon">
-      <i class="fas fa-cog"></i>
-    </div>
-
     <div class="user-avatar">
       <img src="{{ user.picture?.url }}" alt="User" />
       <span class="online-status"></span>
@@ -39,10 +29,6 @@
   <div class="contacts" [class.active]="!isMobile || activeView === 'contacts'">
     <div class="contacts-header">
       <h2>Chats</h2>
-      <div class="header-actions">
-        <button><i class="fas fa-edit"></i></button>
-        <button><i class="fas fa-ellipsis-vertical"></i></button>
-      </div>
     </div>
     <div class="search-bar">
       <input
@@ -143,12 +129,6 @@
           <h3>{{ currentChat }}</h3>
           <p>Online</p>
         </div>
-      </div>
-      <div class="chat-actions">
-        <button><i class="fas fa-search"></i></button>
-        <button><i class="fas fa-phone"></i></button>
-        <button><i class="fas fa-video"></i></button>
-        <button><i class="fas fa-ellipsis-vertical"></i></button>
       </div>
     </div>
 
