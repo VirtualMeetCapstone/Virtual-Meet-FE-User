@@ -31,7 +31,7 @@ export class UserVipService {
         this.remainingVoiceTries = +trial;
       } else {
         // Nếu không có thông tin trong localStorage, đặt lại số lượt về 5
-        this.remainingVoiceTries = 5;
+        this.remainingVoiceTries = 10;
         localStorage.setItem(this.TRIAL_KEY, this.remainingVoiceTries.toString());
       }
     }
