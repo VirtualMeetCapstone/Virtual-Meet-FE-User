@@ -228,7 +228,8 @@ export class RoomComponentComponent implements OnInit {
         console.log('📌 Room ID từ router:', this.roomId);
       }
     });
-    this.user = this.authService.getUser();
+    this.user = await this.authService.getBackendUser(this.userId);
+    console.log('👤 Người dùng:', this.user);
     this.roomHubService.getRoomInfo(this.roomId).subscribe({
       next: (room) => {
         this.roomOwnerId = room.ownerId;
@@ -324,6 +325,7 @@ export class RoomComponentComponent implements OnInit {
 
         console.log('Updated peers list:', this.peers); // Log final updated peers list
       });
+      console.log('Avatar URL:', (this.user?.picture));
 
       await this.displayLocalStream();
     } catch (err) {
@@ -333,11 +335,10 @@ export class RoomComponentComponent implements OnInit {
     }
   }
   async loadUserInfo(userId: string): Promise<any> {
-    if (this.userNameCache.has(userId)) {
-      return this.userNameCache.get(userId);
-    }
 
     const user = await this.authService.getBackendUser(userId);
+    console.log('User info loaded: 2 ', user); // Log user inf
+
     this.userNameCache.set(userId, user);
     return user;
   }
@@ -358,6 +359,8 @@ export class RoomComponentComponent implements OnInit {
   }
 
   getSafeUrl(url: any) {
+
+
     return this.externalService.getSafeUrl(url);
   }
 

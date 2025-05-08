@@ -10,9 +10,9 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./vip-history.component.scss'],
 })
 export class VipHistoryComponent implements OnInit {
-  paymentHistory: any[] = []; // Biến lưu trữ lịch sử thanh toán
-  isLoading: boolean = true; // Trạng thái loading
-  errorMessage: string | null = null; // Thông báo lỗi nếu có
+  paymentHistory: any[] = []; // Stores VIP payment history
+  isLoading: boolean = true;  // Loading state
+  errorMessage: string | null = null; // Error message if any
 
   constructor(
     private httpAuthService: HttpAuthService,
@@ -23,7 +23,6 @@ export class VipHistoryComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       const userId = this.authService.getUser()?.id;
-
       const apiUrl = `${AppConstants.API_BASE_URL_HTTPS}/vip-payment/user/${userId}`;
 
       this.httpAuthService
@@ -42,19 +41,14 @@ export class VipHistoryComponent implements OnInit {
               this.isLoading = false;
             });
           } else {
-            console.error(
-              '❌ Lỗi khi lấy lịch sử thanh toán:',
-              response?.status
-            );
-            this.errorMessage =
-              'Không thể tải lịch sử thanh toán. Vui lòng thử lại sau.';
+            console.error('❌ Failed to fetch payment history:', response?.status);
+            this.errorMessage = 'Unable to load payment history. Please try again later.';
             this.isLoading = false;
           }
         })
         .catch((err) => {
-          console.error('❌ Lỗi khi gọi API:', err);
-          this.errorMessage =
-            'Không thể tải lịch sử thanh toán. Vui lòng thử lại sau.';
+          console.error('❌ API call error:', err);
+          this.errorMessage = 'Unable to load payment history. Please try again later.';
           this.isLoading = false;
         });
     }

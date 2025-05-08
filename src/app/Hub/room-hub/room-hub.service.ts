@@ -28,6 +28,7 @@ export class RoomHubService {
   private participantsSubject = new BehaviorSubject<number>(0);
   private connectionStateSubject = new BehaviorSubject<string>('disconnected');
   private confirmHandler: ((msg: string) => Promise<boolean>) | null = null;
+  private roomListHubConnection!: signalR.HubConnection;
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -40,6 +41,7 @@ export class RoomHubService {
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.None)
       .build();
+
 
     // Setup non-WebRTC SignalR events
     this.setupSignalREvents();
@@ -173,16 +175,13 @@ export class RoomHubService {
       let useVideo = false;
       let useAudio = false;
 
-      // Ensure each modal is completely finished before showing the next one
       if (hasCamera) {
-        useVideo = await this.showConfirm('Bạn có muốn sử dụng camera không?');
+        useVideo = await this.showConfirm('Do you want to use the camera?');
       }
-
-      // Make sure to wait a moment before showing the next modal
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       if (hasMicrophone) {
-        useAudio = await this.showConfirm('Bạn có muốn sử dụng mic không?');
+        useAudio = await this.showConfirm('Do you want to use the microphone?');
       }
 
       const constraints = {
@@ -559,6 +558,15 @@ export class RoomHubService {
       callback(roomId);
     });
   }
+
+  public receiveRoomCreated(callback: (room: any) => void): void {
+    this.roomListHubConnection.off('RoomCreated');
+    this.roomListHubConnection.on('RoomCreated', (room: any) => {
+      console.log('📌 New room created:', room);
+      callback(room);
+    });
+  }
+
 
   public async kickUser(targetUserId: string, reason: string): Promise<void> {
     if (!this.currentUser.roomId) {

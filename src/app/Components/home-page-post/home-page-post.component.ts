@@ -82,7 +82,11 @@ export class HomePagePostComponent implements OnInit {
     this.postToDelete = post;
     this.showModalDeletePost = true;
   }
-
+  ticksToDate(ticks: number): Date {
+    const ticksSinceEpoch = ticks - 621355968000000000;
+    const milliseconds = ticksSinceEpoch / 10000;
+    return new Date(milliseconds);
+  }
   addPlayListeners() {
     const videos = document.querySelectorAll<HTMLVideoElement>('.post video');
     videos.forEach((video) => {

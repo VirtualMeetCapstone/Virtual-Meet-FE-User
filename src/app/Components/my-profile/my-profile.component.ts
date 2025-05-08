@@ -332,7 +332,8 @@ export class MyProfileComponent implements OnInit {
 
   selectedReportReason: string = '';
   showReportModal = false;
-
+  showSuccessModal = false;
+  successMessage = '';
   submitReport() {
     if (!this.selectedReportReason) {
       alert('Vui lòng chọn lý do');
@@ -357,14 +358,16 @@ export class MyProfileComponent implements OnInit {
 
     this.reportService.sendReport(reportPayload).subscribe({
       next: () => {
-        alert('Gửi báo cáo thành công');
-        this.toggleReport();
+        this.successMessage = 'Report submitted successfully';
+        this.showSuccessModal = true;
       },
-      error: (err) => {
+      error: (err: { error: { message: any } }) => {
         console.error(err);
-        alert(err.error.message);
+        this.successMessage = err.error.message || 'Đã có lỗi xảy ra';
+        this.showSuccessModal = true;
       },
     });
+
     this.showReportModal = false;
   }
 

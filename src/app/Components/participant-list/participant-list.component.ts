@@ -20,11 +20,12 @@ export class ParticipantListComponent implements OnInit {
   isKickPopupVisible = false; // Hiển thị popup
   selectedReason: string = ''; // Lý do được chọn
   reasons = [
-    'Vi phạm nội quy',
-    'Gây rối trong phòng',
-    'Ngôn ngữ không phù hợp',
-    'Khác',
+    'Rule violation',
+    'Disruptive behavior',
+    'Inappropriate language',
+    'Other',
   ];
+
 
   constructor(
     private rtcHubService: RtcHubService,
