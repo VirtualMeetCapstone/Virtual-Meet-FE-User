@@ -17,7 +17,7 @@ import { FollowUserService } from '../../services/follow-user/follow-user.servic
 import { lastValueFrom } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ReportServiceService } from '../../services/report-service/report-service.service';
-
+import Swal from 'sweetalert2';
 interface Profile {
   name: string;
   bio: string;
@@ -301,12 +301,14 @@ export class MyProfileComponent implements OnInit {
   }
 
   async showCopySuccessMessage() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Thành công',
-      life: 5000,
+    Swal.fire({
+      icon: 'success',
+      title: 'Thành công',
+      text: 'Link hồ sơ đã được sao chép!',
+      timer: 3000,
     });
   }
+
   showReportPopup = false;
   selectedReason: string = '';
   reportReason: string = '';
