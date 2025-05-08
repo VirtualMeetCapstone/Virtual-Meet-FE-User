@@ -56,6 +56,28 @@ export class AppConstants {
         credential:
           '33b8f21814e3dc5419ebf7ab84570201c038157e59320760e077da01b65a0f7a',
       }, // Cloudflare TURN (secure TCP)
+
+      { urls: "stun:stun.relay.metered.ca:80" },
+      {
+        urls: "turn:asia-east.relay.metered.ca:80",
+        username: "d2c3d96df5e036f62fb432ea",
+        credential: "8fyHJVdZ7dhdIbEk",
+      },
+      {
+        urls: "turn:asia-east.relay.metered.ca:80?transport=tcp",
+        username: "d2c3d96df5e036f62fb432ea",
+        credential: "8fyHJVdZ7dhdIbEk",
+      },
+      {
+        urls: "turn:asia-east.relay.metered.ca:443",
+        username: "d2c3d96df5e036f62fb432ea",
+        credential: "8fyHJVdZ7dhdIbEk",
+      },
+      {
+        urls: "turns:asia-east.relay.metered.ca:443?transport=tcp",
+        username: "d2c3d96df5e036f62fb432ea",
+        credential: "8fyHJVdZ7dhdIbEk",
+      },
     ],
   };
 }
