@@ -137,7 +137,7 @@
           </p>
         </div>
 
-        <div class="room-stats">
+        <div class="room-stats" style="margin-bottom: 35px;">
           <div class="members-count">
             <i class="fas fa-users"></i>
             <span>{{ room.members.length }}/{{ room.maximumMembers }}</span>
@@ -147,7 +147,7 @@
             <div class="avatar-stack">
               <img
                 *ngFor="let member of room.members.slice(0, 3)"
-                [src]="member.picture"
+                [src]="member.picture.url"
                 class="member-avatar"
               />
               <div class="more-members" *ngIf="room.members.length > 3">
