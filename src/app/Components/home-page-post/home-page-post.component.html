@@ -16,11 +16,7 @@
               <app-story-list></app-story-list>
             </div>
           </div>
-          <textarea
-            (click)="openCreatePost()"
-            name="content"
-            placeholder="Write something here..."
-          ></textarea>
+          <textarea (click)="openCreatePost()" name="content" placeholder="Write something here..."></textarea>
         </div>
         <div class="actions d-flex justify-content-end">
           <!-- <button (click)="openCreatePost()">
@@ -42,26 +38,12 @@
         </div>
       </div>
       <br />
-      <div
-        class="post"
-        *ngFor="let post of listPost"
-        (click)="openModalDetailPost(post.id)"
-      >
+      <div class="post" *ngFor="let post of listPost" (click)="openModalDetailPost(post.id)">
         <div class="post-header">
-          <img
-            alt="User profile picture"
-            height="40"
-            src="{{ post.user.picture?.url }}"
-            width="40"
-            (click)="goToProfile(post.userId); $event.stopPropagation()"
-            style="cursor: pointer"
-          />
+          <img alt="User profile picture" height="40" src="{{ post.user.picture?.url }}" width="40"
+            (click)="goToProfile(post.userId); $event.stopPropagation()" style="cursor: pointer" />
           <div>
-            <div
-              class="name"
-              (click)="goToProfile(post.userId); $event.stopPropagation()"
-              style="cursor: pointer"
-            >
+            <div class="name" (click)="goToProfile(post.userId); $event.stopPropagation()" style="cursor: pointer">
               {{ post.user.name }}
             </div>
             <div class="time">
@@ -70,18 +52,14 @@
           </div>
           <div class="post-menu">
             <button (click)="toggleMenu(post.id, $event)">...</button>
-            <ul class="dropdown" *ngIf="openedMenuPostId === post.id">
-              <li
-                (click)="
-                  openModalDeletePost(post);
-                  $event.stopPropagation();
-                  openedMenuPostId = null
-                "
-                *ngIf="post.userId === userId"
-              >
+            <ul class="dropdown ng-star-inserted" *ngIf="openedMenuPostId === post.id">
+              <li (click)="openModalDeletePost(post); $event.stopPropagation(); openedMenuPostId = null"
+                *ngIf="post.userId === userId">
                 Delete post
               </li>
-              <li (click)="reportPost(post.id)">Report post</li>
+              <li (click)="reportPost(post.id); $event.stopPropagation(); openedMenuPostId = null">
+                Report post
+              </li>
             </ul>
           </div>
         </div>
@@ -89,22 +67,13 @@
           <p>{{ post.content }}</p>
           <div class="post-images {{ getMediaClass(post.medias.length) }}">
             <ng-container *ngFor="let media of post.medias; let i = index">
-              <div
-                class="media-item"
-                *ngIf="i < 4"
-                [attr.data-more]="
+              <div class="media-item" *ngIf="i < 4" [attr.data-more]="
                   i === 3 && post.medias.length > 4
                     ? post.medias.length - 4
                     : null
-                "
-              >
+                ">
                 <img *ngIf="media.type === 1" [src]="media.url" alt="Media" />
-                <video
-                  *ngIf="media.type === 2"
-                  [src]="media.url"
-                  controls
-                  (click)="$event.stopPropagation()"
-                ></video>
+                <video *ngIf="media.type === 2" [src]="media.url" controls (click)="$event.stopPropagation()"></video>
               </div>
             </ng-container>
           </div>
@@ -115,7 +84,11 @@
             <div class="likes" (click)="openReactionSummary(post.id, $event)">
               <div class="reaction-icons" *ngIf="post.topReactions?.length > 0">
                 <ng-container *ngFor="let reaction of post.topReactions">
-                  <i [class]="getReactionIcon(reaction)" [title]="reaction"></i>
+                  <i [class]="getReactionIcon(reaction)" [title]="reaction" [style.color]="
+                  reaction
+                    ? getReactionColor(reaction)
+                    : '#606770'
+                "></i>
                 </ng-container>
               </div>
               <span>{{ post.likeCount || 0 }}</span>
@@ -131,23 +104,16 @@
           </div>
           <div class="action-buttons">
             <div class="like-btn-wrapper">
-              <button
-                class="like-btn"
-                [style.color]="
+              <button class="like-btn" [style.color]="
                   post.currentUserReaction
                     ? getReactionColor(post.currentUserReaction)
                     : '#606770'
-                "
-                (click)="toggleReactionPanel(post.id, $event)"
-              >
-                <i
-                  [class]="getReactionIcon(post.currentUserReaction || 'like')"
-                  [style.color]="'inherit'"
-                ></i>
+                " (click)="toggleReactionPanel(post.id, $event)">
+                <i [class]="getReactionIcon(post.currentUserReaction || 'like')" [style.color]="'inherit'"></i>
                 {{
-                  post.currentUserReaction
-                    ? (post.currentUserReaction | titlecase)
-                    : "Like"
+                post.currentUserReaction
+                ? (post.currentUserReaction | titlecase)
+                : "Like"
                 }}
               </button>
             </div>
@@ -158,10 +124,8 @@
               <i class="fas fa-share"></i> Share
             </button>
           </div>
-          <div
-            class="reaction-panel"
-            *ngIf="showReactionPanelForPostId === post.id"
-          >
+          <div class="reaction-panel" *ngIf="showReactionPanelForPostId === post.id " (mouseenter)="onMouseEnterPanel()"
+            (mouseleave)="onMouseLeavePanel()">
             <button (click)="setReaction(post.id, 'love', $event)" title="Love">
               <i class="fas fa-heart"></i>
             </button>
@@ -174,47 +138,27 @@
             <button (click)="setReaction(post.id, 'sad', $event)" title="Sad">
               <i class="fas fa-sad-tear"></i>
             </button>
-            <button
-              (click)="setReaction(post.id, 'angry', $event)"
-              title="Angry"
-            >
+            <button (click)="setReaction(post.id, 'angry', $event)" title="Angry">
               <i class="fas fa-angry"></i>
             </button>
           </div>
         </div>
       </div>
-      <div
-        infiniteScroll
-        (scrolled)="loadMorePosts()"
-        [infiniteScrollDistance]="1"
-        [infiniteScrollThrottle]="300"
-      >
+      <div infiniteScroll (scrolled)="loadMorePosts()" [infiniteScrollDistance]="1" [infiniteScrollThrottle]="300">
         <div *ngIf="loading" class="loading-more">
           <app-loading-post></app-loading-post>
         </div>
-        <div
-          *ngIf="!loading && totalPost !== null && listPost.length >= totalPost"
-          class="no-more-data"
-        >
+        <div *ngIf="!loading && totalPost !== null && listPost.length >= totalPost" class="no-more-data">
           <h3>No more posts to load</h3>
         </div>
       </div>
     </div>
   </div>
 </div>
-<app-modal-detailpost
-  *ngIf="isShowModalDetailPost"
-  (closeModal)="closeModalDetailPost()"
-  (postUpdated)="updatePostInList($event)"
-  [post]="post"
-  [user]="user"
-  [userId]="userId"
-></app-modal-detailpost>
+<app-modal-detailpost *ngIf="isShowModalDetailPost" (closeModal)="closeModalDetailPost()"
+  (postUpdated)="updatePostInList($event)" [post]="post" [user]="user" [userId]="userId"></app-modal-detailpost>
 <div *ngIf="isLoading == true" class="fullscreen-spinner text-center">
   <app-loading-component></app-loading-component>
 </div>
-<app-modal-delete-post
-  (closeModal)="closeModalDeletePost($event)"
-  [post]="postToDelete"
-  *ngIf="showModalDeletePost"
-></app-modal-delete-post>
+<app-modal-delete-post (closeModal)="closeModalDeletePost($event)" [post]="postToDelete"
+  *ngIf="showModalDeletePost"></app-modal-delete-post>
