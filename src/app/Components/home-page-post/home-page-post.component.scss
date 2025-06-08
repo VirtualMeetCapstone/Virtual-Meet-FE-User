@@ -1,443 +1,347 @@
-/* Thiết lập cơ bản cho body */
+/* Reset và font */
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #000;
+  font-family: "Roboto", Arial, sans-serif;
+  background: #000;
   color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
 /* Container chính */
 .container-fluid {
   width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 20px;
-  background-image: url("/assets/img/bg-caro.jpg");
+  padding: 24px 8px;
+  background: url("/assets/img/bg-caro.jpg") repeat;
 }
 
-/* Nội dung chính và thanh bên */
+/* Nội dung chính */
 .main-content {
-  flex: 2;
-  padding: 20px;
-  background-color: #1c1c1c;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  margin: 10px;
-  width: 90%;
+  width: 100%;
+  max-width: 900px;
+  background: #1c1c1c;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  padding: 24px 16px;
+  margin: 0 auto;
 }
 
-.sidebar {
-  flex: 1;
-  padding: 20px;
-  background-color: #1c1c1c;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  margin: 10px;
+/* Tạo post */
+.create-post {
+  background: #232323;
+  border-radius: 10px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
-/* Phần tạo bài post */
 .create-post textarea {
   width: 100%;
   border: none;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
-  background-color: #333;
+  background: #333;
   color: #fff;
   resize: none;
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
 .create-post .actions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .create-post .actions button {
-  background-color: #333;
+  background: #007bff;
+  color: #fff;
   border: none;
-  padding: 10px;
+  padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: #fff;
+  font-weight: 500;
+  transition: background 0.2s;
 }
 
-.create-post .actions button i {
-  margin-right: 5px;
-}
-
-.button-create-post {
-  background-color: #007bff !important;
+.create-post .actions button:hover {
+  background: #0056b3;
 }
 
 /* Bài post */
 .post {
-  padding: 20px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+  background: #232323;
+  border: 1px solid #333;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  padding: 20px 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .post:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
-.post .post-header {
+/* Header post */
+.post-header {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.post .post-header img {
+.post-header img {
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.post .post-header .name {
-  font-weight: 500;
-}
-
-.post .post-header .name:hover {
-  text-decoration: underline;
-}
-
-.post .post-header .time {
-  color: #888;
-  font-size: 12px;
-}
-
-.post .post-content {
-  margin-top: 10px;
-}
-
-.post .post-content img,
-.post .post-content video {
-  width: 100%;
-  border-radius: 8px;
-  margin-top: 10px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
+  border: 2px solid #007bff;
 }
 
-.post-actions {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-}
-
-.post-stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.post .post-actions .likes,
-.post .post-actions .comments,
-.post .post-actions .share {
-  display: flex;
-  align-items: center;
+.post-header .name {
+  font-weight: 600;
   cursor: pointer;
 }
 
-.post .post-actions .likes i,
-.post .post-actions .comments i,
-.post .post-actions .share i {
-  margin-right: 5px;
+.post-header .name:hover {
+  text-decoration: underline;
 }
 
-/* Bình luận trong bài post */
-.post .comments .comment {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.post .comments .comment img {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-}
-
-.post .comments .comment .comment-content {
-  background-color: #333;
-  padding: 10px;
-  border-radius: 8px;
-  flex: 1;
-}
-
-.post .comments .comment .comment-content .name {
-  font-weight: 500;
-}
-
-.post .comments .comment .comment-content .time {
-  color: #888;
+.post-header .time {
+  color: #aaa;
   font-size: 12px;
 }
 
-.post .comments .comment .comment-content .text {
-  margin-top: 5px;
-}
-
-.post .add-comment {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.post .add-comment img {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-}
-
-.post .add-comment input {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #333;
-  color: #fff;
-}
-
-/* Bố cục media trong bài post */
-.post-images {
-  display: grid;
-  gap: 5px;
-  width: 100%;
+.post-menu {
+  margin-left: auto;
   position: relative;
 }
 
-/* Trường hợp 1 ảnh */
+.post-menu button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+ul.dropdown {
+  position: absolute;
+  right: 0;
+  top: 32px;
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+  min-width: 130px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  padding: 8px 0;
+  list-style: none;
+}
+
+ul.dropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+ul.dropdown li:hover {
+  background: #f0f0f0;
+}
+
+/* Nội dung post */
+.post-content {
+  margin-top: 14px;
+  font-size: 16px;
+  word-break: break-word;
+}
+
+/* CSS cho phần hiển thị ảnh trong post */
+.post-images {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Các kiểu grid cho số lượng ảnh */
 .post-images.one {
   grid-template-columns: 1fr;
 }
 
-.post-images.one .media-item {
-  height: 400px;
-}
-
-/* Trường hợp 2 ảnh */
 .post-images.two {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
 }
 
-.post-images.two .media-item {
-  height: 400px;
-}
-
-/* Trường hợp 3 ảnh trở lên */
 .post-images.three-plus {
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
 }
 
-/* Overlay cho ảnh thứ 4 trở đi */
-.post-images.three-plus .media-item:nth-child(4) {
-  position: relative;
-}
-
-.video-disabled {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.post-images.three-plus .media-item:nth-child(4)::after {
-  content: "+ " attr(data-more);
-  position: absolute;
-  top: 10px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-
-.post-images:has(.media-item:nth-child(1):nth-last-child(1)) {
-  grid-template-columns: 1fr;
-}
-
-.post-images:has(.media-item:nth-child(2):nth-last-child(1)) {
-  grid-template-columns: 1fr 1fr;
-}
-
-.post-images:has(.media-item:nth-child(3):nth-last-child(1)) {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-}
-
-.post-images:has(.media-item:nth-child(3):nth-last-child(1))
-  .media-item:nth-child(3) {
-  grid-column: span 2;
-}
-
+/* Container cho từng ảnh hoặc video */
 .post-images .media-item {
   position: relative;
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: 0;
+  /* Đặt height: 0 để sử dụng padding-bottom tạo tỷ lệ */
+  padding-bottom: 56.25%;
+  /* Tỷ lệ 16:9 mặc định, có thể điều chỉnh */
   border-radius: 8px;
+  overflow: hidden;
+  background: #333;
+  /* Màu nền khi ảnh đang load */
 }
 
-.media-item img,
-.media-item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.post-images video.media-item {
-  height: 300px;
-}
-
-.more-images {
-  position: relative;
-  display: inline-block;
-  border: 2px solid white;
-}
-
-.more-images .overlay {
+/* Định dạng ảnh và video bên trong */
+.post-images .media-item img,
+.post-images .media-item video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 18px;
+  object-fit: cover;
+  /* Giữ tỷ lệ ảnh, cắt phần thừa */
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng hover cho ảnh/video */
+.post-images .media-item:hover img,
+.post-images .media-item:hover video {
+  transform: scale(1.05);
+  /* Zoom nhẹ khi hover */
+}
+
+/* Hiển thị số lượng ảnh còn lại nếu có nhiều hơn 4 */
+.post-images.three-plus .media-item:nth-child(4)::after {
+  content: "+ " attr(data-more);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 28px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
+  z-index: 1;
 }
 
-/* Sidebar */
-.stories,
-.events,
-.upcoming-birthday,
-.suggested-pages {
-  padding: 20px;
-  border: 1px solid #444;
-  border-radius: 8px;
+/* Responsive cho mobile */
+@media (max-width: 600px) {
+  .post-images .media-item {
+    padding-bottom: 75%;
+    /* Tỷ lệ 4:3 cho mobile để ảnh không quá cao */
+  }
 }
 
-.stories .story,
-.events .event,
-.upcoming-birthday .birthday,
-.suggested-pages .page {
+
+/* Hành động post */
+.post-actions {
+  margin-top: 14px;
+}
+
+.post-stats {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  gap: 24px;
+  margin-bottom: 8px;
+  justify-content: space-between;
 }
 
-.stories .story img,
-.events .event img,
-.upcoming-birthday .birthday img,
-.suggested-pages .page img {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.stories .story .name,
-.events .event .name,
-.upcoming-birthday .birthday .name,
-.suggested-pages .page .name {
-  font-weight: 500;
-}
-
-.stories .story .time,
-.events .event .time,
-.upcoming-birthday .birthday .time,
-.suggested-pages .page .time {
-  color: #888;
-  font-size: 12px;
-}
-
-.stories .see-all,
-.events .see-all,
-.upcoming-birthday .see-all,
-.suggested-pages .see-all {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.stories .see-all button,
-.events .see-all button,
-.upcoming-birthday .see-all button,
-.suggested-pages .see-all button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
+.post-stats>div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: #bbb;
   cursor: pointer;
+}
+
+.reaction-icons i {
+  font-size: 18px;
+  margin-right: 2px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 15px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.action-buttons button:hover {
+  background: #222;
+  color: #fff;
+}
+
+.like-btn[style*="color:"] {
+  font-weight: 600;
 }
 
 /* Reaction panel */
 .reaction-panel {
-  position: fixed;
-  background-color: #fff;
-  border-radius: 25px;
-  padding: 5px;
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
   display: flex;
-  gap: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  gap: 10px;
+  padding: 10px 16px;
   z-index: 1000;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: fadeIn 0.2s;
 }
 
 .reaction-panel button {
   background: none;
   border: none;
-  padding: 5px;
+  font-size: 22px;
   cursor: pointer;
-  transition: transform 0.2s;
+  border-radius: 50%;
+  transition: background 0.15s, transform 0.15s;
+  padding: 6px;
 }
 
 .reaction-panel button:hover {
-  transform: scale(1.2);
+  background: #f0f0f0;
+  transform: scale(1.18);
 }
 
-.reaction-panel i {
-  font-size: 20px;
-  color: #fff;
-}
-
-.likes {
-  position: relative;
-}
-
-.liked {
-  color: #007bff;
-}
-
-/* Fullscreen spinner */
+/* Loading overlay */
+.loading-overlay,
 .fullscreen-spinner {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw; /* Sử dụng đơn vị viewport width */
-  height: 100vh; /* Sử dụng đơn vị viewport height */
-  background: rgba(0, 0, 0, 0.5); /* Tăng độ mờ để rõ ràng hơn */
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 9999; /* Tăng z-index để nằm trên tất cả */
-  color: red;
+  justify-content: center;
+  z-index: 9999;
 }
 
 /* Loading more posts */
@@ -447,340 +351,124 @@ body {
   padding: 20px;
 }
 
-/* No more data message */
 .no-more-data {
   text-align: center;
   padding: 20px;
 }
 
 .no-more-data h3 {
-  font-weight: bold;
   color: #fff;
+  font-weight: 600;
 }
 
-/* Hỗ trợ video và ảnh */
-video.full {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 8px;
+/* Responsive: Mobile-first */
+@media (max-width: 600px) {
+  .main-content {
+    padding: 8px 2px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .create-post,
+  .post {
+    padding: 12px 4px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .post-header img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .post-images .media-item {
+    height: 140px;
+  }
+
+  .reaction-panel {
+    bottom: 36px;
+    right: 0;
+    margin: auto;
+    width: fit-content;
+  }
 }
 
-video.half {
-  width: 50%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.grid-2x2 img,
-.grid-2x2 video {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.grid-3 img,
-.grid-3 video {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Các thành phần khác */
-.nav-button {
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.nav-button:focus {
-  outline: none;
-}
-
-.user-infor-detail {
-  display: flex;
-}
-
-.user-name {
-  margin-left: 10px;
-  margin-top: 5px;
-  font-weight: 500;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-items: center;
-  width: 800px;
-  margin-bottom: 10px;
-}
-
-.story-wrapper {
-  width: 100%;
-  max-width: 800px;
-  justify-content: center;
-}
-
-app-story-list {
-  width: 100%;
-  max-width: 450px;
-}
-
-.row {
-  display: flex;
-}
-
-.half {
-  width: 50%;
-  height: auto;
-  object-fit: cover;
-}
-
-.full {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  margin-top: 5px;
-}
-
-.grid-2x2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 5px;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-}
-
-/* Animation */
+/* Hiệu ứng fadeIn */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.post-menu {
-  margin-left: auto;
-  position: relative;
-  color: black;
+/* Màu sắc cho icon trong reaction-panel */
+.reaction-panel button i {
+  font-size: 22px;
+  transition: transform 0.2s;
 }
 
-.post-menu button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 15px 3px;
-}
-
-ul.dropdown {
-  position: absolute;
-  background-color: white;
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  min-width: 120px;
-  z-index: 1000;
-  right: 0;
-}
-
-ul.dropdown li {
-  color: black;
-  padding: 8px 12px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-ul.dropdown li:hover {
-  background-color: #f0f0f0;
-}
-
-.reaction-icons {
-  display: flex;
-  align-items: center;
-  margin-right: 5px;
-}
-
-.reaction-icons i {
-  font-size: 16px;
-  margin-right: 3px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  border-radius: 50%;
-  background-color: #444;
-  color: #fff;
-}
-
-.reaction-icons .fa-thumbs-up {
-  color: #007bff;
-}
-
-.reaction-icons .fa-heart {
-  color: #e91e63;
-}
-
-.reaction-icons .fa-laugh {
-  color: #ffca28;
-}
-
-.reaction-icons .fa-surprise {
-  color: #ffeb3b;
-}
-
-.reaction-icons .fa-sad-tear {
-  color: #90caf9;
-}
-
-.reaction-icons .fa-angry {
-  color: #f44336;
-}
-
-.likes {
-  display: flex;
-  align-items: center;
-}
-
-.likes span {
-  cursor: pointer;
-  color: #fff;
-}
-
-.action-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-.action-buttons button {
-  background: none;
-  border: none;
-  color: #606770;
-  cursor: pointer;
-  padding: 5px 10px;
-  display: flex;
-  align-items: center;
-}
-
-.action-buttons button:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 5px;
-}
-
-.action-buttons button i {
-  margin-right: 5px;
-}
-
-.like-btn-wrapper {
-  position: relative;
-}
-
-.reaction-panel {
-  position: fixed;
-  background-color: #fff;
-  border-radius: 25px;
-  padding: 5px;
-  display: flex;
-  gap: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-.reaction-panel button {
-  background: none;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  border-radius: 50%;
-}
-
-.reaction-panel button:hover {
+.reaction-panel button:hover i {
   transform: scale(1.2);
 }
 
-.reaction-panel i {
-  font-size: 24px;
-  color: #606770;
+.reaction-panel button[title="Love"] i {
+  color: #ff4d6a;
+  /* Màu đỏ hồng cho Love */
 }
 
-/* Tùy chỉnh màu sắc cho từng loại reaction */
-.reaction-panel .fa-thumbs-up:hover {
-  color: #007bff;
+.reaction-panel button[title="Haha"] i {
+  color: #ffd700;
+  /* Màu vàng cho Haha */
 }
 
-.reaction-panel .fa-heart:hover {
-  color: #e91e63;
+.reaction-panel button[title="Wow"] i {
+  color: #ffa500;
+  /* Màu cam cho Wow */
 }
 
-.reaction-panel .fa-laugh:hover {
-  color: #ffca28;
+.reaction-panel button[title="Sad"] i {
+  color: #1e90ff;
+  /* Màu xanh dương cho Sad */
 }
 
-.reaction-panel .fa-surprise:hover {
-  color: #ffeb3b;
+.reaction-panel button[title="Angry"] i {
+  color: #ff4500;
+  /* Màu đỏ cam cho Angry */
 }
 
-.reaction-panel .fa-sad-tear:hover {
-  color: #90caf9;
+
+/* Style cho dropdown */
+.dropdown.ng-star-inserted {
+  background: #000000;
+  /* Background màu đen */
+  color: #ffffff;
+  /* Chữ màu trắng */
+  border-radius: 8px;
+  min-width: 130px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  padding: 8px 0;
+  list-style: none;
 }
 
-.reaction-panel .fa-angry:hover {
-  color: #f44336;
+/* Style cho các mục trong dropdown */
+.dropdown.ng-star-inserted li {
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #ffffff;
+  /* Chữ màu trắng */
+  transition: background 0.15s, color 0.15s;
 }
 
-/* Giữ nguyên animation fadeIn */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw; /* Sử dụng đơn vị viewport để phủ toàn màn hình */
-  height: 100vh;
-  background: rgba(0, 0, 0, 1); /* Nền đen mờ để che nội dung bên dưới */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Đảm bảo spinner nằm trên tất cả các thành phần khác */
-  background-image: url("/assets/img/bg-caro.jpg");
-}
-
-.loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Hiệu ứng hover cho các mục trong dropdown */
+.dropdown.ng-star-inserted li:hover {
+  background: #007bff;
+  /* Màu xanh dương khi hover */
+  color: #ffffff;
+  /* Giữ chữ màu trắng khi hover */
 }
