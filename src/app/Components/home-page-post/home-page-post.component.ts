@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
 import { PostserviceService } from '../../services/post-service/postservice.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreatePostModalComponent } from '../create-post-modal/create-post-modal.component';
@@ -16,8 +16,20 @@ import Swal from 'sweetalert2';
   templateUrl: './home-page-post.component.html',
   styleUrls: ['./home-page-post.component.scss'],
 })
-export class HomePagePostComponent implements OnInit {
+export class HomePagePostComponent implements OnInit, OnDestroy {
   @Output() openPostModal = new EventEmitter<string>();
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (!this.isMouseOverPanel) {
+      this.showReactionPanelForPostId = null;
+      if (this.autoHideTimeout) {
+        clearTimeout(this.autoHideTimeout);
+      }
+    }
+    this.openedMenuPostId = null;
+  }
+
   comments: any = [];
   listPost: any[] = [];
   totalPost: number | null = null;
@@ -36,6 +48,8 @@ export class HomePagePostComponent implements OnInit {
   openedMenuPostId: number | null = null;
 
   showReactionPanelForPostId: string | null = null;
+  isMouseOverPanel: boolean = false;
+  autoHideTimeout: any = null;
 
   toggleMenu(postId: number, event: MouseEvent) {
     event.stopPropagation();
@@ -55,7 +69,13 @@ export class HomePagePostComponent implements OnInit {
     private externalService: ExternalServiceService,
     private notifyService: NotificationServiceService,
     private router: Router
-  ) {}
+  ) { }
+
+  ngOnDestroy(): void {
+    if (this.autoHideTimeout) {
+      clearTimeout(this.autoHideTimeout);
+    }
+  }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -77,6 +97,8 @@ export class HomePagePostComponent implements OnInit {
       });
     }
   }
+
+
 
   openModalDeletePost(post: any) {
     this.postToDelete = post;
@@ -141,12 +163,21 @@ export class HomePagePostComponent implements OnInit {
     });
   }
 
-  toggleReactionPanel(postId: string, event: Event) {
-    event.stopPropagation();
+  toggleReactionPanel(postId: string, event: Event): void {
+    event.stopPropagation(); // Ngăn sự kiện click lan ra document
     if (this.showReactionPanelForPostId === postId) {
       this.showReactionPanelForPostId = null;
+      if (this.autoHideTimeout) {
+        clearTimeout(this.autoHideTimeout); // Hủy timeout nếu panel bị ẩn thủ công
+      }
     } else {
       this.showReactionPanelForPostId = postId;
+      // Tự động ẩn sau 3 giây
+      this.autoHideTimeout = setTimeout(() => {
+        if (!this.isMouseOverPanel) {
+          this.showReactionPanelForPostId = null;
+        }
+      }, 3000);
     }
   }
 
@@ -161,16 +192,22 @@ export class HomePagePostComponent implements OnInit {
     return colors[type] || '#606770';
   }
 
-  setReaction(postId: string, reactionType: string, event: Event) {
+  setReaction(postId: string | number, reactionType: string, event: Event): void {
     event.stopPropagation();
+
     if (!this.checkLoginAndAlert('like this post')) {
       return;
     }
+
     const reactionTypeNumber = this.mapReactionTypeToNumber(reactionType);
-    this.postService.setReaction(postId, reactionTypeNumber).subscribe(() => {
-      this.updatePostReactions(postId);
+    this.postService.setReaction(postId.toString(), reactionTypeNumber).subscribe(() => {
+      this.updatePostReactions(postId.toString());
     });
+
     this.showReactionPanelForPostId = null;
+    if (this.autoHideTimeout) {
+      clearTimeout(this.autoHideTimeout);
+    }
   }
 
   updatePostReactions(postId: string) {
@@ -310,8 +347,8 @@ export class HomePagePostComponent implements OnInit {
     });
   }
 
-  createFeeling() {}
-  tagFriend() {}
+  createFeeling() { }
+  tagFriend() { }
   getSafeUrl(url: any) {
     return this.externalService.getSafeUrl(url);
   }
@@ -364,5 +401,25 @@ export class HomePagePostComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  //new code 
+  hideReactionPanel(): void {
+    if (!this.isMouseOverPanel) {
+      this.showReactionPanelForPostId = null;
+    }
+
+  }
+
+  onMouseEnterPanel(): void {
+    this.isMouseOverPanel = true;
+    if (this.autoHideTimeout) {
+      clearTimeout(this.autoHideTimeout);
+    }
+  }
+  // Theo dõi khi chuột rời panel
+  onMouseLeavePanel(): void {
+    this.isMouseOverPanel = false;
+    this.showReactionPanelForPostId = null;
   }
 }
