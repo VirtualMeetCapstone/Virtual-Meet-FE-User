@@ -5,10 +5,8 @@
         <h1 class="header-title">Create Post</h1>
         <div>
           <p>Do you want to share with your friends?</p>
-          <select
-            class="form-select"
-            style="background-color: black; margin-bottom: 20px; border-radius: 5px; height: 30px"
-            [(ngModel)]="privacy"
+          <select class="form-select"
+            style="background-color: black; margin-bottom: 20px; border-radius: 5px; height: 30px" [(ngModel)]="privacy"
             aria-label="Default select example">
 
             <option value="0">🌍 Public</option>
@@ -33,13 +31,7 @@
           <div class="upload-icon">
             <span>Click to upload image & video</span>
           </div>
-          <input
-            id="file"
-            type="file"
-            accept="image/*,video/*"
-            (change)="onPostMediaSelected($event)"
-            multiple
-          >
+          <input id="file" type="file" accept="image/*,video/*" (change)="onPostMediaSelected($event)" multiple>
         </label>
       </div>
 
@@ -54,16 +46,13 @@
 
       <div class="profile-section">
         <div class="profile-label">Content</div>
-        <textarea
-          class="content-input"
-          placeholder="What's on your mind?"
-          [(ngModel)]="newContent"
-          (blur)="onContentBlur()"
-        ></textarea>
+        <quill-editor class="content-input" placeholder="What's on your mind?" [(ngModel)]="newContent"
+          (onBlur)="onContentBlur()" [modules]="quillConfig" format="html"></quill-editor>
         <div *ngIf="contentError" class="text-danger">
           Content contains inappropriate words. Please revise.
         </div>
       </div>
+
     </div>
 
     <div class="footer-container">

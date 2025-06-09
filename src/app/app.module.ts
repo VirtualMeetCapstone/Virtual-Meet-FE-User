@@ -38,6 +38,8 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { StoryModalMyProfileComponent } from './Components/story-modal-my-profile/story-modal-my-profile.component';
 
+import { QuillModule } from 'ngx-quill';
+import { SafeHtmlPipe } from '../utils/safe-html.pipe'
 import {
   SocialLoginModule,
   SocialAuthServiceConfig,
@@ -166,6 +168,7 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     PlayQuizComponent,
     QuizQuestionsComponent,
     WhiteboardComponent,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,
@@ -198,6 +201,8 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
     MatCardModule,
     MatListModule,
     MatSnackBarModule,
+    FormsModule,
+    QuillModule.forRoot()
   ],
   providers: [
     provideClientHydration(),
@@ -236,4 +241,4 @@ export function HttpLoaderFactory(_httpBackend: HttpBackend) {
 
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
