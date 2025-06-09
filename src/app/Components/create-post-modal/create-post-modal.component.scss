@@ -310,8 +310,6 @@ textarea {
   color: #fff !important;
 }
 
-.post-content pre,
-.ql-editor pre {
-  color: #fff !important;
-  background: #18191a !important;
+:host ::ng-deep .ql-picker-options {
+  background-color:#1a1d29 !important;
 }
