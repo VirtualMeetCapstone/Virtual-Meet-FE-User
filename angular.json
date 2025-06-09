@@ -41,12 +41,12 @@
             ],
             "styles": [
               "src/styles.scss",
-              "./node_modules/quill/dist/quill.core.css",
-              "./node_modules/quill/dist/quill.bubble.css",
-              "./node_modules/quill/dist/quill.snow.css"
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.bubble.css",
+              "node_modules/quill/dist/quill.snow.css"
             ],
             "scripts": [
-              "./node_modules/quill/dist/quill.core.js"
+              "node_modules/quill/dist/quill.core.js"
             ],
             "prerender": true,
             "server": "src/main.server.ts",
