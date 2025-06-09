@@ -12,27 +12,18 @@
     <div class="modal-body">
       <div class="post-preview">
         <div class="author-info">
-          <img
-            [src]="post.user.picture.url"
-            alt="Author"
-            class="author-avatar"
-          />
+          <img [src]="post.user.picture.url" alt="Author" class="author-avatar" />
           <div class="author-details">
             <div class="author-name">{{ post.user.name }}</div>
-            <div class="post-time">{{ post.createTime | date : "medium" }}</div>
+            <div class="post-time">{{ ticksToDate(post.createTime) | date : "dd/MM/yy HH:mm" }}</div>
           </div>
         </div>
 
-        <p class="post-content">{{ post.content }}</p>
-
+        <div class="ql-editor" [innerHTML]="post.content | safeHtml"></div>
         <div class="post-media" *ngIf="post.medias.length > 0">
           <div class="media-grid">
-            <img
-              *ngFor="let media of post.medias.slice(0, 2)"
-              [src]="media.url"
-              alt="Post media"
-              class="media-thumbnail"
-            />
+            <img *ngFor="let media of post.medias.slice(0, 2)" [src]="media.url" alt="Post media"
+              class="media-thumbnail" />
             <div class="media-count" *ngIf="post.medias.length > 2">
               +{{ post.medias.length - 2 }}
             </div>

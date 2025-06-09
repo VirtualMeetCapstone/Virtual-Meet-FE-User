@@ -58,7 +58,7 @@
           {{ ticksToDate(post.createTime) | date : "dd/MM/yy HH:mm" }}
         </div>
         <div class="post-text">
-          <p>{{ post.content }}</p>
+          <div class="ql-editor" [innerHTML]="post.content | safeHtml"></div>
         </div>
         <div class="post-stats">
           <div class="likes" (click)="openReactionSummary($event)">
