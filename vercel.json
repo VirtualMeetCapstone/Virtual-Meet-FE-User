@@ -9,7 +9,8 @@
         "includeFiles": [
           "dist/virtual-meet-fe/browser/**",
           "dist/virtual-meet-fe/server/**",
-          "node_modules/zone.js/**"
+          "node_modules/zone.js/**",
+          "node_modules/quill/dist/quill.snow.css/**"
         ]
       }
     }
