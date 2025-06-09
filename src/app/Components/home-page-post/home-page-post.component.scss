@@ -472,3 +472,7 @@ ul.dropdown li:hover {
   color: #ffffff;
   /* Giữ chữ màu trắng khi hover */
 }
+:host ::ng-deep .ql-editor pre {
+  background-color:#1a1d29 !important;
+  color:#07c187 !important;
+}

@@ -16,6 +16,11 @@ export class ModalDeletePostComponent {
   onCloseModal() {
     this.closeModal.emit(false);
   }
+    ticksToDate(ticks: number): Date {
+    const ticksSinceEpoch = ticks - 621355968000000000;
+    const milliseconds = ticksSinceEpoch / 10000;
+    return new Date(milliseconds);
+  }
   onDeletePost() {
     this.postSevice.deletePost(this.post.id).subscribe((res: any) => {
       console.log(res);

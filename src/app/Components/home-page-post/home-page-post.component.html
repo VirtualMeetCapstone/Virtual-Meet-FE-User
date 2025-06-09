@@ -64,20 +64,21 @@
           </div>
         </div>
         <div class="post-content">
-          <p>{{ post.content }}</p>
+          <div class="ql-editor" [innerHTML]="post.content | safeHtml"></div>
           <div class="post-images {{ getMediaClass(post.medias.length) }}">
             <ng-container *ngFor="let media of post.medias; let i = index">
               <div class="media-item" *ngIf="i < 4" [attr.data-more]="
-                  i === 3 && post.medias.length > 4
-                    ? post.medias.length - 4
-                    : null
-                ">
+          i === 3 && post.medias.length > 4
+            ? post.medias.length - 4
+            : null
+        ">
                 <img *ngIf="media.type === 1" [src]="media.url" alt="Media" />
                 <video *ngIf="media.type === 2" [src]="media.url" controls (click)="$event.stopPropagation()"></video>
               </div>
             </ng-container>
           </div>
         </div>
+
         <br />
         <div class="post-actions">
           <div class="post-stats">

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { PostserviceService } from '../../services/post-service/postservice.service';
@@ -20,7 +20,7 @@ interface PostResponse {
   templateUrl: './create-post-modal.component.html',
   styleUrl: './create-post-modal.component.scss',
 })
-export class CreatePostModalComponent {
+export class CreatePostModalComponent implements AfterViewInit {
   id: string;
   newUsername: string;
   newContent: string = '';
@@ -30,6 +30,28 @@ export class CreatePostModalComponent {
   privacy: number = 0;
   previousContent: string = ''; // Lưu nội dung trước đó để so sánh
   contentError: boolean = false; // Đánh dấu lỗi nội dung
+
+  ngAfterViewInit(): void {
+    this.applyDarkModeToSelect();
+  }
+
+  quillConfig = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'], // Các nút định dạng cơ bản
+      ['blockquote', 'code-block'],
+      [{ header: 1 }, { header: 2 }], // Tiêu đề
+      [{ list: 'ordered' }, { list: 'bullet' }], // Danh sách
+      [{ script: 'sub' }, { script: 'super' }], // Chỉ số trên/dưới
+      [{ indent: '-1' }, { indent: '+1' }], // Thụt đầu dòng
+      [{ direction: 'rtl' }], // Căn chỉnh hướng
+      [{ size: ['small', false, 'large', 'huge'] }], // Kích thước chữ
+      [{ header: [1, 2, 3, 4, 5, 6, false] }], // Tiêu đề tùy chỉnh
+      [{ color: [] }, { background: [] }], // Màu chữ và nền
+      [{ font: [] }], // Font chữ
+      [{ align: [] }], // Căn chỉnh (trái, giữa, phải, đều)
+      ['clean'], // Xóa định dạng
+    ],
+  };
 
   constructor(
     private postService: PostserviceService,
@@ -72,9 +94,35 @@ export class CreatePostModalComponent {
   /** Gọi khi người dùng rời khỏi trường nhập liệu */
   onContentBlur(): void {
     if (this.newContent && this.newContent !== this.previousContent) {
-      this.previousContent = this.newContent; // Cập nhật nội dung trước đó
-      this.checkContent(this.newContent);
+      this.previousContent = this.newContent; 
+      const plainText = this.extractPlainText(this.newContent);
+      this.checkContent(plainText);
     }
+  }
+
+  extractPlainText(html: string): string {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  }
+
+  applyDarkModeToSelect(): void {
+    // Lấy tất cả các thẻ select trong modal
+    const selectElements = document.querySelectorAll('select');
+    selectElements.forEach((select) => {
+      // Thêm style cho select
+      select.style.background = '#18191a';
+      select.style.color = '#fff';
+      select.style.border = '1px solid #333';
+
+      // Lấy tất cả các option trong select
+      const optionElements = select.querySelectorAll('option');
+      optionElements.forEach((option) => {
+        // Thêm style cho option
+        option.style.background = '#18191a';
+        option.style.color = '#fff';
+      });
+    });
   }
 
   /** Kiểm tra nội dung bài viết */
@@ -85,9 +133,9 @@ export class CreatePostModalComponent {
         next: (response) => {
           console.log('Response from API:', response);
           if (response.status) {
-            this.contentError = true; // Đánh dấu lỗi
+            this.contentError = true;
           } else {
-            this.contentError = false; // Xóa lỗi nếu hợp lệ
+            this.contentError = false; 
           }
         },
         error: (err) => {
@@ -97,6 +145,7 @@ export class CreatePostModalComponent {
       });
     }
   }
+
 
   /** Gửi bài viết */
   submitPost() {
@@ -110,7 +159,7 @@ export class CreatePostModalComponent {
       return;
     }
 
-    // Gửi bài viết nếu không có lỗi
+
     console.log('Submitting post:', this.newContent, this.selectedFiles);
     this.isLoading = true;
     this.postService.createPost(
