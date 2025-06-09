@@ -30,6 +30,10 @@
             "polyfills": [
               "zone.js"
             ],
+            "allowedCommonJsDependencies": [
+              "quill",
+              "ngx-quill"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -48,7 +52,8 @@
             "externalDependencies": [
               "zone.js",
               "zone.js/node",
-              "zone.js/bundles/zone-node.umd"
+              "zone.js/bundles/zone-node.umd",
+              "quill"
             ]
           },
           "configurations": {
